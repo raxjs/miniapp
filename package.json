@@ -30,6 +30,7 @@
     "eslint-plugin-react": "7.20.3",
     "glob": "^7.1.6",
     "jest": "^24.9.0",
+    "jest-serializer-ansi": "^1.0.3",
     "lerna": "^3.22.1",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.5",
@@ -56,6 +57,9 @@
     "collectCoverage": true,
     "setupFiles": [
       "<rootDir>/packages/miniapp-history/node_modules/regenerator-runtime/runtime"
+    ],
+    "snapshotSerializers": [
+      "jest-serializer-ansi"
     ]
   }
 }
