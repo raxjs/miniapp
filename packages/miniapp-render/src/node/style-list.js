@@ -136,4 +136,22 @@ export default {
   fill: 'fill',
 
   touchAction: 'touch-action',
+
+  gridArea: 'grid-area',
+  gridAutoColumns: 'grid-auto-columns',
+  gridAutoFlow: 'grid-auto-flow',
+  gridAutoRows: 'grid-auto-rows',
+  gridColumn: 'grid-column',
+  gridColumnEnd: 'grid-column-end',
+  gridColumnGap: 'grid-column-gap',
+  gridColumnStart: 'grid-column-start',
+  gridGap: 'grid-gap',
+  gridRow: 'grid-row',
+  gridRowEnd: 'grid-row-end',
+  gridRowGap: 'grid-row-gap',
+  gridRowStart: 'grid-row-start',
+  gridTemplate: 'grid-template',
+  gridTemplateAreas: 'grid-template-areas',
+  gridTemplateColumns: 'grid-template-columns',
+  gridTemplateRows: 'grid-template-rows'
 };
