@@ -36,16 +36,15 @@ export default function() {
       const document = cache.getDocument(__pageId);
       if (document && document.__checkEvent(evt)) {
         const nodeId = evt.currentTarget.dataset.privateNodeId;
-        this.callEvent(eventName, evt, extra, __pageId, nodeId); // Default Left button
+        this.callEvent(eventName, evt, extra, nodeId); // Default Left button
       }
     };
   });
   // Add reactive event define which won't bubble
   handlesMap.simpleEvents.forEach(({ name, eventName }) => {
     config[name] = function(evt) {
-      const __pageId = getPageId(this, this.data.pageId);
       const nodeId = evt.currentTarget.dataset.privateNodeId;
-      const targetNode = cache.getNode(__pageId, nodeId);
+      const targetNode = cache.getNode(nodeId);
       if (!targetNode) return;
       this.callSimpleEvent(eventName, evt, targetNode);
     };
@@ -74,7 +73,7 @@ export default function() {
       const __pageId = getPageId(this, this.data.pageId);
       const domNode = this.getDomNodeFromEvt(eventName, evt);
       if (!domNode) return;
-      middleware.call(this, evt, domNode, __pageId, evt.currentTarget.dataset.privateNodeId);
+      middleware.call(this, evt, domNode, evt.currentTarget.dataset.privateNodeId);
     };
   });
   return config;
