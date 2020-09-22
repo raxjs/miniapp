@@ -54,19 +54,17 @@ export default function() {
   // Add reactive event define which only trigger once
   handlesMap.singleEvents.forEach(({ name, eventName }) => {
     config[name] = function(evt) {
-      const __pageId = getPageId(this, this.data.pageId);
-      this.callSingleEvent(eventName, evt, __pageId);
+      this.callSingleEvent(eventName, evt);
     };
   });
 
   // Add reactive event define which only trigger once and need middleware
   handlesMap.functionalSingleEvents.forEach(({ name, eventName, middleware }) => {
     config[name] = function(evt) {
-      const __pageId = getPageId(this, this.data.pageId);
-      const domNode = this.getDomNodeFromEvt(eventName, evt, __pageId);
+      const domNode = this.getDomNodeFromEvt(eventName, evt);
       if (!domNode) return;
       middleware.call(this, evt, domNode);
-      this.callSingleEvent(eventName, evt, __pageId);
+      this.callSingleEvent(eventName, evt);
     };
   });
 
@@ -74,7 +72,7 @@ export default function() {
   handlesMap.complexEvents.forEach(({ name, eventName, middleware }) => {
     config[name] = function(evt) {
       const __pageId = getPageId(this, this.data.pageId);
-      const domNode = this.getDomNodeFromEvt(eventName, evt, __pageId);
+      const domNode = this.getDomNodeFromEvt(eventName, evt);
       if (!domNode) return;
       middleware.call(this, evt, domNode, __pageId, evt.currentTarget.dataset.privateNodeId);
     };
