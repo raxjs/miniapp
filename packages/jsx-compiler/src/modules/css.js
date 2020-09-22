@@ -1,6 +1,7 @@
 const t = require('@babel/types');
 const { readFileSync } = require('fs-extra');
 const { moduleResolve } = require('../utils/moduleResolve');
+const { isFilenameCSS, isNpmCSS } = require('../utils/checkModule');
 const traverse = require('../utils/traverseNodePath');
 
 /**
@@ -42,7 +43,7 @@ module.exports = {
     traverse(parsed.ast, {
       ImportDeclaration(path) {
         const { node } = path;
-        if (t.isStringLiteral(node.source) && cssFileMap[node.source.value.replace(/\\/g, '/')]) {
+        if (t.isStringLiteral(node.source) && (cssFileMap[node.source.value.replace(/\\/g, '/')] || isNpmCSS(node.source.value))) {
           path.remove();
         }
       }
@@ -58,7 +59,3 @@ module.exports = {
     }
   }
 };
-
-function isFilenameCSS(path) {
-  return /\.(css|sass|less|scss|styl)$/i.test(path);
-}
