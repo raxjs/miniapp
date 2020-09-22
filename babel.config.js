@@ -19,11 +19,6 @@ module.exports = function(api) {
       ['@babel/plugin-proposal-decorators', { 'legacy': true }],
       '@babel/plugin-syntax-dynamic-import',
     ],
-    'ignore': [
-      'src/generator/templates',
-      '__mockc__',
-      'dist'
-    ],
     'env': {
       'test': {
         'plugins': ['dynamic-import-node']
