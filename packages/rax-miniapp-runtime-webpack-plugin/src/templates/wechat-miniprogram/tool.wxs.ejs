@@ -18,10 +18,12 @@ module.exports = {
   },
   processScrollVal: function(r, type) {
     const cacheVal = scrollValCache[type][r.nodeId];
-    if (cacheVal === r[type]) {
-      return '';
+    if (cacheVal === undefined) {
+      // First render
+      return scrollValCache[type][r.nodeId] = r[type] || 0;  // Record
     } else {
-      return scrollValCache[type][r.nodeId] = r[type];
+      // Non-first render
+      return r[type] === undefined ? scrollValCache[type][r.nodeId] : r[type]
     }
   },
   processInputFocusState: function(r) {
