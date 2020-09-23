@@ -17,7 +17,7 @@ export default {
     return style;
   },
   processScrollVal: function(r, type) {
-    const cacheVal = scrollValCache[type][r.nodeId];
+    var cacheVal = scrollValCache[type][r.nodeId];
     if (cacheVal === undefined) {
       // First render
       return scrollValCache[type][r.nodeId] = r[type] || 0;  // Record
