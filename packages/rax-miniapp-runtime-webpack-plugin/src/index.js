@@ -7,6 +7,7 @@ const {
   generateAppCSS,
   generateAppJS,
   generateConfig,
+  generatePageCSS,
   generatePageJS,
   generatePageJSON,
   generatePageXML,
@@ -96,6 +97,12 @@ class MiniAppRuntimePlugin {
               target,
               command,
               rootDir,
+            });
+
+            // Page css
+            generatePageCSS(compilation, entryName, {
+              target,
+              command,
             });
 
             // Page json
