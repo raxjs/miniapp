@@ -439,7 +439,7 @@
     placeholder-style="color:{{r['placeholder-style']}}"
     placeholder-class="{{r['placeholder-class']}}"
     disabled="{{r.disabled}}"
-    maxlength="{{r.maxlength}}"
+    maxlength="{{tool.processVal(r.maxlength, 140)}}"
     cursor-spacing="{{r['cursor-spacing']}}"
     focus="{{tool.processInputFocusState(r)}}"
     confirm-type="{{r['confirm-type']}}"
