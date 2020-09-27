@@ -39,12 +39,14 @@
     "typescript": "^4.0.3"
   },
   "scripts": {
-    "setup": "lerna bootstrap --no-ci",
-    "lint": "npm run lint:nofix -- --fix",
-    "lint:nofix": "eslint --ext .js --ext .jsx ./",
+    "setup": "rm -rf node_modules && yarn install --registry=https://registry.npm.taobao.org/ && npm run bootstrap",
+    "bootstrap": "lerna bootstrap --registry=https://registry.npm.taobao.org/ && npm run build",
+    "lint": "eslint --ext .js --ext .jsx ./",
+    "lint:fix": "npm run lint -- --fix",
     "test": "jest --logHeapUsage --detectOpenHandles",
-    "build": "npm run clean:lib && npm run build:compile",
+    "build": "npm run clean && npm run build:compile",
     "build:compile": "node ./scripts/compile-packages.js",
+    "clean": "lerna clean --yes && rimraf packages/*/lib",
     "clean:lib": "rm -rf ./packages/*/lib",
     "check-and-publish": "node ./scripts/check-and-publish",
     "ci": "npm run lint && npm run setup && npm run test"

@@ -47,7 +47,7 @@ class MiniAppRuntimePlugin {
     });
 
     compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
-      const outputPath = join(compilation.outputOptions.path, target);
+      const outputPath = compilation.outputOptions.path;
       const sourcePath = join(options.rootDir, 'src');
       const pages = [];
       const changedFiles = Object.keys(
@@ -96,6 +96,7 @@ class MiniAppRuntimePlugin {
               target,
               command,
               rootDir,
+              outputPath
             });
 
             // Page json
@@ -104,17 +105,16 @@ class MiniAppRuntimePlugin {
               pageConfig,
               useComponent,
               entryName,
-              { target, command, rootDir }
+              { target, command, rootDir, outputPath }
             );
           }
 
           // Page js
           generatePageJS(
             compilation,
-            assets,
             entryName,
             nativeLifeCycles,
-            { target, command, rootDir }
+            { target, command, rootDir, outputPath }
           );
         });
 
@@ -125,7 +125,7 @@ class MiniAppRuntimePlugin {
       }
 
       // Collect app.js
-      if (isFirstRender || changedFiles.includes('/app.js' || '/app.ts')) {
+      if (isFirstRender) {
         const commonAppJSFilePaths = compilation.entrypoints
           .get('index')
           .getFiles()

@@ -6,7 +6,7 @@ const getTemplate = require('../utils/getTemplate');
 const { generateRootTmpl } = require('./root');
 
 function generateElementJS(compilation,
-  { target, command, rootDir }) {
+  { target, command }) {
   addFileToCompilation(compilation, {
     filename: 'comp.js',
     content: `const render = require('./render');
