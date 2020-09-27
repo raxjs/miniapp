@@ -65,7 +65,7 @@
   "jest": {
     "collectCoverage": true,
     "setupFiles": [
-      "./node_modules/regenerator-runtime/runtime"
+      "../../node_modules/regenerator-runtime/runtime"
     ]
   }
 }
