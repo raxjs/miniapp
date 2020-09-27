@@ -1,12 +1,12 @@
 const {
   getAppConfig,
   filterNativePages,
-  getOutputPath,
 } = require('miniapp-builder-shared');
 const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
 const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
 const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { resolve } = require('path');
 
 /**
  * Set miniapp runtime project webpack config
@@ -20,11 +20,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = (
   config,
   userConfig,
-  { context, target, babelRuleName = 'babel' }
+  { context, target, babelRuleName = 'babel', outputPath }
 ) => {
   const { rootDir, command } = context;
-  // Get miniapp output path
-  const outputPath = getOutputPath(context, target);
+
+  if (!outputPath) {
+    outputPath = resolve(rootDir, 'build', target);
+  }
   // Using components
   const usingComponents = {};
   // Native lifecycle map
