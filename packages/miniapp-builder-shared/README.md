@@ -15,10 +15,7 @@ It will export the following methods:
   - `absoluteModuleResolve`
   - `getPlatformExtensions`
   - `isNativePage`
-  - `removeExt` 
+  - `removeExt`
 
 #### platformMap
 It will return miniapp platform and suffix name correspondence.
-
-#### getOutputPath
-It will return miniapp output path.
