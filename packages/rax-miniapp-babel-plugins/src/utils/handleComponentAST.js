@@ -39,7 +39,9 @@ function collectUsings(
   t
 ) {
   const { specifiers } = path.node;
-  for (let specifier of specifiers) {
+  specifiers.some((specifier, index) => {
+    if (!t.isImportDefaultSpecifier(specifier)) return;
+
     const tagName = specifier.local.name;
     const componentInfo = components[tagName];
     if (componentInfo) {
@@ -67,8 +69,12 @@ function collectUsings(
           ),
         ],
       };
+
+      // import A, { a } from 'a' => import { a } from 'a'
+      specifiers.splice(index, 1);
+
       // Use const Custom = 'c90589c' replace import Custom from '../public/xxx or plugin://...'
-      path.replaceWith(
+      path.insertAfter(
         t.VariableDeclaration('const', [
           t.VariableDeclarator(
             t.identifier(tagName),
@@ -76,10 +82,14 @@ function collectUsings(
           ),
         ])
       );
-      break;
-    } else {
-      path.remove();
     }
+
+    return true;
+  });
+
+  // keep import if specifiers is not empty
+  if (!specifiers.length) {
+    path.remove();
   }
 }
 
