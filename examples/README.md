@@ -1,6 +1,6 @@
 # Rax 示例
 
-本文件夹提供了多个 Rax 示例项目供用户参考。
+本文件夹提供了多个 Rax 小程序示例项目供用户参考。
 
 ## 快速开始
 
@@ -16,7 +16,7 @@ npm run build
 
 ## 示例说明
 
-> 示例项目中小程序端均采用运行时方案
+> 示例项目中小程序如无说明，均采用运行时方案
 
 * with-miniapp-native-custom-component: 使用小程序原生自定义组件（本地组件 + npm 组件）
 * with-miniapp-plugin-component: 使用小程序插件组件 + 分端构建
@@ -26,3 +26,5 @@ npm run build
 * page-lifecycle-with-router: 使用 page 生命周期 + 路由跳转
 * event-handler: 事件绑定（编译时小程序）
 * get-element: document/element getElementXXX 相关 API
+* use-input: 处理 input 值绑定及焦点获取
+* use-scrollview: 处理 scroll-view scroll-top/scroll-left 值变更
