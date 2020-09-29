@@ -111,8 +111,8 @@
     scroll-y="{{r['scroll-y']}}"
     upper-threshold="{{tool.processVal(r['upper-threshold'], 50)}}"
     lower-threshold="{{tool.processVal(r['lower-threshold'], 50)}}"
-    scroll-top="{{tool.processScrollVal(r, 'scroll-top')}}"
-    scroll-left="{{tool.processScrollVal(r, 'scroll-left')}}"
+    scroll-top="{{r['scroll-top']}}"
+    scroll-left="{{r['scroll-left']}}"
     scroll-into-view="{{tool.processVal(r['scroll-into-view'], '')}}"
     scroll-with-animation="{{r['scroll-with-animation']}}"
     scroll-animation-duration="{{r['scroll-animation-duration']}}"
@@ -139,7 +139,7 @@
 
     bindtap="onTap"
 
-    scroll-top="{{tool.processScrollVal(r, 'scroll-top')}}"
+    scroll-top="{{r['scroll-top']}}"
   >
     <template is="children" data="{{r: r.children}}" />
   </cover-view>
@@ -439,6 +439,7 @@
     placeholder-style="color:{{r['placeholder-style']}}"
     placeholder-class="{{r['placeholder-class']}}"
     disabled="{{r.disabled}}"
+    focus="{{r['focus-state']}}"
     maxlength="{{tool.processVal(r.maxlength, 140)}}"
     cursor-spacing="{{r['cursor-spacing']}}"
     confirm-type="{{r['confirm-type']}}"
@@ -477,6 +478,7 @@
     auto-height="{{r['auto-height']}}"
     fixed="{{r.fixed}}"
     cursor-spacing="{{tool.processVal(r['cursor-spacing'], 0)}}"
+    focus="{{r['focus-state']}}"
     cursor="{{tool.processVal(r.cursor, -1)}}"
     show-confirm-bar="{{tool.processVal(r['show-confirm-bar'], true)}}"
     selection-start="{{tool.processVal(r['selection-start'], -1)}}"
