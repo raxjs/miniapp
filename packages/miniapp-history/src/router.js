@@ -60,6 +60,13 @@ function back(location, n = 1) {
 }
 
 /**
+ * Navigate back.
+ */
+function goBack(location, n = 1) {
+  return navigateBack(location, { delta: n });
+}
+
+/**
  * Unsupported in miniapp.
  */
 function goForward() {
@@ -115,7 +122,7 @@ export function __updateRouterMap(routes) {
 
 export default function generateActions(location) {
   const actions = {
-    push, replace, back, go, canGo, goForward
+    push, replace, back, go, canGo, goForward, goBack
   };
   return Object.keys(actions).reduce((result, actionName) => {
     result[actionName] = actions[actionName].bind(null, location);
