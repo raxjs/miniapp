@@ -6,16 +6,6 @@ class Attribute {
     this.__value = {};
   }
 
-  _setWithOutUpdate(name, value) {
-    this.__value[name] = value;
-    if (name === 'style') {
-      this.__element.style.cssText = value;
-    } else if (name.indexOf('data-') === 0) {
-      const datasetName = tool.toCamel(name.substr(5));
-      this.__element.dataset[datasetName] = value;
-    }
-  }
-
   set(name, value, immediate = true) {
     const element = this.__element;
     this.__value[name] = value;

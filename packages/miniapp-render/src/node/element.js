@@ -77,7 +77,7 @@ class Element extends Node {
 
   // Sets properties, but does not trigger updates
   _setAttributeWithOutUpdate(name, value) {
-    this.__attrs._setWithOutUpdate(name, value);
+    this.__attrs.set(name, value, false);
   }
 
   get id() {

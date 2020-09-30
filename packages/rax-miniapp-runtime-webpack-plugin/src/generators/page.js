@@ -6,6 +6,21 @@ const adjustCSS = require('../utils/adjustCSS');
 const getTemplate = require('../utils/getTemplate');
 const { MINIAPP } = require('../constants');
 
+function generatePageCSS(
+  compilation,
+  pageRoute,
+  { target, command }
+) {
+  const pageCssContent = '/* required by usingComponents */';
+
+  addFileToCompilation(compilation, {
+    filename: `${pageRoute}.${adapter[target].css}`,
+    content: pageCssContent,
+    target,
+    command,
+  });
+}
+
 function generatePageJS(
   compilation,
   assets,
@@ -77,6 +92,7 @@ function generatePageJSON(
 }
 
 module.exports = {
+  generatePageCSS,
   generatePageJS,
   generatePageJSON,
   generatePageXML

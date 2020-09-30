@@ -39,7 +39,7 @@ class Node extends EventTarget {
   }
 
   get _root() {
-    return cache.getNode(this.__pageId, BODY_NODE_ID);
+    return cache.getNode(BODY_NODE_ID);
   }
 
   _isRendered() {

@@ -15,22 +15,5 @@ module.exports = {
       style = 'color:' + placeholderColor + ';' + style;
     }
     return style;
-  },
-  processScrollVal: function(r, type) {
-    const cacheVal = scrollValCache[type][r.nodeId];
-    if (cacheVal === r[type]) {
-      return '';
-    } else {
-      return scrollValCache[type][r.nodeId] = r[type];
-    }
-  },
-  processInputFocusState: function(r) {
-    if (inputRenderCache[r.nodeId] === undefined) {
-      // First render
-      return inputRenderCache[r.nodeId] = r['focus-state'] || false; // Record
-    } else {
-      // Non-first render, r['focus-state'] may become undefined
-      return r['focus-state'] === undefined ? inputRenderCache[r.nodeId] : r['focus-state'];
-    }
   }
 }
