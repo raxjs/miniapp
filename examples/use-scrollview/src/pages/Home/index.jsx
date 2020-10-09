@@ -15,7 +15,7 @@ export default function Home() {
     scrollRef.current.scrollTo({
       y: 400
     });
-  }
+  };
   return (
     <View>
       <View onClick={scroll}>点击滚动</View>

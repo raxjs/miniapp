@@ -1,8 +1,8 @@
 const ejs = require('ejs');
+const { join } = require('path');
 const adapter = require('../adapter');
 const getAssetPath = require('../utils/getAssetPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
-const adjustCSS = require('../utils/adjustCSS');
 const getTemplate = require('../utils/getTemplate');
 const { MINIAPP } = require('../constants');
 
@@ -23,13 +23,12 @@ function generatePageCSS(
 
 function generatePageJS(
   compilation,
-  assets,
   pageRoute,
   nativeLifeCycles = {},
-  { target, command, rootDir }
+  { target, command, rootDir, outputPath }
 ) {
   const pageJsContent = ejs.render(getTemplate(rootDir, 'page.js'), {
-    render_path: `${getAssetPath('render.js', `${pageRoute}.js`)}`,
+    render_path: `${getAssetPath(join(outputPath, 'render.js'), join(outputPath, `${pageRoute}.js`))}`,
     route: pageRoute,
     native_lifecycles: `[${Object.keys(nativeLifeCycles).reduce((total, current, index) =>
       index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`
@@ -47,13 +46,15 @@ function generatePageXML(
   compilation,
   pageRoute,
   useComponent,
-  { target, command, rootDir }
+  { target, command, outputPath }
 ) {
   let pageXmlContent;
   if (target === MINIAPP && useComponent) {
     pageXmlContent = '<element r="{{root}}"  />';
   } else {
-    pageXmlContent = `<import src="${getAssetPath('root.' + adapter[target].xml, pageRoute + adapter[target].xml)}"/>
+    const rootTmplFileName = 'root.' + adapter[target].xml;
+    const pageTmplFilePath = `${pageRoute}.` + adapter[target].xml;
+    pageXmlContent = `<import src="${getAssetPath(join(outputPath, rootTmplFileName), join(outputPath, pageTmplFilePath))}"/>
     <template is="element" data="{{r: root}}"  />`;
   }
 
@@ -70,14 +71,14 @@ function generatePageJSON(
   pageConfig,
   useComponent,
   pageRoute,
-  { target, command }
+  { target, command, outputPath }
 ) {
   if (!pageConfig.usingComponents) {
     pageConfig.usingComponents = {};
   }
   const elementPath = getAssetPath(
-    'comp',
-    `${pageRoute}.js`
+    join(outputPath, 'comp.js'),
+    join(outputPath, `${pageRoute}.js`)
   );
   if (useComponent || target !== MINIAPP) {
     pageConfig.usingComponents.element = elementPath;

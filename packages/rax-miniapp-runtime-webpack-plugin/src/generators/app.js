@@ -1,4 +1,4 @@
-const { resolve, relative, extname } = require('path');
+const { resolve, extname } = require('path');
 const { readFileSync } = require('fs-extra');
 const ejs = require('ejs');
 const adapter = require('../adapter');
@@ -21,7 +21,7 @@ function generateAppJS(
       .map(
         filePath =>
           `require('${getAssetPath(
-            relative(target, filePath),
+            filePath,
             'app.js'
           )}')(window, document)`
       )
@@ -49,13 +49,11 @@ function generateAppCSS(compilation, { target, command, rootDir }) {
     command,
   });
 
-  delete compilation.assets[`${target}/app.css`];
-
   let content = '@import "./default";';
 
   Object.keys(compilation.assets).forEach(asset => {
-    if (asset.indexOf(`${target}/index`) > -1 && extname(asset) === '.css') {
-      content += `@import "./${relative(target, asset)}";`;
+    if (extname(asset) === '.css') {
+      content += `@import "./${asset}";`;
       delete compilation.assets[asset];
     }
   });

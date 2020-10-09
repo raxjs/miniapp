@@ -1,12 +1,12 @@
 const t = require('@babel/types');
 const babelParser = require('@babel/parser');
+const md5 = require('md5');
 const invokeModules = require('../utils/invokeModules');
 const traverse = require('../utils/traverseNodePath');
 const getDefaultExportedPath = require('../utils/getDefaultExportedPath');
 const getProgramPath = require('../utils/getProgramPath');
 const getAliasCorrespondingValue = require('../utils/getAliasCorrespondingValue');
 const parserOption = require('./option');
-const md5 = require('md5');
 
 const { RELATIVE_COMPONENTS_REG, MINIAPP_PLUGIN_COMPONENTS_REG } = require('../constants');
 
