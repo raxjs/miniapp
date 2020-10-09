@@ -24,7 +24,6 @@
     hidden="{{r.hidden}}"
     animation="{{r.animation}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -56,7 +55,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -94,7 +92,6 @@
       id="{{item.id}}"
       item-id="{{item['item-id']}}"
       data-private-node-id="{{item.nodeId}}"
-      data-private-page-id="{{item.pageId}}"
     >
       <template is="children" data="{{r: item.children}}" />
     </swiper-item>
@@ -108,7 +105,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onScrollToUpper="onScrollViewScrollToUpper"
     onScrollToLower="onScrollViewScrollToLower"
@@ -118,8 +114,8 @@
     scroll-y="{{r['scroll-y']}}"
     upper-threshold="{{tool.processVal(r['upper-threshold'], 50)}}"
     lower-threshold="{{tool.processVal(r['lower-threshold'], 50)}}"
-    scroll-top="{{tool.processScrollVal(r, 'scroll-top')}}"
-    scroll-left="{{tool.processScrollVal(r, 'scroll-left')}}"
+    scroll-top="{{r['scroll-top']}}"
+    scroll-left="{{r['scroll-left']}}"
     scroll-into-view="{{tool.processVal(r['scroll-into-view'], '')}}"
     scroll-with-animation="{{r['scroll-with-animation']}}"
     scroll-animation-duration="{{r['scroll-animation-duration']}}"
@@ -137,7 +133,6 @@
     id="{{r.id}}"
     hidden="{{r.hidden}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
   >
@@ -152,7 +147,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
 
@@ -169,7 +163,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     scale-area="{{r['scale-area']}}"
   >
@@ -182,7 +175,6 @@
       hidden="{{item.hidden}}"
       id="{{item.id}}"
       data-private-node-id="{{item.nodeId}}"
-      data-private-page-id="{{item.pageId}}"
 
       onTap="onTap"
       onTouchStart="onTouchStart"
@@ -217,7 +209,6 @@
     id="{{r.id}}"
     animation="{{r.animation}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchStart="onTouchStart"
@@ -242,7 +233,6 @@
     id="{{r.id}}"
     animation="{{r.animation}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -266,7 +256,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -288,7 +277,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -315,7 +303,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -338,7 +325,6 @@
     id="{{r.id}}"
     animation="{{r.animation}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -384,7 +370,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -409,7 +394,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onTouchMove="onTouchMove"
@@ -430,7 +414,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
 
@@ -449,7 +432,7 @@
     disabled="{{r.disabled}}"
     maxlength="{{r.maxlength}}"
     cursor-spacing="{{r['cursor-spacing']}}"
-    focus="{{tool.processInputFocusState(r)}}"
+    focus="{{r['focus-state']}}"
     controlled="{{r.controlled}}"
     confirm-type="{{r['confirm-type']}}"
     confirm-hold="{{r['confirm-hold']}}"
@@ -468,7 +451,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
 
@@ -486,7 +468,7 @@
     placeholder-class="{{r['placeholder-class']}}"
     disabled="{{r.disabled}}"
     maxlength="{{tool.processVal(r.maxlength, 140)}}"
-    focus="{{tool.processInputFocusState(r)}}"
+    focus="{{r['focus-state']}}"
     controlled="{{r.controlled}}"
     auto-height="{{r['auto-height']}}"
     fixed="{{r.fixed}}"
@@ -507,7 +489,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
 
@@ -528,7 +509,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onChange="onRadioChange"
@@ -546,7 +526,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onChange="onCheckboxItemChange"
@@ -567,7 +546,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onChange="onCheckboxChange"
@@ -585,7 +563,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onChange="onSwitchChange"
@@ -606,7 +583,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTap="onTap"
     onChange="onSliderChange"
@@ -635,7 +611,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onChange="onPickerViewChange"
     onPickStart="onPickerViewPickstart"
@@ -656,7 +631,6 @@
       hidden="{{item.hidden}}"
       id="{{item.id}}"
       data-private-node-id="{{item.nodeId}}"
-      data-private-page-id="{{item.pageId}}"
 
       onTouchStart="onTouchStart"
       onTouchMove="onTouchMove"
@@ -683,7 +657,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -711,7 +684,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -741,7 +713,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -768,7 +739,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -822,7 +792,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -870,7 +839,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -896,7 +864,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
@@ -920,7 +887,6 @@
     hidden="{{r.hidden}}"
     id="{{r.id}}"
     data-private-node-id="{{r.nodeId}}"
-    data-private-page-id="{{r.pageId}}"
 
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
