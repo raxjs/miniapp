@@ -77,7 +77,7 @@ function generatePageJSON(
     pageConfig.usingComponents = {};
   }
   const elementPath = getAssetPath(
-    join(outputPath, 'comp.js'),
+    join(outputPath, 'comp'),
     join(outputPath, `${pageRoute}.js`)
   );
   if (useComponent || target !== MINIAPP) {
