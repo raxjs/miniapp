@@ -14,6 +14,10 @@ const ScriptLoader = __filename;
 
 const MINIAPP_CONFIG_FIELD = 'miniappConfig';
 
+// 1. JSON file will be written later because usingComponents may be modified
+// 2. .d.ts file in rax base components are useless
+const OMIT_FILE_EXTENSION_IN_OUTPUT = ['.json', '.ts'];
+
 module.exports = function scriptLoader(content) {
   const query = parse(this.request);
   if (query.role) {
@@ -92,7 +96,7 @@ module.exports = function scriptLoader(content) {
       mkdirpSync(target);
       copySync(source, target, {
         overwrite: false,
-        filter: filename => !/__(mocks|tests?)__/.test(filename) && extname(filename) !== '.json' // JSON file will be written later because usingComponents may be modified
+        filter: filename => !/__(mocks|tests?)__/.test(filename) && OMIT_FILE_EXTENSION_IN_OUTPUT.indexOf(extname(filename)) === -1
       });
     }
   };
