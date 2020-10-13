@@ -42,9 +42,14 @@ function generateAppCSS(compilation, { target, command, rootDir }) {
     resolve(rootDir, 'templates', 'default.css.ejs'),
     'utf-8'
   ));
+  // Generate __rax-view and __rax-text style for rax compiled components
+  const raxDefaultCSSTmpl = readFileSync(
+    resolve(rootDir, 'templates', 'rax-default.css.ejs'),
+    'utf-8'
+  );
   addFileToCompilation(compilation, {
     filename: `default.${adapter[target].css}`,
-    content: defaultCSSTmpl,
+    content: defaultCSSTmpl + raxDefaultCSSTmpl,
     target,
     command,
   });
