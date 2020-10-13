@@ -18,11 +18,12 @@ module.exports = (
   { context, onGetWebpackConfig, entryPath, outputPath, loaderParams, target }
 ) => {
   const platformInfo = platformMap[target];
-  const { rootDir } = context;
+  const { rootDir, command } = context;
   const {
-    platform = platformInfo.type,
-    mode = 'build'
+    platform = platformInfo.type
   } = userConfig;
+
+  const mode = command;
 
   // Set alias
   config.resolve.alias.clear();

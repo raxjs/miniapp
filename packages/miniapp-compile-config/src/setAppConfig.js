@@ -21,12 +21,12 @@ module.exports = (
 ) => {
   const platformInfo = platformMap[target];
   const {
-    mode = 'build',
     disableCopyNpm = false,
     turnOffSourceMap = false,
     constantDir = []
   } = userConfig;
-  const { rootDir } = context;
+  const { rootDir, command } = context;
+  const mode = command;
 
   const appConfig = getAppConfig(rootDir, target);
 

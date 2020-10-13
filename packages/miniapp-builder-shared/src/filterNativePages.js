@@ -16,7 +16,7 @@ module.exports = (routes, needCopyList, { rootDir, target }) => {
     if (isNativePage(pageEntry, target)) {
       needCopyList.push({
         from: dirname(join('src', source)),
-        to: join(target, dirname(source))
+        to: dirname(source)
       });
       return false;
     }
