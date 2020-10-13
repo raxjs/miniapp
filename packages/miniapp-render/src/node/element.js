@@ -28,7 +28,6 @@ class Element extends Node {
     if (this.id) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
-
   }
 
   // Override the $$destroy method of the parent class
