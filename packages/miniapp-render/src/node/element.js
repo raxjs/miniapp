@@ -24,11 +24,10 @@ class Element extends Node {
     cache.setNode(this.__pageId, this.__nodeId, this);
     this.dataset = {};
     this.ownerDocument.__nodeIdMap.set(this.__nodeId, this);
+    this._initAttributes(options.attrs);
     if (this.id) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
-
-    this._initAttributes(options.attrs);
   }
 
   // Override the $$destroy method of the parent class

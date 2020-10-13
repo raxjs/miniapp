@@ -91,6 +91,13 @@ function isInRuntimeDependencies(dependency, runtimeDependencies = []) {
   return false;
 }
 
+function hasDefaultSpecifier(specifiers, t) {
+  for (let specifier of specifiers) {
+    if (t.isImportDefaultSpecifier(specifier)) return true;
+  }
+  return false;
+}
+
 module.exports = function visitor(
   { types: t },
   { usingComponents, target, rootDir, runtimeDependencies }
@@ -112,7 +119,10 @@ module.exports = function visitor(
           if (Array.isArray(specifiers) && t.isStringLiteral(source)) {
             const dirName = dirname(filename);
             const filePath = getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies);
-            if (filePath) {
+
+            // ignore
+            // import { a, b } from 'xxx';
+            if (filePath && hasDefaultSpecifier(specifiers, t)) {
               if (!scanedPageMap[filename]) {
                 scanedPageMap[filename] = true;
                 path.parentPath.traverse({

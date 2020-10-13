@@ -19,7 +19,7 @@ export default function(obj, path, cache) {
   let value = obj;
   let parentRendered = true;
 
-  if (Object.prototype.toString.call(value) !== '[object Object]') {
+  if (Object.prototype.toString.call(value) !== '[object Object]' && !Array.isArray(value)) {
     return {
       parentRendered,
       value,
