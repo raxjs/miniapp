@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 
 export default {
   name: 'map',
