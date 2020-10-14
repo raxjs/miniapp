@@ -10,15 +10,21 @@ module.exports = (
 ) => {
   const platformInfo = platformMap[target];
   const {
-    mode = 'build',
-    disableCopyNpm = mode === 'build',
     turnOffSourceMap = false,
     constantDir = []
   } = userConfig;
-  const { rootDir } = context;
+  const { rootDir, command } = context;
+
+  let disableCopyNpm;
+
+  if (Object.prototype.hasOwnProperty.call(userConfig, 'disableCopyNpm')) {
+    disableCopyNpm = userConfig.disableCopyNpm;
+  } else {
+    disableCopyNpm = command === 'build';
+  }
 
   const loaderParams = {
-    mode,
+    mode: command,
     entryPath,
     outputPath,
     disableCopyNpm,
