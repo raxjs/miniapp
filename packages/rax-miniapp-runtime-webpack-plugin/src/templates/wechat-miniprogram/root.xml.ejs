@@ -125,7 +125,14 @@
     refresher-background="{{r['refresher-background']}}"
     refresher-triggered="{{r['refresher-triggered']}}"
   >
-    <template is="children" data="{{r: r.children}}" />
+    <block wx:for="{{r.children}}" wx:key="nodeId">
+      <block wx:if="{{item.nodeId}}">
+        <template is="{{item.nodeType || 'h-element'}}" data="{{r: item}}" />
+      </block>
+      <block wx:else>
+        <block>{{item.content}}</block>
+      </block>
+    </block>
   </scroll-view>
 </template>
 
