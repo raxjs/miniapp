@@ -46,6 +46,19 @@ export default {
           if (!evt.detail.causedBy) evt.detail.causedBy = evt.causedBy;
         }
       }
+    },
+    {
+      name: 'onMapMarkerTap',
+      eventName: 'markertap',
+      middleware(evt, domNode) {
+        if (isMiniApp) {
+          evt.detail = {
+            markerId: evt.markerId,
+            latitude: evt.latitude,
+            longitude: evt.longitude
+          }
+        }
+      }
     }
   ]
 };
