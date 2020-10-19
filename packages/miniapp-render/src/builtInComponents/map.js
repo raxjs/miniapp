@@ -8,18 +8,6 @@ export default {
     eventName: 'tap'
   },
   {
-    name: 'onMapMarkerTap',
-    eventName: 'markertap'
-  },
-  {
-    name: 'onMapControlTap',
-    eventName: 'controltap'
-  },
-  {
-    name: 'onMapCalloutTap',
-    eventName: 'callouttap'
-  },
-  {
     name: 'onMapUpdated',
     eventName: 'updated'
   },
@@ -56,9 +44,45 @@ export default {
             markerId: evt.markerId,
             latitude: evt.latitude,
             longitude: evt.longitude
+          };
+        }
+      }
+    },
+    {
+      name: 'onMapControlTap',
+      eventName: 'controltap',
+      middleware(evt, domNode) {
+        if (isMiniApp) {
+          evt.detail = {
+            controlId: evt.controlId
+          };
+        }
+      }
+    },
+    {
+      name: 'onMapCalloutTap',
+      eventName: 'callouttap',
+      middleware(evt, domNode) {
+        if (isMiniApp) {
+          evt.detail = {
+            markerId: evt.markerId,
+            latitude: evt.latitude,
+            longitude: evt.longitude
           }
         }
       }
-    }
+    },
+    {
+      name: 'onMapPanelTap',
+      eventName: 'paneltap',
+      middleware(evt, domNode) {
+        if (isMiniApp) {
+          evt.detail = {
+            panelId: evt.panelId,
+            layoutId: evt.layoutId
+          };
+        }
+      }
+    },
   ]
 };
