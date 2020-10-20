@@ -68,7 +68,7 @@ export default {
             markerId: evt.markerId,
             latitude: evt.latitude,
             longitude: evt.longitude
-          }
+          };
         }
       }
     },
