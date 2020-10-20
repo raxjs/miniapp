@@ -48,9 +48,8 @@ function setNode(pageId, nodeId, domNode = null) {
 }
 
 // Get the domNode by nodeId
-function getNode(nodeId) {
-  const pageId = window.__pageId;
-  const document = pageMap.get(pageId);
+function getNode(nodeId, pageId) {
+  const document = pageMap.get(pageId || window.__pageId);
   return document && document.__nodeIdMap.get(nodeId);
 }
 
