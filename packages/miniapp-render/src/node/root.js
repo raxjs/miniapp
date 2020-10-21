@@ -7,7 +7,7 @@ import { BODY_NODE_ID } from '../constants';
 class RootElement extends Element {
   constructor(options) {
     super(options);
-    this.__nodeId = BODY_NODE_ID;
+    this.__nodeId = options.nodeId;
     this.allowRender = true;
     this.renderStacks = [];
     this.__renderCallbacks = [];

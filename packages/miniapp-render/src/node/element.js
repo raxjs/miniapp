@@ -21,20 +21,18 @@ class Element extends Node {
     this.__nodeType = options.nodeType || Node.ELEMENT_NODE;
     this.style = new Style(this);
     this.__attrs = new Attribute(this);
-    cache.setNode(this.__pageId, this.__nodeId, this);
+    cache.setNode(this.__nodeId, this);
     this.dataset = {};
-    this.ownerDocument.__nodeIdMap.set(this.__nodeId, this);
     this._initAttributes(options.attrs);
     if (this.id) {
-      this.ownerDocument.__idMap.set(this.id, this);
+      this.__initDocument.__idMap.set(this.id, this);
     }
   }
 
   // Override the $$destroy method of the parent class
   $$destroy() {
     this.childNodes.forEach(child => child.$$destroy());
-    cache.setNode(this.__pageId, this.__nodeId, null);
-    this.ownerDocument.__nodeIdMap.set(this.__nodeId, null);
+    cache.setNode(this.__nodeId, null);
     this.ownerDocument.__idMap.set(this.id, null);
     super.$$destroy();
     this.__tagName = '';
@@ -209,6 +207,8 @@ class Element extends Node {
     this.childNodes.push(node);
     // Set parentNode
     node.parentNode = this;
+    // Adjust document to parentNode, in case that document is switched when node is inited in async update situation
+    node.__documentReference = this.__documentReference;
 
     if (this._isRendered()) {
       node.__rendered = true;
@@ -262,6 +262,9 @@ class Element extends Node {
 
     // Set parentNode
     node.parentNode = this;
+    // Adjust document to parentNode, in case that document is switched when node is inited in async update situation
+    node.__documentReference = this.__documentReference;
+
     const insertIndex = ref ? this.childNodes.indexOf(ref) : -1;
     if (insertIndex === -1) {
       // Insert to the end
@@ -305,7 +308,8 @@ class Element extends Node {
     }
     // Set parentNode
     node.parentNode = this;
-
+    // Adjust document to parentNode, in case that document is switched when node is inited in async update situation
+    node.__documentReference = this.__documentReference;
     if (this._isRendered()) {
       node.__rendered = true;
       // Trigger update

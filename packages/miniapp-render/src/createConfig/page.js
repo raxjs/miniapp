@@ -99,7 +99,8 @@ export default function(route, lifeCycles = []) {
         this.firstRender = false;
         const initData = {
           pageId: this.pageId,
-          'root.pageId': this.pageId
+          'root.pageId': this.pageId,
+          'root.nodeId': `${BODY_NODE_ID}-${this.pageId}`
         };
         if (task) {
           Object.assign(task, initData);

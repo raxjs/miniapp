@@ -32,11 +32,10 @@ export default function() {
   // Add reactive event define which will bubble
   baseEvents.forEach(({ name, extra = null, eventName }) => {
     config[name] = function(evt) {
-      const __pageId = getPageId(this, this.data.pageId);
-      const document = cache.getDocument(__pageId);
+      const domNode = this.getDomNodeFromEvt(eventName, evt);
+      const document = domNode.ownerDocument;
       if (document && document.__checkEvent(evt)) {
-        const nodeId = evt.currentTarget.dataset.privateNodeId;
-        this.callEvent(eventName, evt, extra, nodeId); // Default Left button
+        this.callEvent(eventName, evt, extra, evt.currentTarget.dataset.privateNodeId); // Default Left button
       }
     };
   });
@@ -70,7 +69,6 @@ export default function() {
   // Add reactive event define which complex
   handlesMap.complexEvents.forEach(({ name, eventName, middleware }) => {
     config[name] = function(evt) {
-      const __pageId = getPageId(this, this.data.pageId);
       const domNode = this.getDomNodeFromEvt(eventName, evt);
       if (!domNode) return;
       middleware.call(this, evt, domNode, evt.currentTarget.dataset.privateNodeId);

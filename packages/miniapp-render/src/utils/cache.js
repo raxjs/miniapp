@@ -1,5 +1,6 @@
-const pageMap = new Map();
+const pageMap = {};
 const routeMap = new Map();
+const nodeIdMap = new Map();
 let config = {};
 let window;
 
@@ -8,19 +9,26 @@ const elementMethodsCache = new Map();
 
 // Init
 function init(pageId, options) {
-  pageMap.set(pageId, options.document);
+  pageMap[pageId] = options.document;
 }
 
 // Destroy
 function destroy(pageId) {
-  pageMap.delete(pageId);
+  delete pageMap[pageId];
 }
 
 /**
- * Get document
+ * Get document by pageId
  */
 function getDocument(pageId) {
-  return pageMap.get(pageId);
+  return pageMap[pageId];
+}
+
+/**
+ * Get all documents
+ */
+function getAllDocuments() {
+  return pageMap;
 }
 
 // Set window
@@ -38,19 +46,21 @@ function getWindow() {
 /**
  * Save domNode map
  */
-function setNode(pageId, nodeId, domNode = null) {
-  const document = pageMap.get(pageId);
-
-  // Call before run, do nothing
-  if (!document) return;
-
-  document.__nodeIdMap.set(nodeId, domNode);
+function setNode(nodeId, domNode = null) {
+  nodeIdMap.set(nodeId, domNode);
 }
 
 // Get the domNode by nodeId
-function getNode(nodeId, pageId) {
-  const document = pageMap.get(pageId || window.__pageId);
-  return document && document.__nodeIdMap.get(nodeId);
+function getNode(nodeId) {
+  return nodeIdMap.get(nodeId);
+}
+
+
+/**
+ * Get all nodes
+ */
+function getAllNodes() {
+  return nodeIdMap;
 }
 
 // Store global config
@@ -97,10 +107,12 @@ export default {
   init,
   destroy,
   getDocument,
+  getAllDocuments,
   setWindow,
   getWindow,
   setNode,
   getNode,
+  getAllNodes,
   setConfig,
   getConfig,
   getRouteId,
