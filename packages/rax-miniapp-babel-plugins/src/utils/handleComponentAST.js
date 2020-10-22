@@ -9,9 +9,10 @@ function collectComponentAttr(components, t) {
         components[tagName] = {
           props: [],
           events: [],
-          node: innerNode,
+          nodes: [],
         };
       }
+      components[tagName].nodes.push(innerNode);
       innerNode.attributes.forEach((attrNode) => {
         if (!t.isJSXIdentifier(attrNode.name)) return;
         const attrName = attrNode.name.name;
@@ -46,12 +47,14 @@ function collectUsings(
     const componentInfo = components[tagName];
     if (componentInfo) {
       // Insert a tag
-      componentInfo.node.attributes.push(
-        t.jsxAttribute(
-          t.jsxIdentifier('__native'),
-          t.jsxExpressionContainer(t.booleanLiteral(true))
-        )
-      );
+      componentInfo.nodes.forEach((node) => {
+        node.attributes.push(
+          t.jsxAttribute(
+            t.jsxIdentifier('__native'),
+            t.jsxExpressionContainer(t.booleanLiteral(true))
+          )
+        );
+      });
 
       // Generate a random tag name
       const replacedTagName = getTagName(tagName);
