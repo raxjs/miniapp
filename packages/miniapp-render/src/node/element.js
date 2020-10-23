@@ -5,7 +5,7 @@ import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
 import tool from '../utils/tool';
-import { simplifyDomTree, traverse } from '../utils/tree';
+import { simplifyDomTree, traverse, adjustDocument } from '../utils/tree';
 import { BUILTIN_COMPONENT_LIST } from '../constants';
 
 class Element extends Node {
@@ -25,7 +25,7 @@ class Element extends Node {
     this.dataset = {};
     this._initAttributes(options.attrs);
     if (this.id) {
-      this.__initDocument.__idMap.set(this.id, this);
+      this.ownerDocument.__idMap.set(this.id, this);
     }
   }
 
@@ -53,6 +53,16 @@ class Element extends Node {
       this.enqueueRender(payload);
     } else {
       this._root.renderStacks.push(payload);
+    }
+  }
+
+  // Child ownerDocument may be incorrect if the node created during the page hide period
+  // Here we should adjust its ownerDocument when the node mounted
+  _checkDocument(child) {
+    if (this.__ownerDocument.__pageId !== child.__ownerDocument.__pageId) {
+      this._root.__renderCallbacks.push(() => {
+        traverse(child, adjustDocument(this.__ownerDocument));
+      })
     }
   }
 
@@ -207,8 +217,6 @@ class Element extends Node {
     this.childNodes.push(node);
     // Set parentNode
     node.parentNode = this;
-    // Adjust document to parentNode, in case that document is switched when node is inited in async update situation
-    node.__documentReference = this.__documentReference;
 
     if (this._isRendered()) {
       node.__rendered = true;
@@ -221,6 +229,7 @@ class Element extends Node {
         item: simplifyDomTree(node)
       };
       this._triggerUpdate(payload);
+      this._checkDocument(node);
     }
 
     return this;
@@ -262,8 +271,6 @@ class Element extends Node {
 
     // Set parentNode
     node.parentNode = this;
-    // Adjust document to parentNode, in case that document is switched when node is inited in async update situation
-    node.__documentReference = this.__documentReference;
 
     const insertIndex = ref ? this.childNodes.indexOf(ref) : -1;
     if (insertIndex === -1) {
@@ -285,6 +292,7 @@ class Element extends Node {
 
       // Trigger update
       this._triggerUpdate(payload);
+      this._checkDocument(node);
     }
 
     return node;
@@ -308,8 +316,6 @@ class Element extends Node {
     }
     // Set parentNode
     node.parentNode = this;
-    // Adjust document to parentNode, in case that document is switched when node is inited in async update situation
-    node.__documentReference = this.__documentReference;
     if (this._isRendered()) {
       node.__rendered = true;
       // Trigger update
@@ -321,6 +327,7 @@ class Element extends Node {
         item: simplifyDomTree(node)
       };
       this._triggerUpdate(payload);
+      this._checkDocument(node);
     }
 
     return old;

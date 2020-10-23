@@ -11,18 +11,15 @@ class Node extends EventTarget {
     this.__nodeId = `n_${tool.getId()}`;
     this.$_type = options.type;
     this.parentNode = null;
-    this.__initDocument = options.document;
-    this.__documentReference = {
-      documentInstance: options.document
-    };
+    this.__ownerDocument = options.document
   }
 
   get __pageId() {
-    return this.__documentReference.documentInstance.__pageId;
+    return this.__ownerDocument.__pageId;
   }
 
   get ownerDocument() {
-    return this.__documentReference.documentInstance;
+    return this.__ownerDocument;
   }
 
   /**
@@ -35,7 +32,7 @@ class Node extends EventTarget {
     this.$_type = null;
     this.parentNode = null;
     this.__rendered = false;
-    this.__documentReference = null;
+    this.__ownerDocument = null;
   }
 
   get _path() {

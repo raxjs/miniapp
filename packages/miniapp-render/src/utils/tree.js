@@ -33,3 +33,12 @@ export function traverse(node, action) {
 export function simplifyDomTree(node) {
   return traverse(node, simplify);
 }
+
+export function adjustDocument(document) {
+  return (node) => {
+    node.__ownerDocument = document;
+    return {};
+  };
+}
+
+

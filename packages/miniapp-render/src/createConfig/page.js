@@ -46,7 +46,7 @@ export function getBaseLifeCycles(route) {
       this.renderInfo.setDocument(this.document);
       this.renderInfo.render();
 
-      this.window.$$trigger('DOMContentLoaded');
+      this.document.$$trigger('DOMContentLoaded');
     },
     onShow() {
       if (this.window) {
@@ -55,21 +55,21 @@ export function getBaseLifeCycles(route) {
         if (!this.firstRender) {
           this.renderInfo && this.renderInfo.setDocument(this.document);
         }
-        this.window.$$trigger('pageshow');
+        this.document.$$trigger('pageshow');
         // compatible with original name
-        this.window.$$trigger('onShow');
+        this.document.$$trigger('onShow');
       }
     },
     onHide() {
       if (this.window) {
-        this.window.$$trigger('pagehide');
+        this.document.$$trigger('pagehide');
         // compatible with original name
-        this.window.$$trigger('onHide');
+        this.document.$$trigger('onHide');
       }
     },
     onUnload() {
-      this.window.$$trigger('beforeunload');
-      this.window.$$trigger('pageunload');
+      this.document.$$trigger('beforeunload');
+      this.document.$$trigger('pageunload');
 
       this.document.__unmount && this.document.__unmount(); // Manually unmount component instance
       this.document.body.$$destroy();
