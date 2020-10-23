@@ -62,7 +62,7 @@ class Element extends Node {
     if (this.__ownerDocument.__pageId !== child.__ownerDocument.__pageId) {
       this._root.__renderCallbacks.push(() => {
         traverse(child, adjustDocument(this.__ownerDocument));
-      })
+      });
     }
   }
 

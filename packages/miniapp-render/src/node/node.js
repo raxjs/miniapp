@@ -11,7 +11,7 @@ class Node extends EventTarget {
     this.__nodeId = `n_${tool.getId()}`;
     this.$_type = options.type;
     this.parentNode = null;
-    this.__ownerDocument = options.document
+    this.__ownerDocument = options.document;
   }
 
   get __pageId() {
