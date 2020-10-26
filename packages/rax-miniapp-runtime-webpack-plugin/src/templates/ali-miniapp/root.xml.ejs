@@ -804,6 +804,7 @@
     onCalloutTap="onMapCalloutTap"
     onUpdated="onMapUpdated"
     onRegionChange="onMapRegionChange"
+    onPanelTap="onMapPanelTap"
 
     longitude="{{tool.processVal(r.longitude, 39.92)}}"
     latitude="{{tool.processVal(r.latitude, 116.46)}}"
@@ -901,4 +902,24 @@
     size="{{tool.processVal(r.size, 'normal')}}"
   >
   </open-avatar>
+</template>
+
+<template name="lottie">
+  <lottie
+    style="{{r.style}}"
+    class="{{r.class}}"
+    id="{{r.id}}"
+
+    autoplay="{{tool.processVal(r.autoplay, false)}}"
+    path="{{r.path}}"
+    speed="{{tool.processVal(r.speed, 1.0)}}"
+    repeatCount="{{tool.processVal(r.repeatCount, 0)}}"
+    autoReverse="{{tool.processVal(r.autoReverse, false)}}"
+    assetsPath="{{r.assetsPath}}"
+    placeholder="{{r.placeholder}}"
+    djangoId="{{r.djangoId}}"
+    md5="{{r.md5}}"
+    optimize="{{tool.processVal(r.optimize, false)}}"
+  >
+  </lottie>
 </template>

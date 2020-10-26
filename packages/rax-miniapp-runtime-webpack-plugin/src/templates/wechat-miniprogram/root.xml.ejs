@@ -440,7 +440,7 @@
     bindkeyboardheightchange="onInputKeyBoardHeightChange"
 
     value="{{r.value}}"
-    type="{{r.type}}"
+    type="{{tool.processVal(r.type, 'text')}}"
     password="{{r.password}}"
     placeholder="{{r.placeholder}}"
     placeholder-style="{{tool.processPlaceholderStyle(r['placeholder-style'], r.placeholderColor)}}"
@@ -448,13 +448,14 @@
     disabled="{{r.disabled}}"
     focus="{{r['focus-state']}}"
     maxlength="{{tool.processVal(r.maxlength, 140)}}"
-    cursor-spacing="{{r['cursor-spacing']}}"
-    confirm-type="{{r['confirm-type']}}"
+    cursor-spacing="{{tool.processVal(r['cursor-spacing'], 0)}}"
+    confirm-type="{{tool.processVal(r['confirm-type'], 'done')}}"
     confirm-hold="{{r['confirm-hold']}}"
     cursor="{{r.cursor}}"
-    selection-start="{{r['selection-start']}}"
-    selection-end="{{r['selection-end']}}"
-    adjust-position="{{r['adjust-position']}}"
+    selection-start="{{tool.processVal(r['selection-start'], -1)}}"
+    selection-end="{{tool.processVal(r['selection-end'], -1)}}"
+    adjust-position="{{tool.processVal(r['adjust-position'], true)}}"
+    hold-keyboard="{{r['hold-keyboard']}}"
   >
   </input>
 </template>
@@ -491,6 +492,7 @@
     selection-start="{{tool.processVal(r['selection-start'], -1)}}"
     selection-end="{{tool.processVal(r['selection-end'], -1)}}"
     adjust-position="{{tool.processVal(r['adjust-position'], true)}}"
+    disable-default-padding="{{r['disable-default-padding']}}"
   >
   </textarea>
 </template>
