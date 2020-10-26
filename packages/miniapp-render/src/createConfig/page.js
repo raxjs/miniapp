@@ -68,6 +68,7 @@ export function getBaseLifeCycles(route) {
       }
     },
     onUnload() {
+      this.document.$$trigger('miniapp_pagehide');
       this.document.$$trigger('beforeunload');
       this.document.$$trigger('pageunload');
 
