@@ -3,6 +3,8 @@ import Element from '../element';
 class HTMLInputElement extends Element {
   constructor(options) {
     super(options);
+
+    this.changed = false;
   }
 
   /**
@@ -26,6 +28,9 @@ class HTMLInputElement extends Element {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
     }
+    if (name === 'value') {
+      this.changed = true;
+    }
     super.setAttribute(name, value, immediate);
   }
 
@@ -34,6 +39,9 @@ class HTMLInputElement extends Element {
     if (name === 'focus' || name === 'autofocus' || name === 'autoFocus') {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
+    }
+    if (name === 'value') {
+      this.changed = true;
     }
     super._setAttributeWithOutUpdate(name, value);
   }
@@ -77,7 +85,6 @@ class HTMLInputElement extends Element {
   }
 
   get value() {
-    const type = this.__attrs.get('type');
     let value = this.__attrs.get('value');
     if (!value && !this.changed) {
       value = this.__attrs.get('defaultValue');
