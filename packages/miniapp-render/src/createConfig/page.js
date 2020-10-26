@@ -55,14 +55,14 @@ export function getBaseLifeCycles(route) {
         if (!this.firstRender) {
           this.renderInfo && this.renderInfo.setDocument(this.document);
         }
-        this.document.$$trigger('pageshow');
+        this.document.$$trigger('miniapp_pageshow');
         // compatible with original name
         this.document.$$trigger('onShow');
       }
     },
     onHide() {
       if (this.window) {
-        this.document.$$trigger('pagehide');
+        this.document.$$trigger('miniapp_pagehide');
         // compatible with original name
         this.document.$$trigger('onHide');
       }
