@@ -427,7 +427,7 @@
     type="{{r.type}}"
     password="{{r.password}}"
     placeholder="{{r.placeholder}}"
-    placeholder-style="{{r['placeholder-style']}}"
+    placeholder-style="{{tool.processPlaceholderStyle(r['placeholder-style'], r.placeholderColor)}}"
     placeholder-class="{{r['placeholder-class']}}"
     disabled="{{r.disabled}}"
     maxlength="{{r.maxlength}}"
