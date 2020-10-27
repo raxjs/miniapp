@@ -9,8 +9,6 @@ import { useEffect } from './hooks';
 import { getMiniAppHistory } from './history';
 import { getPageInstanceById } from './pageInstanceMap';
 
-const history = getMiniAppHistory();
-
 export const cycles = {};
 
 export function usePageEffect(cycle, callback) {
