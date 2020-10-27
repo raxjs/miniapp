@@ -44,7 +44,7 @@ class Document extends EventTarget {
 
   // Event trigger
   $$trigger(eventName, options) {
-    this.documentElement.$$trigger(eventName, options);
+    return this.documentElement.$$trigger(eventName, options);
   }
 
   _isRendered() {
