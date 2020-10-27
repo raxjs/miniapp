@@ -8,14 +8,14 @@ const {
   pathHelper: { getPlatformExtensions },
 } = require('miniapp-builder-shared');
 
-const ModifyOutputFileSystemPlugin = require('./plugins/ModifyOutputFileSystem');
 const CopyJsx2mpRuntimePlugin = require('./plugins/CopyJsx2mpRuntime');
 const CopyPublicFilePlugin = require('./plugins/CopyPublicFile');
+const RemoveDefaultPlugin = require('./plugins/RemoveDefaultResult');
 
 module.exports = (
-  config,
+  chainConfig,
   userConfig,
-  { context, onGetWebpackConfig, entryPath, outputPath, loaderParams, target }
+  { context, entryPath, outputPath, loaderParams, target }
 ) => {
   const platformInfo = platformMap[target];
   const { rootDir, command } = context;
@@ -25,19 +25,27 @@ module.exports = (
 
   const mode = command;
 
-  // Set alias
-  config.resolve.alias.clear();
-  config.resolve.alias.set('react', 'rax').set('react-dom', 'rax-dom');
-  onGetWebpackConfig(target, (config) => {
-    const aliasEntries = config.resolve.alias.entries();
-    loaderParams.aliasEntries = aliasEntries;
+  // Write to Disk
+  chainConfig.devServer.writeToDisk(true);
+
+  // Remove useless alias
+  ['babel-runtime-jsx-plus', '@babel/runtime', 'rax-app', 'rax-app$', 'rax'].forEach(packageName => {
+    chainConfig.resolve.alias.delete(packageName);
   });
 
-  // Clear prev rules
-  config.module.rule('jsx').uses.clear();
-  config.module.rule('tsx').uses.clear();
+  // Add React alias
+  chainConfig.resolve.alias.set('react', 'rax');
 
-  config.module
+  const aliasEntries = chainConfig.resolve.alias.entries();
+  loaderParams.aliasEntries = aliasEntries;
+
+  // Clear prev rules
+  ['jsx', 'tsx'].forEach(name => {
+    chainConfig.module.rule(name).uses.clear();
+  });
+
+  // Compile ts file
+  chainConfig.module
     .rule('tsx')
     .test(/\.(tsx?)$/)
     .use('ts')
@@ -47,14 +55,14 @@ module.exports = (
     });
 
   // Remove all app.json before it
-  config.module.rule('appJSON').uses.clear();
+  chainConfig.module.rule('appJSON').uses.clear();
 
-  config
+  chainConfig
     .cache(true)
     .mode('production')
     .target('node');
 
-  config.module
+  chainConfig.module
     .rule('withRoleJSX')
     .test(/\.t|jsx?$/)
     .enforce('post')
@@ -76,7 +84,7 @@ module.exports = (
     .options(loaderParams)
     .end();
 
-  config.module
+  chainConfig.module
     .rule('npm')
     .test(/\.js$/)
     .include.add(/node_modules/)
@@ -86,7 +94,7 @@ module.exports = (
     .options(loaderParams)
     .end();
 
-  config.module
+  chainConfig.module
     .rule('staticFile')
     .test(/\.(bmp|webp|svg|png|webp|jpe?g|gif)$/i)
     .use('file')
@@ -97,7 +105,7 @@ module.exports = (
     });
 
   // Exclude app.json
-  config.module
+  chainConfig.module
     .rule('json')
     .test(/\.json$/)
     .use('script-loader')
@@ -108,35 +116,24 @@ module.exports = (
     .loader(require.resolve('json-loader'));
 
   // Distinguish end construction
-  config.resolve.extensions
+  chainConfig.resolve.extensions
     .clear()
     .merge(
       getPlatformExtensions(platform, ['.js', '.jsx', '.ts', '.tsx', '.json'])
     );
 
-  config.resolve.mainFields.add('main').add('module');
+  chainConfig.resolve.mainFields.add('main').add('module');
 
-  config.externals([
+  chainConfig.externals([
     function(ctx, request, callback) {
       if (/\.(css|sass|scss|styl|less)$/.test(request)) {
         return callback(null, `commonjs2 ${request}`);
-      }
-      if (/^@weex-module\//.test(request)) {
-        return callback(null, `commonjs2 ${request}`);
-      }
-      // compatible with @system for quickapp
-      if (request.indexOf('@system') !== -1) {
-        return callback(null, `commonjs ${request}`);
-      }
-      // compatible with plugin with miniapp plugin
-      if (/^plugin\:\/\//.test(request)) {
-        return callback(null, `commonjs ${request}`);
       }
       callback();
     },
   ]);
 
-  config.plugin('define').use(webpack.DefinePlugin, [
+  chainConfig.plugin('define').use(webpack.DefinePlugin, [
     {
       'process.env': {
         NODE_ENV: mode === 'build' ? '"production"' : '"development"',
@@ -144,14 +141,12 @@ module.exports = (
     },
   ]);
 
-  config
+  chainConfig
     .plugin('watchIgnore')
     .use(webpack.WatchIgnorePlugin, [[/node_modules/]]);
 
-  config.plugin('modifyOutputFileSystem').use(ModifyOutputFileSystemPlugin);
-
   if (loaderParams.constantDir.length > 0) {
-    config.plugin('copyPublicFile').use(CopyPublicFilePlugin, [
+    chainConfig.plugin('copyPublicFile').use(CopyPublicFilePlugin, [
       {
         mode,
         outputPath,
@@ -163,8 +158,13 @@ module.exports = (
   }
 
   if (!loaderParams.disableCopyNpm) {
-    config
+    chainConfig
       .plugin('runtime')
       .use(CopyJsx2mpRuntimePlugin, [{ platform, mode, outputPath, rootDir }]);
   }
+
+  // Remove webpack default generate assets
+  chainConfig
+    .plugin('RemoveDefaultPlugin')
+    .use(RemoveDefaultPlugin);
 };
