@@ -1,6 +1,6 @@
 import { runApp, createComponent, createPage } from './bridge';
 import { useAppLaunch, useAppShow, useAppHide, useAppShare, useAppError } from './app';
-import { usePageShow, usePageHide} from './page';
+import { usePageShow, usePageHide, withPageLifeCycle } from './page';
 import { withRouter } from './router';
 import { getSearchParams } from './history';
 import Component from './component';
@@ -36,6 +36,7 @@ export {
 
   usePageShow,
   usePageHide,
+  withPageLifeCycle,
 
   // Router
   withRouter,

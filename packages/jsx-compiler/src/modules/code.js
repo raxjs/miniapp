@@ -44,7 +44,7 @@ const RUNTIME = 'jsx2mp-runtime';
 
 const coreMethodList = [USE_EFFECT, USE_STATE, USE_CONTEXT, USE_REF, CREATE_REF,
   USE_REDUCER, USE_LAYOUT_EFFECT, USE_IMPERATIVEHANDLE, FORWARD_REF, CREATE_CONTEXT, SHARED,
-  USE_CALLBACK, USE_MEMO, MEMO, SUPER_COMPONENT];
+  USE_CALLBACK, USE_MEMO, MEMO];
 
 const getRuntimeByPlatform = (platform) => `${RUNTIME}/dist/jsx2mp-runtime.${platform}.esm`;
 const isAppRuntime = (mod) => mod === 'rax-app';

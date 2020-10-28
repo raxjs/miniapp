@@ -49,7 +49,8 @@ module.exports = async function appLoader(content) {
     sourceFileName: this.resourcePath,
     disableCopyNpm,
     turnOffSourceMap,
-    aliasEntries
+    aliasEntries,
+    modernMode: !!rootDir
   });
 
   const rawContentAfterDCE = eliminateDeadCode(rawContent);

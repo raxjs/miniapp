@@ -19,6 +19,7 @@ import { registerEventsInConfig } from './nativeEventListener';
 import { isPlainObject } from './types';
 import { enqueueRender } from './enqueueRender';
 import shallowEqual from './shallowEqual';
+import { setModernMode } from './version';
 
 const { TYPE, TARGET, TIMESTAMP } = getEventProps();
 
@@ -320,7 +321,8 @@ export function runApp(...args) {
     staticConfig = args[0];
     _pageProps = args[1];
   } else {
-    // runApp(dynamicConfig, staticConfig)
+    // rax-app3.x - runApp(dynamicConfig, staticConfig)
+    setModernMode(true);
     staticConfig = args[1];
     if (args[0].app) {
       [ON_LAUNCH, ON_ERROR, ON_HIDE, ON_SHOW, ON_SHARE_APP_MESSAGE].forEach(cycle => {
