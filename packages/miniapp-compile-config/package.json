@@ -1,6 +1,6 @@
 {
   "name": "miniapp-compile-config",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "miniapp compile project config",
   "author": "Rax Team",
   "homepage": "https://github.com/alibaba/rax#readme",
@@ -37,6 +37,7 @@
     "rax-miniapp-runtime-webpack-plugin": "^1.1.0",
     "terser": "^4.8.0",
     "ts-loader": "^8.0.3",
-    "webpack": "^4.44.1"
+    "webpack": "^4.44.1",
+    "jsx2mp-runtime": "^0.4.16"
   }
 }
