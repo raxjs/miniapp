@@ -3,8 +3,7 @@ import Element from '../element';
 class HTMLInputElement extends Element {
   constructor(options) {
     super(options);
-
-    this.changed = false;
+    this.__changed = false;
   }
 
   /**
@@ -29,7 +28,7 @@ class HTMLInputElement extends Element {
       name = 'focus-state';
     }
     if (name === 'value') {
-      this.changed = true;
+      this.__changed = true;
     }
     super.setAttribute(name, value, immediate);
   }
@@ -41,7 +40,7 @@ class HTMLInputElement extends Element {
       name = 'focus-state';
     }
     if (name === 'value') {
-      this.changed = true;
+      this.__changed = true;
     }
     super._setAttributeWithOutUpdate(name, value);
   }
@@ -86,14 +85,14 @@ class HTMLInputElement extends Element {
 
   get value() {
     let value = this.__attrs.get('value');
-    if (!value && !this.changed) {
+    if (!value && !this.__changed) {
       value = this.__attrs.get('defaultValue');
     }
     return value || '';
   }
 
   set value(value) {
-    this.changed = true;
+    this.__changed = true;
     value = '' + value;
     this.__attrs.set('value', value);
   }
