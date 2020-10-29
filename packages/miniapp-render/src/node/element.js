@@ -5,7 +5,7 @@ import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
 import tool from '../utils/tool';
-import { simplifyDomTree, traverse, adjustDocument } from '../utils/tree';
+import { simplifyDomTree, traverse } from '../utils/tree';
 import { BUILTIN_COMPONENT_LIST } from '../constants';
 
 class Element extends Node {
@@ -24,7 +24,7 @@ class Element extends Node {
     cache.setNode(this.__nodeId, this);
     this.dataset = {};
     this._initAttributes(options.attrs);
-    if (this.id) {
+    if (this.id && !this.ownerDocument.__idMap.has(this.id)) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
   }
@@ -58,10 +58,18 @@ class Element extends Node {
 
   // Child ownerDocument may be incorrect if the node created during the page hide period
   // Here we should adjust its ownerDocument when the node mounted
-  _checkDocument(child) {
+  _adjustDocument(child) {
     if (this.__ownerDocument.__pageId !== child.__ownerDocument.__pageId) {
       this._root.__renderCallbacks.push(() => {
-        traverse(child, adjustDocument(this.__ownerDocument));
+        traverse(child, (node) => {
+          // Adjust node's ownerDocument's idMap
+          if (node.id) {
+            node.__ownerDocument.__idMap.delete(node.id);
+            this.__ownerDocument.__idMap.set(node.id, node);
+          }
+          node.__ownerDocument = this.__ownerDocument;
+          return {};
+        });
       });
     }
   }
@@ -229,7 +237,7 @@ class Element extends Node {
         item: simplifyDomTree(node)
       };
       this._triggerUpdate(payload);
-      this._checkDocument(node);
+      this._adjustDocument(node);
     }
 
     return this;
@@ -292,7 +300,7 @@ class Element extends Node {
 
       // Trigger update
       this._triggerUpdate(payload);
-      this._checkDocument(node);
+      this._adjustDocument(node);
     }
 
     return node;
@@ -327,7 +335,7 @@ class Element extends Node {
         item: simplifyDomTree(node)
       };
       this._triggerUpdate(payload);
-      this._checkDocument(node);
+      this._adjustDocument(node);
     }
 
     return old;

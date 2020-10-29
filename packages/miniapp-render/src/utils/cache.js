@@ -24,13 +24,6 @@ function getDocument(pageId) {
   return pageMap[pageId];
 }
 
-/**
- * Get all documents
- */
-function getAllDocuments() {
-  return pageMap;
-}
-
 // Set window
 function setWindow(value) {
   window = value;
@@ -107,7 +100,6 @@ export default {
   init,
   destroy,
   getDocument,
-  getAllDocuments,
   setWindow,
   getWindow,
   setNode,

@@ -98,16 +98,8 @@ class Document extends EventTarget {
     if (typeof id !== 'string') return;
 
     const element = this.__idMap.get(id);
-    if (element && element._isRendered() && element.ownerDocument.__pageId === this.__pageId) {
+    if (element && element._isRendered()) {
       return element;
-    }
-
-    const documents = cache.getAllDocuments();
-    for (let pageId in documents) {
-      const element = documents[pageId].__idMap.get(id);
-      if (element && element._isRendered() && element.ownerDocument.__pageId === this.__pageId) {
-        return element;
-      }
     }
 
     return null;
@@ -119,7 +111,7 @@ class Document extends EventTarget {
     const elements = [];
 
     cache.getAllNodes().forEach((element) => {
-      if (element && element.__tagName === tagName && element._isRendered() && element.ownerDocument.__pageId === this.__pageId) {
+      if (element && element.__tagName === tagName && element._isRendered() && element.__pageId === this.__pageId) {
         elements.push(element);
       }
     });
@@ -132,7 +124,7 @@ class Document extends EventTarget {
     const elements = [];
     cache.getAllNodes().forEach((element) => {
       const classNames = className.trim().split(/\s+/);
-      if (element && element._isRendered() && element.ownerDocument.__pageId === this.__pageId && classNames.every(c => element.classList && element.classList.contains(c))) {
+      if (element && element._isRendered() && element.__pageId === this.__pageId && classNames.every(c => element.classList && element.classList.contains(c))) {
         elements.push(element);
       }
     });
