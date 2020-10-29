@@ -33,3 +33,5 @@ export function traverse(node, action) {
 export function simplifyDomTree(node) {
   return traverse(node, simplify);
 }
+
+

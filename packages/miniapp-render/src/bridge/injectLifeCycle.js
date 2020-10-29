@@ -5,9 +5,9 @@ import { NATIVE_EVENTS_LIST } from '../constants';
 function createLifeCycleCallback(lifeCycle) {
   if (lifeCycle === 'onShareAppMessage') {
     return function(options) {
-      if (this.window) {
+      if (this.document) {
         const shareInfo = {};
-        const returnedShareInfo = this.window.$$trigger('onShareAppMessage', {
+        const returnedShareInfo = this.document.$$trigger('onShareAppMessage', {
           event: { options, shareInfo }
         });
         return returnedShareInfo || shareInfo.content;
@@ -15,8 +15,8 @@ function createLifeCycleCallback(lifeCycle) {
     };
   }
   return function(event) {
-    if (this.window) {
-      this.window.$$trigger(lifeCycle, { event });
+    if (this.document) {
+      this.document.$$trigger(lifeCycle, { event });
     }
   };
 }

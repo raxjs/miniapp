@@ -22,11 +22,13 @@ class Document extends EventTarget {
     this.usingComponents = usingComponents;
     this.usingPlugins = usingPlugins;
 
-    this.__nodeIdMap = new Map();
     this.__idMap = new Map();
     this.__pageId = pageId;
 
+    const bodyNodeId = `${BODY_NODE_ID}-${pageId}`;
+
     this.__root = new RootElement({
+      nodeId: bodyNodeId,
       type: 'element',
       tagName: 'body',
       attrs: {},
@@ -34,7 +36,7 @@ class Document extends EventTarget {
       document: this,
     });
 
-    this.__nodeIdMap.set(BODY_NODE_ID, this.__root);
+    cache.setNode(bodyNodeId, this.__root);
 
     // update body's parentNode
     this.__root.parentNode = this;
@@ -42,7 +44,7 @@ class Document extends EventTarget {
 
   // Event trigger
   $$trigger(eventName, options) {
-    this.documentElement.$$trigger(eventName, options);
+    return this.documentElement.$$trigger(eventName, options);
   }
 
   _isRendered() {
@@ -99,6 +101,7 @@ class Document extends EventTarget {
     if (element && element._isRendered()) {
       return element;
     }
+
     return null;
   }
 
@@ -106,8 +109,9 @@ class Document extends EventTarget {
     if (typeof tagName !== 'string') return [];
 
     const elements = [];
-    this.__nodeIdMap.forEach((element, nodeId) => {
-      if (element && element.__tagName === tagName && element._isRendered()) {
+
+    cache.getAllNodes().forEach((element) => {
+      if (element && element.__tagName === tagName && element._isRendered() && element.__pageId === this.__pageId) {
         elements.push(element);
       }
     });
@@ -118,9 +122,9 @@ class Document extends EventTarget {
     if (typeof className !== 'string') return [];
 
     const elements = [];
-    this.__nodeIdMap.forEach((element, nodeId) => {
+    cache.getAllNodes().forEach((element) => {
       const classNames = className.trim().split(/\s+/);
-      if (element && classNames.every(c => element.classList && element.classList.contains(c))) {
+      if (element && element._isRendered() && element.__pageId === this.__pageId && classNames.every(c => element.classList && element.classList.contains(c))) {
         elements.push(element);
       }
     });

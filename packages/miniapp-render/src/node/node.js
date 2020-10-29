@@ -11,8 +11,15 @@ class Node extends EventTarget {
     this.__nodeId = `n_${tool.getId()}`;
     this.$_type = options.type;
     this.parentNode = null;
-    this.ownerDocument = options.document;
-    this.__pageId = this.ownerDocument.__pageId;
+    this.__ownerDocument = options.document;
+  }
+
+  get __pageId() {
+    return this.__ownerDocument.__pageId;
+  }
+
+  get ownerDocument() {
+    return this.__ownerDocument;
   }
 
   /**
@@ -24,8 +31,8 @@ class Node extends EventTarget {
     this.__nodeId = null;
     this.$_type = null;
     this.parentNode = null;
-    this.__pageId = null;
     this.__rendered = false;
+    this.__ownerDocument = null;
   }
 
   get _path() {
@@ -39,7 +46,7 @@ class Node extends EventTarget {
   }
 
   get _root() {
-    return cache.getNode(BODY_NODE_ID);
+    return cache.getNode(`${BODY_NODE_ID}-${this.__pageId}`);
   }
 
   _isRendered() {

@@ -339,6 +339,8 @@
     onOpenSetting="onButtonOpenSetting"
     onLaunchApp="onButtonLaunchApp"
 
+    onGetAuthorize="onButtonGetAuthorize"
+
     size="{{tool.processVal(r.size, 'default')}}"
     type="{{tool.processVal(r.type, 'default')}}"
     plain="{{tool.processVal(r.plain, false)}}"
@@ -346,6 +348,7 @@
     loading="{{tool.processVal(r.loading, false)}}"
     form-type="{{tool.processVal(r['form-type'], '')}}"
     open-type="{{tool.processVal(r['open-type'], '')}}"
+    scope="{{tool.processVal(r.scope, '')}}"
     hover-class="{{tool.processVal(r['hover-class'], 'button-hover')}}"
     hover-stop-propagation="{{tool.processVal(r['hover-stop-propagation'], false)}}"
     hover-start-time="{{tool.processVal(r['hover-start-time'], 20)}}"
@@ -427,7 +430,7 @@
     type="{{r.type}}"
     password="{{r.password}}"
     placeholder="{{r.placeholder}}"
-    placeholder-style="{{r['placeholder-style']}}"
+    placeholder-style="{{tool.processPlaceholderStyle(r['placeholder-style'], r.placeholderColor)}}"
     placeholder-class="{{r['placeholder-class']}}"
     disabled="{{r.disabled}}"
     maxlength="{{r.maxlength}}"
