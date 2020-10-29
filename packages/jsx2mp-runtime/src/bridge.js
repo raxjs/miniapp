@@ -1,7 +1,7 @@
 /* global PROPS, TAGID */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isQuickApp } from 'universal-env';
-import { cycles as appCycles } from './app';
+import { cycles as appCycles, useAppEffect } from './app';
 import Component from './component';
 import { ON_SHOW, ON_HIDE, ON_SHARE_APP_MESSAGE, ON_LAUNCH, ON_ERROR } from './cycles';
 import { setComponentInstance, getComponentProps } from './updater';
@@ -19,11 +19,12 @@ import { registerEventsInConfig } from './nativeEventListener';
 import { isPlainObject } from './types';
 import { enqueueRender } from './enqueueRender';
 import shallowEqual from './shallowEqual';
+import { setModernMode } from './version';
 
 const { TYPE, TARGET, TIMESTAMP } = getEventProps();
 
 const GET_DERIVED_STATE_FROM_PROPS = 'getDerivedStateFromProps';
-let _appConfig;
+let staticConfig;
 let _pageProps = {};
 
 /**
@@ -308,14 +309,30 @@ function createConfig(component, options) {
  * @param appConfig
  * @param pageProps
  */
-export function runApp(appConfig, pageProps = {}) {
-  if (_appConfig) {
+export function runApp(...args) {
+  if (staticConfig) {
     throw new Error('runApp can only be called once.');
   }
-
-  _appConfig = appConfig; // Store raw app config to parse router.
-  _pageProps = pageProps; // Store global page props to inject to every page props
-  __updateRouterMap(appConfig);
+  if (args.length === 1) {
+    // runApp(staticConfig)
+    staticConfig = args[0];
+  } else if (Array.isArray(args[0].routes)) {
+    // runApp(staticConfig, pageProps)
+    staticConfig = args[0];
+    _pageProps = args[1];
+  } else {
+    // rax-app3.x - runApp(dynamicConfig, staticConfig)
+    setModernMode(true);
+    staticConfig = args[1];
+    if (args[0].app) {
+      [ON_LAUNCH, ON_ERROR, ON_HIDE, ON_SHOW, ON_SHARE_APP_MESSAGE].forEach(cycle => {
+        if (typeof args[0].app[cycle] === 'function') {
+          useAppEffect(cycle, args[0].app[cycle]);
+        }
+      });
+    }
+  }
+  __updateRouterMap(staticConfig);
 
   const appOptions = {
     // Bridge app launch.
@@ -345,7 +362,7 @@ export function runApp(appConfig, pageProps = {}) {
     return Object.assign(appOptions, {
       onCreate: function(launchOptions) {
         // excute quickapp's create cycle
-        const _onCreate = appConfig.onCreate;
+        const _onCreate = staticConfig.onCreate;
         _onCreate && _onCreate();
         const launchQueue = appCycles.create;
         if (Array.isArray(launchQueue) && launchQueue.length > 0) {
@@ -356,8 +373,8 @@ export function runApp(appConfig, pageProps = {}) {
           }
         }
       },
-      globalRoutes: __updateRouterMap(appConfig), // store globalRoutes in case overrided when page reinited
-      login: appConfig.login, // store global login object for common login page
+      globalRoutes: __updateRouterMap(staticConfig), // store globalRoutes in case overrided when page reinited
+      login: staticConfig.login, // store global login object for common login page
     });
   } else {
     // eslint-disable-next-line

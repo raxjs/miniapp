@@ -248,7 +248,7 @@ export default class Component {
     let stateFromProps;
     if (this.__getDerivedStateFromProps) {
       const getDerivedStateFromProps = this.__getDerivedStateFromProps;
-      const partialState = getDerivedStateFromProps(nextProps, nextState);
+      const partialState = getDerivedStateFromProps(nextProps, prevState);
       if (partialState) stateFromProps = Object.assign({}, partialState);
     }
     // if null, means not to update state.

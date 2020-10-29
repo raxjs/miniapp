@@ -8,7 +8,7 @@ export const COMPONENT_WILL_UPDATE = 'componentWillUpdate';
 export const COMPONENT_DID_UPDATE = 'componentDidUpdate';
 
 // App only
-export const ON_LAUNCH = 'launch';
+export const ON_LAUNCH = 'onLaunch';
 export const ON_ERROR = 'onError';
 
 // Both App and Page

@@ -6,6 +6,8 @@ export default function(initialValue) {
   const ref = {
     current: initialValue
   };
+  ref.__proto__ = Function.prototype;
+
   const refFn = (instance, immobile) => {
     // Instance maybe component instance or triggered event object
     if (!created || !immobile) {

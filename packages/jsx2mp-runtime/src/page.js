@@ -8,39 +8,40 @@ import {
 import { useEffect } from './hooks';
 import { getMiniAppHistory } from './history';
 import { getPageInstanceById } from './pageInstanceMap';
-
-const history = getMiniAppHistory();
+import { getModernMode } from './version';
 
 export const cycles = {};
 
-export function usePageEffect(cycle, callback) {
+function addPageLifeCycle(cycle, callback) {
   const history = getMiniAppHistory();
+  const pageId = history && history.location._pageId;
+  if (!cycles[pageId]) {
+    cycles[pageId] = {};
+  }
+  if (!cycles[pageId][cycle]) {
+    cycles[pageId][cycle] = [];
+  }
+  cycles[pageId][cycle].push(callback);
 
+  // Define page instance life cycle when the cycle is used
+  const pageInstance = getPageInstanceById(pageId);
+  if (!pageInstance._internal[cycle]) {
+    pageInstance._internal[cycle] = (e) => {
+      return pageInstance._trigger(cycle, e);
+    };
+  }
+}
+
+export function usePageEffect(cycle, callback) {
   if (isFunction(callback)) {
     switch (cycle) {
       case ON_SHOW:
       case ON_HIDE:
-        // ON_SHOW is before than Component init
-        if (isQuickApp && cycle === ON_SHOW) {
-          return callback();
-        }
         useEffect(() => {
-          const pageId = history && history.location._pageId;
-          if (!cycles[pageId]) {
-            cycles[pageId] = {};
+          if ((isQuickApp || getModernMode()) && cycle === ON_SHOW) {
+            callback();
           }
-          if (!cycles[pageId][cycle]) {
-            cycles[pageId][cycle] = [];
-          }
-          cycles[pageId][cycle].push(callback);
-
-          // Define page instance life cycle when the cycle is used
-          const pageInstance = getPageInstanceById(pageId);
-          if (!pageInstance._internal[cycle]) {
-            pageInstance._internal[cycle] = (e) => {
-              return pageInstance._trigger(cycle, e);
-            };
-          }
+          addPageLifeCycle(cycle, callback);
         }, []);
         break;
       default:
@@ -55,4 +56,17 @@ export function usePageShow(callback) {
 
 export function usePageHide(callback) {
   return usePageEffect(ON_HIDE, callback);
+}
+
+export function withPageLifeCycle(Klass) {
+  return class extends Klass {
+    constructor(...args) {
+      super(...args);
+      [ON_SHOW, ON_HIDE].forEach(cycle => {
+        if (isFunction(this[cycle])) {
+          addPageLifeCycle(cycle, this[cycle]);
+        }
+      });
+    }
+  };
 }
