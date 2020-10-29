@@ -443,7 +443,7 @@
     type="{{tool.processVal(r.type, 'text')}}"
     password="{{r.password}}"
     placeholder="{{r.placeholder}}"
-    placeholder-style="color:{{r['placeholder-style']}}"
+    placeholder-style="{{tool.processPlaceholderStyle(r['placeholder-style'], r.placeholderColor)}}"
     placeholder-class="{{r['placeholder-class']}}"
     disabled="{{r.disabled}}"
     focus="{{r['focus-state']}}"

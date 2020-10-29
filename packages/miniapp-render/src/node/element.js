@@ -21,11 +21,10 @@ class Element extends Node {
     this.__nodeType = options.nodeType || Node.ELEMENT_NODE;
     this.style = new Style(this);
     this.__attrs = new Attribute(this);
-    cache.setNode(this.__pageId, this.__nodeId, this);
+    cache.setNode(this.__nodeId, this);
     this.dataset = {};
-    this.ownerDocument.__nodeIdMap.set(this.__nodeId, this);
     this._initAttributes(options.attrs);
-    if (this.id) {
+    if (this.id && !this.ownerDocument.__idMap.has(this.id)) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
   }
@@ -33,8 +32,7 @@ class Element extends Node {
   // Override the $$destroy method of the parent class
   $$destroy() {
     this.childNodes.forEach(child => child.$$destroy());
-    cache.setNode(this.__pageId, this.__nodeId, null);
-    this.ownerDocument.__nodeIdMap.set(this.__nodeId, null);
+    cache.setNode(this.__nodeId, null);
     this.ownerDocument.__idMap.set(this.id, null);
     super.$$destroy();
     this.__tagName = '';
@@ -55,6 +53,24 @@ class Element extends Node {
       this.enqueueRender(payload);
     } else {
       this._root.renderStacks.push(payload);
+    }
+  }
+
+  // Child ownerDocument may be incorrect if the node created during the page hide period
+  // Here we should adjust its ownerDocument when the node mounted
+  _adjustDocument(child) {
+    if (this.__ownerDocument.__pageId !== child.__ownerDocument.__pageId) {
+      this._root.__renderCallbacks.push(() => {
+        traverse(child, (node) => {
+          // Adjust node's ownerDocument's idMap
+          if (node.id) {
+            node.__ownerDocument.__idMap.delete(node.id);
+            this.__ownerDocument.__idMap.set(node.id, node);
+          }
+          node.__ownerDocument = this.__ownerDocument;
+          return {};
+        });
+      });
     }
   }
 
@@ -221,6 +237,7 @@ class Element extends Node {
         item: simplifyDomTree(node)
       };
       this._triggerUpdate(payload);
+      this._adjustDocument(node);
     }
 
     return this;
@@ -262,6 +279,7 @@ class Element extends Node {
 
     // Set parentNode
     node.parentNode = this;
+
     const insertIndex = ref ? this.childNodes.indexOf(ref) : -1;
     if (insertIndex === -1) {
       // Insert to the end
@@ -282,6 +300,7 @@ class Element extends Node {
 
       // Trigger update
       this._triggerUpdate(payload);
+      this._adjustDocument(node);
     }
 
     return node;
@@ -305,7 +324,6 @@ class Element extends Node {
     }
     // Set parentNode
     node.parentNode = this;
-
     if (this._isRendered()) {
       node.__rendered = true;
       // Trigger update
@@ -317,6 +335,7 @@ class Element extends Node {
         item: simplifyDomTree(node)
       };
       this._triggerUpdate(payload);
+      this._adjustDocument(node);
     }
 
     return old;

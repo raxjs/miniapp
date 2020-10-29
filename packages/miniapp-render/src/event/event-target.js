@@ -198,14 +198,10 @@ class EventTarget {
 
   // Get handlers
   __getHandles(eventName, isCapture, isInit) {
-    const pageId = this.__pageId || 'app';
-    if (!this.__eventHandlerMap.get(pageId)) {
-      this.__eventHandlerMap.set(pageId, new Map());
-    }
     if (isInit) {
-      let handlerObj = this.__eventHandlerMap.get(pageId).get(eventName);
+      let handlerObj = this.__eventHandlerMap.get(eventName);
       if (!handlerObj) {
-        this.__eventHandlerMap.get(pageId).set(eventName, handlerObj = {});
+        this.__eventHandlerMap.set(eventName, handlerObj = {});
       }
 
       handlerObj.capture = handlerObj.capture || [];
@@ -213,7 +209,7 @@ class EventTarget {
 
       return isCapture ? handlerObj.capture : handlerObj.bubble;
     } else {
-      const handlerObj = this.__eventHandlerMap.get(pageId).get(eventName);
+      const handlerObj = this.__eventHandlerMap.get(eventName);
 
       if (!handlerObj) return null;
 

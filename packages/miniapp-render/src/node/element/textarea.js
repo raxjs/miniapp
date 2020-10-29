@@ -4,6 +4,7 @@ import cache from '../../utils/cache';
 class HTMLTextAreaElement extends Element {
   constructor(options) {
     super(options);
+    this.__changed = false;
   }
 
   /**
@@ -27,6 +28,9 @@ class HTMLTextAreaElement extends Element {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
     }
+    if (name === 'value') {
+      this.__changed = true;
+    }
     super.setAttribute(name, value, immediate);
   }
 
@@ -35,6 +39,9 @@ class HTMLTextAreaElement extends Element {
     if (name === 'focus' || name === 'autofocus' || name === 'autoFocus') {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
+    }
+    if (name === 'value') {
+      this.__changed = true;
     }
     super._setAttributeWithOutUpdate(name, value);
   }
@@ -80,14 +87,14 @@ class HTMLTextAreaElement extends Element {
 
   get value() {
     let value = this.__attrs.get('value');
-    if (!value && !this.changed) {
+    if (!value && !this.__changed) {
       value = this.__attrs.get('defaultValue');
     }
     return value || '';
   }
 
   set value(value) {
-    this.changed = true;
+    this.__changed = true;
     value = '' + value;
     this.__attrs.set('value', value);
   }

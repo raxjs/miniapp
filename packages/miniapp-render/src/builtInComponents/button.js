@@ -23,5 +23,9 @@ export default {
   {
     name: 'onButtonLaunchApp',
     eventName: 'launchapp'
+  },
+  {
+    name: 'onButtonGetAuthorize',
+    eventName: 'getauthorize'
   }]
 };
