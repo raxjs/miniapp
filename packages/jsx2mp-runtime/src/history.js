@@ -14,6 +14,12 @@ export function getMiniAppHistory() {
   return history;
 }
 
+export function getSearchParams() {
+  if (history && history.location) {
+    return history.location._currentPageOptions;
+  }
+}
+
 class MiniAppHistory {
   constructor() {
     this.location = new Location();

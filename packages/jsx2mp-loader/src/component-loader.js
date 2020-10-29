@@ -22,7 +22,7 @@ module.exports = async function componentLoader(content) {
   }
 
   const loaderOptions = getOptions(this);
-  const { platform, entryPath, outputPath, constantDir, mode, disableCopyNpm, turnOffSourceMap, aliasEntries, injectAppCssComponent } = loaderOptions;
+  const { rootDir, platform, entryPath, outputPath, constantDir, mode, disableCopyNpm, turnOffSourceMap, aliasEntries, injectAppCssComponent } = loaderOptions;
   const resourcePath = this.resourcePath;
   const rootContext = this.rootContext;
   const absoluteConstantDir = constantDir.map(dir => join(rootContext, dir));
@@ -122,7 +122,8 @@ module.exports = async function componentLoader(content) {
     },
     mode,
     platform,
-    isTypescriptFile: isTypescriptFile(this.resourcePath)
+    isTypescriptFile: isTypescriptFile(this.resourcePath),
+    rootDir,
   };
 
   output(outputContent, content, outputOption);

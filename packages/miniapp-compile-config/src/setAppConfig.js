@@ -17,13 +17,13 @@ const setEntry = require('./setEntry');
 module.exports = (
   config,
   userConfig = {},
-  { onGetWebpackConfig, context, target, entryPath, outputPath }
+  { context, target, entryPath, outputPath }
 ) => {
   const platformInfo = platformMap[target];
   const {
     disableCopyNpm = false,
     turnOffSourceMap = false,
-    constantDir = []
+    constantDir = [],
   } = userConfig;
   const { rootDir, command } = context;
   const mode = command;
@@ -31,6 +31,10 @@ module.exports = (
   const appConfig = getAppConfig(rootDir, target);
 
   setEntry(config, appConfig.routes, { entryPath, rootDir, target });
+
+  // Set constantDir
+  // `public` directory is the default static resource directory
+  const isPublicFileExist = existsSync(resolve(rootDir, 'src/public'));
 
   // Need Copy files or dir
   const needCopyList = [];
@@ -41,16 +45,12 @@ module.exports = (
     disableCopyNpm,
     turnOffSourceMap,
     platform: platformInfo,
+    // To make old `constantDir` param compatible
+    constantDir: isPublicFileExist
+      ? ['src/public'].concat(constantDir)
+      : constantDir,
+    rootDir,
   };
-
-  // Set constantDir
-  // `public` directory is the default static resource directory
-  const isPublicFileExist = existsSync(resolve(rootDir, 'src/public'));
-
-  // To make old `constantDir` param compatible
-  loaderParams.constantDir = isPublicFileExist
-    ? ['src/public'].concat(constantDir)
-    : constantDir;
 
   appConfig.routes = filterNativePages(appConfig.routes, needCopyList, {
     rootDir,
@@ -72,7 +72,6 @@ module.exports = (
 
   // Set base jsx2mp config
   setBaseConfig(config, userConfig, {
-    onGetWebpackConfig,
     entryPath,
     context,
     loaderParams,
@@ -107,24 +106,22 @@ module.exports = (
     },
   ]);
 
-  onGetWebpackConfig(target, (config) => {
-    const aliasEntries = config.resolve.alias.entries();
-    config.module
-      .rule('withRoleJSX')
-      .use('app')
-      .tap(appLoaderParams => {
-        return {
-          ...appLoaderParams,
-          aliasEntries
-        };
-      })
-      .end()
-      .use('page')
-      .tap(pageLoaderParams => {
-        return {
-          ...pageLoaderParams,
-          aliasEntries
-        };
-      });
-  });
+  const aliasEntries = config.resolve.alias.entries();
+  config.module
+    .rule('withRoleJSX')
+    .use('app')
+    .tap((appLoaderParams) => {
+      return {
+        ...appLoaderParams,
+        aliasEntries,
+      };
+    })
+    .end()
+    .use('page')
+    .tap((pageLoaderParams) => {
+      return {
+        ...pageLoaderParams,
+        aliasEntries,
+      };
+    });
 };

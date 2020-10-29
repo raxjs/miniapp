@@ -6,7 +6,7 @@ const setBaseConfig = require('./setBaseConfig');
 module.exports = (
   config,
   userConfig = {},
-  { onGetWebpackConfig, context, target, entryPath, outputPath }
+  { context, target, entryPath, outputPath }
 ) => {
   const platformInfo = platformMap[target];
   const {
@@ -46,7 +46,6 @@ module.exports = (
 
   setBaseConfig(config, userConfig, {
     context,
-    onGetWebpackConfig,
     entryPath,
     outputPath,
     loaderParams,

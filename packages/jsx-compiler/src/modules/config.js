@@ -16,6 +16,10 @@ module.exports = {
           }
         }
       });
+      // rax-app 3.x need modify runApp params
+      if (options.modernMode) {
+        processAppSourceCode(parsed.ast);
+      }
     } else if (options.type === 'page') {
       parsed.config = {};
     } else if (options.type === 'component') {
@@ -54,4 +58,23 @@ function convertAstExpressionToVariable(node) {
   } else if (t.isJSXExpressionContainer(node)) {
     return convertAstExpressionToVariable(node.expression);
   }
+}
+
+function processAppSourceCode(ast) {
+  traverse(ast, {
+    Program(path) {
+      path.node.body.unshift(t.ImportDeclaration([t.importDefaultSpecifier(t.identifier('staticConfig'))], t.stringLiteral('./app.config')));
+    },
+    CallExpression(path) {
+      const { node } = path;
+      if (node.callee && node.callee.name === 'runApp') {
+        if (!node.arguments.length) {
+          // runApp() => runApp({});
+          node.arguments = [t.objectExpression([])];
+        }
+        // runApp({}) => runApp({}, staticConfig)
+        node.arguments.push(t.identifier('staticConfig'));
+      }
+    }
+  });
 }
