@@ -11,7 +11,7 @@ const createBinding = require('../utils/createBinding');
 const Expression = require('../utils/Expression');
 const getCompiledComponents = require('../getCompiledComponents');
 const replaceComponentTagName = require('../utils/replaceComponentTagName');
-const { getNpmName, normalizeFileName, addRelativePathPrefix, normalizeOutputFilePath } = require('../utils/pathHelper');
+const { getNpmName, normalizeFileName, addRelativePathPrefix, normalizeOutputFilePath, SCRIPT_FILE_EXTENSIONS } = require('../utils/pathHelper');
 const { RELATIVE_COMPONENTS_REG, MINIAPP_PLUGIN_COMPONENTS_REG, PKG_NAME_REG, GROUP_PKG_NAME_REG} = require('../constants');
 
 let tagCount = 0;
@@ -356,9 +356,7 @@ function getComponentPath(alias, options) {
       throw new Error('`resourcePath` must be passed to calc dependency path.');
     }
 
-    const filename = multipleModuleResolve(options.resourcePath, alias.from, [
-      '.jsx', '.js', '.tsx', '.ts'
-    ]);
+    const filename = multipleModuleResolve(options.resourcePath, alias.from, SCRIPT_FILE_EXTENSIONS);
     return filename;
   } else {
     const { disableCopyNpm } = options;

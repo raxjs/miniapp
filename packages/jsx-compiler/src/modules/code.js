@@ -6,8 +6,7 @@ const isClassComponent = require('../utils/isClassComponent');
 const isFunctionComponent = require('../utils/isFunctionComponent');
 const traverse = require('../utils/traverseNodePath');
 const { isNpmModule, isWeexModule } = require('../utils/checkModule');
-const { getNpmName, normalizeFileName, addRelativePathPrefix, normalizeOutputFilePath } = require('../utils/pathHelper');
-const { BINDING_REG } = require('../utils/checkAttr');
+const { getNpmName, normalizeFileName, addRelativePathPrefix, normalizeOutputFilePath, SCRIPT_FILE_EXTENSIONS } = require('../utils/pathHelper');
 
 const RAX_PACKAGE = 'rax';
 const SUPER_COMPONENT = 'Component';
@@ -584,7 +583,7 @@ function addRegisterRefs(refs, renderFunctionPath) {
  */
 function ensureIndexInPath(value, resourcePath) {
   const target = resolveModule.sync(resolve(dirname(resourcePath), value), {
-    extensions: ['.js', '.ts', '.jsx', '.tsx']
+    extensions: SCRIPT_FILE_EXTENSIONS
   });
   const result = relative(dirname(resourcePath), target);
   return removeJSExtension(addRelativePathPrefix(normalizeOutputFilePath(result)));
@@ -592,7 +591,7 @@ function ensureIndexInPath(value, resourcePath) {
 
 function removeJSExtension(filePath) {
   const ext = extname(filePath);
-  if (ext === '.js' || ext === '.ts') {
+  if (SCRIPT_FILE_EXTENSIONS.indexOf(ext) > -1) {
     return filePath.slice(0, filePath.length - ext.length);
   }
   return filePath;
