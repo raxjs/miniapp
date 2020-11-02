@@ -1,5 +1,7 @@
 const { sep } = require('path');
 
+const SCRIPT_FILE_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx'];
+
 function getNpmName(value) {
   const isScopedNpm = /^_?@/.test(value);
   return value.split(sep).slice(0, isScopedNpm ? 2 : 1).join(sep);
@@ -42,5 +44,6 @@ module.exports = {
   normalizeFileName,
   addRelativePathPrefix,
   normalizeOutputFilePath,
-  normalizeLocalFilePath
+  normalizeLocalFilePath,
+  SCRIPT_FILE_EXTENSIONS
 };
