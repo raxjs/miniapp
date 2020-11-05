@@ -143,7 +143,7 @@ module.exports = function visitor(
           // Don't scan files in miniapp-compiled directory
           if (Array.isArray(specifiers) && t.isStringLiteral(source) && !isMiniappCompiledFilePath(filename)) {
             const dirName = dirname(filename);
-            const filePath =  getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies) || getCompiledComponentsPath(dirName, source.value);
+            const filePath = getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies) || getCompiledComponentsPath(dirName, source.value);
             // TODO:
             // Temporarily ignore import { a, b } from 'xxx';
             if (filePath && hasDefaultSpecifier(specifiers, t)) {
