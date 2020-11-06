@@ -8,7 +8,7 @@ const {
 
 module.exports = function(compilation, { target, command, rootDir }) {
   const miniappRenderPackageJsonFile = getHighestPriorityPackageJSON('miniapp-render', rootDir);
-  const sourceRenderFile = resolve(
+  const sourceMiniappRenderFile = resolve(
     miniappRenderPackageJsonFile,
     '..',
     'dist',
@@ -17,7 +17,7 @@ module.exports = function(compilation, { target, command, rootDir }) {
   );
   addFileToCompilation(compilation, {
     filename: 'render.js',
-    content: readFileSync(sourceRenderFile, 'utf-8'),
+    content: readFileSync(sourceMiniappRenderFile, 'utf-8'),
     command,
     target,
   });

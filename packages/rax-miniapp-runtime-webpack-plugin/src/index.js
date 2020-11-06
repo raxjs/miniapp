@@ -1,6 +1,6 @@
 const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
-const execa = require('execa')
+const execa = require('execa');
 const { checkAliInternal } = require('ice-npm-utils');
 const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
@@ -217,7 +217,7 @@ class MiniAppRuntimePlugin {
       isFirstRender = false;
       callback();
     });
-    compiler.hooks.done.tapAsync(PluginName, async (stats, callback) => {
+    compiler.hooks.done.tapAsync(PluginName, (stats, callback) => {
       if (!needAutoInstallDependency) {
         return callback();
       }
@@ -232,8 +232,8 @@ class MiniAppRuntimePlugin {
       }).catch(() => {
         console.log(`\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`);
         callback();
-      })
-    })
+      });
+    });
   }
 }
 
