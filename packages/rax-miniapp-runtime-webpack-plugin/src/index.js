@@ -1,5 +1,7 @@
-const { resolve, join } = require('path');
+const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
+const execa = require('execa')
+const { checkAliInternal } = require('ice-npm-utils');
 const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
@@ -27,13 +29,16 @@ class MiniAppRuntimePlugin {
     this.target = options.target || MINIAPP;
   }
 
-  apply(compiler) {
+  async apply(compiler) {
     const rootDir = __dirname;
     const options = this.options;
     const target = this.target;
     const { nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], command } = options;
     let isFirstRender = true;
     let lastUseComponentCount = 0; // Record native component and plugin component used count last time
+    let needAutoInstallDependency = false;
+    const isAliInternal = await checkAliInternal();
+    const npmRegistry = isAliInternal ? 'https://registry.npm.alibaba-inc.com' : 'https://registry.npm.taobao.org';
 
     // Execute when compilation created
     compiler.hooks.compilation.tap(PluginName, (compilation) => {
@@ -128,7 +133,7 @@ class MiniAppRuntimePlugin {
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
-        generateRender(compilation, { target, command, rootDir });
+        generateRender(compilation, { target, command, rootDir: options.rootDir });
       }
 
       // Collect app.js
@@ -172,6 +177,7 @@ class MiniAppRuntimePlugin {
             command,
             rootDir,
           });
+          needAutoInstallDependency = true;
         }
 
         if (target !== MINIAPP || useComponent) {
@@ -211,6 +217,23 @@ class MiniAppRuntimePlugin {
       isFirstRender = false;
       callback();
     });
+    compiler.hooks.done.tapAsync(PluginName, async (stats, callback) => {
+      if (!needAutoInstallDependency) {
+        return callback();
+      }
+      const distDir = `${dirname(stats.compilation.outputOptions.path)}/${target}`;
+      execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd: distDir }).then(({ exitCode }) => {
+        if (!exitCode) {
+          callback();
+        } else {
+          console.log(`\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`);
+          callback();
+        }
+      }).catch(() => {
+        console.log(`\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`);
+        callback();
+      })
+    })
   }
 }
 
