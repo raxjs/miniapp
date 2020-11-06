@@ -138,6 +138,22 @@ function removeExt(filePath) {
   return lastDot === -1 ? filePath : filePath.slice(0, lastDot);
 }
 
+/**
+ * For jsx2mp-runtime and miniapp-render
+ * Both of the packages should be dependency of its config package. But if the project has installed it, then it will take the priority.
+ * @param {string} packageName
+ * @param {string} rootDir
+ */
+function getHighestPriorityPackageJSON(packageName, rootDir) {
+  const targetFile = join(packageName, 'package.json');
+  const resolvePaths = require.resolve.paths(targetFile);
+  resolvePaths.unshift(join(rootDir, 'node_modules'));
+  const packageJSONPath = require.resolve(targetFile, {
+    paths: resolvePaths
+  });
+  return packageJSONPath;
+}
+
 module.exports = {
   relativeModuleResolve,
   normalizeOutputFilePath,
@@ -146,5 +162,6 @@ module.exports = {
   absoluteModuleResolve,
   getPlatformExtensions,
   isNativePage,
-  removeExt
+  removeExt,
+  getHighestPriorityPackageJSON
 };
