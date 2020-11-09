@@ -1,5 +1,8 @@
 const { resolve, dirname, join } = require('path');
 const { existsSync, readJSONSync } = require('fs-extra');
+const {
+  pathHelper: { absoluteModuleResolve, removeExt },
+} = require('miniapp-builder-shared');
 const extMap = require('../utils/extMap');
 const { collectComponentAttr, collectUsings } = require('../utils/handleComponentAST');
 
@@ -74,13 +77,12 @@ function getTmplPath(source, rootDir, dirName, target, runtimeDependencies) {
  * @param {string} source
  */
 function getCompiledComponentsPath(dirName, source) {
-  // TODO: Currently, developers must use complete path like in `usingComponents`
-  const filepath = resolve(dirName, source);
-  if (!isMiniappCompiledFilePath(filepath)) {
+  if (!isMiniappCompiledFilePath(source)) {
     return false;
   }
+  const filepath = removeExt(absoluteModuleResolve(dirName, source));
   // The returned value will be written into comp.json in `usingComponents`, which is under the same directory as miniapp-compiled
-  return `./${source.substring(source.indexOf(MINIAPP_COMPILED_DIR))}`;
+  return `./${filepath.substring(filepath.indexOf(MINIAPP_COMPILED_DIR))}`;
 }
 
 
