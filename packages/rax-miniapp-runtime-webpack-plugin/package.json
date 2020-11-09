@@ -19,6 +19,7 @@
     "execa": "^4.1.0",
     "fs-extra": "^8.1.0",
     "ice-npm-utils": "^2.0.1",
+    "lodash.isequal": "^4.5.0",
     "miniapp-builder-shared": "^0.1.7",
     "path-to-regexp": "^3.0.0",
     "postcss": "^7.0.17",
