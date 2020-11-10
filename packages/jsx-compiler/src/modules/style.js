@@ -41,11 +41,11 @@ function transformStyle(ast, imported) {
         const { property }  = node.value.expression;
         // className={styles.home} => className="home"
         if (t.isIdentifier(property)) {
-          node.value = t.stringLiteral(property.name)
+          node.value = t.stringLiteral(property.name);
         }
         // className={styles['home-info']} => className="home-info"
         if (t.isStringLiteral(property)) {
-          node.value = t.stringLiteral(property.value)
+          node.value = t.stringLiteral(property.value);
         }
       }
     },
