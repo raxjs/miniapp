@@ -224,7 +224,7 @@ class MiniAppRuntimePlugin {
       if (!needAutoInstallDependency) {
         return callback();
       }
-      const distDir = `${dirname(stats.compilation.outputOptions.path)}/${target}`;
+      const distDir = stats.compilation.outputOptions.path;
       execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd: distDir }).then(({ exitCode }) => {
         if (!exitCode) {
           callback();
