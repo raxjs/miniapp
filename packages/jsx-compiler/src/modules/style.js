@@ -38,7 +38,7 @@ function transformStyle(ast, imported) {
       }
 
       if (isUsingCSSModules && node.name.name === 'className' && t.isJSXExpressionContainer(node.value) && t.isMemberExpression(node.value.expression)) {
-        const { property }  = node.value.expression;
+        const { property } = node.value.expression;
         // className={styles.home} => className="home"
         if (t.isIdentifier(property)) {
           node.value = t.stringLiteral(property.name);
