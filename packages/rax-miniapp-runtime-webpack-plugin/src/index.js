@@ -68,7 +68,7 @@ class MiniAppRuntimePlugin {
 
       let useComponentChanged = false;
       if (!isFirstRender) {
-        useComponentChanged = !isEqual(usingComponents, lastUsingComponents)  || !isEqual(usingPlugins, lastUsingPlugins);
+        useComponentChanged = !isEqual(usingComponents, lastUsingComponents) || !isEqual(usingPlugins, lastUsingPlugins);
       }
       lastUsingComponents = Object.assign({}, usingComponents);
       lastUsingPlugins = Object.assign({}, usingPlugins);
