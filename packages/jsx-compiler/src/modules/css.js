@@ -36,7 +36,7 @@ module.exports = {
             rawPath,
             filename: resolvedPath,
             content: readFileSync(resolvedPath, 'utf-8'),
-            type: (isAnomyousImport || isCssModuleImport) ? 'cssFile' : 'cssObject',
+            type: isAnomyousImport || isCssModuleImport ? 'cssFile' : 'cssObject',
           });
           if (isAnomyousImport || isCssModuleImport) cssFileMap[rawPath] = true; // For removing import statement.
         }
