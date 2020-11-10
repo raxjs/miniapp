@@ -31,3 +31,41 @@ describe('Transform style', () => {
     expect(genDynamicValue(dynamicStyle)).toEqual(expectedDynamicValue);
   });
 });
+
+describe('Transform className if using CSS modules', () => {
+  it('should transform className props', () => {
+    const raw = '<Text className={styles.name}>hello</Text>';
+    const expected = '<Text className="name">hello</Text>';
+    const ast = parseExpression(raw);
+    _transform(ast, {
+      'rax-text': [
+        {
+          local: 'Text',
+          default: true,
+          namespace: false,
+          name: 'rax-text',
+          isCustomEl: false
+        }
+      ],
+      './index.module.css': [
+        {
+          local: 'styles',
+          default: true,
+          namespace: false,
+          name: 'c-ed5081',
+          isCustomEl: true
+        }
+      ],
+      '../../components/Logo': [
+        {
+          local: 'Logo',
+          default: true,
+          namespace: false,
+          name: 'c-d25621',
+          isCustomEl: true
+        }
+      ]
+    });
+    expect(genExpression(ast)).toEqual(expected);
+  });
+});

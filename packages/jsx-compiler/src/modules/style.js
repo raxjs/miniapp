@@ -18,7 +18,7 @@ const { isFilenameCSSModule } = require('../utils/pathHelper');
  *   input:  <view className={styles.home} />
  *   output: <view className="home" />
  */
-function transformStyle(ast, imported) {
+function transformStyle(ast, imported = {}) {
   const isUsingCSSModules = Object.keys(imported).some(rawPath => isFilenameCSSModule(rawPath));
   const dynamicStyle = new DynamicBinding('_s');
   let useCreateStyle = false;
