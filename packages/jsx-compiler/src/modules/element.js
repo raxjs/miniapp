@@ -13,6 +13,7 @@ const isSlotScopeNode = require('../utils/isSlotScopeNode');
 const { isDirectiveAttr, isEventHandlerAttr, isRenderPropsAttr, BINDING_REG } = require('../utils/checkAttr');
 const handleValidIdentifier = require('../utils/handleValidIdentifier');
 const isNativeComponent = require('../utils/isNativeComponent');
+const isDerivedFromProps = require('../utils/isDerivedFromProps');
 const { componentCommonProps } = require('../adapter');
 
 const ATTR = Symbol('attribute');
@@ -31,7 +32,8 @@ function transformTemplate(
   {
     templateAST: ast,
     componentDependentProps = {},
-    dynamicValue
+    dynamicValue,
+    renderFunctionPath
   },
   adapter,
   sourceCode
@@ -166,10 +168,12 @@ function transformTemplate(
             });
             path.replaceWith(t.stringLiteral(name));
           } else {
+            // If the expression name is derived from props, then do not transform it
             const replaceNode = transformIdentifier(
               expression,
               dynamicValue,
               isDirective,
+              isDerivedFromProps(renderFunctionPath.scope, expression.name)
             );
             path.replaceWith(
               t.stringLiteral(createBinding(genExpression(replaceNode))),
@@ -180,10 +184,12 @@ function transformTemplate(
             path.remove(); // Remove expression
             break;
           } else {
+            // If the expression name is derived from props, then do not transform it
             const replaceNode = transformIdentifier(
               expression,
               dynamicValue,
               isDirective,
+              isDerivedFromProps(renderFunctionPath.scope, expression.name)
             );
             path.replaceWith(createJSXBinding(genExpression(replaceNode)));
           }
@@ -694,14 +700,15 @@ function transformMemberExpression(expression, dynamicBinding, options, isRecurs
 /**
  * Transform Identifier
  * */
-function transformIdentifier(expression, dynamicBinding, isDirective) {
+function transformIdentifier(expression, dynamicBinding, isDirective, isDerivedFromProps) {
   let replaceNode;
   if (
     expression.__listItem && !expression.__listItem.item
     || expression.__templateVar
     || expression.__slotScope
+    || isDerivedFromProps
   ) {
-    // The identifier is x-for args or template variable or map's index
+    // The identifier is x-for args or template variable or map's index or variable derived from props
     replaceNode = expression;
   } else if (expression.__listItem && expression.__listItem.item) {
     const itemNode = t.identifier(expression.__listItem.item);
