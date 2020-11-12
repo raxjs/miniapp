@@ -5,15 +5,21 @@ const TEMPLATE_AST = 'templateAST';
 const DynamicBinding = require('../utils/DynamicBinding');
 const getListItem = require('../utils/getListItem');
 const isSlotScopeNode = require('../utils/isSlotScopeNode');
+const { isFilenameCSSModule } = require('../utils/pathHelper');
 
 /**
- * Transform style object.
+ * 1. Transform style object.
  *  input:  <view style={{width: 100}}/>
  *  output: <view style="{{_style0}}">
  *          var _style0 = { width: 100 };
  *          return { _style0 };
+ *
+ * 2. Transform className if using css modules
+ *   input:  <view className={styles.home} />
+ *   output: <view className="home" />
  */
-function transformStyle(ast) {
+function transformStyle(ast, imported = {}) {
+  const isUsingCSSModules = Object.keys(imported).some(rawPath => isFilenameCSSModule(rawPath));
   const dynamicStyle = new DynamicBinding('_s');
   let useCreateStyle = false;
   traverse(ast, {
@@ -29,6 +35,18 @@ function transformStyle(ast) {
         // Record original expression
         node.value.__originalExpression = styleObjectExpression;
         useCreateStyle = true;
+      }
+
+      if (isUsingCSSModules && node.name.name === 'className' && t.isJSXExpressionContainer(node.value) && t.isMemberExpression(node.value.expression)) {
+        const { property } = node.value.expression;
+        // className={styles.home} => className="home"
+        if (t.isIdentifier(property)) {
+          node.value = t.stringLiteral(property.name);
+        }
+        // className={styles['home-info']} => className="home-info"
+        if (t.isStringLiteral(property)) {
+          node.value = t.stringLiteral(property.value);
+        }
       }
     },
   });
@@ -48,7 +66,7 @@ function shouldReplace(path) {
 
 module.exports = {
   parse(parsed, code, options) {
-    const { useCreateStyle, dynamicStyle } = transformStyle(parsed[TEMPLATE_AST]);
+    const { useCreateStyle, dynamicStyle } = transformStyle(parsed[TEMPLATE_AST], parsed.imported);
     if (!parsed.useCreateStyle) {
       parsed.useCreateStyle = useCreateStyle;
     }
