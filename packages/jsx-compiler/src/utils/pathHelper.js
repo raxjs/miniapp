@@ -39,11 +39,29 @@ function normalizeLocalFilePath(filepath) {
   return filepath.replace(/\\|\//g, sep);
 }
 
+/**
+ *
+ * @param {string} path
+ */
+function isFilenameCSS(path) {
+  return /\.(css|sass|less|scss|styl)$/i.test(path);
+}
+
+/**
+ *
+ * @param {string} path
+ */
+function isFilenameCSSModule(path) {
+  return /\.module\.(css|sass|less|scss|styl)$/i.test(path);
+}
+
 module.exports = {
   getNpmName,
   normalizeFileName,
   addRelativePathPrefix,
   normalizeOutputFilePath,
   normalizeLocalFilePath,
+  isFilenameCSS,
+  isFilenameCSSModule,
   SCRIPT_FILE_EXTENSIONS
 };

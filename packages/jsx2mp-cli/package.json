@@ -1,6 +1,6 @@
 {
   "name": "jsx2mp-cli",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "BSD-3-Clause",
   "description": "A cli tool to transform Rax JSX based project to MiniApp.",
   "bin": {
@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "npm run test -- --watchAll"
   },
-  "homepage": "https://github.com/alibaba/rax#readme",
+  "homepage": "https://github.com/raxjs/miniapp#readme",
   "engine": {
     "node": ">=8"
   },
