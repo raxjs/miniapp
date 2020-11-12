@@ -124,14 +124,16 @@ module.exports = (
 
   chainConfig.resolve.mainFields.add('main').add('module');
 
-  chainConfig.externals([
-    function(ctx, request, callback) {
-      if (/\.(css|sass|scss|styl|less)$/.test(request)) {
-        return callback(null, `commonjs2 ${request}`);
-      }
-      callback();
-    },
-  ]);
+  chainConfig.externals(
+    [
+      function (ctx, request, callback) {
+        if (/\.(css|sass|scss|styl|less)$/.test(request)) {
+          return callback(null, `commonjs2 ${request}`);
+        }
+        callback();
+      },
+    ].concat(chainConfig.get('externals') || [])
+  );
 
   chainConfig.plugin('define').use(webpack.DefinePlugin, [
     {
