@@ -74,8 +74,6 @@ describe('Transform JSXElement', () => {
       expect(code).toEqual('<View foo="{{bar}}">{{ bar }}</View>');
     });
 
-
-
     it('should handle literial types', () => {
       const sourceCode = `
         <View

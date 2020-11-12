@@ -12,4 +12,4 @@ module.exports = function getDefaultComponentFunctionPath(path) {
   });
 
   return defaultComponentFunctionPath;
-}
+};
