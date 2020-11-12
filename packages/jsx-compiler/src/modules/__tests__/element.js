@@ -1,11 +1,12 @@
 const t = require('@babel/types');
 const { _transform } = require('../element');
-const { parseExpression } = require('../../parser');
+const { parseExpression, parseCode } = require('../../parser');
 const genCode = require('../../codegen/genCode');
 const traverse = require('../../utils/traverseNodePath');
 const adapter = require('../../adapter').ali;
 const wxAdapter = require('../../adapter').wechat;
 const DynamicBinding = require('../../utils/DynamicBinding');
+const getDefaultComponentFunctionPath = require('../../utils/getDefaultComponentFunctionPath');
 
 function genInlineCode(ast) {
   return genCode(ast, {
@@ -36,15 +37,44 @@ describe('Transform JSXElement', () => {
     it('identifier', () => {
       const sourceCode = '<View foo={bar}>{ bar }</View>';
       const ast = parseExpression(sourceCode);
+      const functionComponentAst = parseCode(`
+      export default function Component(props) {
+        return (<View></View>);
+      }
+      `);
+      const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
       const dynamicValue = new DynamicBinding('_d');
       _transform({
         templateAST: ast,
-        dynamicValue
+        dynamicValue,
+        renderFunctionPath
       }, adapter, sourceCode);
       const code = genInlineCode(ast).code;
       expect(code).toEqual('<View foo="{{_d0}}">{{ _d0 }}</View>');
       expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: bar }');
     });
+
+    it('props identifier', () => {
+      const sourceCode = '<View foo={bar}>{ bar }</View>';
+      const ast = parseExpression(sourceCode);
+      const functionComponentAst = parseCode(`
+      export default function Component(props) {
+        const { bar } = props;
+        return (<View foo={bar}>{ bar }</View>);
+      }
+      `);
+      const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
+      const dynamicValue = new DynamicBinding('_d');
+      _transform({
+        templateAST: ast,
+        dynamicValue,
+        renderFunctionPath
+      }, adapter, sourceCode);
+      const code = genInlineCode(ast).code;
+      expect(code).toEqual('<View foo="{{bar}}">{{ bar }}</View>');
+    });
+
+
 
     it('should handle literial types', () => {
       const sourceCode = `
@@ -98,10 +128,17 @@ describe('Transform JSXElement', () => {
         />
       `;
       const ast = parseExpression(sourceCode);
+      const functionComponentAst = parseCode(`
+      export default function Component(props) {
+        return (<View></View>);
+      }
+      `);
+      const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
       const dynamicValue = new DynamicBinding('_d');
       const { dynamicEvents } = _transform({
         templateAST: ast,
-        dynamicValue
+        dynamicValue,
+        renderFunctionPath
       }, adapter, sourceCode);
 
       expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: this.state.bar, _d1: foo, _d2: fn(), _d3: foo.method(), _d4: a, _d5: a() ? 1 : 2, _d6: ~a, _d7: b, _d8: c, _d9: new Foo(), _d10: delete foo.bar, _d11: typeof aaa, _d12: { ...{ a: 1 } } }');
@@ -341,10 +378,17 @@ describe('Transform JSXElement', () => {
   describe('element', () => {
     it('should handle identifier', () => {
       const ast = parseExpression('<View>{foo}</View>');
+      const functionComponentAst = parseCode(`
+      export default function Component(props) {
+        return (<View></View>);
+      }
+      `);
+      const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
       const dynamicValue = new DynamicBinding('_d');
       _transform({
         templateAST: ast,
-        dynamicValue
+        dynamicValue,
+        renderFunctionPath
       }, adapter);
       const code = genInlineCode(ast).code;
       expect(code).toEqual('<View>{{ _d0 }}</View>');
