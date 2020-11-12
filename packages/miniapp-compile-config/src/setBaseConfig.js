@@ -126,7 +126,7 @@ module.exports = (
 
   chainConfig.externals(
     [
-      function (ctx, request, callback) {
+      function(ctx, request, callback) {
         if (/\.(css|sass|scss|styl|less)$/.test(request)) {
           return callback(null, `commonjs2 ${request}`);
         }
