@@ -1,15 +1,19 @@
 const t = require('@babel/types');
 const { readFileSync } = require('fs-extra');
 const { moduleResolve } = require('../utils/moduleResolve');
+const { isFilenameCSS, isFilenameCSSModule } = require('../utils/pathHelper');
 const traverse = require('../utils/traverseNodePath');
 
 /**
  * Add and convert style file to result.
  * 1. convert `rem` directly to `rpx`
  * 2. if named imported:
- *    import styles from './style.css';
+ *    2.1 import styles from './style.css';
  *    ->
  *    Transform and generate style.css to style.css.js
+ *    2.2 import styles from './style.module.css'
+ *    ->
+ *    Transform rpx and generate same name css files
  * 3. if anoymous imported
  *    import './style.css';
  *    ->
@@ -27,13 +31,14 @@ module.exports = {
         const resolvedPath = moduleResolve(options.resourcePath, rawPath);
         if (resolvedPath) {
           const isAnomyousImport = imported[rawPath].length === 0;
+          const isCssModuleImport = isFilenameCSSModule(rawPath);
           parsed.cssFiles.push({
             rawPath,
             filename: resolvedPath,
             content: readFileSync(resolvedPath, 'utf-8'),
-            type: isAnomyousImport ? 'cssFile' : 'cssObject',
+            type: isAnomyousImport || isCssModuleImport ? 'cssFile' : 'cssObject',
           });
-          if (isAnomyousImport) cssFileMap[rawPath] = true; // For removing import statement.
+          if (isAnomyousImport || isCssModuleImport) cssFileMap[rawPath] = true; // For removing import statement.
         }
       }
     });
@@ -58,7 +63,3 @@ module.exports = {
     }
   }
 };
-
-function isFilenameCSS(path) {
-  return /\.(css|sass|less|scss|styl)$/i.test(path);
-}
