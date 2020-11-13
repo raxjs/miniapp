@@ -20,6 +20,10 @@ function isRaxModule(value) {
   return value === 'rax';
 }
 
+function isRaxAppModule(value) {
+  return value === 'rax-app';
+}
+
 function isJsx2mpRuntimeModule(value) {
   return JSX2MP_RUNTIME_MODULE_REG.test(value);
 }
@@ -41,6 +45,7 @@ module.exports = {
   isWeexModule,
   isQuickAppModule,
   isRaxModule,
+  isRaxAppModule,
   isJsx2mpRuntimeModule,
   isNodeNativeModule,
   isJSONFile,
