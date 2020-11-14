@@ -2,7 +2,7 @@ const { resolve, extname } = require('path');
 const { readFileSync } = require('fs-extra');
 const ejs = require('ejs');
 const adapter = require('../adapter');
-const { MINIAPP } = require('../constants');
+const { MINIAPP, WECHAT_MINIPROGRAM } = require('../constants');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getAssetPath = require('../utils/getAssetPath');
 const adjustCSS = require('../utils/adjustCSS');
@@ -41,7 +41,7 @@ function generateAppCSS(compilation, { target, command, rootDir }) {
   const defaultCSSTmpl = adjustCSS(readFileSync(
     resolve(rootDir, 'templates', 'default.css.ejs'),
     'utf-8'
-  ));
+  ), target === WECHAT_MINIPROGRAM);
   // Generate __rax-view and __rax-text style for rax compiled components
   const raxDefaultCSSTmpl = readFileSync(
     resolve(rootDir, 'templates', 'rax-default.css.ejs'),
