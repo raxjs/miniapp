@@ -30,7 +30,7 @@ class MiniAppRuntimePlugin {
     this.target = options.target || MINIAPP;
   }
 
-  async apply(compiler) {
+  apply(compiler) {
     const rootDir = __dirname;
     const options = this.options;
     const target = this.target;
@@ -39,8 +39,8 @@ class MiniAppRuntimePlugin {
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
-    const isAliInternal = await checkAliInternal();
-    const npmRegistry = isAliInternal ? 'https://registry.npm.alibaba-inc.com' : 'https://registry.npm.taobao.org';
+    let isAliInternal;
+    let npmRegistry;
 
     // Execute when compilation created
     compiler.hooks.compilation.tap(PluginName, (compilation) => {
@@ -63,7 +63,6 @@ class MiniAppRuntimePlugin {
       ).map((filePath) => {
         return filePath.replace(sourcePath, '');
       });
-      const usePluginComponentCount = Object.keys(usingPlugins).length;
       const useNativeComponentCount = Object.keys(usingComponents).length;
 
       let useComponentChanged = false;
@@ -79,7 +78,6 @@ class MiniAppRuntimePlugin {
       routes
         .forEach(({ entryName }) => {
           pages.push(entryName);
-          const assets = { js: [], css: [] };
           let pageConfig = {};
           const pageConfigPath = resolve(outputPath, entryName + '.json');
           if (existsSync(pageConfigPath)) {
@@ -220,9 +218,13 @@ class MiniAppRuntimePlugin {
       isFirstRender = false;
       callback();
     });
-    compiler.hooks.done.tapAsync(PluginName, (stats, callback) => {
+    compiler.hooks.done.tapAsync(PluginName, async (stats, callback) => {
       if (!needAutoInstallDependency) {
         return callback();
+      }
+      if (isAliInternal === undefined) {
+        isAliInternal = await checkAliInternal();
+        npmRegistry = isAliInternal ? 'https://registry.npm.alibaba-inc.com' : 'https://registry.npm.taobao.org';
       }
       const distDir = stats.compilation.outputOptions.path;
       execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd: distDir }).then(({ exitCode }) => {
