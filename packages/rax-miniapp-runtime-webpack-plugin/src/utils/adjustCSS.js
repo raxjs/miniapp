@@ -92,7 +92,7 @@ const replaceTagNamePlugin = postcss.plugin('replaceTagName', () => root => {
  */
 const replaceRootSelector = postcss.plugin('replaceRoot', () => {
   return (root) => {
-    root.walkRules(function (rule) {
+    root.walkRules(function(rule) {
       if (rule.selector === ':root') {
         rule.selector = 'page';
       }
@@ -100,7 +100,7 @@ const replaceRootSelector = postcss.plugin('replaceRoot', () => {
   };
 });
 
-module.exports = function (code, replaceRoot) {
+module.exports = function(code, replaceRoot) {
   const plugins = [replaceTagNamePlugin];
 
   if (replaceRoot) {

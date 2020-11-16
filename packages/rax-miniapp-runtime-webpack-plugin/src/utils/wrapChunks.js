@@ -30,7 +30,7 @@ module.exports = function(compilation, chunks, target) {
         compilation.assets[
           `${fileName}.${adapter[target].css}`
         ] = new RawSource(
-          adjustCSS(compilation.assets[fileName].source(),target === WECHAT_MINIPROGRAM)
+          adjustCSS(compilation.assets[fileName].source(), target === WECHAT_MINIPROGRAM)
         );
       }
     });
