@@ -2,6 +2,7 @@ const ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
 const { RawSource, ConcatSource } = require('webpack-sources');
 const adjustCSS = require('../utils/adjustCSS');
 const adapter = require('../adapter');
+const { WECHAT_MINIPROGRAM } = require('../constants');
 
 const matchFile = (fileName, ext) =>
   ModuleFilenameHelpers.matchObject(
@@ -29,7 +30,7 @@ module.exports = function(compilation, chunks, target) {
         compilation.assets[
           `${fileName}.${adapter[target].css}`
         ] = new RawSource(
-          adjustCSS(compilation.assets[fileName].source())
+          adjustCSS(compilation.assets[fileName].source(),target === WECHAT_MINIPROGRAM)
         );
       }
     });
