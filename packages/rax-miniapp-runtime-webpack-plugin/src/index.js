@@ -218,7 +218,7 @@ class MiniAppRuntimePlugin {
       isFirstRender = false;
       callback();
     });
-    compiler.hooks.done.tapAsync(PluginName, async (stats, callback) => {
+    compiler.hooks.done.tapAsync(PluginName, async(stats, callback) => {
       if (!needAutoInstallDependency) {
         return callback();
       }
