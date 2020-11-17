@@ -1,8 +1,5 @@
 {
   "targets": [
     "miniapp"
-  ],
-  "plugins": [
-    "@ali/build-plugin-rax-app-def"
   ]
 }
