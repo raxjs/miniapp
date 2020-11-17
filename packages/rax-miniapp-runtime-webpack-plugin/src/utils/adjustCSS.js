@@ -87,11 +87,31 @@ const replaceTagNamePlugin = postcss.plugin('replaceTagName', () => root => {
   });
 });
 
-module.exports = function(code) {
-  code = postcss([replaceTagNamePlugin]).process(code, {
+/**
+ * repalce :root -> page for wechat-miniprogram
+ */
+const replaceRootSelector = postcss.plugin('replaceRoot', () => {
+  return (root) => {
+    root.walkRules(function(rule) {
+      if (rule.selector === ':root') {
+        rule.selector = 'page';
+      }
+    });
+  };
+});
+
+module.exports = function(code, replaceRoot) {
+  const plugins = [replaceTagNamePlugin];
+
+  if (replaceRoot) {
+    plugins.push(replaceRootSelector);
+  }
+
+  code = postcss(plugins).process(code, {
     from: undefined, // Eliminate warning
     map: null,
   });
 
   return code.css;
 };
+

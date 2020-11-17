@@ -1,9 +1,12 @@
 const { resolve, dirname, join } = require('path');
 const { existsSync, readJSONSync } = require('fs-extra');
+const {
+  pathHelper: { absoluteModuleResolve, removeExt },
+} = require('miniapp-builder-shared');
 const extMap = require('../utils/extMap');
 const { collectComponentAttr, collectUsings } = require('../utils/handleComponentAST');
 
-const { WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP } = require('../constants');
+const { WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP, MINIAPP_COMPILED_DIR } = require('../constants');
 
 const RELATIVE_COMPONENTS_REG = /^\./;
 
@@ -69,6 +72,29 @@ function getTmplPath(source, rootDir, dirName, target, runtimeDependencies) {
 }
 
 /**
+ * Get rax compiled component filepath
+ * @param {string} dirName
+ * @param {string} source
+ */
+function getCompiledComponentsPath(dirName, source) {
+  if (!isMiniappCompiledFilePath(source)) {
+    return false;
+  }
+  const filepath = removeExt(absoluteModuleResolve(dirName, source));
+  // The returned value will be written into comp.json in `usingComponents`, which is under the same directory as miniapp-compiled
+  return `./${filepath.substring(filepath.indexOf(MINIAPP_COMPILED_DIR))}`;
+}
+
+
+/**
+ * Judge if the file is rax miniapp compiled component
+ * @param {string} filePath
+ */
+function isMiniappCompiledFilePath(filePath) {
+  return filePath.indexOf(MINIAPP_COMPILED_DIR) !== -1;
+}
+
+/**
  * Judge if the str is regexp
  * @param {string} str
  */
@@ -116,12 +142,12 @@ module.exports = function visitor(
       ImportDeclaration: {
         enter(path, { filename }) {
           const { specifiers, source } = path.node;
-          if (Array.isArray(specifiers) && t.isStringLiteral(source)) {
+          // Don't scan files in miniapp-compiled directory
+          if (Array.isArray(specifiers) && t.isStringLiteral(source) && !isMiniappCompiledFilePath(filename)) {
             const dirName = dirname(filename);
-            const filePath = getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies);
-
-            // ignore
-            // import { a, b } from 'xxx';
+            const filePath = getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies) || getCompiledComponentsPath(dirName, source.value);
+            // TODO:
+            // Temporarily ignore import { a, b } from 'xxx';
             if (filePath && hasDefaultSpecifier(specifiers, t)) {
               if (!scanedPageMap[filename]) {
                 scanedPageMap[filename] = true;
