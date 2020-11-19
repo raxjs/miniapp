@@ -104,9 +104,9 @@ module.exports = (
   }
 
   config.devServer.writeToDisk(true).noInfo(true).inline(false);
-  config.devtool('none');
-
-  if (command === 'start') {
+  if (!config.get('devtool')) {
+    config.devtool(false);
+  } else if (command === 'start') {
     config.devtool('inline-source-map');
   }
 };
