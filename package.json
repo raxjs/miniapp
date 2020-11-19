@@ -15,6 +15,7 @@
     "@babel/preset-env": "7.2.0",
     "@babel/preset-flow": "7.0.0",
     "@babel/preset-react": "7.0.0",
+    "@iceworks/spec": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
     "axios": "^0.20.0",

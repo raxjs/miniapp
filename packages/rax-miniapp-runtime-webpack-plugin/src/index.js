@@ -1,5 +1,8 @@
-const { resolve, join } = require('path');
+const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
+const execa = require('execa');
+const { checkAliInternal } = require('ice-npm-utils');
+const isEqual = require('lodash.isequal');
 const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
@@ -33,7 +36,11 @@ class MiniAppRuntimePlugin {
     const target = this.target;
     const { nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], command } = options;
     let isFirstRender = true;
-    let lastUseComponentCount = 0; // Record native component and plugin component used count last time
+    let lastUsingComponents = {};
+    let lastUsingPlugins = {};
+    let needAutoInstallDependency = false;
+    let isAliInternal;
+    let npmRegistry;
 
     // Execute when compilation created
     compiler.hooks.compilation.tap(PluginName, (compilation) => {
@@ -56,22 +63,21 @@ class MiniAppRuntimePlugin {
       ).map((filePath) => {
         return filePath.replace(sourcePath, '');
       });
-      const usePluginComponentCount = Object.keys(usingPlugins).length;
       const useNativeComponentCount = Object.keys(usingComponents).length;
 
-      let useComponentCountChanged = false;
+      let useComponentChanged = false;
       if (!isFirstRender) {
-        useComponentCountChanged = useNativeComponentCount !== lastUseComponentCount;
+        useComponentChanged = !isEqual(usingComponents, lastUsingComponents) || !isEqual(usingPlugins, lastUsingPlugins);
       }
-      lastUseComponentCount = useNativeComponentCount + usePluginComponentCount;
-      const useComponent = lastUseComponentCount > 0;
+      lastUsingComponents = Object.assign({}, usingComponents);
+      lastUsingPlugins = Object.assign({}, usingPlugins);
+      const useComponent = Object.keys(lastUsingPlugins).length + Object.keys(lastUsingComponents).length > 0;
 
 
       // Collect asset
       routes
         .forEach(({ entryName }) => {
           pages.push(entryName);
-          const assets = { js: [], css: [] };
           let pageConfig = {};
           const pageConfigPath = resolve(outputPath, entryName + '.json');
           if (existsSync(pageConfigPath)) {
@@ -91,7 +97,7 @@ class MiniAppRuntimePlugin {
           }
 
           // xml/css/json file need be written in first render or using native component state changes
-          if (isFirstRender || useComponentCountChanged) {
+          if (isFirstRender || useComponentChanged) {
             // Page xml
             generatePageXML(compilation, entryName, useComponent, {
               target,
@@ -128,7 +134,7 @@ class MiniAppRuntimePlugin {
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
-        generateRender(compilation, { target, command, rootDir });
+        generateRender(compilation, { target, command, rootDir: options.rootDir });
       }
 
       // Collect app.js
@@ -153,7 +159,7 @@ class MiniAppRuntimePlugin {
       }
 
       // These files need be written in first render and using native component state changes
-      if (isFirstRender || useComponentCountChanged) {
+      if (isFirstRender || useComponentChanged) {
         // Config js
         generateConfig(compilation, {
           usingComponents,
@@ -172,6 +178,7 @@ class MiniAppRuntimePlugin {
             command,
             rootDir,
           });
+          needAutoInstallDependency = true;
         }
 
         if (target !== MINIAPP || useComponent) {
@@ -210,6 +217,27 @@ class MiniAppRuntimePlugin {
 
       isFirstRender = false;
       callback();
+    });
+    compiler.hooks.done.tapAsync(PluginName, async(stats, callback) => {
+      if (!needAutoInstallDependency) {
+        return callback();
+      }
+      if (isAliInternal === undefined) {
+        isAliInternal = await checkAliInternal();
+        npmRegistry = isAliInternal ? 'https://registry.npm.alibaba-inc.com' : 'https://registry.npm.taobao.org';
+      }
+      const distDir = stats.compilation.outputOptions.path;
+      execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd: distDir }).then(({ exitCode }) => {
+        if (!exitCode) {
+          callback();
+        } else {
+          console.log(`\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`);
+          callback();
+        }
+      }).catch(() => {
+        console.log(`\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`);
+        callback();
+      });
     });
   }
 }

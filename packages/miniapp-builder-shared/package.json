@@ -1,9 +1,9 @@
 {
   "name": "miniapp-builder-shared",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "miniapp project builder shared lib",
   "author": "Rax Team",
-  "homepage": "https://github.com/alibaba/rax#readme",
+  "homepage": "https://github.com/raxjs/miniapp#readme",
   "license": "BSD-3-Clause",
   "main": "src/index.js",
   "directories": {

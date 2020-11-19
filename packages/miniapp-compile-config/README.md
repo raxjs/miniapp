@@ -9,7 +9,7 @@
 | ---------- | ------ | ------ | ---- | ------------------------------------------------------------ |
 | config     | object | -      | ✔️    | webpack chain config                                         |
 | userConfig | object | {}     |  ✘   | 当前小程序平台的用户配置，例如 `{ nativeConfig: { appId: 123 } }` |
-| options    | object | -      | ✔️    | options 子项见下表     
+| options    | object | -      | ✔️    | options 子项见下表
 
 
 ##### options 子项
@@ -30,7 +30,7 @@
 | ---------- | ------ | ------ | ---- | ------------------------------------------------------------ |
 | config     | object | -      | ✔️    | webpack chain config                                         |
 | userConfig | object | {}     |  ✘   | 当前小程序平台的用户配置，例如 `{ nativeConfig: { appId: 123 } }` |
-| options    | object | -      | ✔️    | options 子项见下表     
+| options    | object | -      | ✔️    | options 子项见下表
 
 
 ##### options 子项
@@ -39,7 +39,6 @@
 | ------------- | ------ | ------ | ---- | ------------------------------------------------------------ |
 | context       | object | -      | ✔️    | build plugin 上下文变量，包含运行时的各种环境信息            |
 | target        | string | -      | ✔️    | 构建的小程序平台类型，例如 `miniapp`/`wechat-miniprogram`    |
-| onGetWebpackConfig | function | -      | ✔️      | 在工程获取 webpack 时触发的函数，可以在 build plugin 的 api 中获取  |
 | entryPath       | string | -      | ✔️    | 入口路径           |
 | outputPath        | string | -      | ✔️    | 输出路径    |
 
