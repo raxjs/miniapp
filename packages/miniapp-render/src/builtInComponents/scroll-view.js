@@ -42,7 +42,7 @@ if (isWeChatMiniProgram) {
       name: 'onScrollViewRefresherAbort',
       eventName: 'refresherabort'
     },
-  ])
+  ]);
 }
 
 export default ScrollView;
