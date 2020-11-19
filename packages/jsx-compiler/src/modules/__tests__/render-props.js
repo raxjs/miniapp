@@ -7,6 +7,7 @@ const adapter = require('../../adapter').ali;
 const createJSX = require('../../utils/createJSX');
 const createBinding = require('../../utils/createBinding');
 const genExpression = require('../../codegen/genExpression');
+const getDefaultComponentFunctionPath = require('../../utils/getDefaultComponentFunctionPath');
 
 describe('Pass render props', () => {
   it('basic render props usage', () => {
@@ -112,18 +113,4 @@ function transformReturnPath(path) {
   return createJSX('block', {
     [adapter.if]: t.stringLiteral(createBinding('$ready')),
   }, [returnArgument]);
-}
-
-function getDefaultComponentFunctionPath(path) {
-  let defaultComponentFunctionPath = null;
-  traverse(path, {
-    ExportDefaultDeclaration(exportDefaultPath) {
-      const declarationPath = exportDefaultPath.get('declaration');
-      if (declarationPath.isFunctionDeclaration()) {
-        defaultComponentFunctionPath = declarationPath;
-      }
-    }
-  });
-
-  return defaultComponentFunctionPath;
 }
