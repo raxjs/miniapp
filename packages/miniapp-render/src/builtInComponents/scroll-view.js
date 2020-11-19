@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isWeChatMiniProgram } from 'universal-env';
+
 const ScrollView = {
   name: 'scroll-view',
   singleEvents: [{
@@ -20,5 +23,26 @@ const ScrollView = {
     }
   ]
 };
+
+if (isWeChatMiniProgram) {
+  ScrollView.singleEvents = ScrollView.singleEvents.concat([
+    {
+      name: 'onScrollViewRefresherPulling',
+      eventName: 'refresherpulling'
+    },
+    {
+      name: 'onScrollViewRefresherRefresh',
+      eventName: 'refresherrefresh'
+    },
+    {
+      name: 'onScrollViewRefresherRestore',
+      eventName: 'refresherrestore'
+    },
+    {
+      name: 'onScrollViewRefresherAbort',
+      eventName: 'refresherabort'
+    },
+  ]);
+}
 
 export default ScrollView;
