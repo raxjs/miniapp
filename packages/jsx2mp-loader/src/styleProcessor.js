@@ -18,7 +18,8 @@ async function compileCSS(cssType, content, filename) {
     case 'sass':
     case 'scss':
       processedContent = sass.renderSync({
-        file: filename
+        file: filename,
+        includePaths: ['node_modules']
       }).css.toString();
       break;
     case 'styl':
