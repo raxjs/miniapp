@@ -3,7 +3,7 @@ const enhancedResolve = require('enhanced-resolve');
 const chalk = require('chalk');
 
 const { QUICKAPP } = require('./constants');
-const { isNpmModule, isWeexModule, isQuickAppModule, isRaxModule, isJsx2mpRuntimeModule, isNodeNativeModule } = require('./utils/judgeModule');
+const { isNpmModule, isWeexModule, isQuickAppModule, isRaxModule, isRaxAppModule, isJsx2mpRuntimeModule, isNodeNativeModule } = require('./utils/judgeModule');
 const { addRelativePathPrefix, normalizeOutputFilePath, removeExt } = require('./utils/pathHelper');
 const getAliasCorrespondingValue = require('./utils/getAliasCorrespondingValue');
 
@@ -80,7 +80,7 @@ module.exports = function visitor({ types: t }, options) {
             return;
           }
 
-          if (isRaxModule(value)) {
+          if (isRaxModule(value) || isRaxAppModule(value)) {
             const runtimePath = disableCopyNpm ? getRuntimeByPlatform(platform.type) : getRuntimeRelativePath(distSourcePath, outputPath);
             path.node.source = t.stringLiteral(runtimePath);
             transformPathMap[runtimePath] = true;
@@ -141,7 +141,7 @@ module.exports = function visitor({ types: t }, options) {
                 return;
               }
 
-              if (isRaxModule(moduleName)) {
+              if (isRaxModule(moduleName) || isRaxAppModule(moduleName)) {
                 const runtimePath = disableCopyNpm ? getRuntimeByPlatform(platform.type) : getRuntimeRelativePath(distSourcePath, outputPath);
                 path.node.arguments = [
                   t.stringLiteral(runtimePath)
