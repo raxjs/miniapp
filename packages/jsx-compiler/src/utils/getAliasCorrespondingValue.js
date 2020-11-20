@@ -1,4 +1,5 @@
 const { join, isAbsolute, relative, dirname } = require('path');
+const { addRelativePathPrefix } = require('./pathHelper');
 
 const ALIAS_TYPE = {
   // react -> rax
@@ -38,11 +39,11 @@ function getAliasCorrespondingValue(aliasEntries = {}, value = '', resourcePath 
         replacedValue = aliasEntries[value];
         break;
       case ALIAS_TYPE.PATH:
-        replacedValue = relative(dirname(resourcePath), aliasEntries[value]);
+        replacedValue = addRelativePathPrefix(relative(dirname(resourcePath), aliasEntries[value]));
         break;
       case ALIAS_TYPE.COMPLEX_PATH:
         const realAbsolutePath = join(aliasEntries[correspondingAlias], value.replace(correspondingAlias, ''));
-        replacedValue = relative(dirname(resourcePath), realAbsolutePath);
+        replacedValue = addRelativePathPrefix(relative(dirname(resourcePath), realAbsolutePath));
         break;
     }
     return replacedValue;
