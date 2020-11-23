@@ -7,6 +7,8 @@ const adapter = require('../../adapter').ali;
 const createJSX = require('../../utils/createJSX');
 const createBinding = require('../../utils/createBinding');
 const genExpression = require('../../codegen/genExpression');
+const getDefaultComponentFunctionPath = require('../../utils/getDefaultComponentFunctionPath');
+
 
 describe('Render item function', () => {
   it('should transform this.renderItem function', () => {
@@ -154,18 +156,4 @@ function getRenderMethodPath(path) {
   });
 
   return renderMethodPath;
-}
-
-function getDefaultComponentFunctionPath(path) {
-  let defaultComponentFunctionPath = null;
-  traverse(path, {
-    ExportDefaultDeclaration(exportDefaultPath) {
-      const declarationPath = exportDefaultPath.get('declaration');
-      if (declarationPath.isFunctionDeclaration()) {
-        defaultComponentFunctionPath = declarationPath;
-      }
-    }
-  });
-
-  return defaultComponentFunctionPath;
 }
