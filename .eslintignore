@@ -8,3 +8,4 @@ expected
 website
 gh-pages
 vendors
+*.ejs
