@@ -1,5 +1,7 @@
 const ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
 const { RawSource, ConcatSource } = require('webpack-sources');
+const { readFileSync } = require('fs-extra');
+const { resolve } = require('path');
 const adjustCSS = require('../utils/adjustCSS');
 const adapter = require('../adapter');
 const { WECHAT_MINIPROGRAM } = require('../constants');
@@ -11,13 +13,18 @@ const matchFile = (fileName, ext) =>
   );
 
 // Add content to chunks head and tail
-module.exports = function(compilation, chunks, target) {
+module.exports = function(compilation, chunks, rootDir, target) {
+  const FunctionPolyfill = readFileSync(
+    resolve(rootDir, 'templates', 'FunctionPolyfill.js.ejs'),
+    'utf-8'
+  );
   chunks.forEach((chunk) => {
     chunk.files.forEach((fileName) => {
       if (matchFile(fileName, 'js')) {
         // Page js
         const headerContent =
-          'module.exports = function(window, document) {const HTMLElement = window["HTMLElement"];';
+          `${FunctionPolyfill}
+          module.exports = function(window, document) {const HTMLElement = window["HTMLElement"];`;
 
         const footerContent = '}';
 
