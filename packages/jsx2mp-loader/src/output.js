@@ -87,7 +87,7 @@ function output(content, raw, options) {
       code = transformCode(code,
         mode,
         externalPlugins.concat([require('@babel/plugin-proposal-class-properties')]),
-        ).code;
+      ).code;
       // Add source map
       if (map) {
         code = addSourceMap(code, raw, map);
@@ -253,4 +253,4 @@ function writeFileWithDirCheck(filePath, content, { type = 'file', rootDir }) {
 module.exports = {
   output,
   transformCode
-}
+};
