@@ -48,7 +48,7 @@ class MiniAppRuntimePlugin {
       compilation.hooks.optimizeChunkAssets.tapAsync(
         PluginName,
         (chunks, callback) => {
-          wrapChunks(compilation, chunks, target);
+          wrapChunks(compilation, chunks, rootDir, target);
           callback();
         }
       );
