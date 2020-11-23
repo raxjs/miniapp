@@ -84,7 +84,10 @@ function output(content, raw, options) {
     template && (template = minifyXML(template));
   } else {
     if (code) {
-      code = transformCode(code, mode, externalPlugins).code;
+      code = transformCode(code,
+        mode,
+        externalPlugins.concat([require('@babel/plugin-proposal-class-properties')]),
+        ).code;
       // Add source map
       if (map) {
         code = addSourceMap(code, raw, map);
@@ -247,4 +250,7 @@ function writeFileWithDirCheck(filePath, content, { type = 'file', rootDir }) {
   }
 }
 
-module.exports = output;
+module.exports = {
+  output,
+  transformCode
+}
