@@ -7,7 +7,7 @@ const eliminateDeadCode = require('./utils/dce');
 const defaultStyle = require('./defaultStyle');
 const { QUICKAPP } = require('./constants');
 const processCSS = require('./styleProcessor');
-const output = require('./output');
+const { output } = require('./output');
 const { isTypescriptFile } = require('./utils/judgeModule');
 const parse = require('./utils/parseRequest');
 

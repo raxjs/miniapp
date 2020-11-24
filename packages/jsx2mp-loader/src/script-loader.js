@@ -7,7 +7,7 @@ const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPref
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
-const output = require('./output');
+const { output, transformCode } = require('./output');
 const { QUICKAPP } = require('./constants');
 
 const ScriptLoader = __filename;
@@ -247,6 +247,10 @@ module.exports = function scriptLoader(content) {
     ].join('\n');
   } else {
     !isAppJSon && outputFile(rawContent, false);
+    return transformCode(
+      rawContent, mode,
+      [ require('@babel/plugin-proposal-class-properties') ]
+    ).code; // For normal js file, syntax like class properties can't be parsed without babel plugins
   }
 
   return isJSON ? '{}' : content;

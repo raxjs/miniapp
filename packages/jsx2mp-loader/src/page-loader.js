@@ -6,7 +6,7 @@ const cached = require('./cached');
 const { removeExt, isFromTargetDirs, doubleBackslash, normalizeOutputFilePath, addRelativePathPrefix, getHighestPriorityPackage } = require('./utils/pathHelper');
 const eliminateDeadCode = require('./utils/dce');
 const processCSS = require('./styleProcessor');
-const output = require('./output');
+const { output } = require('./output');
 const { isTypescriptFile } = require('./utils/judgeModule');
 const parse = require('./utils/parseRequest');
 
