@@ -1,13 +1,11 @@
 const t = require('@babel/types');
 
-
 /**
  * Check whether the bindingName has default assignment
  * @param bindingPath
  * @param bindingName
  */
 function hasDefaultAssignment(bindingPath, bindingName) {
-
   const id = bindingPath.get('id');
   if (t.isObjectPattern(id)) {
     const properties = id.get('properties');
@@ -40,7 +38,7 @@ module.exports = function isDerivedFromProps(scope, bindingName, excludeAssignme
         return true;
       }
     }
-    if (init.isIdentifier()) {  // props
+    if (init.isIdentifier()) { // props
       if (init.node.name === 'props') {
         return true;
       }
