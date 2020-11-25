@@ -173,7 +173,7 @@ function transformTemplate(
               expression,
               dynamicValue,
               isDirective,
-              isDerivedFromProps(renderFunctionPath.scope, expression.name, true)
+              isDerivedFromProps(renderFunctionPath.scope, expression.name, { excludeAssignment: true, isRecursion: false })
             );
             path.replaceWith(
               t.stringLiteral(createBinding(genExpression(replaceNode))),
@@ -189,7 +189,7 @@ function transformTemplate(
               expression,
               dynamicValue,
               isDirective,
-              isDerivedFromProps(renderFunctionPath.scope, expression.name, true)
+              isDerivedFromProps(renderFunctionPath.scope, expression.name, { excludeAssignment: true, isRecursion: false })
             );
             path.replaceWith(createJSXBinding(genExpression(replaceNode)));
           }

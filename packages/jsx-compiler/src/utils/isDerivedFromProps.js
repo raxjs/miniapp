@@ -17,13 +17,16 @@ function hasDefaultAssignment(bindingPath, bindingName) {
   }
   return false;
 }
+
 /**
  * Judge whether a variable is derived from props
- * @param scope
- * @param bindingName
- * @param excludeAssignment If the variable has default assignment, then should not identify it
+ * @param {object} scope
+ * @param {string} bindingName
+ * @param {object} options
+ * @param {object} options.excludeAssignment If set true, then should not identify the variable if the variable has default assignment
+ * @param isRecursion whether search varibales recursively
  */
-module.exports = function isDerivedFromProps(scope, bindingName, excludeAssignment = false) {
+module.exports = function isDerivedFromProps(scope, bindingName, { excludeAssignment = false, isRecursion = true }) {
   const binding = scope.getBinding(bindingName);
   if (binding && binding.path.isVariableDeclarator()) {
     if (excludeAssignment) {
@@ -42,7 +45,7 @@ module.exports = function isDerivedFromProps(scope, bindingName, excludeAssignme
       if (init.node.name === 'props') {
         return true;
       }
-      return isDerivedFromProps(scope, init.node.name, excludeAssignment);
+      return isRecursion ? isDerivedFromProps(scope, init.node.name, excludeAssignment) : false;
     }
   }
   return false;
