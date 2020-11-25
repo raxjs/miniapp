@@ -57,7 +57,7 @@ function transformRenderPropsFunction(ast, renderFunctionPath, code) {
         const { callee } = node;
         // Handle render props
         // e.g. this.props.renderCat()
-        if (t.isIdentifier(callee) && callee.name.startsWith('render') && isDerivedFromProps(renderFunctionPath.scope, callee.name)) {
+        if (t.isIdentifier(callee) && callee.name.startsWith('render') && isDerivedFromProps(renderFunctionPath.scope, callee.name, {})) {
           if (!path.parentPath.isJSXExpressionContainer()) {
             throw new CodeError(code, node, node.loc, 'render props can only be used in JSX expression container');
           }

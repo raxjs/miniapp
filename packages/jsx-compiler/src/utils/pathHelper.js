@@ -1,6 +1,6 @@
 const { sep } = require('path');
 
-const SCRIPT_FILE_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx'];
+const SCRIPT_FILE_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx', '.json'];
 
 function getNpmName(value) {
   const isScopedNpm = /^_?@/.test(value);
