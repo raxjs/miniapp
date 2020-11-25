@@ -251,7 +251,7 @@ module.exports = function scriptLoader(content) {
   }
 
   return isJSON ? '{}' : transformCode(
-    rawContent, mode,
+    content, mode,
     [ require('@babel/plugin-proposal-class-properties') ]
   ).code; // For normal js file, syntax like class properties can't be parsed without babel plugins
 };
