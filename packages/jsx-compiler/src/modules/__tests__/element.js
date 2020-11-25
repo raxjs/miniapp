@@ -74,6 +74,26 @@ describe('Transform JSXElement', () => {
       expect(code).toEqual('<View foo="{{bar}}">{{ bar }}</View>');
     });
 
+    it('props identifier with default assignment', () => {
+      const sourceCode = '<View foo={bar}>{ bar }</View>';
+      const ast = parseExpression(sourceCode);
+      const functionComponentAst = parseCode(`
+      export default function Component(props) {
+        const { bar = true } = props;
+        return (<View foo={bar}>{ bar }</View>);
+      }
+      `);
+      const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
+      const dynamicValue = new DynamicBinding('_d');
+      _transform({
+        templateAST: ast,
+        dynamicValue,
+        renderFunctionPath
+      }, adapter, sourceCode);
+      const code = genInlineCode(ast).code;
+      expect(code).toEqual('<View foo="{{_d0}}">{{ _d0 }}</View>');
+    });
+
     it('should handle literial types', () => {
       const sourceCode = `
         <View
