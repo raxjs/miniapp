@@ -7,7 +7,7 @@ const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPref
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
-const output = require('./output');
+const { output, transformCode } = require('./output');
 const { QUICKAPP } = require('./constants');
 
 const ScriptLoader = __filename;
@@ -27,10 +27,11 @@ module.exports = function scriptLoader(content) {
   const loaderOptions = getOptions(this);
   const { rootDir, disableCopyNpm, outputPath, mode, entryPath, platform, importedComponent = '', isRelativeMiniappComponent = false, aliasEntries, constantDir } = loaderOptions;
   const rootContext = this.rootContext;
+  const isJSON = isJSONFile(this.resourcePath);
   const isAppJSon = this.resourcePath === join(rootContext, 'src', 'app.json');
-  const isJSON = !isAppJSon && isJSONFile(this.resourcePath);
+  const isCommonJSON = isJSON && !isAppJSon;
 
-  const rawContent = isJSON ? content : readFileSync(this.resourcePath, 'utf-8');
+  const rawContent = isCommonJSON ? content : readFileSync(this.resourcePath, 'utf-8');
   const nodeModulesPathList = getNearestNodeModulesPath(rootContext, this.resourcePath);
   const currentNodeModulePath = nodeModulesPathList[nodeModulesPathList.length - 1];
   const rootNodeModulePath = join(rootContext, 'node_modules');
@@ -149,7 +150,7 @@ module.exports = function scriptLoader(content) {
 
   if (isFromNodeModule(this.resourcePath)) {
     if (disableCopyNpm) {
-      return isJSON ? '{}' : content;
+      return isCommonJSON ? '{}' : content;
     }
     const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
     const npmFolderName = getNpmFolderName(relativeNpmPath);
@@ -245,11 +246,14 @@ module.exports = function scriptLoader(content) {
       generateDependencies(dependencies),
       content
     ].join('\n');
-  } else {
-    !isAppJSon && outputFile(rawContent, false);
+  } else if (!isAppJSon) {
+    outputFile(rawContent, false);
   }
 
-  return isJSON ? '{}' : content;
+  return isJSON ? '{}' : transformCode(
+    rawContent, mode,
+    [ require('@babel/plugin-proposal-class-properties') ]
+  ).code; // For normal js file, syntax like class properties can't be parsed without babel plugins
 };
 
 /**

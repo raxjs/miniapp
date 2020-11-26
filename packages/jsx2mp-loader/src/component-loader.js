@@ -9,7 +9,7 @@ const { isTypescriptFile } = require('./utils/judgeModule');
 const parse = require('./utils/parseRequest');
 
 const processCSS = require('./styleProcessor');
-const output = require('./output');
+const { output } = require('./output');
 
 const ScriptLoader = require.resolve('./script-loader');
 const MINIAPP_PLUGIN_COMPONENTS_REG = /^plugin\:\/\//;

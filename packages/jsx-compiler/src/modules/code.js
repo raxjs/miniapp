@@ -122,9 +122,7 @@ module.exports = {
     renameAppConfig(ast, sourcePath, resourcePath);
 
     if (!disableCopyNpm) {
-      const currentNodeModulePath = join(sourcePath, 'npm');
-      const npmRelativePath = relative(dirname(resourcePath), currentNodeModulePath);
-      renameNpmModules(ast, npmRelativePath, resourcePath, cwd);
+      renameNpmModules(ast, targetFileDir, outputPath, cwd);
     }
 
     if (type !== 'app') {
@@ -287,8 +285,8 @@ function ensureIndexPathInImports(ast, resourcePath) {
   });
 }
 
-function renameNpmModules(ast, npmRelativePath, filename, cwd) {
-  const source = (value, prefix, filename, rootContext) => {
+function renameNpmModules(ast, targetFileDir, outputPath, cwd) {
+  const source = (value, targetFileDir, outputPath, rootContext) => {
     const npmName = getNpmName(value);
     const nodeModulePath = join(rootContext, 'node_modules');
     const searchPaths = [nodeModulePath];
@@ -308,9 +306,9 @@ function renameNpmModules(ast, npmRelativePath, filename, cwd) {
 
     let ret;
     if (npmName === value) {
-      ret = join(prefix, realNpmName, modulePathSuffix);
+      ret = relative(targetFileDir, join(outputPath, 'npm', realNpmName, modulePathSuffix));
     } else {
-      ret = join(prefix, value.replace(npmName, realNpmName));
+      ret = relative(targetFileDir, join(outputPath, 'npm', value.replace(npmName, realNpmName)));
     }
     ret = addRelativePathPrefix(normalizeOutputFilePath(ret));
     // ret => '../npm/_ali/universal-toast/lib/index.js
@@ -324,7 +322,7 @@ function renameNpmModules(ast, npmRelativePath, filename, cwd) {
       if (isWeexModule(value)) {
         path.remove();
       } else if (isNpmModule(value)) {
-        path.node.source = source(value, npmRelativePath, filename, cwd);
+        path.node.source = source(value, targetFileDir, outputPath, cwd);
       }
     }
   });
