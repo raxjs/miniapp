@@ -116,7 +116,7 @@ module.exports = {
     const targetFileDir = dirname(join(outputPath, relative(sourcePath, resourcePath)));
     const runtimePath = getRuntimePath(outputPath, targetFileDir, platform, disableCopyNpm);
     removeRaxImports(ast);
-    ensureIndexPathInImports(ast, resourcePath); // In WeChat miniapp, `require` can't get index file if index is omitted
+    ensureIndexPathInImports(ast, sourcePath, resourcePath); // In WeChat miniapp, `require` can't get index file if index is omitted
     renameCoreModule(ast, runtimePath);
     renameFileModule(ast);
     renameAppConfig(ast, sourcePath, resourcePath);
@@ -263,8 +263,7 @@ function renameAppConfig(ast, sourcePath, resourcePath) {
     ImportDeclaration(path) {
       const source = path.get('source');
       if (source.isStringLiteral()) {
-        const appConfigSourcePath = join(resourcePath, '..', source.node.value);
-        if (appConfigSourcePath === join(sourcePath, 'app.json')) {
+        if (isImportAppJSON(source.node.value, resourcePath, sourcePath)) {
           const replacement = source.node.value.replace(/app\.json/, 'app.config.js');
           source.replaceWith(t.stringLiteral(replacement));
         }
@@ -273,11 +272,11 @@ function renameAppConfig(ast, sourcePath, resourcePath) {
   });
 }
 
-function ensureIndexPathInImports(ast, resourcePath) {
+function ensureIndexPathInImports(ast, sourcePath, resourcePath) {
   traverse(ast, {
     ImportDeclaration(path) {
       const source = path.get('source');
-      if (source.isStringLiteral() && isRelativeImport(source.node.value)) {
+      if (source.isStringLiteral() && isRelativeImport(source.node.value) && !isImportAppJSON(source.node.value, resourcePath, sourcePath)) {
         const replacement = ensureIndexInPath(source.node.value, resourcePath);
         source.replaceWith(t.stringLiteral(replacement));
       }
@@ -593,4 +592,14 @@ function removeJSExtension(filePath) {
     return filePath.slice(0, filePath.length - ext.length);
   }
   return filePath;
+}
+/**
+ * check whether import app.json
+ * @param {string} mod imported module name
+ * @param {string} resourcePath current file path
+ * @param {string} sourcePath src path
+ */
+function isImportAppJSON(mod, resourcePath, sourcePath) {
+  const appConfigSourcePath = join(sourcePath, 'app.json');
+  return resolve(dirname(resourcePath), mod) === appConfigSourcePath;
 }
