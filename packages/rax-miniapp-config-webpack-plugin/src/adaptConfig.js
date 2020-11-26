@@ -63,10 +63,26 @@ const configKeyMap = {
 const configValueMap = {
   [MINIAPP]: {
     window: {
-      pullRefresh: {
+      allowsBounceVertical: {
         true: 'YES',
         false: 'NO'
-      }
+      },
+      titlePenetrate: {
+        true: 'YES',
+        false: 'NO'
+      },
+      showTitleLoading: {
+        true: 'YES',
+        false: 'NO'
+      },
+      gestureBack: {
+        true: 'YES',
+        false: 'NO'
+      },
+      enableScrollBar: {
+        true: 'YES',
+        false: 'NO'
+      },
     }
   }
 };
