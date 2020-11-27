@@ -12,7 +12,7 @@ const AppLoader = require.resolve('jsx2mp-loader/src/app-loader');
 const PageLoader = require.resolve('jsx2mp-loader/src/page-loader');
 
 const setBaseConfig = require('./setBaseConfig');
-const setEntry = require('./setEntry');
+const { setEntry, setMultiplePackageEntry } = require('./setEntry');
 
 module.exports = (
   config,
@@ -30,7 +30,15 @@ module.exports = (
 
   const appConfig = getAppConfig(rootDir, target);
 
-  setEntry(config, appConfig.routes, { entryPath, rootDir, target });
+  const useSubPackages = !!appConfig.applications;
+
+  const subAppConfigList = [];
+
+  if (useSubPackages) {
+    setMultiplePackageEntry(config, appConfig.applications, { entryPath, rootDir, target, subAppConfigList });
+  } else {
+    setEntry(config, appConfig.routes, { entryPath, rootDir });
+  }
 
   // Set constantDir
   // `public` directory is the default static resource directory
@@ -98,8 +106,9 @@ module.exports = (
   config.plugin('miniAppConfig').use(MiniAppConfigPlugin, [
     {
       type: 'complie',
+      useSubPackages,
       appConfig,
-      getAppConfig,
+      subAppConfigList,
       outputPath,
       target,
       nativeConfig: userConfig.nativeConfig,

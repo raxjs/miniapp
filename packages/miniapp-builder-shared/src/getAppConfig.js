@@ -8,15 +8,17 @@ const {
   getRelativePath
 } = require('./pathHelper');
 
-module.exports = (rootDir, target, nativeLifeCycleMap) => {
-  const entryPath = join(rootDir, 'src');
+module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
+  const entryPath = join(rootDir, 'src', subAppRoot);
 
-  const appConfig = readJSONSync(resolve(rootDir, 'src', 'app.json'));
+  const appConfig = readJSONSync(resolve(rootDir, 'src', subAppRoot, 'app.json'));
   appConfig.pages = [];
   const routes = [];
   const pagesMap = {};
 
-  if (!Array.isArray(appConfig.routes)) {
+  if (!appConfig.routes) appConfig.routes = [];
+
+  if (appConfig.routes && !Array.isArray(appConfig.routes)) {
     throw new Error('routes in app.json must be array');
   }
 
