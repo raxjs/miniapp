@@ -60,7 +60,7 @@ module.exports = class MiniAppConfigPlugin {
       }
       safeWriteFile(join(outputPath, 'app.json'), config, true);
       if (type === 'complie') {
-        //TODO: 处理路由相关内容，runApp in jsx2mp-runtime
+        // TODO: 处理路由相关内容，runApp in jsx2mp-runtime
         safeWriteFile(join(outputPath, target === 'quickapp' ? 'appConfig.js' : 'app.config.js'), `module.exports = ${JSON.stringify(appConfig, null, 2)}`);
       }
 

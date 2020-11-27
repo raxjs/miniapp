@@ -56,4 +56,4 @@ function setMultiplePackageEntry(config, applications, options) {
 module.exports = {
   setEntry,
   setMultiplePackageEntry
-}
+};
