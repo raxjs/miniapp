@@ -104,7 +104,7 @@ module.exports = function adaptConfig(originalConfig, property, target) {
     ) {
       key = configKeyAdapter[configKey];
     }
-    if (configValueAdapter && configValueAdapter[configKey]) {
+    if (configValueAdapter && configValueAdapter[configKey] && configValueAdapter[configKey][value] !== undefined) {
       value = configValueAdapter[configKey][value];
     }
     config[key] = value;
