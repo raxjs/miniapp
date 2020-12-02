@@ -14,7 +14,7 @@ module.exports = class MiniAppConfigPlugin {
   apply(compiler) {
     // Currently there is no watch app.json capacity, so use first render flag handle repeatly write config
     let isFirstRender = true;
-    let { useSubPackages, outputPath, appConfig, subAppConfigList, target, type, nativeConfig } = this.options;
+    let { subPackages, outputPath, appConfig, subAppConfigList, target, type, nativeConfig } = this.options;
     compiler.hooks.beforeCompile.tapAsync(PluginName, (compilation, callback) => {
       if (isFirstRender) {
         transformConfig(compilation, callback);
@@ -26,11 +26,11 @@ module.exports = class MiniAppConfigPlugin {
 
     function transformConfig(compilation, callback) {
       const config = transformAppConfig(outputPath, appConfig, target);
-      if (useSubPackages) {
+      if (subPackages) {
         // Transform subpackages
         config.subPackages = subAppConfigList
           .filter(subAppConfig => !subAppConfig.main)
-          .map(subAppConfig => transformAppConfig(outputPath, subAppConfig, target, useSubPackages));
+          .map(subAppConfig => transformAppConfig(outputPath, subAppConfig, target, subPackages));
 
         // Transform main package pages
         const mainPackageConfig = subAppConfigList.filter(subAppConfig => subAppConfig.main)[0];

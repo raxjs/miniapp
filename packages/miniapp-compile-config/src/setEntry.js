@@ -41,13 +41,14 @@ function setEntry(config, routes, options) {
   configEntry(config, routes, options);
 }
 
-function setMultiplePackageEntry(config, applications, options) {
+function setMultiplePackageEntry(config, routes, options) {
   const { entryPath, rootDir, target, subAppConfigList } = options;
   clearEntry(config);
-  applications.forEach(app => {
-    const subAppConfig = getAppConfig(rootDir, target, null, app.source);
-    configEntry(config, subAppConfig.routes, { entryPath, rootDir, subAppRoot: app.source });
-    subAppConfig.subAppRoot = app.source;
+  routes.forEach(app => {
+    const subAppRoot = dirname(app.source);
+    const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
+    configEntry(config, subAppConfig.routes, { entryPath, rootDir, subAppRoot });
+    subAppConfig.subAppRoot = subAppRoot;
     subAppConfig.main = app.main;
     subAppConfigList.push(subAppConfig);
   });

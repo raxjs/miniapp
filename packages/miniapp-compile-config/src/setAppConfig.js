@@ -24,18 +24,17 @@ module.exports = (
     disableCopyNpm = false,
     turnOffSourceMap = false,
     constantDir = [],
+    subPackages = false
   } = userConfig;
   const { rootDir, command } = context;
   const mode = command;
 
   const appConfig = getAppConfig(rootDir, target);
 
-  const useSubPackages = !!appConfig.applications;
-
   const subAppConfigList = [];
 
-  if (useSubPackages) {
-    setMultiplePackageEntry(config, appConfig.applications, { entryPath, rootDir, target, subAppConfigList });
+  if (subPackages) {
+    setMultiplePackageEntry(config, appConfig.routes, { entryPath, rootDir, target, subAppConfigList });
   } else {
     setEntry(config, appConfig.routes, { entryPath, rootDir });
   }
@@ -106,7 +105,7 @@ module.exports = (
   config.plugin('miniAppConfig').use(MiniAppConfigPlugin, [
     {
       type: 'complie',
-      useSubPackages,
+      subPackages,
       appConfig,
       subAppConfigList,
       outputPath,
