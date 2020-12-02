@@ -48,7 +48,6 @@ function setMultiplePackageEntry(config, routes, options) {
     const subAppRoot = dirname(app.source);
     const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
     configEntry(config, subAppConfig.routes, { entryPath, rootDir, subAppRoot });
-    subAppConfig.subAppRoot = subAppRoot;
     subAppConfig.main = app.main;
     subAppConfigList.push(subAppConfig);
   });

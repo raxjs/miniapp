@@ -16,7 +16,7 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
   const routes = [];
   const pagesMap = {};
 
-  if (appConfig.routes && !Array.isArray(appConfig.routes)) {
+  if (!Array.isArray(appConfig.routes)) {
     throw new Error('routes in app.json must be array');
   }
 
@@ -51,6 +51,8 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
   }
 
   appConfig.routes = routes;
+
+  if (subAppRoot) appConfig.subAppRoot = subAppRoot;
 
   return appConfig;
 };
