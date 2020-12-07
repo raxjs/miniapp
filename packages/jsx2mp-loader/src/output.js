@@ -16,7 +16,7 @@ function transformCode(rawContent, mode, externalPlugins = [], externalPreset = 
       }
     ],
     [
-      require('babel-plugin-minify-dead-code-elimination'),
+      require('babel-plugin-minify-dead-code-elimination-while-loop-fixed'),
       {
         optimizeRawSize: true,
         keepFnName: true
