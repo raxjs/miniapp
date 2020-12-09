@@ -9,7 +9,7 @@ const {
 } = require('./pathHelper');
 
 module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
-  const entryPath = join(rootDir, 'src', subAppRoot);
+  const entryPath = join(rootDir, 'src');
 
   const appConfig = readJSONSync(resolve(rootDir, 'src', subAppRoot, 'app.json'));
   appConfig.pages = [];
@@ -33,8 +33,10 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
   }
 
   appConfig.routes.map(route => {
+    route.source = join(subAppRoot, route.source);
     route.name = route.source;
     route.entryName = getRouteName(route, rootDir);
+    if (subAppRoot) route.subAppRoot = subAppRoot;
 
     if (!Array.isArray(route.targets)) {
       addPage(route);

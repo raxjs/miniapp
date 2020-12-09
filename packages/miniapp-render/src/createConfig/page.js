@@ -6,19 +6,29 @@ import createDocument from '../document';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
 import { BODY_NODE_ID } from '../constants';
+import { createWindow } from '../window';
 
-export function getBaseLifeCycles(route) {
+export function getBaseLifeCycles(route, init, root = 'main') {
   return {
     onLoad(query) {
       // eslint-disable-next-line no-undef
       const app = getApp();
-      this.window = cache.getWindow();
 
       this.pageId = route + '-' + cache.getRouteId(route);
       if (this.pageId === app.__pageId) {
         this.document = cache.getDocument(this.pageId);
       } else {
         this.document = createDocument(this.pageId);
+      }
+
+      const isBundleLoaded = cache.hasWindow(root);
+
+      if (isBundleLoaded) {
+        this.window = cache.getWindow(root);
+      } else {
+        this.window = createWindow();
+        cache.setWindow(root, this.window);
+        init(this.window, this.document);
       }
 
       // In wechat miniprogram web bundle need be executed in first page
@@ -38,6 +48,7 @@ export function getBaseLifeCycles(route) {
 
       // Find self render function
       // eslint-disable-next-line no-undef
+      debugger;
       this.renderInfo = this.window.__pagesRenderInfo.find(({ path }) => this.pageId.substring(0, this.pageId.lastIndexOf('-')) === path);
 
       if (!this.renderInfo && process.env.NODE_ENV === 'development') {
@@ -85,7 +96,7 @@ export function getBaseLifeCycles(route) {
   };
 }
 
-export default function(route, lifeCycles = []) {
+export default function(route, lifeCycles = [], init, root = 'main') {
   const pageConfig = {
     firstRender: true,
     data: {
@@ -110,7 +121,7 @@ export default function(route, lifeCycles = []) {
         }
       }
     },
-    ...getBaseLifeCycles(route),
+    ...getBaseLifeCycles(route, init, root),
     ...createEventProxy()
   };
   // Define page lifecycles, like onReachBottom
