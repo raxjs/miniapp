@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 
 const livePlayer = {
   name: 'live-player',
@@ -12,7 +12,17 @@ const livePlayer = {
   }]
 };
 
-if (isWeChatMiniProgram) {
+if (isMiniApp) {
+  livePlayer.singleEvents = livePlayer.singleEvents.concat([
+    {
+      name: 'onLivePlayerError',
+      eventName: 'error'
+    },
+    {
+      name: 'onLiverPlayerUserAction',
+      eventName: 'useraction'
+    }]);
+} else {
   livePlayer.singleEvents = livePlayer.singleEvents.concat([
     {
       name: 'onLivePlayerNetStatus',
@@ -31,15 +41,5 @@ if (isWeChatMiniProgram) {
       eventName: 'leavepictureinpicture'
     }]);
 }
-if (isMiniApp) {
-  livePlayer.singleEvents = livePlayer.singleEvents.concat([
-    {
-      name: 'onLivePlayerError',
-      eventName: 'error'
-    },
-    {
-      name: 'onLiverPlayerUserAction',
-      eventName: 'useraction'
-    }]);
-}
+
 export default livePlayer;

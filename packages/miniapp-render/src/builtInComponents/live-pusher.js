@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 
 const livePusher = {
   name: 'live-pusher',
@@ -15,7 +15,7 @@ const livePusher = {
   }]
 };
 
-if (isWeChatMiniProgram) {
+if (!isMiniApp) {
   livePusher.singleEvents = livePusher.singleEvents.concat([
     {
       name: 'onLivePusherBgmStart',
