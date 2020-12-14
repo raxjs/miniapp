@@ -9,18 +9,19 @@ function clearEntry(config) {
 }
 
 function getEntry(entryAppFilePath, routes, rootDir, subAppRoot = '') {
-  const sourcePath = dirname(entryAppFilePath);
+  const sourcePath = join(rootDir, 'src');
   const entry = {};
 
-  entry.app =
-    absoluteModuleResolve(rootDir, `./${entryAppFilePath}`) + '?role=app'; // Mark it as app file
+  if (entryAppFilePath) {
+    entry.app = absoluteModuleResolve(rootDir, `./${entryAppFilePath}`) + '?role=app'; // Mark it as app file
+  }
 
   if (Array.isArray(routes)) {
     routes.forEach(({ source: pageSource }) => {
       entry[`${subAppRoot}@page@${pageSource}`] = `${getDepPath(
         rootDir,
         pageSource,
-        join(sourcePath, subAppRoot)
+        sourcePath
       )}?role=page`; // Mark it as page file
     });
   }
@@ -47,7 +48,7 @@ function setMultiplePackageEntry(config, routes, options) {
   routes.forEach(app => {
     const subAppRoot = dirname(app.source);
     const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
-    configEntry(config, subAppConfig.routes, { entryPath, rootDir, subAppRoot });
+    configEntry(config, subAppConfig.routes, { entryPath: app.main ? join('src', app.source) : null, rootDir, subAppRoot });
     subAppConfig.main = app.main;
     subAppConfigList.push(subAppConfig);
   });
