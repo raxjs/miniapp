@@ -99,6 +99,7 @@ function getComponentCycles(Klass) {
         });
       }
       this.instance = new Klass(props);
+      this.instance.defaultProps = Klass.defaultProps;
       this.instance._internal = this;
       this.instance.__injectHistory = Klass.__injectHistory;
       this.instance.instanceId = instanceId;
@@ -410,10 +411,10 @@ function toleranceEventTimeStamp(timeStamp) {
   return Math.floor(timeStamp / 10) - 5;
 }
 
-function generateBaseOptions(internal, defaultProps, ...restProps) {
+function generateBaseOptions(internal, ...restProps) {
   const instanceId = getId('tag', internal);
 
-  const props = Object.assign({}, defaultProps, internal[PROPS], {
+  const props = Object.assign({}, internal[PROPS], {
     TAGID: instanceId,
     // In MiniApp every slot is scopedSlots
     $slots: {

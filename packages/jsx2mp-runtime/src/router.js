@@ -43,14 +43,16 @@ function navigateBack(options) {
 let __routerMap = {};
 
 export function __updateRouterMap(appConfig) {
-  appConfig.routes.map(route => {
-    // Rule of source in appConfig differs from Quickapp's manifest
-    if (isQuickApp) {
-      __routerMap[route.path] = route.source.replace(/\/index$/, '');
-    } else {
-      __routerMap[route.path] = route.source;
-    }
-  });
+  if (appConfig.routes) {
+    appConfig.routes.map(route => {
+      // Rule of source in appConfig differs from Quickapp's manifest
+      if (isQuickApp) {
+        __routerMap[route.path] = route.source.replace(/\/index$/, '');
+      } else {
+        __routerMap[route.path] = route.source;
+      }
+    });
+  }
   // return as globalRoutes for Quickapp
   if (isQuickApp) {
     return __routerMap;
