@@ -65,8 +65,6 @@ module.exports = (
     completeRoutes = appConfig.routes;
   }
 
-
-
   config.output.filename('common/[name].js');
   // publicPath should not work in miniapp, just keep default value
   config.output.publicPath('/');
