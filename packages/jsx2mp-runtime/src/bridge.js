@@ -401,14 +401,6 @@ function isDatasetArg(str) {
   return DATASET_ARG_REG.test(str);
 }
 
-function sortDatasetArg(a, b) {
-  if (isDatasetArg(a) && isDatasetArg(b)) {
-    const aIndex = Number(DATASET_ARG_REG.exec(a)[1]);
-    const bIndex = Number(DATASET_ARG_REG.exec(b)[1]);
-    return aIndex - bIndex;
-  }
-}
-
 function formatEventName(name) {
   return name.replace('_', '');
 }
