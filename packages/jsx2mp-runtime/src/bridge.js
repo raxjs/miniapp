@@ -186,8 +186,8 @@ function createProxyMethods(events) {
           const dataset = event && event.currentTarget ? event.currentTarget.dataset : {};
 
           // Universal event args
-          const datasetKeys = Object.keys(dataset);
           const formatedEventName = formatEventName(eventName);
+          const datasetKeys = Object.keys(dataset).sort().filter(datasetKey => datasetKey.indexOf(formatedEventName) === 0);
           datasetKeys.forEach((key, idx) => {
             if (`${formatedEventName}ArgContext` === key || `${formatedEventName}-arg-context` === key) {
               contextInfo.context = dataset[key] === 'this' ? this.instance : dataset[key];
