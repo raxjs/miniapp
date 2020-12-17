@@ -30,6 +30,8 @@ import video from './video';
 import map from './map';
 import canvas from './canvas';
 import webView from './web-view';
+import livePlayer from './live-player';
+import livePusher from './live-pusher';
 
 // Sub components
 import movableView from './movable-view';
@@ -68,6 +70,8 @@ const components = [
   map,
   canvas,
   webView,
+  livePlayer,
+  livePusher,
   movableView,
   swiperItem,
   pickerViewColumn,

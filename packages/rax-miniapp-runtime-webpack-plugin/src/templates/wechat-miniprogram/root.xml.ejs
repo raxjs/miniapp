@@ -939,3 +939,74 @@
   >
   </web-view>
 </template>
+
+<template name="live-player">
+  <live-player
+    src="{{r.src}}"
+    mode="{{tool.processVal(r.mode, 'live')}}"
+    autoplay="{{tool.processVal(r.autoplay, false)}}"
+    muted="{{tool.processVal(r.muted, false)}}"
+    orientation="{{tool.processVal(r.orientation, 'vertical')}}"
+    object-fit="{{tool.processVal(r['object-fit'], 'contain')}}"
+    background-mute="{{tool.processVal(r['background-mute'], false)}}"
+    min-cache="{{tool.processVal(r['min-cache'], 1)}}"
+    max-cache="{{tool.processVal(r['max-cache'], 3)}}"
+    sound-mode="{{tool.processVal(r['sound-mode'], 'speaker')}}"
+    auto-pause-if-navigate="{{tool.processVal(r['auto-pause-if-navigate'], true)}}"
+    auto-pause-if-open-native="{{tool.processVal(r['auto-pause-if-open-native'], true)}}"
+    picture-in-picture-mode="{{r['picture-in-picture-mode']}}"
+
+    bindstatechange="onLivePlayerStateChange"
+    bindfullscreenchange="onLivePlayerFullScreenChange"
+    bindnetstatus="onLivePlayerNetStatus"
+    bindaudiovolumenotify="onLivePlayerAudioVolumeNofify"
+    bindenterpictureinpicture="onLivePlayerEnterPictureInPicture"
+    bindleavepictureinpicture="onLivePlayerLeavePictureInPicture"
+  >
+  </live-player>
+</template>
+
+
+<template name="live-pusher">
+  <live-pusher
+    url="{{r.url}}"
+    mode="{{tool.processVal(r.mode, 'RTC')}}"
+    autopush="{{tool.processVal(r.autopush, false)}}"
+    muted="{{tool.processVal(r.muted, false)}}"
+    enable-camera="{{tool.processVal(r['enable-camera'], true)}}"
+    auto-focus="{{tool.processVal(r['auto-focus'], true)}}"
+    orientation="{{tool.processVal(r.orientation, 'vertical')}}"
+    beauty="{{tool.processVal(r.beauty, 0)}}"
+    whiteness="{{tool.processVal(r.whiteness, 0)}}"
+    aspect="{{tool.processVal(r.aspect, '9:16')}}"
+    min-bitrate="{{tool.processVal(r['min-bitrate'], 200)}}"
+    max-bitrate="{{tool.processVal(r['max-bitrate'], 1000)}}"
+    audio-quality="{{tool.processVal(r['audio-quality'], 'high')}}"
+    waiting-image="{{r['waiting-image']}}"
+    waiting-image-hash="{{r['waiting-image-hash']}}"
+    zoom="{{tool.processVal(r.zoom, false)}}"
+    device-position="{{tool.processVal(r['device-position'], 'front')}}"
+    background-mute="{{tool.processVal(r['background-mute'], false)}}"
+    mirror="{{tool.processVal(r.mirror, false)}}"
+    remote-mirror="{{tool.processVal(r['remote-mirror'], false)}}"
+    local-mirror="{{tool.processVal(r['local-mirror'], 'auto')}}"
+    audio-reverb-type="{{tool.processVal(r['audio-reverb-type'], 0)}}"
+    enable-mic="{{tool.processVal(r['enable-mic'], true)}}"
+    enable-agc="{{tool.processVal(r['enable-agc'], false)}}"
+    enablb-ans="{{tool.processVal(r['enable-ans'], false)}}"
+    audio-volume-type="{{tool.processVal(r['audio-volume-type'], 'auto')}}"
+    video-width="{{tool.processVal(r['video-width'], 360)}}"
+    video-height="{{tool.processVal(r['video-height'], 640)}}"
+    beauty-style="{{tool.processVal(r['beauty-style'], 'smooth')}}"
+    filter="{{tool.processVal(r.filter, 'standard')}}"
+
+    bindstatechange="onLivePusherStateChange"
+    bindnetstatus="onLivePusherNetStatus"
+    binderror="onLivePusherError"
+    bindbgmstart="onLivePusherBgmStart"
+    bindbgmprogress="onLivePusherBgmProgress"
+    bindbgmcomplete="onLivePusherBgmComplete"
+    bindaudiovolumenotify="onLivePusherAudioVolumeNofify"
+  >
+  </live-pusher>
+</template>
