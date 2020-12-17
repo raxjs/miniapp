@@ -1,7 +1,8 @@
 const { dirname, join } = require('path');
 const {
   pathHelper: { absoluteModuleResolve, getDepPath },
-  getAppConfig
+  getAppConfig,
+  filterNativePages
 } = require('miniapp-builder-shared');
 
 function clearEntry(config) {
@@ -38,17 +39,20 @@ function configEntry(config, routes, options) {
 }
 
 function setEntry(config, routes, options) {
+  const { needCopyList, rootDir, target, outputPath } = options;
   clearEntry(config);
-  configEntry(config, routes, options);
+  const filteredRoutes = filterNativePages(routes, needCopyList, { rootDir, target, outputPath });
+  configEntry(config, filteredRoutes, options);
 }
 
 function setMultiplePackageEntry(config, routes, options) {
-  const { entryPath, rootDir, target, subAppConfigList } = options;
+  const { rootDir, target, outputPath, subAppConfigList, needCopyList } = options;
   clearEntry(config);
   routes.forEach(app => {
     const subAppRoot = dirname(app.source);
     const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
-    configEntry(config, subAppConfig.routes, { entryPath: app.main ? join('src', app.source) : null, rootDir, subAppRoot });
+    const filteredRoutes = filterNativePages(subAppConfig.routes, needCopyList, { rootDir, target, outputPath, subAppRoot });
+    configEntry(config, filteredRoutes, { entryPath: app.main ? join('src', app.source) : null, rootDir, subAppRoot });
     subAppConfig.main = app.main;
     subAppConfigList.push(subAppConfig);
   });
