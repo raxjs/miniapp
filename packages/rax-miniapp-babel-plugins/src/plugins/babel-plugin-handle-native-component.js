@@ -22,7 +22,8 @@ const baseComponents = [
   'rax-recyclerview',
   'rax-slider',
   'rax-textinput',
-  'rax-video'
+  'rax-video',
+  'rax-embed'
 ];
 
 const targetMap = {
