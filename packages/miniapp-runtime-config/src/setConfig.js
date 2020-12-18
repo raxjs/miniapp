@@ -44,11 +44,6 @@ module.exports = (
   let mainPackageRoot = '';
 
   const appConfig = getAppConfig(rootDir, target, nativeLifeCycleMap);
-  appConfig.routes = filterNativePages(appConfig.routes, needCopyList, {
-    rootDir,
-    target,
-    outputPath,
-  });
 
   let completeRoutes = [];
 
@@ -64,6 +59,12 @@ module.exports = (
   } else {
     completeRoutes = appConfig.routes;
   }
+
+  completeRoutes = filterNativePages(completeRoutes, needCopyList, {
+    rootDir,
+    target,
+    outputPath,
+  });
 
   config.output.filename('common/[name].js');
   // publicPath should not work in miniapp, just keep default value
