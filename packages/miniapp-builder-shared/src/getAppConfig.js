@@ -48,7 +48,10 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
 
   if (appConfig.tabBar) {
     appConfig.tabBar.items.map(tab => {
-      tab.path = pagesMap[tab.path];
+      // Use path only if pagePath is not configured
+      if (!tab.pagePath) {
+        tab.path = pagesMap[tab.path];
+      }
     });
   }
 
