@@ -1,7 +1,6 @@
 const { resolve } = require('path');
 const { copySync } = require('fs-extra');
 const chokidar = require('chokidar');
-const { pathHelper: { isNativePage, removeExt } } = require('miniapp-builder-shared');
 
 /**
  * Copy directories from rootDir + `src/${dir}` to outputPath + `${dir}`
@@ -13,14 +12,7 @@ function copyPublicFile(constantDir, rootDir, outputPath, target) {
   for (let srcDir of constantDir) {
     const srcPath = resolve(rootDir, srcDir);
     const distPath = resolve(outputPath, srcDir.split('/').slice(1).join('/'));
-    copySync(srcPath, distPath, {
-      filter: (file) => {
-        if (/\.js$/.test(file)) {
-          return isNativePage(removeExt(file), target);
-        }
-        return true;
-      }
-    });
+    copySync(srcPath, distPath);
   }
 }
 
