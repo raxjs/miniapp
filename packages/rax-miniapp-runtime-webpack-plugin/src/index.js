@@ -6,6 +6,8 @@ const isEqual = require('lodash.isequal');
 const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
+const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
+
 const {
   generateAppCSS,
   generateAppJS,
@@ -79,7 +81,7 @@ class MiniAppRuntimePlugin {
         generateRender(compilation, { target, command, rootDir: options.rootDir });
         // Collect app.js
         const commonAppJSFilePaths = compilation.entrypoints
-          .get(subPackages ? mainPackageRoot : 'index')
+          .get(subPackages ? getBundlePath(mainPackageRoot) : 'index')
           .getFiles()
           .filter((filePath) => !isCSSFile(filePath));
         // App js
@@ -203,7 +205,7 @@ class MiniAppRuntimePlugin {
           }
           let commonPageJSFilePaths = [];
           if (subPackages && mainPackageRoot !== subAppRoot) {
-            commonPageJSFilePaths = compilation.entrypoints.get(subAppRoot)
+            commonPageJSFilePaths = compilation.entrypoints.get(getBundlePath(subAppRoot))
               .getFiles()
               .filter((filePath) => !isCSSFile(filePath));
           }

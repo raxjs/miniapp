@@ -4,6 +4,7 @@ const adapter = require('../adapter');
 const getAssetPath = require('../utils/getAssetPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getTemplate = require('../utils/getTemplate');
+const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 const { MINIAPP } = require('../constants');
 
 function generatePageCSS(
@@ -14,7 +15,7 @@ function generatePageCSS(
 ) {
   let pageCssContent = '/* required by usingComponents */\n';
   const pageCssPath = `${pageRoute}.${adapter[target].css}`;
-  const subAppCssPath = `${subAppRoot}.css.${adapter[target].css}`;
+  const subAppCssPath = `${getBundlePath(subAppRoot)}.css.${adapter[target].css}`;
   if (compilation.assets[subAppCssPath]) {
     pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
   }
