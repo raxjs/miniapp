@@ -48,7 +48,6 @@ export function getBaseLifeCycles(route, init, root = 'main') {
 
       // Find self render function
       // eslint-disable-next-line no-undef
-      debugger;
       this.renderInfo = this.window.__pagesRenderInfo.find(({ path }) => this.pageId.substring(0, this.pageId.lastIndexOf('-')) === path);
 
       if (!this.renderInfo && process.env.NODE_ENV === 'development') {
