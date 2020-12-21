@@ -29,11 +29,11 @@ module.exports = class MiniAppConfigPlugin {
       if (subPackages) {
         // Transform subpackages
         config.subPackages = subAppConfigList
-          .filter(subAppConfig => !subAppConfig.main)
+          .filter(subAppConfig => !subAppConfig.miniappMain)
           .map(subAppConfig => transformAppConfig(outputPath, subAppConfig, target, subPackages));
 
         // Transform main package pages
-        const mainPackageConfig = subAppConfigList.filter(subAppConfig => subAppConfig.main)[0];
+        const mainPackageConfig = subAppConfigList.filter(subAppConfig => subAppConfig.miniappMain)[0];
         config.pages = mainPackageConfig.pages;
 
         config.preloadRule = {};
@@ -44,8 +44,8 @@ module.exports = class MiniAppConfigPlugin {
               ensureDirSync(outputPath);
               safeWriteFile(join(outputPath, route.source + '.json'), adaptConfig(route.window, 'window', target), true);
             }
-            if (route && route.preloadRule) {
-              config.preloadRule[route.source] = route.preloadRule;
+            if (route && route.miniappPreloadRule) {
+              config.preloadRule[route.source] = route.miniappPreloadRule;
             }
           });
         });
