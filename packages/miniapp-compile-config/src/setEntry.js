@@ -52,8 +52,8 @@ function setMultiplePackageEntry(config, routes, options) {
     const subAppRoot = dirname(app.source);
     const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
     const filteredRoutes = filterNativePages(subAppConfig.routes, needCopyList, { rootDir, target, outputPath, subAppRoot });
-    configEntry(config, filteredRoutes, { entryPath: app.main ? join('src', app.source) : null, rootDir, subAppRoot });
-    subAppConfig.main = app.main;
+    configEntry(config, filteredRoutes, { entryPath: app.miniappMain ? join('src', app.source) : null, rootDir, subAppRoot });
+    subAppConfig.miniappMain = app.miniappMain;
     subAppConfigList.push(subAppConfig);
   });
 }

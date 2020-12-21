@@ -51,8 +51,8 @@ module.exports = (
     appConfig.routes.forEach(app => {
       const subAppRoot = dirname(app.source);
       const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
-      if (app.main) mainPackageRoot = subAppRoot;
-      subAppConfig.main = app.main;
+      if (app.miniappMain) mainPackageRoot = subAppRoot;
+      subAppConfig.miniappMain = app.miniappMain;
       subAppConfigList.push(subAppConfig);
       completeRoutes = completeRoutes.concat(subAppConfig.routes);
     });
@@ -66,7 +66,7 @@ module.exports = (
     outputPath,
   });
 
-  config.output.filename('common/[name].js');
+  config.output.filename('[name].js');
   // publicPath should not work in miniapp, just keep default value
   config.output.publicPath('/');
 
