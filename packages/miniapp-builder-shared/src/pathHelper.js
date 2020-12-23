@@ -160,7 +160,7 @@ function getHighestPriorityPackageJSON(packageName, rootDir) {
  * Get bundle file path in runtime miniapp
  * @param {string} root
  */
-function getBundlePath(root) {
+function getBundlePath(root = '') {
   return join(root, BUNDLE_NAME);
 }
 
