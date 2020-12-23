@@ -583,7 +583,7 @@ function ensureIndexInPath(value, sourcePath, resourcePath, type) {
   const target = resolveModule.sync(resolve(dirname(resourcePath), value), {
     extensions: SCRIPT_FILE_EXTENSIONS
   });
-  const result = relative(dirname(type === 'app' ? join(sourcePath, 'app.js') : resourcePath), target);
+  const result = relative(dirname(type === 'app' ? join(sourcePath, 'app') : resourcePath), target);
   return removeJSExtension(addRelativePathPrefix(normalizeOutputFilePath(result)));
 };
 
