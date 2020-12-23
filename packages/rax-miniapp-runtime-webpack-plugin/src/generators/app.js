@@ -61,7 +61,6 @@ function generateAppCSS(compilation, { target, command, rootDir, subPackages }) 
   Object.keys(compilation.assets).forEach(asset => {
     if (extname(asset) === '.css') {
       delete compilation.assets[asset];
-      // TODO: vendor.css 需要剔除
       if (!subPackages) {
         content += `@import "./${asset}";`;
       }
