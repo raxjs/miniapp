@@ -81,7 +81,7 @@ class MiniAppRuntimePlugin {
         generateRender(compilation, { target, command, rootDir: options.rootDir });
         // Collect app.js
         const commonAppJSFilePaths = compilation.entrypoints
-          .get(subPackages ? getBundlePath(mainPackageRoot) : 'index')
+          .get(getBundlePath(subPackages ? mainPackageRoot : '' ))
           .getFiles()
           .filter((filePath) => !isCSSFile(filePath));
         // App js
