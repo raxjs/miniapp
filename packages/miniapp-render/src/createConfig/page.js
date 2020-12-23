@@ -8,7 +8,7 @@ import { isMiniApp } from 'universal-env';
 import { BODY_NODE_ID } from '../constants';
 import { createWindow } from '../window';
 
-export function getBaseLifeCycles(route, init, root = 'main') {
+export function getBaseLifeCycles(route, init, packageName = 'main') {
   return {
     onLoad(query) {
       // eslint-disable-next-line no-undef
@@ -21,13 +21,13 @@ export function getBaseLifeCycles(route, init, root = 'main') {
         this.document = createDocument(this.pageId);
       }
 
-      const isBundleLoaded = cache.hasWindow(root);
+      const isBundleLoaded = cache.hasWindow(packageName);
 
       if (isBundleLoaded) {
-        this.window = cache.getWindow(root);
+        this.window = cache.getWindow(packageName);
       } else {
         this.window = createWindow();
-        cache.setWindow(root, this.window);
+        cache.setWindow(packageName, this.window);
         init(this.window, this.document);
       }
 
@@ -95,7 +95,7 @@ export function getBaseLifeCycles(route, init, root = 'main') {
   };
 }
 
-export default function(route, lifeCycles = [], init, root = 'main') {
+export default function(route, lifeCycles = [], init, packageName = 'main') {
   const pageConfig = {
     firstRender: true,
     data: {
@@ -120,7 +120,7 @@ export default function(route, lifeCycles = [], init, root = 'main') {
         }
       }
     },
-    ...getBaseLifeCycles(route, init, root),
+    ...getBaseLifeCycles(route, init, packageName),
     ...createEventProxy()
   };
   // Define page lifecycles, like onReachBottom
