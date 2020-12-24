@@ -4,17 +4,25 @@ const adapter = require('../adapter');
 const getAssetPath = require('../utils/getAssetPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getTemplate = require('../utils/getTemplate');
+const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 const { MINIAPP } = require('../constants');
 
 function generatePageCSS(
   compilation,
   pageRoute,
+  subAppRoot = '',
   { target, command }
 ) {
-  const pageCssContent = '/* required by usingComponents */';
+  let pageCssContent = '/* required by usingComponents */\n';
+  const pageCssPath = `${pageRoute}.${adapter[target].css}`;
+  const subAppCssPath = `${getBundlePath(subAppRoot)}.css.${adapter[target].css}`;
+  if (compilation.assets[subAppCssPath]) {
+    pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
+  }
+
 
   addFileToCompilation(compilation, {
-    filename: `${pageRoute}.${adapter[target].css}`,
+    filename: pageCssPath,
     content: pageCssContent,
     target,
     command,
@@ -25,13 +33,25 @@ function generatePageJS(
   compilation,
   pageRoute,
   nativeLifeCycles = {},
+  commonPageJSFilePaths = [],
+  subAppRoot = '',
   { target, command, rootDir, outputPath }
 ) {
   const pageJsContent = ejs.render(getTemplate(rootDir, 'page.js'), {
     render_path: `${getAssetPath(join(outputPath, 'render.js'), join(outputPath, `${pageRoute}.js`))}`,
     route: pageRoute,
     native_lifecycles: `[${Object.keys(nativeLifeCycles).reduce((total, current, index) =>
-      index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`
+      index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`,
+    init: `function init(window, document) {${commonPageJSFilePaths
+      .map(
+        filePath =>
+          `require('${getAssetPath(
+            filePath,
+            pageRoute
+          )}')(window, document)`
+      )
+      .join(';')}}`,
+    root: subAppRoot
   });
 
   addFileToCompilation(compilation, {

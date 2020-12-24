@@ -8,10 +8,10 @@ const {
   getRelativePath
 } = require('./pathHelper');
 
-module.exports = (rootDir, target, nativeLifeCycleMap) => {
+module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
   const entryPath = join(rootDir, 'src');
 
-  const appConfig = readJSONSync(resolve(rootDir, 'src', 'app.json'));
+  const appConfig = readJSONSync(resolve(rootDir, 'src', subAppRoot, 'app.json'));
   appConfig.pages = [];
   const routes = [];
   const pagesMap = {};
@@ -33,8 +33,10 @@ module.exports = (rootDir, target, nativeLifeCycleMap) => {
   }
 
   appConfig.routes.map(route => {
+    route.source = join(subAppRoot, route.source);
     route.name = route.source;
     route.entryName = getRouteName(route, rootDir);
+    if (subAppRoot) route.subAppRoot = subAppRoot;
 
     if (!Array.isArray(route.targets)) {
       addPage(route);
@@ -46,11 +48,16 @@ module.exports = (rootDir, target, nativeLifeCycleMap) => {
 
   if (appConfig.tabBar) {
     appConfig.tabBar.items.map(tab => {
-      tab.path = pagesMap[tab.path];
+      // Use path only if pagePath is not configured
+      if (!tab.pagePath) {
+        tab.path = pagesMap[tab.path];
+      }
     });
   }
 
   appConfig.routes = routes;
+
+  if (subAppRoot) appConfig.subAppRoot = subAppRoot;
 
   return appConfig;
 };

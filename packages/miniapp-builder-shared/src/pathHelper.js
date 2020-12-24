@@ -3,6 +3,8 @@ const { existsSync, statSync, readJSONSync } = require('fs-extra');
 const enhancedResolve = require('enhanced-resolve');
 const targetPlatformMap = require('./platformMap');
 
+const BUNDLE_NAME = 'bundle';
+
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 function startsWith(prevString, nextString) {
@@ -154,6 +156,14 @@ function getHighestPriorityPackageJSON(packageName, rootDir) {
   return packageJSONPath;
 }
 
+/**
+ * Get bundle file path in runtime miniapp
+ * @param {string} root
+ */
+function getBundlePath(root = '') {
+  return join(root, BUNDLE_NAME);
+}
+
 module.exports = {
   relativeModuleResolve,
   normalizeOutputFilePath,
@@ -163,5 +173,6 @@ module.exports = {
   getPlatformExtensions,
   isNativePage,
   removeExt,
-  getHighestPriorityPackageJSON
+  getHighestPriorityPackageJSON,
+  getBundlePath
 };

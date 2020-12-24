@@ -6,6 +6,8 @@ const isEqual = require('lodash.isequal');
 const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
+const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
+
 const {
   generateAppCSS,
   generateAppJS,
@@ -34,7 +36,7 @@ class MiniAppRuntimePlugin {
     const rootDir = __dirname;
     const options = this.options;
     const target = this.target;
-    const { nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], command } = options;
+    const { nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], command, subPackages, mainPackageRoot } = options;
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
@@ -73,78 +75,17 @@ class MiniAppRuntimePlugin {
       lastUsingPlugins = Object.assign({}, usingPlugins);
       const useComponent = Object.keys(lastUsingPlugins).length + Object.keys(lastUsingComponents).length > 0;
 
-
-      // Collect asset
-      routes
-        .forEach(({ entryName }) => {
-          pages.push(entryName);
-          let pageConfig = {};
-          const pageConfigPath = resolve(outputPath, entryName + '.json');
-          if (existsSync(pageConfigPath)) {
-            pageConfig = readJsonSync(pageConfigPath);
-          }
-
-          const pageRoute = join(sourcePath, entryName);
-          const nativeLifeCycles =
-            nativeLifeCycleMap[pageRoute] || {};
-          const route = routes.find(({ source }) => source === entryName);
-          if (route.window && route.window.pullRefresh) {
-            nativeLifeCycles.onPullDownRefresh = true;
-            // onPullIntercept only exits in wechat miniprogram
-            if (target === MINIAPP) {
-              nativeLifeCycles.onPullIntercept = true;
-            }
-          }
-
-          // xml/css/json file need be written in first render or using native component state changes
-          if (isFirstRender || useComponentChanged) {
-            // Page xml
-            generatePageXML(compilation, entryName, useComponent, {
-              target,
-              command,
-              rootDir,
-              outputPath
-            });
-
-            // Page css
-            generatePageCSS(compilation, entryName, {
-              target,
-              command,
-            });
-
-            // Page json
-            generatePageJSON(
-              compilation,
-              pageConfig,
-              useComponent,
-              entryName,
-              { target, command, rootDir, outputPath }
-            );
-          }
-
-          // Page js
-          generatePageJS(
-            compilation,
-            entryName,
-            nativeLifeCycles,
-            { target, command, rootDir, outputPath }
-          );
-        });
-
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
         generateRender(compilation, { target, command, rootDir: options.rootDir });
-      }
-
-      // Collect app.js
-      if (isFirstRender) {
+        // Collect app.js
         const commonAppJSFilePaths = compilation.entrypoints
-          .get('index')
+          .get(getBundlePath(subPackages ? mainPackageRoot : '' ))
           .getFiles()
           .filter((filePath) => !isCSSFile(filePath));
         // App js
-        generateAppJS(compilation, commonAppJSFilePaths, {
+        generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
           target,
           command,
           rootDir,
@@ -155,7 +96,7 @@ class MiniAppRuntimePlugin {
         isFirstRender ||
         changedFiles.some((filePath) => isCSSFile(filePath))
       ) {
-        generateAppCSS(compilation, { target, command, rootDir });
+        generateAppCSS(compilation, { subPackages, target, command, rootDir });
       }
 
       // These files need be written in first render and using native component state changes
@@ -214,6 +155,70 @@ class MiniAppRuntimePlugin {
           });
         }
       }
+
+      // Collect asset
+      routes
+        .forEach(({ entryName, subAppRoot }) => {
+          pages.push(entryName);
+          let pageConfig = {};
+          const pageConfigPath = resolve(outputPath, entryName + '.json');
+          if (existsSync(pageConfigPath)) {
+            pageConfig = readJsonSync(pageConfigPath);
+          }
+
+          const pageRoute = join(sourcePath, entryName);
+          const nativeLifeCycles =
+            nativeLifeCycleMap[pageRoute] || {};
+          const route = routes.find(({ source }) => source === entryName);
+          if (route.window && route.window.pullRefresh) {
+            nativeLifeCycles.onPullDownRefresh = true;
+            // onPullIntercept only exits in wechat miniprogram
+            if (target === MINIAPP) {
+              nativeLifeCycles.onPullIntercept = true;
+            }
+          }
+
+          // xml/css/json file need be written in first render or using native component state changes
+          if (isFirstRender || useComponentChanged) {
+            // Page xml
+            generatePageXML(compilation, entryName, useComponent, {
+              target,
+              command,
+              rootDir,
+              outputPath
+            });
+
+            // Page css
+            generatePageCSS(compilation, entryName, subAppRoot, {
+              target,
+              command,
+            });
+
+            // Page json
+            generatePageJSON(
+              compilation,
+              pageConfig,
+              useComponent,
+              entryName,
+              { target, command, rootDir, outputPath }
+            );
+          }
+          let commonPageJSFilePaths = [];
+          if (subPackages && mainPackageRoot !== subAppRoot) {
+            commonPageJSFilePaths = compilation.entrypoints.get(getBundlePath(subAppRoot))
+              .getFiles()
+              .filter((filePath) => !isCSSFile(filePath));
+          }
+          // Page js
+          generatePageJS(
+            compilation,
+            entryName,
+            nativeLifeCycles,
+            commonPageJSFilePaths,
+            subAppRoot,
+            { target, command, rootDir, outputPath }
+          );
+        });
 
       isFirstRender = false;
       callback();

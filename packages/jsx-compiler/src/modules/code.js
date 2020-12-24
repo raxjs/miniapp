@@ -113,13 +113,14 @@ module.exports = {
       ]));
     }
     const exportedVariables = collectCoreMethods(imported[RAX_PACKAGE] || []);
-    const targetFileDir = dirname(join(outputPath, relative(sourcePath, resourcePath)));
+    const targetFileDir = type === 'app' ? outputPath : dirname(join(outputPath, relative(sourcePath, resourcePath)));
+    // When compiling app.js, if using subpackages, then outputPath is fixed but resourcePath is not src/app.js
     const runtimePath = getRuntimePath(outputPath, targetFileDir, platform, disableCopyNpm);
     removeRaxImports(ast);
-    ensureIndexPathInImports(ast, sourcePath, resourcePath); // In WeChat miniapp, `require` can't get index file if index is omitted
+    ensureIndexPathInImports(ast, sourcePath, resourcePath, type); // In WeChat miniapp, `require` can't get index file if index is omitted
     renameCoreModule(ast, runtimePath);
     renameFileModule(ast);
-    renameAppConfig(ast, sourcePath, resourcePath);
+    renameAppConfig(ast, sourcePath, resourcePath, type);
 
     if (!disableCopyNpm) {
       renameNpmModules(ast, targetFileDir, outputPath, cwd);
@@ -258,12 +259,12 @@ function renameFileModule(ast) {
  * @param sourcePath Folder path to source.
  * @param resourcePath Current handling file source path.
  */
-function renameAppConfig(ast, sourcePath, resourcePath) {
+function renameAppConfig(ast, sourcePath, resourcePath, type) {
   traverse(ast, {
     ImportDeclaration(path) {
       const source = path.get('source');
       if (source.isStringLiteral()) {
-        if (isImportAppJSON(source.node.value, resourcePath, sourcePath)) {
+        if (isImportAppJSON(source.node.value, resourcePath, sourcePath, type)) {
           const replacement = source.node.value.replace(/app\.json/, 'app.config.js');
           source.replaceWith(t.stringLiteral(replacement));
         }
@@ -272,12 +273,12 @@ function renameAppConfig(ast, sourcePath, resourcePath) {
   });
 }
 
-function ensureIndexPathInImports(ast, sourcePath, resourcePath) {
+function ensureIndexPathInImports(ast, sourcePath, resourcePath, type) {
   traverse(ast, {
     ImportDeclaration(path) {
       const source = path.get('source');
-      if (source.isStringLiteral() && isRelativeImport(source.node.value) && !isImportAppJSON(source.node.value, resourcePath, sourcePath)) {
-        const replacement = ensureIndexInPath(source.node.value, resourcePath);
+      if (source.isStringLiteral() && isRelativeImport(source.node.value) && !isImportAppJSON(source.node.value, resourcePath, sourcePath, type)) {
+        const replacement = ensureIndexInPath(source.node.value, sourcePath, resourcePath, type);
         source.replaceWith(t.stringLiteral(replacement));
       }
     }
@@ -578,11 +579,11 @@ function addRegisterRefs(refs, renderFunctionPath) {
  * @param {string} resourcePath current file path
  * @returns
  */
-function ensureIndexInPath(value, resourcePath) {
+function ensureIndexInPath(value, sourcePath, resourcePath, type) {
   const target = resolveModule.sync(resolve(dirname(resourcePath), value), {
     extensions: SCRIPT_FILE_EXTENSIONS
   });
-  const result = relative(dirname(resourcePath), target);
+  const result = relative(dirname(type === 'app' ? join(sourcePath, 'app') : resourcePath), target);
   return removeJSExtension(addRelativePathPrefix(normalizeOutputFilePath(result)));
 };
 
@@ -598,8 +599,9 @@ function removeJSExtension(filePath) {
  * @param {string} mod imported module name
  * @param {string} resourcePath current file path
  * @param {string} sourcePath src path
+ * @param {string} type build file type 'app'|'page'|'component'
  */
-function isImportAppJSON(mod, resourcePath, sourcePath) {
-  const appConfigSourcePath = join(sourcePath, 'app.json');
+function isImportAppJSON(mod, resourcePath, sourcePath, type) {
+  const appConfigSourcePath = type === 'app' ? join(dirname(resourcePath), 'app.json') : join(sourcePath, 'app.json');
   return resolve(dirname(resourcePath), mod) === appConfigSourcePath;
 }

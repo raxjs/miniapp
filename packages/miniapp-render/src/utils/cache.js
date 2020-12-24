@@ -2,7 +2,7 @@ const pageMap = {};
 const routeMap = new Map();
 const nodeIdMap = new Map();
 let config = {};
-let window;
+const windowMap = new Map();
 
 const elementsCache = [];
 const elementMethodsCache = new Map();
@@ -25,15 +25,19 @@ function getDocument(pageId) {
 }
 
 // Set window
-function setWindow(value) {
-  window = value;
+function setWindow(packageName = 'main', value) {
+  windowMap.set(packageName, value);
 }
 
 /**
  * Get window
  */
-function getWindow() {
-  return window;
+function getWindow(packageName = 'main') {
+  return windowMap.get(packageName);
+}
+
+function hasWindow(packageName = 'main') {
+  return windowMap.has(packageName);
 }
 
 /**
@@ -102,6 +106,7 @@ export default {
   getDocument,
   setWindow,
   getWindow,
+  hasWindow,
   setNode,
   getNode,
   getAllNodes,

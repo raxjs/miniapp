@@ -125,7 +125,7 @@ export default {
     const pageId = '/pages/home/index-1';
     const window = createWindow();
     window.__pageId = pageId;
-    cache.setWindow(window);
+    cache.setWindow('main', window);
     const document = createDocument(pageId);
     generateDOM(document);
     // document.body.innerHTML = html;
@@ -141,7 +141,6 @@ export default {
       firstRenderCallback: () => {}
     };
     window.__pageId = pageId;
-    cache.setWindow(window);
     cache.setConfig(config);
 
     return {
