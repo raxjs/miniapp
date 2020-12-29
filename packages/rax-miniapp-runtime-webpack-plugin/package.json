@@ -1,6 +1,6 @@
 {
   "name": "rax-miniapp-runtime-webpack-plugin",
-  "version": "1.3.2",
+  "version": "2.0.0",
   "description": "A webpack plugin for miniapp runtime build",
   "main": "src/index.js",
   "homepage": "https://github.com/raxjs/miniapp#readme",
@@ -21,7 +21,7 @@
     "fs-extra": "^8.1.0",
     "ice-npm-utils": "^2.0.1",
     "lodash.isequal": "^4.5.0",
-    "miniapp-builder-shared": "^0.1.7",
+    "miniapp-builder-shared": "^0.2.0",
     "path-to-regexp": "^3.0.0",
     "postcss": "^7.0.17",
     "pretty-data": "^0.40.0",

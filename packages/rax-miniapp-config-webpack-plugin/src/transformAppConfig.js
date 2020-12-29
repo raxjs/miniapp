@@ -1,15 +1,16 @@
-const { resolve } = require('path');
+const { resolve, relative } = require('path');
 const { copy } = require('fs-extra');
 const adaptAppConfig = require('./adaptConfig');
 const handleIcon = require('./handleIcon');
 
-module.exports = function transformAppConfig(outputPath, originalAppConfig, target) {
+module.exports = function transformAppConfig(outputPath, originalAppConfig, target, subPackages) {
   const appConfig = {};
   for (let configKey in originalAppConfig) {
     const config = originalAppConfig[configKey];
     switch (configKey) {
       case 'routes':
-        // filter routes
+      case 'applications':
+        // filter routes and applications
         break;
       case 'window':
         appConfig[configKey] = adaptAppConfig(config, 'window', target);
@@ -35,6 +36,14 @@ module.exports = function transformAppConfig(outputPath, originalAppConfig, targ
         }
         appConfig[configKey] = adaptAppConfig(config, 'tabBar', target);
         break;
+      case 'subAppRoot':
+        appConfig.root = config;
+        break;
+      case 'pages':
+        if (subPackages) {
+          appConfig[configKey] = config.map(page => relative(originalAppConfig.subAppRoot, page));
+          break;
+        }
       default:
         appConfig[configKey] = config;
         break;

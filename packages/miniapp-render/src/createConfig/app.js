@@ -4,13 +4,13 @@ import { createWindow } from '../window';
 import createDocument from '../document';
 import cache from '../utils/cache';
 
-export default function(init, config) {
+export default function(init, config, packageName = 'main') {
   cache.setConfig(config);
   const appConfig = {
     launched: isMiniApp,
     onLaunch(options) {
       const window = createWindow();
-      cache.setWindow(window);
+      cache.setWindow(packageName, window);
 
       // In wechat miniprogram getCurrentPages() length is 0, so web bundle only can be executed in first page
       if (isMiniApp) {

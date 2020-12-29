@@ -10,6 +10,7 @@ const adjustCSS = require('../utils/adjustCSS');
 function generateAppJS(
   compilation,
   commonAppJSFilePaths,
+  mainPackageRoot = 'main',
   { target, command, rootDir }
 ) {
   const appJsTmpl = readFileSync(
@@ -26,6 +27,7 @@ function generateAppJS(
           )}')(window, document)`
       )
       .join(';')}}`,
+    root: mainPackageRoot,
     isMiniApp: target === MINIAPP
   });
   addFileToCompilation(compilation, {
@@ -36,7 +38,7 @@ function generateAppJS(
   });
 }
 
-function generateAppCSS(compilation, { target, command, rootDir }) {
+function generateAppCSS(compilation, { target, command, rootDir, subPackages }) {
   // Add default css file to compilation
   const defaultCSSTmpl = adjustCSS(readFileSync(
     resolve(rootDir, 'templates', 'default.css.ejs'),
@@ -58,8 +60,10 @@ function generateAppCSS(compilation, { target, command, rootDir }) {
 
   Object.keys(compilation.assets).forEach(asset => {
     if (extname(asset) === '.css') {
-      content += `@import "./${asset}";`;
       delete compilation.assets[asset];
+      if (!subPackages) {
+        content += `@import "./${asset}";`;
+      }
     }
   });
 

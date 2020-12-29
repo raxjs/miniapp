@@ -16,6 +16,8 @@ It will export the following methods:
   - `getPlatformExtensions`
   - `isNativePage`
   - `removeExt`
+  - `getHighestPriorityPackageJSON`
+  - `getBundlePath`
 
 #### platformMap
 It will return miniapp platform and suffix name correspondence.

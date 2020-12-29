@@ -6,7 +6,7 @@ const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
 const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
 const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { resolve } = require('path');
+const { resolve, dirname } = require('path');
 
 /**
  * Set miniapp runtime project webpack config
@@ -38,14 +38,35 @@ module.exports = (
   // Need Copy files or dir
   const needCopyList = [];
 
+  // Sub packages config
+  const subAppConfigList = [];
+
+  let mainPackageRoot = '';
+
   const appConfig = getAppConfig(rootDir, target, nativeLifeCycleMap);
-  appConfig.routes = filterNativePages(appConfig.routes, needCopyList, {
+
+  let completeRoutes = [];
+
+  if (userConfig.subPackages) {
+    appConfig.routes.forEach(app => {
+      const subAppRoot = dirname(app.source);
+      const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
+      if (app.miniappMain) mainPackageRoot = subAppRoot;
+      subAppConfig.miniappMain = app.miniappMain;
+      subAppConfigList.push(subAppConfig);
+      completeRoutes = completeRoutes.concat(subAppConfig.routes);
+    });
+  } else {
+    completeRoutes = appConfig.routes;
+  }
+
+  completeRoutes = filterNativePages(completeRoutes, needCopyList, {
     rootDir,
     target,
     outputPath,
   });
 
-  config.output.filename('common/[name].js');
+  config.output.filename('[name].js');
   // publicPath should not work in miniapp, just keep default value
   config.output.publicPath('/');
 
@@ -74,16 +95,19 @@ module.exports = (
   config.plugin('MiniAppConfigPlugin').use(MiniAppConfigPlugin, [
     {
       type: 'runtime',
+      subPackages: userConfig.subPackages,
       appConfig,
+      subAppConfigList,
       outputPath,
       target,
-      getAppConfig,
       nativeConfig: userConfig.nativeConfig,
     },
   ]);
   config.plugin('MiniAppRuntimePlugin').use(MiniAppRuntimePlugin, [
     {
-      ...appConfig,
+      routes: completeRoutes,
+      subPackages: userConfig.subPackages,
+      mainPackageRoot,
       target,
       config: userConfig,
       usingComponents,

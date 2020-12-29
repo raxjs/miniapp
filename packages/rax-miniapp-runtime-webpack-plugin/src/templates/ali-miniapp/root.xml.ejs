@@ -927,3 +927,44 @@
   >
   </lottie>
 </template>
+
+<template name="live-player">
+  <live-player
+    src="{{r.src}}"
+    mode="{{tool.processVal(r.mode, 'live')}}"
+    autoplay="{{tool.processVal(r.autoplay, false)}}"
+    muted="{{tool.processVal(r.muted, false)}}"
+    orientation="{{tool.processVal(r.orientation, 'vertical')}}"
+    object-fit="{{tool.processVal(r['object-fit'], 'contain')}}"
+    min-cache="{{tool.processVal(r['min-cache'], 1)}}"
+    max-cache="{{tool.processVal(r['max-cache'], 3)}}"
+    floating-mode="{{tool.processVal(r['floating-mode'], 'none')}}"
+
+    onStateChange="onLivePlayerStateChange"
+    onError="onLivePlayerError"
+    onFullScreenChange="onLivePlayerFullScreenChange"
+    onUserAction="onLiverPlayerUserAction"
+  >
+  </live-player>
+</template>
+
+<template name="live-pusher">
+  <live-pusher
+    url="{{r.url}}"
+    mode="{{tool.processVal(r.mode, 'SD')}}"
+    muted="{{tool.processVal(r.muted, false)}}"
+    autoFocus="{{tool.processVal(r.autoFocus, true)}}"
+    orientation="{{tool.processVal(r.orientation, 'vertical')}}"
+    autopush="{{tool.processVal(r.autopush, true)}}"
+    beauty="{{tool.processVal(r.beauty, 0)}}"
+    devicePosition="{{tool.processVal(r.devicePosition, 'front')}}"
+    backgroundMute="{{tool.processVal(r.backgroundMute, false)}}"
+    local-mirror="{{tool.processVal(r['local-mirror'], 'auto')}}"
+    remote-mirror="{{tool.processVal(r['remote-mirror'], false)}}"
+
+    onStateChange="onLivePusherStateChange"
+    onError="onLivePusherError"
+    onNetStatus="onLivePusherNetStatus"
+  >
+  </live-pusher>
+</template>

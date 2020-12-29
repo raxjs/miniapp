@@ -6,19 +6,29 @@ import createDocument from '../document';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
 import { BODY_NODE_ID } from '../constants';
+import { createWindow } from '../window';
 
-export function getBaseLifeCycles(route) {
+export function getBaseLifeCycles(route, init, packageName = 'main') {
   return {
     onLoad(query) {
       // eslint-disable-next-line no-undef
       const app = getApp();
-      this.window = cache.getWindow();
 
       this.pageId = route + '-' + cache.getRouteId(route);
       if (this.pageId === app.__pageId) {
         this.document = cache.getDocument(this.pageId);
       } else {
         this.document = createDocument(this.pageId);
+      }
+
+      const isBundleLoaded = cache.hasWindow(packageName);
+
+      if (isBundleLoaded) {
+        this.window = cache.getWindow(packageName);
+      } else {
+        this.window = createWindow();
+        cache.setWindow(packageName, this.window);
+        init(this.window, this.document);
       }
 
       // In wechat miniprogram web bundle need be executed in first page
@@ -85,7 +95,7 @@ export function getBaseLifeCycles(route) {
   };
 }
 
-export default function(route, lifeCycles = []) {
+export default function(route, lifeCycles = [], init, packageName = 'main') {
   const pageConfig = {
     firstRender: true,
     data: {
@@ -110,7 +120,7 @@ export default function(route, lifeCycles = []) {
         }
       }
     },
-    ...getBaseLifeCycles(route),
+    ...getBaseLifeCycles(route, init, packageName),
     ...createEventProxy()
   };
   // Define page lifecycles, like onReachBottom
