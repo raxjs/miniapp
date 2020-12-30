@@ -1,6 +1,6 @@
 const { join, dirname, relative, resolve, sep, extname } = require('path');
 
-const { copySync, existsSync, mkdirpSync, writeJSONSync, readFileSync, readJSONSync } = require('fs-extra');
+const { copySync, existsSync, mkdirpSync, ensureFileSync, writeJSONSync, readFileSync, readJSONSync } = require('fs-extra');
 const { getOptions } = require('loader-utils');
 const cached = require('./cached');
 const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPrefix, isFromTargetDirs } = require('./utils/pathHelper');
@@ -138,6 +138,7 @@ module.exports = function scriptLoader(content) {
         }
       }
       if (!existsSync(distComponentConfigPath)) {
+        ensureFileSync(distComponentConfigPath);
         writeJSONSync(distComponentConfigPath, componentConfig);
       }
     } else {

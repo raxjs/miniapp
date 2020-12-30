@@ -1,9 +1,11 @@
 const componentCommonProps = {
   ali: {
     onClick: 'onTap',
+    catchClick: 'catchTap'
   },
   wechat: {
     onClick: 'bindtap',
+    catchClick: 'catchtap',
     onLongPress: 'bindlongpress',
     onTouchStart: 'bindtouchstart',
     onTouchEnd: 'bindtouchend',
@@ -12,6 +14,7 @@ const componentCommonProps = {
   },
   bytedance: {
     onClick: 'bindtap',
+    catchClick: 'catchtap',
     onLongPress: 'bindlongpress',
     onTouchStart: 'bindtouchstart',
     onTouchEnd: 'bindtouchend',
