@@ -2,6 +2,7 @@ const ejs = require('ejs');
 const { join } = require('path');
 const adapter = require('../adapter');
 const getAssetPath = require('../utils/getAssetPath');
+const getSepProcessedPath = require('../utils/getSepProcessedPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getTemplate = require('../utils/getTemplate');
 const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
@@ -39,7 +40,7 @@ function generatePageJS(
 ) {
   const pageJsContent = ejs.render(getTemplate(rootDir, 'page.js'), {
     render_path: `${getAssetPath(join(outputPath, 'render.js'), join(outputPath, `${pageRoute}.js`))}`,
-    route: pageRoute,
+    route: getSepProcessedPath(pageRoute),
     native_lifecycles: `[${Object.keys(nativeLifeCycles).reduce((total, current, index) =>
       index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`,
     init: `function init(window, document) {${commonPageJSFilePaths
