@@ -4,7 +4,7 @@
       data-private-node-id="{{r.nodeId}}"
       data-private-page-id="{{r.pageId}}"
       <% usingComponents[componentTag].props.forEach(function(prop){%>
-        <%= prop %>="{{r.<%= prop %>}}"
+        <%= prop %>="{{r['<%= prop %>']}}"
       <% });%>
       <% usingComponents[componentTag].events.forEach(function(event){%>
         <%= `bind${event.toLowerCase()}` %>="{{r.<%= event %>}}"
