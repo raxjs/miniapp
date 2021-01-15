@@ -7,7 +7,6 @@ const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
 const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
-const checkStoreFile = require('./utils/checkStoreFile');
 
 const {
   generateAppCSS,
@@ -39,7 +38,7 @@ class MiniAppRuntimePlugin {
     const options = this.options;
     const target = this.target;
     const { api, nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], mainPackageRoot } = options;
-    const { context: { command, userConfig: rootUserConfig }, getValue } = api;
+    const { context: { command, userConfig: rootUserConfig, rootDir }, getValue } = api;
     const userConfig = rootUserConfig[target] || {};
     const { subPackages } = userConfig;
     let isFirstRender = true;
@@ -63,7 +62,7 @@ class MiniAppRuntimePlugin {
 
     compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
       const outputPath = compilation.outputOptions.path;
-      const sourcePath = join(options.rootDir, 'src');
+      const sourcePath = join(rootDir, 'src');
       const pages = [];
       const finalRouteMap = getFinalRouteMap(getValue('staticConfig'));
       const changedFiles = Object.keys(
@@ -84,7 +83,7 @@ class MiniAppRuntimePlugin {
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
-        generateRender(compilation, { target, command, rootDir: options.rootDir });
+        generateRender(compilation, { target, command, rootDir });
         // Collect app.js
         const commonAppJSFilePaths = compilation.entrypoints
           .get(getBundlePath(subPackages ? mainPackageRoot : '' ))
@@ -211,7 +210,7 @@ class MiniAppRuntimePlugin {
           }
           let pagePath = entryName;
           if (!subPackages) {
-            pagePath = finalRouteMap(source);
+            pagePath = finalRouteMap[source];
           }
           // Page js
           generatePageJS(

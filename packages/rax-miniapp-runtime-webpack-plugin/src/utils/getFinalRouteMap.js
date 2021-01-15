@@ -7,4 +7,5 @@ module.exports = (finalStaticConfig) => {
       routeMap[source] = source;
     }
   });
+  return routeMap;
 };
