@@ -21,7 +21,7 @@ function generateElementTemplate(compilation,
   { usingPlugins, usingComponents, target, command, pluginDir }) {
   let content = '<template is="{{r.nodeType || \'h-element\'}}" data="{{r: r}}" />';
   if (target !== MINIAPP) {
-    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, rootDir });
+    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir });
     content = `<import src="./root.${adapter[target].xml}"/>` + content;
   } else {
     const pluginTmpl = ejs.render(getTemplate(pluginDir, 'plugin.xml', target), {
