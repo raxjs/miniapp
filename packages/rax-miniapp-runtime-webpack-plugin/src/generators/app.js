@@ -11,10 +11,10 @@ function generateAppJS(
   compilation,
   commonAppJSFilePaths,
   mainPackageRoot = 'main',
-  { target, command, rootDir }
+  { target, command, pluginDir }
 ) {
   const appJsTmpl = readFileSync(
-    resolve(rootDir, 'templates', 'app.js.ejs'),
+    resolve(pluginDir, 'templates', 'app.js.ejs'),
     'utf-8'
   );
   const appJsContent = ejs.render(appJsTmpl, {
@@ -38,15 +38,15 @@ function generateAppJS(
   });
 }
 
-function generateAppCSS(compilation, { target, command, rootDir, subPackages }) {
+function generateAppCSS(compilation, { target, command, pluginDir, subPackages }) {
   // Add default css file to compilation
   const defaultCSSTmpl = adjustCSS(readFileSync(
-    resolve(rootDir, 'templates', 'default.css.ejs'),
+    resolve(pluginDir, 'templates', 'default.css.ejs'),
     'utf-8'
   ), target === WECHAT_MINIPROGRAM);
   // Generate __rax-view and __rax-text style for rax compiled components
   const raxDefaultCSSTmpl = readFileSync(
-    resolve(rootDir, 'templates', 'rax-default.css.ejs'),
+    resolve(pluginDir, 'templates', 'rax-default.css.ejs'),
     'utf-8'
   );
   addFileToCompilation(compilation, {

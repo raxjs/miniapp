@@ -13,9 +13,9 @@ const matchFile = (fileName, ext) =>
   );
 
 // Add content to chunks head and tail
-module.exports = function(compilation, chunks, rootDir, target) {
+module.exports = function(compilation, chunks, pluginDir, target) {
   const FunctionPolyfill = readFileSync(
-    resolve(rootDir, 'templates', 'FunctionPolyfill.js.ejs'),
+    resolve(pluginDir, 'templates', 'FunctionPolyfill.js.ejs'),
     'utf-8'
   );
   chunks.forEach((chunk) => {

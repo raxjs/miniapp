@@ -7,6 +7,7 @@ const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
 const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
+const checkStoreFile = require('./utils/checkStoreFile');
 
 const {
   generateAppCSS,
@@ -23,6 +24,7 @@ const {
   generateRender,
   generatePkg
 } = require('./generators');
+const getFinalRouteMap = require('./utils/getFinalRouteMap');
 
 const PluginName = 'MiniAppRuntimePlugin';
 
@@ -33,10 +35,13 @@ class MiniAppRuntimePlugin {
   }
 
   apply(compiler) {
-    const rootDir = __dirname;
+    const pluginDir = __dirname;
     const options = this.options;
     const target = this.target;
-    const { nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], command, subPackages, mainPackageRoot } = options;
+    const { api, nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], mainPackageRoot } = options;
+    const { context: { command, userConfig: rootUserConfig }, getValue } = api;
+    const userConfig = rootUserConfig[target] || {};
+    const { subPackages } = userConfig;
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
@@ -50,7 +55,7 @@ class MiniAppRuntimePlugin {
       compilation.hooks.optimizeChunkAssets.tapAsync(
         PluginName,
         (chunks, callback) => {
-          wrapChunks(compilation, chunks, rootDir, target);
+          wrapChunks(compilation, chunks, pluginDir, target);
           callback();
         }
       );
@@ -60,6 +65,7 @@ class MiniAppRuntimePlugin {
       const outputPath = compilation.outputOptions.path;
       const sourcePath = join(options.rootDir, 'src');
       const pages = [];
+      const finalRouteMap = getFinalRouteMap(getValue('staticConfig'));
       const changedFiles = Object.keys(
         compiler.watchFileSystem.watcher.mtimes
       ).map((filePath) => {
@@ -88,7 +94,7 @@ class MiniAppRuntimePlugin {
         generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
           target,
           command,
-          rootDir,
+          pluginDir,
         });
       }
 
@@ -96,7 +102,7 @@ class MiniAppRuntimePlugin {
         isFirstRender ||
         changedFiles.some((filePath) => isCSSFile(filePath))
       ) {
-        generateAppCSS(compilation, { subPackages, target, command, rootDir });
+        generateAppCSS(compilation, { subPackages, target, command, pluginDir });
       }
 
       // These files need be written in first render and using native component state changes
@@ -108,16 +114,13 @@ class MiniAppRuntimePlugin {
           pages,
           target,
           command,
-          rootDir,
         });
-
 
         // Only when developer may use native component, it will generate package.json in output
         if (useNativeComponentCount > 0 || existsSync(join(sourcePath, 'public'))) {
           generatePkg(compilation, {
             target,
             command,
-            rootDir,
           });
           needAutoInstallDependency = true;
         }
@@ -127,21 +130,19 @@ class MiniAppRuntimePlugin {
           generateElementJS(compilation, {
             target,
             command,
-            rootDir,
           });
           generateElementJSON(compilation, {
             usingComponents,
             usingPlugins,
             target,
             command,
-            rootDir,
           });
           generateElementTemplate(compilation, {
             usingPlugins,
             usingComponents,
             target,
             command,
-            rootDir,
+            pluginDir,
           });
         } else {
           // Only when there isn't native component, it need generate root template file
@@ -149,7 +150,7 @@ class MiniAppRuntimePlugin {
           generateRootTmpl(compilation, {
             target,
             command,
-            rootDir,
+            pluginDir,
             usingPlugins,
             usingComponents,
           });
@@ -158,7 +159,7 @@ class MiniAppRuntimePlugin {
 
       // Collect asset
       routes
-        .forEach(({ entryName, subAppRoot }) => {
+        .forEach(({ entryName, subAppRoot, source }) => {
           pages.push(entryName);
           let pageConfig = {};
           const pageConfigPath = resolve(outputPath, entryName + '.json');
@@ -184,7 +185,6 @@ class MiniAppRuntimePlugin {
             generatePageXML(compilation, entryName, useComponent, {
               target,
               command,
-              rootDir,
               outputPath
             });
 
@@ -200,7 +200,7 @@ class MiniAppRuntimePlugin {
               pageConfig,
               useComponent,
               entryName,
-              { target, command, rootDir, outputPath }
+              { target, command, outputPath }
             );
           }
           let commonPageJSFilePaths = [];
@@ -209,14 +209,19 @@ class MiniAppRuntimePlugin {
               .getFiles()
               .filter((filePath) => !isCSSFile(filePath));
           }
+          let pagePath = entryName;
+          if (!subPackages) {
+            pagePath = finalRouteMap(source);
+          }
           // Page js
           generatePageJS(
             compilation,
             entryName,
+            pagePath,
             nativeLifeCycles,
             commonPageJSFilePaths,
             subAppRoot,
-            { target, command, rootDir, outputPath }
+            { target, command, pluginDir, outputPath }
           );
         });
 
