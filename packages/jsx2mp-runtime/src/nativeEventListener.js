@@ -10,8 +10,10 @@ export function registerEventsInConfig(Klass, events = []) {
   events.forEach(eventName => {
     const shouldReturnConfig = EVENTS_LIST.indexOf(eventName) < 0; // shouldReturnConfig controls the events injected into Page obj or Page.events obj
     const eventBindTarget = getNativeEventBindTarget(Klass, shouldReturnConfig);
+    const defaultLifeCycleEvent = eventBindTarget[eventName];
     eventBindTarget[eventName] = function(...args) {
       // onShareAppMessage need receive callback execute return
+      defaultLifeCycleEvent && defaultLifeCycleEvent.apply(this, args); // Execute default lifecycle events like onShow
       let ret;
       if (Klass.prototype.__nativeEventMap[eventName]) {
         Klass.prototype.__nativeEventMap[eventName].forEach(callback => ret = callback(...args));
