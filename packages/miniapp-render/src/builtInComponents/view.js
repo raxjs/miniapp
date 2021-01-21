@@ -17,6 +17,22 @@ if (isMiniApp) {
   {
     name: 'onViewDisappear',
     eventName: 'disappear'
+  },
+  {
+    name: 'onViewTransitionEnd',
+    eventName: 'transitionend'
+  },
+  {
+    name: 'onViewAnimationIteration',
+    eventName: 'animationiteration'
+  },
+  {
+    name: 'onViewAnimationStart',
+    eventName: 'animationstart'
+  },
+  {
+    name: 'onViewAnimationEnd',
+    eventName: 'animationend'
   }];
 }
 
