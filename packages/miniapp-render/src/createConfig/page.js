@@ -64,6 +64,8 @@ export function getBaseLifeCycles(route, init, packageName = 'main') {
         this.window.__pageId = this.pageId;
         if (!this.firstRender) {
           this.renderInfo && this.renderInfo.setDocument(this.document);
+          // Update location page options
+          this.window.history.location.__updatePageOption(this.query);
         }
         this.document.$$trigger('miniapp_pageshow');
         // compatible with original name
