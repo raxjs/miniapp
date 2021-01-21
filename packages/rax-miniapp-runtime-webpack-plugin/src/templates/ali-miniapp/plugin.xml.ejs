@@ -2,7 +2,7 @@
   <template name="<%= pluginTag %>">
     <<%=pluginTag%>
       <% usingPlugins[pluginTag].props.forEach(function(prop){%>
-        <%= prop %>="{{r.<%= prop %>}}"
+        <%= prop %>="{{r['<%= prop %>']}}"
       <% });%>
       <% usingPlugins[pluginTag].events.forEach(function(event){%>
         <%= `on${event}` %>="{{r.<%= event %>}}"

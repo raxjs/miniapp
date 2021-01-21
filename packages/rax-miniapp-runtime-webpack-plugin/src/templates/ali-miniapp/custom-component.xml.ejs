@@ -2,7 +2,7 @@
   <template name="<%= componentTag %>">
     <<%=componentTag%>
       <% usingComponents[componentTag].props.forEach(function(prop){%>
-        <%= prop %>="{{r.<%= prop %>}}"
+        <%= prop %>="{{r['<%= prop %>']}}"
       <% });%>
       <% usingComponents[componentTag].events.forEach(function(event){%>
         <%= `on${event}` %>="{{r.<%= event %>}}"
