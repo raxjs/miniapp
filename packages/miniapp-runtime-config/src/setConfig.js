@@ -75,6 +75,7 @@ module.exports = (
       .rule(ruleName)
       .use(babelRuleName)
       .tap((options) => {
+        options.cacheDirectory = false; // rax-miniapp-babel-plugins needs to be executed every time
         options.presets = [
           ...options.presets,
           {
