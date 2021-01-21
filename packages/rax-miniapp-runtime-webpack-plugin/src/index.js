@@ -6,6 +6,7 @@ const isEqual = require('lodash.isequal');
 const { MINIAPP } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
+const getSepProcessedPath = require('./utils/getSepProcessedPath');
 const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 
 const {
@@ -210,7 +211,7 @@ class MiniAppRuntimePlugin {
           }
           let pagePath = entryName;
           if (!subPackages) {
-            pagePath = finalRouteMap[source];
+            pagePath = finalRouteMap[getSepProcessedPath(source)];
           }
           // Page js
           generatePageJS(
