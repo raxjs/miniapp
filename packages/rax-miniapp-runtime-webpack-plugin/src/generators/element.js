@@ -18,20 +18,20 @@ function generateElementJS(compilation,
 }
 
 function generateElementTemplate(compilation,
-  { usingPlugins, usingComponents, target, command, rootDir }) {
+  { usingPlugins, usingComponents, target, command, pluginDir }) {
   let content = '<template is="{{r.nodeType || \'h-element\'}}" data="{{r: r}}" />';
   if (target !== MINIAPP) {
-    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, rootDir });
+    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir });
     content = `<import src="./root.${adapter[target].xml}"/>` + content;
   } else {
-    const pluginTmpl = ejs.render(getTemplate(rootDir, 'plugin.xml', target), {
+    const pluginTmpl = ejs.render(getTemplate(pluginDir, 'plugin.xml', target), {
       usingPlugins
     });
-    const componentTmpl = ejs.render(getTemplate(rootDir, 'custom-component.xml', target), {
+    const componentTmpl = ejs.render(getTemplate(pluginDir, 'custom-component.xml', target), {
       usingComponents
     });
     // In MiniApp, root.axml need be written into comp.axml
-    content = ejs.render(getTemplate(rootDir, 'root.xml', target))
+    content = ejs.render(getTemplate(pluginDir, 'root.xml', target))
     + pluginTmpl
     + componentTmpl
     + content;
@@ -44,13 +44,13 @@ function generateElementTemplate(compilation,
   });
   addFileToCompilation(compilation, {
     filename: `tool.${adapter[target].script}`,
-    content: ejs.render(getTemplate(rootDir, `tool.${adapter[target].script}`, target)),
+    content: ejs.render(getTemplate(pluginDir, `tool.${adapter[target].script}`, target)),
     target,
     command,
   });
 }
 
-function generateElementJSON(compilation, { usingComponents, usingPlugins, target, command, rootDir }) {
+function generateElementJSON(compilation, { usingComponents, usingPlugins, target, command }) {
   const content = {
     component: true,
     usingComponents: {}

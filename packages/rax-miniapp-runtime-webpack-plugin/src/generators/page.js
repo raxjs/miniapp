@@ -33,14 +33,15 @@ function generatePageCSS(
 function generatePageJS(
   compilation,
   pageRoute,
+  pagePath,
   nativeLifeCycles = {},
   commonPageJSFilePaths = [],
   subAppRoot = '',
-  { target, command, rootDir, outputPath }
+  { target, command, pluginDir, outputPath }
 ) {
-  const pageJsContent = ejs.render(getTemplate(rootDir, 'page.js'), {
+  const pageJsContent = ejs.render(getTemplate(pluginDir, 'page.js'), {
     render_path: `${getAssetPath(join(outputPath, 'render.js'), join(outputPath, `${pageRoute}.js`))}`,
-    route: getSepProcessedPath(pageRoute),
+    route: getSepProcessedPath(pagePath),
     native_lifecycles: `[${Object.keys(nativeLifeCycles).reduce((total, current, index) =>
       index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`,
     init: `function init(window, document) {${commonPageJSFilePaths
