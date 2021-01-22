@@ -50,7 +50,7 @@ module.exports = (
   if (userConfig.subPackages) {
     appConfig.routes.forEach(app => {
       const subAppRoot = dirname(app.source);
-      const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
+      const subAppConfig = getAppConfig(rootDir, target, nativeLifeCycleMap, subAppRoot);
       if (app.miniappMain) mainPackageRoot = subAppRoot;
       subAppConfig.miniappMain = app.miniappMain;
       subAppConfigList.push(subAppConfig);
