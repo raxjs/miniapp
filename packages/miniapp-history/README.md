@@ -34,7 +34,7 @@ const history = createMiniAppHistory(routes);
 
 ### Example2: history.listen
 ```js
-const unlisten = history.listen((location, action) => {
+const unlisten = history.listen(({ location, action }) => {
   console.log(
     `The current URL is ${location.pathname}${location.search}${location.hash}`
   );
