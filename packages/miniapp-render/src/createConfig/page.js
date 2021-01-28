@@ -1,7 +1,6 @@
 import cache from '../utils/cache';
 import injectLifeCycle from '../bridge/injectLifeCycle';
 import createEventProxy from '../bridge/createEventProxy';
-import perf from '../utils/perf';
 import createDocument from '../document';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
@@ -10,7 +9,7 @@ import { createWindow } from '../window';
 
 export function getBaseLifeCycles(route, init, packageName = 'main') {
   return {
-    onLoad(query) {
+    async onLoad(query) {
       // eslint-disable-next-line no-undef
       const app = getApp();
 
@@ -54,7 +53,7 @@ export function getBaseLifeCycles(route, init, packageName = 'main') {
         throw new Error("Could't find target render method.");
       }
       this.renderInfo.setDocument(this.document);
-      this.renderInfo.render();
+      await this.renderInfo.render();
 
       this.document.$$trigger('DOMContentLoaded');
     },
