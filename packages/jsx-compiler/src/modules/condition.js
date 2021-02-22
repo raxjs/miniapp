@@ -131,9 +131,6 @@ function transformTemplate(ast, templateMap, adapter, code) {
           replacement.push(createJSX('block', {
             [adapter.if]: generateConditionValue(test, { adapter })
           }, children));
-          replacement.push(createJSX('block', {
-            [adapter.else]: null,
-          }, [t.jsxExpressionContainer(left)]));
         }
         if (replacement.length > 0) {
           path.parentPath.replaceWithMultiple(replacement);
