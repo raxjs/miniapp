@@ -8,7 +8,7 @@ import { isMiniApp } from 'universal-env';
 import { BODY_NODE_ID } from '../constants';
 import { createWindow } from '../window';
 
-export function getBaseLifeCycles(route, init, packageName = 'main') {
+export function getBaseLifeCycles(route, init, packageName = '') {
   return {
     onLoad(query) {
       // eslint-disable-next-line no-undef
@@ -97,7 +97,7 @@ export function getBaseLifeCycles(route, init, packageName = 'main') {
   };
 }
 
-export default function(route, lifeCycles = [], init, packageName = 'main') {
+export default function(route, lifeCycles = [], init, packageName = '') {
   const pageConfig = {
     firstRender: true,
     data: {
