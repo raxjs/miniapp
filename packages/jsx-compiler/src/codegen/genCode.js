@@ -11,7 +11,11 @@ const generateOptions = {
  */
 function genCode(ast, options = {}) {
   options.sourceMaps = !options.turnOffSourceMap;
-  return generate(ast, Object.assign({}, generateOptions, options));
+  return generate(ast, Object.assign({
+    jsescOption: {
+      minimal: true // To avoid Chinese characters escaped
+    }
+  }, generateOptions, options));
 }
 
 module.exports = genCode;

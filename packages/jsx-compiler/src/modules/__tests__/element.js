@@ -105,6 +105,7 @@ describe('Transform JSXElement', () => {
           nil={null}
           regexp={/a-z/}
           tpl={\`hello world \${exp}\`}
+          chineseTpl={\`我是中文 \${chineseExp}\`}
         >{false}{'string'}{8}{}{undefined}{null}{/a-z/}</View>
       `;
       const ast = parseExpression(sourceCode);
@@ -114,9 +115,9 @@ describe('Transform JSXElement', () => {
         dynamicValue
       }, adapter, sourceCode);
 
-      expect(genInlineCode(ast).code).toEqual('<View bool="{{true}}" str=\'string\' num="{{8}}" nil="{{null}}" regexp="{{_d0}}" tpl="hello world {{_d1}}">string8{{ _d0 }}</View>');
+      expect(genInlineCode(ast).code).toEqual('<View bool="{{true}}" str=\'string\' num="{{8}}" nil="{{null}}" regexp="{{_d0}}" tpl="hello world {{_d1}}" chineseTpl="我是中文 {{_d2}}">string8{{ _d0 }}</View>');
 
-      expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: /a-z/, _d1: exp }');
+      expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: /a-z/, _d1: exp, _d2: chineseExp }');
     });
 
     it('should handle expression types', () => {
