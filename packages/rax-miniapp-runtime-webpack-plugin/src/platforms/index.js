@@ -5,4 +5,4 @@ const { constants: { MINIAPP, WECHAT_MINIPROGRAM }} = require('miniapp-builder-s
 module.exports = {
   [MINIAPP]: ali,
   [WECHAT_MINIPROGRAM]: wechat
-}
+};

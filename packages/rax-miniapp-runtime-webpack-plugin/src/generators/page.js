@@ -42,7 +42,7 @@ function generatePageJS(
   const route = getSepProcessedPath(pagePath);
   const nativeLifeCycles = `[${Object.keys(nativeLifeCyclesMap).reduce((total, current, index) => index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`;
   const init = `
-function init(window, document) {${commonPageJSFilePaths.map(filePath =>`require('${getAssetPath(filePath, pageRoute)}')(window, document)`).join(';')}}`;
+function init(window, document) {${commonPageJSFilePaths.map(filePath => `require('${getAssetPath(filePath, pageRoute)}')(window, document)`).join(';')}}`;
 
   const pageJsContent = `
 const render = require('${renderPath}');

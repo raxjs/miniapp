@@ -1,6 +1,4 @@
-function addSingleQuote (s) {
-  return `'${s}'`
-}
+const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
   Tap: ''
@@ -562,7 +560,7 @@ const LivePlayer = {
     UserAction: ''
   }
 
-}
+};
 
 const LivePusher = {
   props: {
@@ -625,7 +623,7 @@ exports.internalComponents = {
   LivePusher,
   HElement,
   HComment
-}
+};
 
 exports.derivedComponents = new Map([
   ['h-element', 'view'],
@@ -707,7 +705,7 @@ exports.needModifyChildrenComponents = {
   </view>
 </picker-view-column>`,
   picker: children => `<view>${children}</view>`
-}
+};
 
 exports.adapter = {
   if: 'a:if',
@@ -728,4 +726,4 @@ exports.sjs = {
   name: 'name',
   from: 'from',
   exportExpression: 'export default'
-}
+};

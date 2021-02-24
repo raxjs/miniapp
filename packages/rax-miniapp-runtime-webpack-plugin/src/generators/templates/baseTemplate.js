@@ -1,19 +1,16 @@
 const platformConfig = require('../../platforms');
+const addSingleQuote = require('../../utils/addSingleQuote');
 
 function toDash(str) {
   return str.replace(/\B([A-Z])/g, '-$1').toLowerCase();
 }
 
-function isNumber (o) {
+function isNumber(o) {
   return typeof o === 'number' && !isNaN(o);
 }
 
-function isBooleanStringLiteral (o) {
+function isBooleanStringLiteral(o) {
   return o === 'true' || o === 'false';
-}
-
-function addSingleQuote (s) {
-  return `'${s}'`;
 }
 
 /**
@@ -36,8 +33,8 @@ function buildSjsTemplate({ tag, extension, name, from }) {
  */
 function buildAttribute(attrs, adapter) {
   return Object.keys(attrs)
-  .map(a => a.indexOf(adapter.event) === 0 ? `${a}="${attrs[a]}"` : `${a}="{{${attrs[a]}}}"`)
-  .join(' ');
+    .map(a => a.indexOf(adapter.event) === 0 ? `${a}="${attrs[a]}"` : `${a}="{{${attrs[a]}}}"`)
+    .join(' ');
 }
 
 /**
@@ -46,7 +43,7 @@ function buildAttribute(attrs, adapter) {
  * @param {number} level - recursion level
  * @param {Object} adapter
  */
-function buildFocusComponentTemplate (compInfo, level, adapter) {
+function buildFocusComponentTemplate(compInfo, level, adapter) {
   const { nodeName, nodeAttributes } = compInfo;
   const attrs = { ...nodeAttributes };
   const templateName = `tool.b(r, 'RAX_TMPL_${level}_')`;
@@ -64,7 +61,7 @@ function buildFocusComponentTemplate (compInfo, level, adapter) {
 <template name="RAX_TMPL_${level}_${nodeName}_blur">
   <${nodeName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} />
 </template>
-`
+`;
 }
 
 /**
@@ -76,7 +73,7 @@ function buildFocusComponentTemplate (compInfo, level, adapter) {
  * @param {Object} options
  * @param {boolean} options.isRecursiveTemplate
  */
-function buildStandardComponentTemplate (compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
+function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
   const { nodeName, nodeAttributes, nodeActualName } = compInfo;
   const { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents } = compSet;
   const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.e(c, '${nodeName}'), cid: ${level}`;
@@ -101,7 +98,7 @@ function buildStandardComponentTemplate (compInfo, level, adapter, compSet, { is
   } else if (shouldNotGenerateTemplateComponents.has(nodeName)) {
     return '';
   } else {
-    return generateRes(`<${nodeActualName} ${buildAttribute(nodeAttributes, adapter)} id="{{r.id}}" data-private-node-id="{{r.nodeId}}">${children}</${nodeActualName}>`)
+    return generateRes(`<${nodeActualName} ${buildAttribute(nodeAttributes, adapter)} id="{{r.id}}" data-private-node-id="{{r.nodeId}}">${children}</${nodeActualName}>`);
   }
 }
 
@@ -130,7 +127,7 @@ function createMiniComponents(components, adapter) {
         propValue = `r[${addSingleQuote(prop)}]||${propValue || addSingleQuote('')}`;
       }
 
-      newComp[prop] = propValue
+      newComp[prop] = propValue;
     }
     // Process events
     for (let event in events) {
@@ -163,7 +160,7 @@ function createMiniComponents(components, adapter) {
  */
 function modifyInternalComponents(internalComponents, customComponentsConfig) {
   const result = Object.assign({}, internalComponents);
-  Object.keys(customComponentsConfig).forEach((comp => {
+  Object.keys(customComponentsConfig).forEach(comp => {
     const componentConfig = customComponentsConfig[comp];
     const { deleted: { props = [], events = [], basicEvents = []} } = componentConfig; // Only support deleting temporarily
     if (result[comp]) {
@@ -171,7 +168,7 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
       events.forEach(event => delete result[comp].events[event]);
       basicEvents.forEach(basicEvent => delete result[comp].basicEvents[basicEvent]);
     }
-  }));
+  });
 
   return result;
 }
@@ -189,7 +186,7 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
 <template name="RAX_TMPL_ROOT_CONTAINER">
   <template is="{{tool.d(r.nodeType, '')}}" data="{{${data}}}" />
 </template>
-`
+`;
 }
 
 /**
@@ -202,7 +199,7 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
  */
 function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, restart = false }) {
   const data = isRecursiveTemplate ? 'r: item' : 'r: item, c: c, cid: cid + 1';
-  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{tool.d(item.nodeType, c)}}" data="{{${data}}}" />`
+  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{tool.d(item.nodeType, c)}}" data="{{${data}}}" />`;
   return `
 <template name="RAX_TMPL_CHILDREN_${level}">
   <block ${adapter.for}="{{r}}" ${adapter.key}="nodeId">
@@ -228,7 +225,7 @@ function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, res
 function buildComponentTemplate(compInfo, level, target, { isRecursiveTemplate = true }) {
   const { nodeName } = compInfo;
   const { focusComponents, voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents, adapter } = platformConfig[target];
-  return  focusComponents.has(nodeName) ? buildFocusComponentTemplate(compInfo, level, adapter) : buildStandardComponentTemplate(compInfo, level, adapter, { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents }, { isRecursiveTemplate });
+  return focusComponents.has(nodeName) ? buildFocusComponentTemplate(compInfo, level, adapter) : buildStandardComponentTemplate(compInfo, level, adapter, { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents }, { isRecursiveTemplate });
 }
 
 module.exports = {
@@ -237,4 +234,4 @@ module.exports = {
   buildBaseTemplate,
   buildChildrenTemplate,
   buildComponentTemplate
-}
+};

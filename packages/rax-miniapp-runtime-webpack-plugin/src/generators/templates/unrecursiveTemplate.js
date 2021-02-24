@@ -10,7 +10,7 @@ const BASE_LEVEL = 16;
  * @param {string} target
  * @param {Object} compSet - special component sets
  */
-function buildFloor (level, target, compSet) {
+function buildFloor(level, target, compSet) {
   const { nestElements, miniComponents, derivedComponents } = compSet;
   const components = Object.keys(miniComponents);
 
@@ -28,7 +28,7 @@ function buildFloor (level, target, compSet) {
     }
     const nodeAttributes = miniComponents[nodeName];
     return current + buildComponentTemplate({ nodeName, nodeActualName, nodeAttributes }, level, target, { isRecursiveTemplate: false });
-  }, '')
+  }, '');
 
   return template;
 }
@@ -60,7 +60,7 @@ function buildUnrecursiveTemplate(target, customComponentsConfig) {
  * Build recursive template sjs
  * @param {string} target
  */
-function buildUnrecursiveTemplateSjs (target) {
+function buildUnrecursiveTemplateSjs(target) {
   const { sjs: { exportExpression }} = platformConfig[target];
   return `${exportExpression} {
       a: function(v, dv) {
@@ -89,10 +89,10 @@ function buildUnrecursiveTemplateSjs (target) {
       e: function(nodeType, chains) {
         return chains + ',' + nodeType;
       }
-}`
+}`;
 }
 
 module.exports = {
   buildUnrecursiveTemplate,
   buildUnrecursiveTemplateSjs
-}
+};

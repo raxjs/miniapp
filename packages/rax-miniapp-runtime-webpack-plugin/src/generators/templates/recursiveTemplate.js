@@ -30,7 +30,7 @@ function buildRecursiveTemplate(target, customComponentsConfig) {
  * Build recursive template sjs
  * @param {string} target
  */
-function buildRecursiveTemplateSjs (target) {
+function buildRecursiveTemplateSjs(target) {
   const { sjs: { exportExpression }} = platformConfig[target];
   return `${exportExpression} {
       a: function(v, dv) {
@@ -43,11 +43,11 @@ function buildRecursiveTemplateSjs (target) {
       c: function(level) {
         return 'RAX_TMPL_CHILDREN_' + level;
       }
-}`
+}`;
 }
 
 
 module.exports = {
   buildRecursiveTemplate,
   buildRecursiveTemplateSjs
-}
+};

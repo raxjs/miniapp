@@ -13,7 +13,7 @@ function generateAppJS(
   { target, command }
 ) {
   const init = `
-function init(window, document) {${commonAppJSFilePaths.map(filePath =>`require('${getAssetPath(filePath, 'app.js')}')(window, document)`).join(';')}}`;
+function init(window, document) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document)`).join(';')}}`;
   const appJsContent = `
 const render = require('./render');
 const config = require('./config');
