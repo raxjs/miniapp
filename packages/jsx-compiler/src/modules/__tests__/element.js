@@ -55,12 +55,12 @@ describe('Transform JSXElement', () => {
     });
 
     it('props identifier', () => {
-      const sourceCode = '<View foo={bar}>{ bar }</View>';
+      const sourceCode = '<View foo={bar} name={name}>{ bar } {age}</View>';
       const ast = parseExpression(sourceCode);
       const functionComponentAst = parseCode(`
       export default function Component(props) {
-        const { bar } = props;
-        return (<View foo={bar}>{ bar }</View>);
+        const { bar, data: { name, age = 20 } } = props;
+        return (<View foo={bar} name={name}>{ bar } {age}</View>);
       }
       `);
       const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
@@ -71,7 +71,9 @@ describe('Transform JSXElement', () => {
         renderFunctionPath
       }, adapter, sourceCode);
       const code = genInlineCode(ast).code;
-      expect(code).toEqual('<View foo="{{bar}}">{{ bar }}</View>');
+      expect(code).toEqual('<View foo="{{bar}}" name="{{_d0}}">{{ bar }} {{ _d1 }}</View>');
+      expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: name, _d1: age }');
+
     });
 
     it('props identifier with default assignment', () => {
