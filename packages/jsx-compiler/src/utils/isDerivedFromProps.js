@@ -10,7 +10,7 @@ function checkDirectObjectProperty(bindingPath, bindingName, shouldHasDefaultAss
   const id = bindingPath.get('id');
   if (t.isObjectPattern(id)) {
     const properties = id.get('properties');
-    for(let property of properties) {
+    for (let property of properties) {
       const isDirectObjectPropery = t.isObjectProperty(property) && t.isIdentifier(property.node.key) && property.node.key.name === bindingName;
       if (shouldHasDefaultAssignment) {
         if (isDirectObjectPropery && t.isAssignmentPattern(property.node.value)) {
