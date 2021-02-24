@@ -8,7 +8,12 @@ const generate = require('@babel/generator').default;
 function generateExpression(expression, overridesOption = {}) {
   const { code } = generate(
     expression,
-    overridesOption
+    Object.assign({
+      jsescOption: {
+        minimal: true // To avoid Chinese characters escaped
+      },
+      overridesOption
+    })
   );
   return code;
 }
