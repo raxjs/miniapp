@@ -1,4 +1,4 @@
-Function = function(){ return function() { return Symbol; } }; if (typeof
+if(!Function){Function = function(){ return function() { return Symbol; } };}if (typeof
 Function.prototype.call === 'undefined') { Function.prototype.call = function
 (context) { context = context || window; context.fn = this; const args =
 [...arguments].slice(1); const result = context.fn(...args); delete context.fn;

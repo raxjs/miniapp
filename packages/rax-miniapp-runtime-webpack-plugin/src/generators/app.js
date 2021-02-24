@@ -1,8 +1,7 @@
 const { resolve, extname } = require('path');
 const { readFileSync } = require('fs-extra');
-const ejs = require('ejs');
-const adapter = require('../adapter');
-const { MINIAPP, WECHAT_MINIPROGRAM } = require('../constants');
+const { platformMap } = require('miniapp-builder-shared');
+const { UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getAssetPath = require('../utils/getAssetPath');
 const adjustCSS = require('../utils/adjustCSS');
@@ -11,25 +10,17 @@ function generateAppJS(
   compilation,
   commonAppJSFilePaths,
   mainPackageRoot = 'main',
-  { target, command, pluginDir }
+  { target, command }
 ) {
-  const appJsTmpl = readFileSync(
-    resolve(pluginDir, 'templates', 'app.js.ejs'),
-    'utf-8'
-  );
-  const appJsContent = ejs.render(appJsTmpl, {
-    init: `function init(window, document) {${commonAppJSFilePaths
-      .map(
-        filePath =>
-          `require('${getAssetPath(
-            filePath,
-            'app.js'
-          )}')(window, document)`
-      )
-      .join(';')}}`,
-    root: mainPackageRoot,
-    isMiniApp: target === MINIAPP
-  });
+  const init = `
+function init(window, document) {${commonAppJSFilePaths.map(filePath =>`require('${getAssetPath(filePath, 'app.js')}')(window, document)`).join(';')}}`;
+  const appJsContent = `
+const render = require('./render');
+const config = require('./config');
+${init}
+App(render.createAppConfig(init, config, '${mainPackageRoot}'));
+`;
+
   addFileToCompilation(compilation, {
     filename: 'app.js',
     content: appJsContent,
@@ -41,16 +32,16 @@ function generateAppJS(
 function generateAppCSS(compilation, { target, command, pluginDir, subPackages }) {
   // Add default css file to compilation
   const defaultCSSTmpl = adjustCSS(readFileSync(
-    resolve(pluginDir, 'templates', 'default.css.ejs'),
+    resolve(pluginDir, 'static', 'default.css'),
     'utf-8'
-  ), target === WECHAT_MINIPROGRAM);
+  ), UNRECURSIVE_TEMPLATE_TYPE.has(target));
   // Generate __rax-view and __rax-text style for rax compiled components
   const raxDefaultCSSTmpl = readFileSync(
-    resolve(pluginDir, 'templates', 'rax-default.css.ejs'),
+    resolve(pluginDir, 'static', 'rax-default.css'),
     'utf-8'
   );
   addFileToCompilation(compilation, {
-    filename: `default.${adapter[target].css}`,
+    filename: `default${platformMap[target].extension.css}`,
     content: defaultCSSTmpl + raxDefaultCSSTmpl,
     target,
     command,
@@ -68,7 +59,7 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
   });
 
   addFileToCompilation(compilation, {
-    filename: `app.${adapter[target].css}`,
+    filename: `app${platformMap[target].extension.css}`,
     content,
     target,
     command,
