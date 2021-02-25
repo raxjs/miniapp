@@ -125,7 +125,7 @@ export default {
     const pageId = '/pages/home/index-1';
     const window = createWindow();
     window.__pageId = pageId;
-    cache.setWindow('main', window);
+    cache.setWindow('', window);
     const document = createDocument(pageId);
     generateDOM(document);
     // document.body.innerHTML = html;
