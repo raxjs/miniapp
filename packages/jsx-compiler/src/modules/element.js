@@ -712,7 +712,7 @@ function transformIdentifier(expression, dynamicBinding, { isDirective, isDerive
     expression.__listItem && !expression.__listItem.item
     || expression.__templateVar
     || expression.__slotScope
-    || (!needRegisterProps && isDerivedFromProps)
+    || !needRegisterProps && isDerivedFromProps
   ) {
     // The identifier is x-for args or template variable or map's index or variable derived from props
     replaceNode = expression;
