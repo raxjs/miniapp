@@ -11,9 +11,8 @@ function generateExpression(expression, overridesOption = {}) {
     Object.assign({
       jsescOption: {
         minimal: true // To avoid Chinese characters escaped
-      },
-      overridesOption
-    })
+      }
+    }, overridesOption)
   );
   return code;
 }
