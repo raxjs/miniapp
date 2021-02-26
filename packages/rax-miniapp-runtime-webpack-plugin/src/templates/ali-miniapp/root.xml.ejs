@@ -53,6 +53,43 @@
   </view>
 </template>
 
+<template name="catch-view">
+  <view
+    style="{{r.style}}"
+    class="{{r.class}}"
+    id="{{r.id}}"
+    hidden="{{r.hidden}}"
+    animation="{{r.animation}}"
+    data-private-node-id="{{r.nodeId}}"
+
+    onTap="onTap"
+    catchTouchMove="onTouchMove"
+    onTouchStart="onTouchStart"
+    onTouchEnd="onTouchEnd"
+    onTouchCancel="onTouchCancel"
+    onLongTap="onLongTap"
+
+    onFirstAppear="onViewFirstAppear"
+    onAppear="onViewAppear"
+    onDisappear="onViewDisappear"
+
+    onTransitionEnd="onViewTransitionEnd"
+    onAnimationIteration="onViewAnimationIteration"
+    onAnimationStart="onViewAnimationStart"
+    onAnimationEnd="onViewAnimationEnd"
+
+    disable-scroll="{{r['disable-scroll']}}"
+    hover-class="{{r['hover-class']}}"
+    hover-start-time="{{r['hover-start-time']}}"
+    hover-stay-time="{{r['hover-stay-time']}}"
+    hidden="{{r.hidden}}"
+    hover-stop-propagation="{{r['hover-stop-propagation']}}"
+    role="{{r.role}}"
+  >
+    <template is="children" data="{{r: r.children}}" />
+  </view>
+</template>
+
 <template name="swiper">
   <swiper
     style="{{r.style}}"
@@ -218,6 +255,24 @@
     onTap="onTap"
     onTouchStart="onTouchStart"
     onTouchMove="onTouchMove"
+    onTouchEnd="onTouchEnd"
+    onTouchCancel="onTouchCancel"
+  >
+    <template is="children" data="{{r: r.children}}" />
+  </view>
+</template>
+
+<template name="catch-h-element">
+  <view
+    style="{{r.style}}"
+    class="{{r.class}}"
+    id="{{r.id}}"
+    animation="{{r.animation}}"
+    data-private-node-id="{{r.nodeId}}"
+
+    onTap="onTap"
+    onTouchStart="onTouchStart"
+    catchTouchMove="onTouchMove"
     onTouchEnd="onTouchEnd"
     onTouchCancel="onTouchCancel"
   >

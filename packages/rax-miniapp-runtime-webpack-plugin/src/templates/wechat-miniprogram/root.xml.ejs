@@ -43,6 +43,33 @@
   </view>
 </template>
 
+<template name="catch-view">
+  <view
+    style="{{r.style}}"
+    class="{{r.class}}"
+    id="{{r.id}}"
+    hidden="{{r.hidden}}"
+    animation="{{r.animation}}"
+    data-private-node-id="{{r.nodeId}}"
+
+    bindtap="onTap"
+    bindtouchstart="onTouchStart"
+    catchtouchmove="onTouchMove"
+    bindtouchend="onTouchEnd"
+    bindtouchcancel="onTouchCancel"
+    bindlongpress="onLongTap"
+
+    hover-class="{{r['hover-class']}}"
+    hover-start-time="{{r['hover-start-time']}}"
+    hover-stay-time="{{r['hover-stay-time']}}"
+    hidden="{{r.hidden}}"
+    hover-stop-propagation="{{r['hover-stop-propagation']}}"
+    role="{{r.role}}"
+  >
+    <template is="children" data="{{r: r.children}}" />
+  </view>
+</template>
+
 <template name="swiper">
   <swiper
     style="{{r.style}}"
@@ -225,6 +252,24 @@
     bindtap="onTap"
     bindtouchstart="onTouchStart"
     bindtouchmove="onTouchMove"
+    bindtouchend="onTouchEnd"
+    bindtouchcancel="onTouchCancel"
+  >
+    <template is="children" data="{{r: r.children}}" />
+  </view>
+</template>
+
+<template name="catch-h-element">
+  <view
+    style="{{r.style}}"
+    class="{{r.class}}"
+    id="{{r.id}}"
+    animation="{{r.animation}}"
+    data-private-node-id="{{r.nodeId}}"
+
+    bindtap="onTap"
+    bindtouchstart="onTouchStart"
+    catchtouchmove="onTouchMove"
     bindtouchend="onTouchEnd"
     bindtouchcancel="onTouchCancel"
   >
