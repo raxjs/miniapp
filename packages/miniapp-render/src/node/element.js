@@ -17,7 +17,8 @@ class Element extends Node {
     this.__tagName = options.tagName || '';
     this.__isBuiltinComponent = BUILTIN_COMPONENT_LIST.has(this.__tagName);
     this.__tmplName = this.__isBuiltinComponent ? this.__tagName : 'h-element';
-    if (options.attrs.catchTouchMove && (this.__tmplName === 'view' || this.__tmplName === 'h-element')) {
+    const { attrs = {} } = options;
+    if (attrs.catchTouchMove && (this.__tmplName === 'view' || this.__tmplName === 'h-element')) {
       // Only view and h-element(rax-view) can add catchTouchMove
       this.__tmplName = 'catch-' + this.__tmplName;
     }
@@ -27,7 +28,7 @@ class Element extends Node {
     this.__attrs = new Attribute(this);
     cache.setNode(this.__nodeId, this);
     this.dataset = {};
-    this._initAttributes(options.attrs);
+    this._initAttributes(attrs);
     if (this.id && !this.ownerDocument.__idMap.has(this.id)) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
