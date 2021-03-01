@@ -6,7 +6,7 @@ import createDocument from '../document';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
 import { BODY_NODE_ID } from '../constants';
-import { createWindow } from '../window';
+import createWindow from '../window';
 
 export function getBaseLifeCycles(route, init, packageName = '') {
   return {
