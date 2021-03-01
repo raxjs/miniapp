@@ -99,8 +99,10 @@ module.exports = function scriptLoader(content) {
       copySync(source, target, {
         overwrite: false,
         filter: filename => {
+          const isJSONFile = extname(filename) === '.json';
+          const isNpmDirFile = filename.indexOf('npm') > -1;
           // if isThirdMiniappComponent, only exclude the json file of the component itself
-          const filterJSONFile = isThirdMiniappComponent ? filename !== `${removeExt(resourcePath)}.json` : extname(filename) !== '.json';
+          const filterJSONFile = isThirdMiniappComponent ? (isNpmDirFile || !isJSONFile) : !isJSONFile;
           return !/__(mocks|tests?)__/.test(filename) && filterJSONFile; // JSON file will be written later because usingComponents may be modified
         }
       });
