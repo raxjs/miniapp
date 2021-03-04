@@ -25,18 +25,18 @@ function getDocument(pageId) {
 }
 
 // Set window
-function setWindow(packageName = 'main', value) {
+function setWindow(packageName = '', value) {
   windowMap.set(packageName, value);
 }
 
 /**
  * Get window
  */
-function getWindow(packageName = 'main') {
+function getWindow(packageName = '') {
   return windowMap.get(packageName);
 }
 
-function hasWindow(packageName = 'main') {
+function hasWindow(packageName = '') {
   return windowMap.has(packageName);
 }
 

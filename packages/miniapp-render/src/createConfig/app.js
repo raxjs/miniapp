@@ -4,7 +4,7 @@ import { createWindow } from '../window';
 import createDocument from '../document';
 import cache from '../utils/cache';
 
-export default function(init, config, packageName = 'main') {
+export default function(init, config, packageName = '') {
   cache.setConfig(config);
   const appConfig = {
     launched: isMiniApp,
