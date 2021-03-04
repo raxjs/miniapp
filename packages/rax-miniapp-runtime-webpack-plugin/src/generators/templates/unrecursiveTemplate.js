@@ -44,14 +44,14 @@ function buildUnrecursiveTemplate(target, customComponentsConfig) {
   const customInternalComponents = modifyInternalComponents(internalComponents, customComponentsConfig);
   const miniComponents = createMiniComponents(customInternalComponents, adapter);
 
-  let template = buildBaseTemplate(sjs, false);
+  let template = buildBaseTemplate(sjs, { isRecursiveTemplate: false });
   for (let i = 0; i < BASE_LEVEL; i++) {
     template += buildChildrenTemplate(i, adapter, { isRecursiveTemplate: false, restart: false });
     template += buildFloor(i, target, {
       miniComponents, derivedComponents, nestElements
     });
   }
-  template += buildChildrenTemplate(BASE_LEVEL, adapter, { isRecursiveTemplate: false, restart: false });
+  template += buildChildrenTemplate(BASE_LEVEL, adapter, { isRecursiveTemplate: false, restart: true });
 
   return template;
 }
@@ -67,7 +67,7 @@ function buildUnrecursiveTemplateSjs(target) {
         return v === undefined ? dv : v;
       },
       b: function(r, prefix) {
-        var s = r.focus !== undefined ? 'focus' : 'blur';
+        var s = r['focus-state'] !== undefined ? 'focus' : 'blur';
         return prefix + r.nodeType + '_' + s
       },
       c: function(level) {

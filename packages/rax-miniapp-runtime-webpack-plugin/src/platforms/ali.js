@@ -21,7 +21,7 @@ const View = {
     hidden: 'false',
     'hover-stop-propagation': 'false',
     role: '',
-    animation: '{}',
+    animation: 'null',
   },
   events: {
     TransitionEnd: '',
@@ -38,6 +38,8 @@ const View = {
   }
 };
 
+const CatchView = Object.assign({}, View);
+
 const HElement = {
   props: {
     animation: '{}',
@@ -47,6 +49,8 @@ const HElement = {
     ...touchEvents
   }
 };
+
+const CatchHElement = Object.assign({}, HElement);
 
 const HComment = {};
 
@@ -265,6 +269,7 @@ const Input = {
     'selection-end': '-1',
     'random-number': 'false',
     controlled: 'false',
+    enableNative: 'true'
   },
   events: {
     Input: '',
@@ -288,6 +293,7 @@ const Textarea = {
     'auto-height': 'false',
     'show-count': 'true',
     controlled: 'false',
+    enableNative: 'true'
   },
   events: {
     Input: '',
@@ -586,6 +592,7 @@ const LivePusher = {
 
 exports.internalComponents = {
   View,
+  CatchView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -622,10 +629,13 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   HElement,
+  CatchHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
+  ['catch-view', 'view'],
+  ['catch-h-element', 'view'],
   ['h-element', 'view'],
   ['h-comment', 'block']
 ]);
@@ -662,7 +672,10 @@ exports.voidChildrenElements = new Set([
   'h-comment',
   'open-avatar',
   'web-view',
+  'image',
+  'video',
   'lottie',
+  'canvas',
   'live-player',
   'live-pusher'
 ]);
@@ -687,24 +700,28 @@ exports.shouldNotGenerateTemplateComponents = new Set([
 
 exports.needModifyChildrenComponents = {
   swiper: children => `
-<swiper-item a:for="{{r.children}}" a:key="nodeId">
-  <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
-</swiper-item>`,
+    <swiper-item a:for="{{r.children}}" a:key="nodeId">
+      <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
+    </swiper-item>`,
   'movable-area': children => `
-  <movable-view direction="{{r['direction']||'none'}}" inertia="{{tool.a(r['inertia'],false)}}" out-of-bounds="{{tool.a(r['out-of-bounds'],false)}}" x="{{tool.a(r['x'],0)}}" y="{{tool.a(r['y'],0)}}" damping="{{tool.a(r['damping'],20)}}" friction="{{tool.a(r['friction'],2)}}" disabled="{{tool.a(r['disabled'],false)}}" scale="{{tool.a(r['scale'],false)}}" scale-min="{{tool.a(r['scale-min'],0.5)}}" scale-max="{{tool.a(r['scale-max'],10)}}" scale-value="{{tool.a(r['scale-value'],1)}}" animation="{{tool.a(r['animation'],false)}}" onChange="eventHandler" onChangeEnd="eventHandler" onScale="eventHandler" onTouchStart="eventHandler" onTouchMove="eventHandler" onTouchEnd="eventHandler" onTouchCancel="eventHandler" onLongTap="eventHandler" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}">${children}
-</movable-view>`,
+    <movable-view a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}" direction="{{r['direction']||'none'}}" inertia="{{tool.a(r['inertia'],false)}}" out-of-bounds="{{tool.a(r['out-of-bounds'],false)}}" x="{{tool.a(r['x'],0)}}" y="{{tool.a(r['y'],0)}}" damping="{{tool.a(r['damping'],20)}}" friction="{{tool.a(r['friction'],2)}}" disabled="{{tool.a(r['disabled'],false)}}" scale="{{tool.a(r['scale'],false)}}" scale-min="{{tool.a(r['scale-min'],0.5)}}" scale-max="{{tool.a(r['scale-max'],10)}}" scale-value="{{tool.a(r['scale-value'],1)}}" animation="{{tool.a(r['animation'],false)}}" onChange="onMovableViewChange" onChangeEnd="onMovableViewChangeEnd" onScale="onMovableViewScale" onTouchStart="onTouchStart" onTouchMove="onTouchMove" onTouchEnd="onTouchEnd" onTouchCancel="onTouchCancel" onLongTap="onLongTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}">
+      <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
+    </movable-view>`,
   'picker-view': children => `
-  <picker-view-column a:for="{{r.children}} a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
-    <view a:for="{{item.children}}" a:for-item="pickerColumnItem">
-    <block a:if="{{pickerColumnItem.nodeId}}">
-      <template is="{{tool.b(pickerColumnItem.nodeType, 0)}}" data="{{r: pickerColumnItem}}" />
-    </block>
-    <block a:else>
-      <block>{{pickerColumnItem.content}}</block>
-    </block>
-  </view>
-</picker-view-column>`,
-  picker: children => `<view>${children}</view>`
+    <picker-view-column a:for="{{r.children}} a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
+      <view a:for="{{item.children}}" a:for-item="pickerColumnItem">
+        <block a:if="{{pickerColumnItem.nodeId}}">
+          <template is="{{tool.d(pickerColumnItem.nodeType)}}" data="{{r: pickerColumnItem}}" />
+        </block>
+        <block a:else>
+          <block>{{pickerColumnItem.content}}</block>
+        </block>
+      </view>
+    </picker-view-column>`,
+  picker: children => `
+    <view>
+      ${children}
+    </view>`
 };
 
 exports.adapter = {
@@ -717,6 +734,7 @@ exports.adapter = {
   key: 'a:key',
   xs: 'sjs',
   event: 'on',
+  catchEvent: 'catch',
   eventToLowerCase: false
 };
 

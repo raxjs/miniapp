@@ -37,12 +37,17 @@ function buildRecursiveTemplateSjs(target) {
         return v === undefined ? dv : v;
       },
       b: function(r, prefix) {
-        var s = r.focus !== undefined ? 'focus' : 'blur';
+        var s = r['focus-state'] !== undefined ? 'focus' : 'blur';
         return prefix + r.nodeType + '_' + s
       },
       c: function(level) {
         return 'RAX_TMPL_CHILDREN_' + level;
-      }
+      },
+      d: function(nodeType) {
+        if (!nodeType) nodeType = 'h-element';
+        var templateName = 'RAX_TMPL_0_' + nodeType;
+        return templateName;
+      },
 }`;
 }
 

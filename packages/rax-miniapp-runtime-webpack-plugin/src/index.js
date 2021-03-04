@@ -42,7 +42,7 @@ class MiniAppRuntimePlugin {
     const { api, nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], mainPackageRoot } = options;
     const { context: { command, userConfig: rootUserConfig, rootDir }, getValue } = api;
     const userConfig = rootUserConfig[target] || {};
-    const { subPackages } = userConfig;
+    const { subPackages, modifyTemplate = {} } = userConfig;
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
@@ -144,7 +144,7 @@ class MiniAppRuntimePlugin {
             target,
             command,
             pluginDir,
-            api
+            modifyTemplate
           });
         } else {
           // Only when there isn't native component, it need generate root template file
@@ -155,7 +155,7 @@ class MiniAppRuntimePlugin {
             pluginDir,
             usingPlugins,
             usingComponents,
-            api
+            modifyTemplate
           });
         }
       }

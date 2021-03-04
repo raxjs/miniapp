@@ -33,7 +33,7 @@ function buildSjsTemplate({ tag, extension, name, from }) {
  */
 function buildAttribute(attrs, adapter) {
   return Object.keys(attrs)
-    .map(a => a.indexOf(adapter.event) === 0 ? `${a}="${attrs[a]}"` : `${a}="{{${attrs[a]}}}"`)
+    .map(a => (a.indexOf(adapter.event) === 0 || a.indexOf(adapter.catchEvent) === 0) ? `${a}="${attrs[a]}"` : `${a}="{{${attrs[a]}}}"`)
     .join(' ');
 }
 
@@ -51,11 +51,11 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
 
   return `
 <template name="RAX_TMPL_${level}_${nodeName}">
-  <template is="{{${templateName}}} data={{r: r}}" />
+  <template is="{{${templateName}}}" data="{{r: r}}" />
 </template>
 
 <template name="RAX_TMPL_${level}_${nodeName}_focus">
-  <${nodeName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(nodeAttributes, adapter)} />
+  <${nodeName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} focus="{{tool.a(r['focus-state'],false)}}" />
 </template>
 
 <template name="RAX_TMPL_${level}_${nodeName}_blur">
@@ -76,11 +76,12 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
 function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
   const { nodeName, nodeAttributes, nodeActualName } = compInfo;
   const { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents } = compSet;
-  const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.e(c, '${nodeName}'), cid: ${level}`;
+  const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.e(c, '${nodeName}')`;
+  const templateName = isRecursiveTemplate ? 'RAX_TMPL_CHILDREN_0' : '{{tool.c(cid + 1)}}';
   let children = voidChildrenElements.has(nodeName)
     ? ''
     : `
-    <template is="{{tool.c(cid + 1)}}" data="{{${data}}}" />
+    <template is="${templateName}" data="{{${data}}}" />
 `;
 
   if (needModifyChildrenComponents[nodeName]) {
@@ -135,9 +136,12 @@ function createMiniComponents(components, adapter) {
       const eventValue = 'on' + key + event;
       newComp[eventName] = eventValue;
     }
-
     for (let basicEvent in basicEvents) {
-      const basicEventName = adapter.eventToLowerCase ? `${adapter.event}${basicEvent}`.toLocaleLowerCase() : `${adapter.event}${basicEvent}`;
+      const isCatchComponent = compName.indexOf('catch') === 0;
+      const isTouchMoveEvent = basicEvent === 'TouchMove';
+
+      const originalEventName = `${isCatchComponent && isTouchMoveEvent ? adapter.catchEvent : adapter.event}${basicEvent}`;
+      const basicEventName = adapter.eventToLowerCase ? originalEventName.toLocaleLowerCase() : originalEventName;
       newComp[basicEventName] = 'on' + basicEvent;
     }
 
@@ -181,10 +185,11 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
  */
 function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
+  const templateName = isRecursiveTemplate ? 'tool.d(r.nodeType)' : `tool.d(r.nodeType, '')`;
   return `${buildSjsTemplate(sjs)}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
-  <template is="{{tool.d(r.nodeType, '')}}" data="{{${data}}}" />
+  <template is="{{${templateName}}}" data="{{${data}}}" />
 </template>
 `;
 }
@@ -198,8 +203,9 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
  * @param {boolean} options.restart - Use custom component to restart the recursive template
  */
 function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, restart = false }) {
-  const data = isRecursiveTemplate ? 'r: item' : 'r: item, c: c, cid: cid + 1';
-  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{tool.d(item.nodeType, c)}}" data="{{${data}}}" />`;
+  const data = isRecursiveTemplate ? 'r: item' : `r: item, c: c, cid: ${level}`;
+  const templateName = isRecursiveTemplate ? 'tool.d(item.nodeType)' : 'tool.d(item.nodeType, c)';
+  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateName}}}" data="{{${data}}}" />`;
   return `
 <template name="RAX_TMPL_CHILDREN_${level}">
   <block ${adapter.for}="{{r}}" ${adapter.key}="nodeId">

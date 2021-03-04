@@ -5,12 +5,12 @@ const { buildUnrecursiveTemplate, buildUnrecursiveTemplateSjs } = require('./unr
 /**
  * Build template
  * @param {string} target
- * @param {Object} api - build scripts api
+ * @param {Object} modifyTemplate - Custom component config from build.json
  * @param {Object} options
  * @param {boolean} options.isRecursiveTemplate
  */
-function buildTemplate(target, api, { isRecursiveTemplate = true }) {
-  let customComponentConfig = api.hasMethod('modifyTemplate') ? api.applyMethod('modifyTemplate', target) : {};
+function buildTemplate(target, modifyTemplate, { isRecursiveTemplate = true }) {
+  let customComponentConfig = modifyTemplate;
   const template = isRecursiveTemplate ? buildRecursiveTemplate(target, customComponentConfig) : buildUnrecursiveTemplate(target, customComponentConfig);
   return template;
 }

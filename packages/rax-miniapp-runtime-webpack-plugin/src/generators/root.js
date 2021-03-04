@@ -8,10 +8,10 @@ const RECURSIVE_TEMPLATE_TYPE = ['miniapp'];
 
 function generateRootTmpl(
   compilation,
-  { usingPlugins, usingComponents, target, command, api }
+  { usingPlugins, usingComponents, target, command, modifyTemplate }
 ) {
   const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.indexOf(target) > -1;
-  const template = buildTemplate(target, api, { isRecursiveTemplate });
+  const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
   const sjs = buildSjs(target, { isRecursiveTemplate });
   const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target, isRecursiveTemplate) + buildNativeComponentTemplate(usingComponents, target, isRecursiveTemplate);
 

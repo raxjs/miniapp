@@ -20,16 +20,16 @@ function generateElementJS(compilation,
 }
 
 function generateElementTemplate(compilation,
-  { usingPlugins, usingComponents, target, command, pluginDir, api }) {
+  { usingPlugins, usingComponents, target, command, pluginDir, modifyTemplate }) {
   let content = `
 <template is="RAX_TMPL_ROOT_CONTAINER" data="{{r: r}}" />`;
 
   const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   if (!isRecursiveTemplate) {
-    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir, api });
+    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir, modifyTemplate });
     content = `<import src="./root${platformMap[target].extension.xml}"/>` + content;
   } else {
-    const template = buildTemplate(target, api, { isRecursiveTemplate });
+    const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
     const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target, isRecursiveTemplate) + buildNativeComponentTemplate(usingComponents, target, isRecursiveTemplate);
 
     // In MiniApp, root.axml need be written into comp.axml

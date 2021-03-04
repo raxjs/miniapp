@@ -36,6 +36,8 @@ const View = {
   }
 };
 
+const CatchView = Object.assign({}, View);
+
 const HElement = {
   props: {},
   basicEvents: {
@@ -43,6 +45,8 @@ const HElement = {
     ...touchEvents
   }
 };
+
+const CatchHElement = Object.assign({}, HElement);
 
 const HComment = {};
 
@@ -114,14 +118,13 @@ const ScrollView = {
     RefresherRestore: '',
     RefresherAbort: ''
   },
-  basicEvents: {
-    ...tapEvents,
-    ...touchEvents
-  }
+  basicEvents: {}
 };
 
 const CoverView = {
-  props: {},
+  props: {
+    'scroll-top': ''
+  },
   basicEvents: {
     ...tapEvents
   }
@@ -130,6 +133,10 @@ const CoverView = {
 const CoverImage = {
   props: {
     src: ''
+  },
+  events: {
+    Load: '',
+    Error: ''
   },
   basicEvents: {
     ...tapEvents
@@ -150,8 +157,8 @@ const MovableView = {
     direction: addSingleQuote('none'),
     inertia: 'false',
     'out-of-bounds': 'false',
-    x: '0',
-    y: '0',
+    x: '',
+    y: '',
     damping: '20',
     friction: '2',
     disabled: 'false',
@@ -159,11 +166,10 @@ const MovableView = {
     'scale-min': '0.5',
     'scale-max': '10',
     'scale-value': '1',
-    animation: 'false',
+    animation: 'true',
   },
   events: {
     Change: '',
-    ChangeEnd: '',
     Scale: ''
   },
   basicEvents: {
@@ -180,7 +186,8 @@ const Text = {
     'number-of-lines': ''
   },
   basicEvents: {
-    ...tapEvents
+    ...tapEvents,
+    ...touchEvents
   }
 };
 
@@ -199,10 +206,18 @@ const Progress = {
   props: {
     percent: '',
     'show-info': '',
+    'border-radius': '0',
+    'font-size': '16',
     'stroke-width': '6',
+    color: addSingleQuote('#09BB07'),
+    activeColor: addSingleQuote('#09BB07'),
+    backgroundColor: addSingleQuote('#EBEBEB'),
     active: 'false',
-    'background-color': '',
-    'active-color': addSingleQuote('#09BB07')
+    'active-mode': addSingleQuote('backwards'),
+    duration: '30',
+  },
+  events: {
+    activeEnd: ''
   }
 };
 
@@ -222,23 +237,37 @@ const Button = {
     plain: 'false',
     disabled: 'false',
     loading: 'false',
-    'hover-class': addSingleQuote('button-hover'),
-    'hover-start-time': '20',
-    'hover-stay-time': '70',
-    'hover-stop-propagation': 'false',
     'form-type': '',
     'open-type': '',
-    scope: '',
-    'public-id': ''
+    'hover-class': addSingleQuote('button-hover'),
+    'hover-stop-propagation': 'false',
+    'hover-start-time': '20',
+    'hover-stay-time': '70',
+    lang: addSingleQuote('en'),
+    'session-from': '',
+    'send-message-title': '',
+    'send-message-path': '',
+    'send-message-img': '',
+    'app-parameter': '',
+    'show-message-card': 'false'
+  },
+  events: {
+    GetUserInfo: '',
+    Contact: '',
+    Error: '',
+    OpenSetting: '',
+    LaunchApp: ''
   },
   basicEvents: {
-    ...tapEvents
+    ...tapEvents,
+    ...touchEvents
   }
 };
 
 const Form = {
   props: {
     'report-submit': '',
+    'report-submit-timeout': '0'
   },
   events: {
     Submit: '',
@@ -259,28 +288,30 @@ const Label = {
 const Input = {
   props: {
     value: '',
-    name: '',
     type: addSingleQuote('text'),
     password: 'false',
     placeholder: '',
     'placeholder-style': '',
-    'placeholder-class': '',
+    'placeholder-class': addSingleQuote('input-placeholder'),
     disabled: 'false',
     maxlength: '140',
+    'cursor-spacing': '0',
     focus: 'false',
     'confirm-type': addSingleQuote('done'),
+    'always-embed': 'false',
     'confirm-hold': 'false',
-    cursor: '',
+    cursor: '-1',
     'selection-start': '-1',
     'selection-end': '-1',
-    'random-number': 'false',
-    controlled: 'false',
+    'adjust-position': 'true',
+    'hold-keyboard': 'false',
   },
   events: {
     Input: '',
     Confirm: '',
     Focus: '',
-    Blur: ''
+    Blur: '',
+    KeyboardHeightChange: ''
   }
 
 };
@@ -288,22 +319,31 @@ const Input = {
 const Textarea = {
   props: {
     value: '',
-    name: '',
     placeholder: '',
     'placeholder-style': '',
-    'placeholder-class': '',
+    'placeholder-class': addSingleQuote('textarea-placeholder'),
     disabled: 'false',
     maxlength: '140',
     focus: 'false',
     'auto-height': 'false',
-    'show-count': 'true',
-    controlled: 'false',
+    fixed: 'false',
+    'cursor-spacing': '0',
+    cursor: '-1',
+    'show-confirm-bar': 'true',
+    'selection-start': '-1',
+    'selection-end': '-1',
+    'adjust-position': 'true',
+    'hold-keyboard': 'false',
+    'disable-default-padding': 'false',
+    'confirm-type': addSingleQuote('return')
   },
   events: {
     Input: '',
     Confirm: '',
     Focus: '',
-    Blur: ''
+    Blur: '',
+    LineChange: '',
+    KeyboardHeightChange: ''
   }
 };
 
@@ -312,15 +352,13 @@ const Radio = {
     value: '',
     checked: 'false',
     disabled: 'false',
-    color: ''
+    color: addSingleQuote('#09BB07')
   },
   events: {}
 };
 
 const RadioGroup = {
-  props: {
-    name: '',
-  },
+  props: {},
   events: {
     Change: ''
   }
@@ -331,7 +369,7 @@ const Checkbox = {
     value: '',
     checked: 'false',
     disabled: 'false',
-    color: '',
+    color: addSingleQuote('#09BB07')
   },
   events: {
     Change: ''
@@ -339,9 +377,7 @@ const Checkbox = {
 };
 
 const CheckboxGroup = {
-  props: {
-    name: ''
-  },
+  props: {},
   events: {
     Change: ''
   }
@@ -349,10 +385,10 @@ const CheckboxGroup = {
 
 const Switch = {
   props: {
-    value: '',
     checked: 'false',
     disabled: 'false',
-    color: '',
+    type: addSingleQuote('switch'),
+    color: addSingleQuote('#04BE02'),
     controlled: 'false',
   },
   events: {
@@ -360,23 +396,42 @@ const Switch = {
   }
 };
 
+const Editor = {
+  props: {
+    'read-only': 'false',
+    placeholder: '',
+    'show-img-size': 'false',
+    'show-img-toolbar': 'false',
+    'show-img-resize': 'false',
+  },
+  events: {
+    Ready: '',
+    Focus: '',
+    Blur: '',
+    Input: '',
+    StatusChange: ''
+  }
+};
+
 const Slider = {
   props: {
-    name: '',
     min: '0',
     max: '100',
     step: '1',
     disabled: 'false',
     value: '0',
-    'show-value': 'false',
-    'active-color': addSingleQuote('#108ee9'),
-    'background-color': addSingleQuote('#ddd'),
-    'track-size': '4',
-    'handle-size': '22',
-    'handle-color': addSingleQuote('#fff'),
+    color: addSingleQuote('#e9e9e9'),
+    'selected-color': addSingleQuote('#1aad19'),
+    activeColor: addSingleQuote('#1aad19'),
+    activeColor: addSingleQuote('#1aad19'),
+    backgroundColor: addSingleQuote('#e9e9e9'),
+    'block-size': '28',
+    'block-color': addSingleQuote('#fff'),
+    'show-value': 'false'
   },
   events: {
-    Change: ''
+    Change: '',
+    Changing: ''
   }
 };
 
@@ -389,7 +444,9 @@ const PickerView = {
     'mask-class': '',
   },
   events: {
-    Change: ''
+    Change: '',
+    PickStart: '',
+    PickEnd: ''
   }
 };
 
@@ -397,86 +454,147 @@ const PickerViewColumn = {};
 
 const Picker = {
   props: {
+    'header-text': '',
     disabled: 'false',
-    range: '[]',
-    'range-key': '',
-    value: '',
-    title: '',
+    mode: addSingleQuote('selector'),
   },
   events: {
-    Change: '',
+    Cancel: '',
   },
 };
 
 const Navigator = {
   props: {
+    target: addSingleQuote('self'),
     url: '',
     'open-type': addSingleQuote('navigate'),
-    'hover-class': addSingleQuote('none'),
+    delta: '1',
+    'app-id': '',
+    path: '',
+    'extra-data': '',
+    version: addSingleQuote('release'),
+    'hover-class': addSingleQuote('navigator-hover'),
+    'hover-stop-propagation': 'false',
     'hover-start-time': '',
     'hover-stay-time': ''
   },
-  events: {}
+
+  events: {
+    Success: '',
+    Fail: '',
+    Complete: ''
+  },
+  basicEvents: {
+    ...tapEvents,
+    ...touchEvents
+  }
 };
 
 const Image = {
   props: {
     src: '',
     mode: addSingleQuote('scaleToFill'),
+    webp: 'false',
     'lazy-load': 'false',
-    'default-source': '',
+    'show-menu-by-longpress': 'false',
   },
   events: {
     Load: '',
     Error: ''
+  },
+  basicEvents: {
+    ...tapEvents,
+    ...touchEvents
   }
 };
 
 const Video = {
   props: {
     src: '',
-    poster: '',
-    'poster-size': '',
-    'object-fit': addSingleQuote('contain'),
-    'initial-time': '',
     duration: '',
     controls: 'true',
+    'danmu-list': '',
+    'danmu-btn': 'false',
+    'enable-danmu': 'false',
     autoplay: 'false',
-    direction: '',
     loop: 'false',
     muted: 'false',
+    'initial-time': '0',
+    'page-gesture': 'false',
+    direction: '',
+    'show-progress': 'true',
     'show-fullscreen-btn': 'true',
     'show-play-btn': 'true',
     'show-center-play-btn': 'true',
-    'show-mute-btn': 'true',
-    'show-thin-progress-bar': 'false',
-    'enable-progress-gesture': 'false',
-    'mobilenet-hint-type': '1',
-    'floating-mode': addSingleQuote('none'),
+    'enable-progress-gesture': 'true',
+    'object-fit': addSingleQuote('contain'),
+    poster: '',
+    'show-mute-btn': 'false',
+    title: '',
+    'play-btn-position': addSingleQuote('bottom'),
+    'enable-play-gesture': 'false',
+    'auto-pause-if-navigate': 'true',
+    'auto-pause-if-open-native': 'true',
+    'vslide-gesture': 'false',
+    'vslide-gesture-in-fullscreen': 'true',
+    'ad-unit-id': '',
+    'poster-for-crawler': '',
+    'show-casting-button': 'false',
+    'picture-in-picture-mode': '',
+    'picture-in-picture-show-progress': 'false',
+    'enable-auto-rotation': 'false',
+    'show-screen-lock-button': 'false',
+    'show-snapshot-button': 'false'
   },
   events: {
     Play: '',
     Pause: '',
     Ended: '',
     TimeUpdate: '',
-    Loading: '',
+    ScreenChange: '',
+    Waiting: '',
     Error: '',
-    FullScreenChange: '',
-    UserAction: '',
-    Stop: '',
-    RenderStart: ''
+    Progress: '',
+    LoadedMetadata: '',
+    ControlsToggle: '',
+    EnterPictureInPicture: '',
+    LeavePictureInPicture: '',
+    SeekComplete: ''
+  },
+  basicEvents: {
+    ...tapEvents,
+    ...touchEvents
   }
 };
 
 const Canvas = {
   props: {
-    width: addSingleQuote('300px'),
-    height: addSingleQuote('225px'),
-    'disable-scroll': 'false',
+    type: '',
+    'canvas-id': '',
+    'disable-scroll': 'false'
+  },
+  events: {
+    Error: ''
   },
   basicEvents: {
     ...tapEvents,
     ...touchEvents
+  }
+};
+
+const Camera = {
+  props: {
+    mode: addSingleQuote('normal'),
+    resolution: addSingleQuote('medium'),
+    'device-position': addSingleQuote('back'),
+    flash: addSingleQuote('auto'),
+    'frame-size': addSingleQuote('medium')
+  },
+  events: {
+    Stop: '',
+    Error: '',
+    InitDone: '',
+    ScanCode: ''
   }
 };
 
@@ -514,10 +632,16 @@ const MiniappMap = {
   },
   events: {
     MarkerTap: '',
+    LabelTap: '',
     ControlTap: '',
     CalloutTap: '',
+    Updated: '',
     RegionChange: '',
-    PanelTap: '',
+    PoiTap: '',
+    AnchorPointTap: '',
+  },
+  basicEvents: {
+    ...tapEvents
   }
 
 };
@@ -533,18 +657,17 @@ const WebView = {
   }
 };
 
-const OpenAvatar = {
+const OpenData = {
   props: {
-    userId: '',
-    openId: '',
-    nickName: '',
-    avatar: '',
-    size: addSingleQuote('normal')
+    type: '',
+    'open-gid': '',
+    lang: addSingleQuote('en'),
+    'default-text': '',
+    'default-avatar': '',
   },
-  basicEvents: {
-    ...tapEvents
+  events: {
+    Error: ''
   }
-
 };
 
 const LivePlayer = {
@@ -555,15 +678,20 @@ const LivePlayer = {
     muted: 'false',
     orientation: addSingleQuote('vertical'),
     'object-fit': addSingleQuote('contain'),
+    'background-mute': 'false',
     'min-cache': '1',
     'max-cache': '3',
-    'floating-mode': addSingleQuote('none'),
+    'sound-mode': addSingleQuote('speaker'),
+    'auto-pause-if-navigate': 'true',
+    'auto-pause-if-open-native': 'true',
+    'picture-in-picture-mode': ''
   },
   events: {
     StateChange: '',
-    Error: '',
     FullScreenChange: '',
-    UserAction: ''
+    Status: '',
+    AudioVolumeNotify: '',
+    LeavePictureInPicture: ''
   }
 
 };
@@ -571,27 +699,62 @@ const LivePlayer = {
 const LivePusher = {
   props: {
     url: '',
-    mode: addSingleQuote('SD'),
-    autoFocus: 'true',
+    mode: addSingleQuote('RTC'),
+    autopush: 'false',
     muted: 'false',
+    'enable-camera': 'true',
+    'auto-focus': 'true',
     orientation: addSingleQuote('vertical'),
-    autopush: 'true',
     beauty: '0',
-    devicePosition: addSingleQuote('front'),
-    backgroundMute: 'false',
-    'local-mirror': addSingleQuote('auto'),
+    whiteness: '0',
+    aspect: addSingleQuote('9:16'),
+    'min-bitrate': '200',
+    'max-bitrate': '1000',
+    'audio-quality': addSingleQuote('high'),
+    'waiting-image': '',
+    'waiting-image-hash': '',
+    zoom: 'false',
+    'device-position': addSingleQuote('front'),
+    'background-mute': 'false',
+    mirror: 'false',
     'remote-mirror': 'false',
+    'local-mirror': addSingleQuote('auto'),
+    'audio-reverb-type': '0',
+    'enable-mic': 'true',
+    'enable-agc': 'false',
+    'enablb-ans': 'false',
+    'audio-volume-type': addSingleQuote('auto'),
+    'video-width': '360',
+    'video-height': '640',
+    'beauty-style': addSingleQuote('smooth'),
+    filter: addSingleQuote('standard'),
   },
   events: {
     StateChange: '',
+    Status: '',
     Error: '',
-    NetStatus: ''
+    BgmStart: '',
+    BgmProgress: '',
+    BgmComplete: '',
+    AudioVolumeNotify: '',
   }
-
 };
+
+const OfficialAccount = {
+  props: {},
+  events: {
+    Load: '',
+    Error: ''
+  }
+};
+
+//TODO: editor camera
+
+
 
 exports.internalComponents = {
   View,
+  CatchView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -613,6 +776,7 @@ exports.internalComponents = {
   Checkbox,
   CheckboxGroup,
   Switch,
+  Editor,
   Slider,
   PickerView,
   PickerViewColumn,
@@ -621,16 +785,21 @@ exports.internalComponents = {
   Image,
   Video,
   Canvas,
+  Camera,
   Map: MiniappMap,
   WebView,
-  OpenAvatar,
+  OpenData,
   LivePlayer,
   LivePusher,
+  OfficialAccount,
   HElement,
+  CatchHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
+  ['catch-view', 'view'],
+  ['catch-h-element', 'view'],
   ['h-element', 'view'],
   ['h-comment', 'block']
 ]);
@@ -661,14 +830,21 @@ exports.voidChildrenElements = new Set([
   'rich-text',
   'input',
   'textarea',
+  'checkbox',
+  'radio',
+  'editor',
   'slider',
   'switch',
   'live-pusher',
   'h-comment',
-  'open-avatar',
+  'open-data',
+  'image',
+  'video',
+  'canvas',
   'web-view',
   'live-player',
-  'live-pusher'
+  'live-pusher',
+  'official-account'
 ]);
 
 exports.nestElements = new Map([
@@ -690,27 +866,27 @@ exports.shouldNotGenerateTemplateComponents = new Set([
 
 exports.needModifyChildrenComponents = {
   swiper: (children, level) => `
-<swiper-item wx:for="{{r.children}}" wx:if="{{item.nodeType !== 'h-comment'}}" wx:key="nodeId">
-  <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'swiper'), cid: ${level}}}" />
-</swiper-item>`,
+    <swiper-item wx:for="{{r.children}}" wx:if="{{item.nodeType !== 'h-comment'}}" wx:key="nodeId">
+      <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'swiper')}}" />
+    </swiper-item>`,
   'movable-area': children => `
-<movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{r['direction']||'none'}}" inertia="{{tool.a(r['inertia'],false)}}" out-of-bounds="{{tool.a(r['out-of-bounds'],false)}}" x="{{tool.a(r['x'],0)}}" y="{{tool.a(r['y'],0)}}" damping="{{tool.a(r['damping'],20)}}" friction="{{tool.a(r['friction'],2)}}" disabled="{{tool.a(r['disabled'],false)}}" scale="{{tool.a(r['scale'],false)}}" scale-min="{{tool.a(r['scale-min'],0.5)}}" scale-max="{{tool.a(r['scale-max'],10)}}" scale-value="{{tool.a(r['scale-value'],1)}}" animation="{{tool.a(r['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}">${children}
-</movable-view>`,
+    <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{r['direction']||'none'}}" inertia="{{tool.a(r['inertia'],false)}}" out-of-bounds="{{tool.a(r['out-of-bounds'],false)}}" x="{{tool.a(r['x'],0)}}" y="{{tool.a(r['y'],0)}}" damping="{{tool.a(r['damping'],20)}}" friction="{{tool.a(r['friction'],2)}}" disabled="{{tool.a(r['disabled'],false)}}" scale="{{tool.a(r['scale'],false)}}" scale-min="{{tool.a(r['scale-min'],0.5)}}" scale-max="{{tool.a(r['scale-max'],10)}}" scale-value="{{tool.a(r['scale-value'],1)}}" animation="{{tool.a(r['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}">
+      <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'movable-area')}}" />
+    </movable-view>`,
   'scroll-view': children => `
-<block wx:for="{{r.children}}" wx:key="nodeId">
-  <block wx:if="{{item.nodeId}}">
-    <template is="{{tool.d(item.nodeType, c)}}" data="{{r: item, c: c, cid: cid + 1}}" />
-  </block>
-  <block wx:else>
-    <block>{{item.content}}</block>
-  </block>
-</block>
+    <block wx:for="{{r.children}}" wx:key="nodeId">
+      <block wx:if="{{item.nodeId}}">
+        <template is="{{tool.d(item.nodeType, c)}}" data="{{r: item, c: c, cid: cid}}" />
+      </block>
+      <block wx:else>
+        <block>{{item.content}}</block>
+      </block>
+    </block>
   `,
   'picker-view': children => `
-<picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
-  ${children}
-</picker-view-column>`,
-  picker: children => `<view>${children}</view>`
+    <picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
+      <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'picker-view')}}" />
+    </picker-view-column>`
 };
 
 exports.adapter = {
@@ -723,6 +899,7 @@ exports.adapter = {
   key: 'wx:key',
   xs: 'wxs',
   event: 'bind',
+  catchEvent: 'catch',
   eventToLowerCase: true
 };
 
