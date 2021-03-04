@@ -748,10 +748,6 @@ const OfficialAccount = {
   }
 };
 
-//TODO: editor camera
-
-
-
 exports.internalComponents = {
   View,
   CatchView,

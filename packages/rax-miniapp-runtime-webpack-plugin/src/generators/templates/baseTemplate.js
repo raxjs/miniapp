@@ -33,7 +33,7 @@ function buildSjsTemplate({ tag, extension, name, from }) {
  */
 function buildAttribute(attrs, adapter) {
   return Object.keys(attrs)
-    .map(a => (a.indexOf(adapter.event) === 0 || a.indexOf(adapter.catchEvent) === 0) ? `${a}="${attrs[a]}"` : `${a}="{{${attrs[a]}}}"`)
+    .map(a => a.indexOf(adapter.event) === 0 || a.indexOf(adapter.catchEvent) === 0 ? `${a}="${attrs[a]}"` : `${a}="{{${attrs[a]}}}"`)
     .join(' ');
 }
 
@@ -185,7 +185,7 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
  */
 function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
-  const templateName = isRecursiveTemplate ? 'tool.d(r.nodeType)' : `tool.d(r.nodeType, '')`;
+  const templateName = isRecursiveTemplate ? 'tool.d(r.nodeType)' : 'tool.d(r.nodeType, "")';
   return `${buildSjsTemplate(sjs)}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
