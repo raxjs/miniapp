@@ -125,7 +125,7 @@ class EventTarget {
       event = new Event({
         name: eventName,
         target,
-        detail: miniprogramEvent.detail,
+        detail: miniprogramEvent.detail || { ...miniprogramEvent }, // Some info doesn't exist in event.detail but in event directly, like Alibaba MiniApp
         timeStamp: miniprogramEvent.timeStamp,
         touches: miniprogramEvent.touches,
         changedTouches: miniprogramEvent.changedTouches,
