@@ -2,7 +2,10 @@ const generate = require('@babel/generator').default;
 
 const generateOptions = {
   sourceFileName: '',
-  sourceMaps: true
+  sourceMaps: true,
+  jsescOption: {
+    minimal: true // To avoid Chinese characters escaped
+  }
 };
 
 /**
