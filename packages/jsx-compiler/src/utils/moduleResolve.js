@@ -31,7 +31,7 @@ function loadAsDirectory(module, extension) {
     const packagePath = join(module, 'package.json');
     const indexFile = join(module, 'index' + extension);
 
-    if (existsSync(packagePath) && statSync(packagePath).isFile()) {
+    if (/node_modules/.test(module) && existsSync(packagePath) && statSync(packagePath).isFile()) {
       let pkg = JSON.parse(readFileSync(packagePath, 'utf-8'));
       let main = join(module, pkg.main || 'index' + extension);
       return loadAsFile(main) || loadAsDirectory(main);
