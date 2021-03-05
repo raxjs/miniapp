@@ -65,20 +65,11 @@ function buildAttribute(attrs, adapter) {
 function buildFocusComponentTemplate(compInfo, level, adapter) {
   const { nodeName, nodeAttributes } = compInfo;
   const attrs = { ...nodeAttributes };
-  const templateName = `tool.b(r, 'RAX_TMPL_${level}_')`;
   delete attrs.focus;
 
   return `
 <template name="RAX_TMPL_${level}_${nodeName}">
-  <template is="{{${templateName}}}" data="{{r: r}}" />
-</template>
-
-<template name="RAX_TMPL_${level}_${nodeName}_focus">
   <${nodeName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} focus="{{tool.a(r['focus-state'],false)}}" />
-</template>
-
-<template name="RAX_TMPL_${level}_${nodeName}_blur">
-  <${nodeName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} />
 </template>
 `;
 }
@@ -95,8 +86,8 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
 function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
   const { nodeName, nodeAttributes, nodeActualName } = compInfo;
   const { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents } = compSet;
-  const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.e(c, '${nodeName}')`;
-  const templateName = isRecursiveTemplate ? 'RAX_TMPL_CHILDREN_0' : '{{tool.c(cid + 1)}}';
+  const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.d(c, '${nodeName}')`;
+  const templateName = isRecursiveTemplate ? 'RAX_TMPL_CHILDREN_0' : '{{tool.b(cid + 1)}}';
   let children = voidChildrenElements.has(nodeName)
     ? ''
     : `
@@ -210,7 +201,7 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
  */
 function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
-  const templateName = isRecursiveTemplate ? 'tool.d(r.nodeType)' : "tool.d(r.nodeType, '')";
+  const templateName = isRecursiveTemplate ? 'tool.c(r.nodeType)' : "tool.c(r.nodeType, '')";
   return `${buildSjsTemplate(sjs)}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
@@ -229,7 +220,7 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
  */
 function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, restart = false }) {
   const data = isRecursiveTemplate ? 'r: item' : `r: item, c: c, cid: ${level}`;
-  const templateName = isRecursiveTemplate ? 'tool.d(item.nodeType)' : 'tool.d(item.nodeType, c)';
+  const templateName = isRecursiveTemplate ? 'tool.c(item.nodeType)' : 'tool.c(item.nodeType, c)';
   const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateName}}}" data="{{${data}}}" />`;
   return `
 <template name="RAX_TMPL_CHILDREN_${level}">

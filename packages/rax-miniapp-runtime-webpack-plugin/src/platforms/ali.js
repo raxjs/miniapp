@@ -711,7 +711,7 @@ exports.needModifyChildrenComponents = {
     <picker-view-column a:for="{{r.children}} a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
       <view a:for="{{item.children}}" a:for-item="pickerColumnItem">
         <block a:if="{{pickerColumnItem.nodeId}}">
-          <template is="{{tool.d(pickerColumnItem.nodeType)}}" data="{{r: pickerColumnItem}}" />
+          <template is="{{tool.c(pickerColumnItem.nodeType)}}" data="{{r: pickerColumnItem}}" />
         </block>
         <block a:else>
           <block>{{pickerColumnItem.content}}</block>

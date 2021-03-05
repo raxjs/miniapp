@@ -863,16 +863,16 @@ exports.shouldNotGenerateTemplateComponents = new Set([
 exports.needModifyChildrenComponents = {
   swiper: (children, level) => `
     <swiper-item wx:for="{{r.children}}" wx:if="{{item.nodeType !== 'h-comment'}}" wx:key="nodeId">
-      <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'swiper')}}" />
+      <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'swiper')}}" />
     </swiper-item>`,
   'movable-area': children => `
     <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{r['direction']||'none'}}" inertia="{{tool.a(r['inertia'],false)}}" out-of-bounds="{{tool.a(r['out-of-bounds'],false)}}" x="{{tool.a(r['x'],0)}}" y="{{tool.a(r['y'],0)}}" damping="{{tool.a(r['damping'],20)}}" friction="{{tool.a(r['friction'],2)}}" disabled="{{tool.a(r['disabled'],false)}}" scale="{{tool.a(r['scale'],false)}}" scale-min="{{tool.a(r['scale-min'],0.5)}}" scale-max="{{tool.a(r['scale-max'],10)}}" scale-value="{{tool.a(r['scale-value'],1)}}" animation="{{tool.a(r['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}">
-      <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'movable-area')}}" />
+      <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'movable-area')}}" />
     </movable-view>`,
   'scroll-view': children => `
     <block wx:for="{{r.children}}" wx:key="nodeId">
       <block wx:if="{{item.nodeId}}">
-        <template is="{{tool.d(item.nodeType, c)}}" data="{{r: item, c: c, cid: cid}}" />
+        <template is="{{tool.c(item.nodeType, c)}}" data="{{r: item, c: c, cid: cid}}" />
       </block>
       <block wx:else>
         <block>{{item.content}}</block>
@@ -881,7 +881,7 @@ exports.needModifyChildrenComponents = {
   `,
   'picker-view': children => `
     <picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
-      <template is="{{tool.c(cid + 1)}}" data="{{r: item.children, c: tool.e(c, 'picker-view')}}" />
+      <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'picker-view')}}" />
     </picker-view-column>`
 };
 
