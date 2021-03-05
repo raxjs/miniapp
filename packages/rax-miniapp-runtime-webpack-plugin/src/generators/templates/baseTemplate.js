@@ -21,7 +21,7 @@ function toCamel(str, big = true) {
       nextCap = true;
     }
   }
-  return camel
+  return camel;
 }
 
 function isNumber(o) {
@@ -193,7 +193,7 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
         if (result[camelCasedCompName].basicEvents && result[camelCasedCompName].basicEvents[event] !== undefined) {
           delete result[camelCasedCompName].basicEvents[event];
         } else {
-          delete result[camelCasedCompName].events[event]
+          delete result[camelCasedCompName].events[event];
         }
       });
     }
@@ -210,7 +210,7 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
  */
 function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
-  const templateName = isRecursiveTemplate ? 'tool.d(r.nodeType)' : 'tool.d(r.nodeType, "")';
+  const templateName = isRecursiveTemplate ? 'tool.d(r.nodeType)' : "tool.d(r.nodeType, '')";
   return `${buildSjsTemplate(sjs)}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
