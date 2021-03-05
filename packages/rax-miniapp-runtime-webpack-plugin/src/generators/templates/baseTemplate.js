@@ -5,6 +5,25 @@ function toDash(str) {
   return str.replace(/\B([A-Z])/g, '-$1').toLowerCase();
 }
 
+/**
+ * make kebab-case to camel case
+ * @param {string} str
+ * @param {boolean} big - use big camel or small camel case
+ */
+function toCamel(str, big = true) {
+  let camel = '';
+  let nextCap = big;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] !== '-') {
+      camel += nextCap ? str[i].toUpperCase() : str[i];
+      nextCap = false;
+    } else {
+      nextCap = true;
+    }
+  }
+  return camel
+}
+
 function isNumber(o) {
   return typeof o === 'number' && !isNaN(o);
 }
@@ -166,11 +185,17 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
   const result = Object.assign({}, internalComponents);
   Object.keys(customComponentsConfig).forEach(comp => {
     const componentConfig = customComponentsConfig[comp];
-    const { deleted: { props = [], events = [], basicEvents = []} } = componentConfig; // Only support deleting temporarily
-    if (result[comp]) {
-      props.forEach(prop => delete result[comp].props[prop]);
-      events.forEach(event => delete result[comp].events[event]);
-      basicEvents.forEach(basicEvent => delete result[comp].basicEvents[basicEvent]);
+    const { 'delete': { props = [], events = [] } } = componentConfig; // Only support deleting temporarily
+    const camelCasedCompName = toCamel(comp);
+    if (result[camelCasedCompName]) {
+      props.forEach(prop => delete result[camelCasedCompName].props[prop]);
+      events.forEach(event => {
+        if (result[camelCasedCompName].basicEvents && result[camelCasedCompName].basicEvents[event] !== undefined) {
+          delete result[camelCasedCompName].basicEvents[event];
+        } else {
+          delete result[camelCasedCompName].events[event]
+        }
+      });
     }
   });
 
