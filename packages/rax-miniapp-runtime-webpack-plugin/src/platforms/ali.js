@@ -708,7 +708,7 @@ exports.needModifyChildrenComponents = {
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
   'picker-view': children => `
-    <picker-view-column a:for="{{r.children}} a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
+    <picker-view-column a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
       <view a:for="{{item.children}}" a:for-item="pickerColumnItem">
         <block a:if="{{pickerColumnItem.nodeId}}">
           <template is="{{tool.c(pickerColumnItem.nodeType)}}" data="{{r: pickerColumnItem}}" />
