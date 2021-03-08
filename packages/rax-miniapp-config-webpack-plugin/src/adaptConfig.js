@@ -1,4 +1,5 @@
-const { constants: { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP} } = require('miniapp-builder-shared');
+const { constants: { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP } } = require('miniapp-builder-shared');
+
 const configKeyMap = {
   [MINIAPP]: {
     window: {
