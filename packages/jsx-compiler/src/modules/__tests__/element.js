@@ -55,12 +55,12 @@ describe('Transform JSXElement', () => {
     });
 
     it('props identifier', () => {
-      const sourceCode = '<View foo={bar}>{ bar }</View>';
+      const sourceCode = '<View foo={bar} name={name}>{ bar } {age}</View>';
       const ast = parseExpression(sourceCode);
       const functionComponentAst = parseCode(`
       export default function Component(props) {
-        const { bar } = props;
-        return (<View foo={bar}>{ bar }</View>);
+        const { bar, data: { name, age = 20 } } = props;
+        return (<View foo={bar} name={name}>{ bar } {age}</View>);
       }
       `);
       const renderFunctionPath = getDefaultComponentFunctionPath(functionComponentAst);
@@ -71,7 +71,8 @@ describe('Transform JSXElement', () => {
         renderFunctionPath
       }, adapter, sourceCode);
       const code = genInlineCode(ast).code;
-      expect(code).toEqual('<View foo="{{bar}}">{{ bar }}</View>');
+      expect(code).toEqual('<View foo="{{bar}}" name="{{_d0}}">{{ bar }} {{ _d1 }}</View>');
+      expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: name, _d1: age }');
     });
 
     it('props identifier with default assignment', () => {
@@ -104,6 +105,7 @@ describe('Transform JSXElement', () => {
           nil={null}
           regexp={/a-z/}
           tpl={\`hello world \${exp}\`}
+          chineseTpl={\`我是中文 \${chineseExp}\`}
         >{false}{'string'}{8}{}{undefined}{null}{/a-z/}</View>
       `;
       const ast = parseExpression(sourceCode);
@@ -113,9 +115,9 @@ describe('Transform JSXElement', () => {
         dynamicValue
       }, adapter, sourceCode);
 
-      expect(genInlineCode(ast).code).toEqual('<View bool="{{true}}" str=\'string\' num="{{8}}" nil="{{null}}" regexp="{{_d0}}" tpl="hello world {{_d1}}">string8{{ _d0 }}</View>');
+      expect(genInlineCode(ast).code).toEqual('<View bool="{{true}}" str=\'string\' num="{{8}}" nil="{{null}}" regexp="{{_d0}}" tpl="hello world {{_d1}}" chineseTpl="我是中文 {{_d2}}">string8{{ _d0 }}</View>');
 
-      expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: /a-z/, _d1: exp }');
+      expect(genDynamicValue(dynamicValue)).toEqual('{ _d0: /a-z/, _d1: exp, _d2: chineseExp }');
     });
 
     it('should handle expression types', () => {

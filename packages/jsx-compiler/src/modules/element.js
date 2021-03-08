@@ -172,8 +172,11 @@ function transformTemplate(
             const replaceNode = transformIdentifier(
               expression,
               dynamicValue,
-              isDirective,
-              isDerivedFromProps(renderFunctionPath.scope, expression.name, { excludeAssignment: true, isRecursion: false })
+              {
+                isDirective,
+                isDerivedFromProps: isDerivedFromProps(renderFunctionPath.scope, expression.name, { excludeAssignment: true, isRecursion: false }),
+                needRegisterProps: adapter.needRegisterProps
+              }
             );
             path.replaceWith(
               t.stringLiteral(createBinding(genExpression(replaceNode))),
@@ -188,8 +191,11 @@ function transformTemplate(
             const replaceNode = transformIdentifier(
               expression,
               dynamicValue,
-              isDirective,
-              isDerivedFromProps(renderFunctionPath.scope, expression.name, { excludeAssignment: true, isRecursion: false })
+              {
+                isDirective,
+                isDerivedFromProps: isDerivedFromProps(renderFunctionPath.scope, expression.name, { excludeAssignment: true, isRecursion: false }),
+                needRegisterProps: adapter.needRegisterProps
+              }
             );
             path.replaceWith(createJSXBinding(genExpression(replaceNode)));
           }
@@ -409,7 +415,7 @@ function transformTemplate(
               const replaceNode = transformIdentifier(
                 innerPath.node,
                 dynamicValue,
-                isDirective,
+                { isDirective }
               );
               replaceNode.__transformed = true;
               innerPath.replaceWith(replaceNode);
@@ -671,7 +677,7 @@ function transformMemberExpression(expression, dynamicBinding, options, isRecurs
           propertyReplaceNode = transformIdentifier(
             property,
             dynamicBinding,
-            isDirective,
+            { isDirective }
           );
           break;
         case 'MemberExpression':
@@ -700,13 +706,13 @@ function transformMemberExpression(expression, dynamicBinding, options, isRecurs
 /**
  * Transform Identifier
  * */
-function transformIdentifier(expression, dynamicBinding, isDirective, isDerivedFromProps) {
+function transformIdentifier(expression, dynamicBinding, { isDirective, isDerivedFromProps, needRegisterProps }) {
   let replaceNode;
   if (
     expression.__listItem && !expression.__listItem.item
     || expression.__templateVar
     || expression.__slotScope
-    || isDerivedFromProps
+    || !needRegisterProps && isDerivedFromProps
   ) {
     // The identifier is x-for args or template variable or map's index or variable derived from props
     replaceNode = expression;
@@ -735,7 +741,7 @@ function transformObjectExpression(expression, dynamicBinding, options) {
     const { key, value } = property;
     let replaceNode = value;
     if (t.isIdentifier(value)) {
-      replaceNode = transformIdentifier(value, dynamicBinding, options.isDirective);
+      replaceNode = transformIdentifier(value, dynamicBinding, options);
     }
     if (t.isMemberExpression(value)) {
       replaceNode = transformMemberExpression(
@@ -767,7 +773,7 @@ function transformCallExpressionArg(ast, params, dynamicValue, isDirective) {
     case 'Identifier':
       // Exclude the event object
       if (!params.some(param => param.name === ast.name)) {
-        ast = transformIdentifier(ast, dynamicValue, isDirective);
+        ast = transformIdentifier(ast, dynamicValue, { isDirective });
         ast.__dataset = true;
       }
       break;
@@ -779,7 +785,7 @@ function transformCallExpressionArg(ast, params, dynamicValue, isDirective) {
             if (!innerNode.__transformed) {
               // Exclude the event object
               if (!params.some(param => param.name === ast.name)) {
-                const replaceNode = transformIdentifier(innerNode, dynamicValue, isDirective);
+                const replaceNode = transformIdentifier(innerNode, dynamicValue, { isDirective });
                 innerPath.replaceWith(replaceNode);
               }
               innerPath.node.__transformed = true;
