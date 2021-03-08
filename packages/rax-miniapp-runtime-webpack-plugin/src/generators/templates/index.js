@@ -1,15 +1,15 @@
 const platformConfig = require('../../platforms');
 const { buildRecursiveTemplate, buildRecursiveTemplateSjs } = require('./recursiveTemplate');
 const { buildUnrecursiveTemplate, buildUnrecursiveTemplateSjs } = require('./unrecursiveTemplate');
+const { RECURSIVE_TEMPLATE_TYPE } = require('../../constants');
 
 /**
  * Build template
  * @param {string} target
  * @param {Object} modifyTemplate - Custom component config from build.json
- * @param {Object} options
- * @param {boolean} options.isRecursiveTemplate
  */
-function buildTemplate(target, modifyTemplate, { isRecursiveTemplate = true }) {
+function buildTemplate(target, modifyTemplate) {
+  const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   let customComponentConfig = modifyTemplate;
   const template = isRecursiveTemplate ? buildRecursiveTemplate(target, customComponentConfig) : buildUnrecursiveTemplate(target, customComponentConfig);
   return template;
@@ -18,10 +18,9 @@ function buildTemplate(target, modifyTemplate, { isRecursiveTemplate = true }) {
 /**
  * Build sjs
  * @param {string} target
- * @param {Object} options
- * @param {boolean} options.isRecursiveTemplate
  */
-function buildSjs(target, { isRecursiveTemplate = true }) {
+function buildSjs(target) {
+  const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   const sjs = isRecursiveTemplate ? buildRecursiveTemplateSjs(target) : buildUnrecursiveTemplateSjs(target);
   return sjs;
 }

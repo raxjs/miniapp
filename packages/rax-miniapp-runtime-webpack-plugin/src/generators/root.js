@@ -3,17 +3,13 @@ const { platformMap } = require('miniapp-builder-shared');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const { buildTemplate, buildSjs, buildNativeComponentTemplate } = require('./templates');
 
-
-const RECURSIVE_TEMPLATE_TYPE = ['miniapp'];
-
 function generateRootTmpl(
   compilation,
   { usingPlugins, usingComponents, target, command, modifyTemplate }
 ) {
-  const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.indexOf(target) > -1;
-  const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
-  const sjs = buildSjs(target, { isRecursiveTemplate });
-  const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target, isRecursiveTemplate) + buildNativeComponentTemplate(usingComponents, target, isRecursiveTemplate);
+  const template = buildTemplate(target, modifyTemplate);
+  const sjs = buildSjs(target);
+  const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target) + buildNativeComponentTemplate(usingComponents, target);
 
   addFileToCompilation(compilation, {
     filename: `root${platformMap[target].extension.xml}`,
