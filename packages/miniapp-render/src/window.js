@@ -5,10 +5,10 @@ import cache from './utils/cache';
 import Node from './node/node';
 import Element from './node/element';
 
+let lastRafTime = 0;
 class Window extends EventTarget {
   constructor() {
     super();
-    this.lastRafTime = 0;
     const timeOrigin = +new Date();
 
     this.$_customEventConstructor = class CustomEvent extends OriginalCustomEvent {
@@ -156,10 +156,10 @@ class Window extends EventTarget {
     if (typeof callback !== 'function') return;
 
     const now = new Date();
-    const nextRafTime = Math.max(this.lastRafTime + 16, now);
+    const nextRafTime = Math.max(lastRafTime + 16, now);
     return setTimeout(() => {
       callback(nextRafTime);
-      this.lastRafTime = nextRafTime;
+      lastRafTime = nextRafTime;
     }, nextRafTime - now);
   }
 

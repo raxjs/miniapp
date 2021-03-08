@@ -10,7 +10,7 @@ export default [
   },
   {
     name: 'onLongTap',
-    name: 'longtap'
+    eventName: 'longtap'
   },
   {
     name: 'onTouchStart',
