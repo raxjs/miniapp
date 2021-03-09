@@ -46,12 +46,11 @@ function buildUnrecursiveTemplate(target, customComponentsConfig) {
 
   let template = buildBaseTemplate(sjs, { isRecursiveTemplate: false });
   for (let i = 0; i < BASE_LEVEL; i++) {
-    template += buildChildrenTemplate(i, adapter, { isRecursiveTemplate: false, restart: false });
+    template += buildChildrenTemplate(i, adapter, { isRecursiveTemplate: false, restart: i === BASE_LEVEL - 1 });
     template += buildFloor(i, target, {
       miniComponents, derivedComponents, nestElements
     });
   }
-  template += buildChildrenTemplate(BASE_LEVEL, adapter, { isRecursiveTemplate: false, restart: true });
 
   return template;
 }
