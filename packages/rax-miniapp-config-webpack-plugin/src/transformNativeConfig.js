@@ -1,7 +1,7 @@
 const { join } = require('path');
+const { constants: { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP } } = require('miniapp-builder-shared');
 
 const safeWriteFile = require('./safeWriteFile');
-const { constants: { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP } } = require('miniapp-builder-shared');
 
 const fileNameMap = {
   [MINIAPP]: 'mini.project.json',

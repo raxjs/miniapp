@@ -14,7 +14,7 @@ import cache from '../utils/cache';
  */
 function adaptCanvasEvent(evt) {
   // currentTarget is missed in wechat canvas event
-  if(!evt.currentTarget) {
+  if (!evt.currentTarget) {
     evt.currentTarget = { dataset: {}};
     evt.currentTarget.dataset.privateNodeId = evt.target.dataset.privateNodeId;
   }
