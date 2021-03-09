@@ -11,9 +11,10 @@ function generateElementJS(compilation,
   { target, command }) {
   addFileToCompilation(compilation, {
     filename: 'comp.js',
-    content: `const render = require('./render');
+    content:
+`const render = require('./render');
 
-    Component(render.createElementConfig());`,
+Component(render.createElementConfig());`,
     target,
     command,
   });

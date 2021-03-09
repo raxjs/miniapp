@@ -12,8 +12,8 @@ function generateAppJS(
   mainPackageRoot = 'main',
   { target, command }
 ) {
-  const init = `
-function init(window, document) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document)`).join(';')}}`;
+  const init =
+`function init(window, document) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document)`).join(';')}}`;
   const appJsContent = `
 const render = require('./render');
 const config = require('./config');
@@ -47,13 +47,13 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     command,
   });
 
-  let content = '@import "./default";';
+  let content = `@import "./default${platformMap[target].extension.css}";`;
 
   Object.keys(compilation.assets).forEach(asset => {
     if (extname(asset) === '.css') {
       delete compilation.assets[asset];
       if (!subPackages) {
-        content += `@import "./${asset}";`;
+        content += `@import "./${asset}${platformMap[target].extension.css}";`;
       }
     }
   });

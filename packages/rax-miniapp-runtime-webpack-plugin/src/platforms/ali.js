@@ -485,9 +485,11 @@ const Canvas = {
     height: addSingleQuote('225px'),
     'disable-scroll': 'false',
   },
+  events: {
+    ...touchEvents,
+  },
   basicEvents: {
     ...tapEvents,
-    ...touchEvents
   }
 };
 
@@ -704,7 +706,7 @@ exports.needModifyChildrenComponents = {
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </swiper-item>`,
   'movable-area': children => `
-    <movable-view a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}" direction="{{r['direction']||'none'}}" inertia="{{tool.a(r['inertia'],false)}}" out-of-bounds="{{tool.a(r['out-of-bounds'],false)}}" x="{{tool.a(r['x'],0)}}" y="{{tool.a(r['y'],0)}}" damping="{{tool.a(r['damping'],20)}}" friction="{{tool.a(r['friction'],2)}}" disabled="{{tool.a(r['disabled'],false)}}" scale="{{tool.a(r['scale'],false)}}" scale-min="{{tool.a(r['scale-min'],0.5)}}" scale-max="{{tool.a(r['scale-max'],10)}}" scale-value="{{tool.a(r['scale-value'],1)}}" animation="{{tool.a(r['animation'],false)}}" onChange="onMovableViewChange" onChangeEnd="onMovableViewChangeEnd" onScale="onMovableViewScale" onTouchStart="onTouchStart" onTouchMove="onTouchMove" onTouchEnd="onTouchEnd" onTouchCancel="onTouchCancel" onLongTap="onLongTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}">
+    <movable-view a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],false)}}" onChange="onMovableViewChange" onChangeEnd="onMovableViewChangeEnd" onScale="onMovableViewScale" onTouchStart="onTouchStart" onTouchMove="onTouchMove" onTouchEnd="onTouchEnd" onTouchCancel="onTouchCancel" onLongTap="onLongTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
   'picker-view': children => `
