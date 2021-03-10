@@ -93,12 +93,18 @@ module.exports = function scriptLoader(content) {
     output(outputContent, null, outputOption);
   };
 
-  const outputDir = (source, target) => {
+  const outputDir = (source, target, { isThirdMiniappComponent = false, resourcePath } = {}) => {
     if (existsSync(source)) {
       mkdirpSync(target);
       copySync(source, target, {
         overwrite: false,
-        filter: filename => !/__(mocks|tests?)__/.test(filename) && OMIT_FILE_EXTENSION_IN_OUTPUT.indexOf(extname(filename)) === -1
+        filter: filename => {
+          const isJSONFile = extname(filename) === '.json';
+          const isNpmDirFile = filename.indexOf('npm') > -1;
+          // if isThirdMiniappComponent, only exclude the json file of the component itself
+          const filterJSONFile = isThirdMiniappComponent ? isNpmDirFile || !isJSONFile : !isJSONFile;
+          return !/__(mocks|tests?)__/.test(filename) && filterJSONFile; // JSON file will be written later because usingComponents may be modified
+        }
       });
     }
   };
@@ -201,7 +207,10 @@ module.exports = function scriptLoader(content) {
         const miniappComponentDir = miniappComponentPath.slice(0, miniappComponentPath.lastIndexOf('/'));
         const source = join(sourcePackagePath, miniappComponentDir);
         const target = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, sourcePackagePath), miniappComponentDir));
-        outputDir(source, target);
+        outputDir(source, target, {
+          isThirdMiniappComponent,
+          resourcePath: this.resourcePath
+        });
 
         // Modify referenced component location according to the platform
         const originalComponentConfigPath = join(sourcePackagePath, miniappComponentPath + '.json');
