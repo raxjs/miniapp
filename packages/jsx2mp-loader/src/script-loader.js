@@ -2,13 +2,13 @@ const { join, dirname, relative, resolve, sep, extname } = require('path');
 
 const { copySync, existsSync, mkdirpSync, ensureFileSync, writeJSONSync, readFileSync, readJSONSync } = require('fs-extra');
 const { getOptions } = require('loader-utils');
+const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const cached = require('./cached');
 const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPrefix, isFromTargetDirs } = require('./utils/pathHelper');
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
 const { output, transformCode } = require('./output');
-const { QUICKAPP } = require('./constants');
 
 const ScriptLoader = __filename;
 

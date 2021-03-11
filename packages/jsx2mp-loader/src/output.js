@@ -1,9 +1,9 @@
 const { writeJSONSync, writeFileSync, readFileSync, existsSync, mkdirpSync } = require('fs-extra');
 const { extname, dirname, join, relative } = require('path');
 const { transformSync } = require('@babel/core');
+const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { minify, minifyJS, minifyCSS, minifyXML } = require('./utils/minifyCode');
 const addSourceMap = require('./utils/addSourceMap');
-const { QUICKAPP } = require('./constants');
 
 function transformCode(rawContent, mode, externalPlugins = [], externalPreset = []) {
   const presets = [].concat(externalPreset);
