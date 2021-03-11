@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
-import { createWindow } from '../window';
+import createWindow from '../window';
 import createDocument from '../document';
 import cache from '../utils/cache';
 

@@ -1,4 +1,4 @@
-import { createWindow } from './src/window';
+import createWindow from './src/window';
 import createDocument from './src/document';
 import cache from './src/utils/cache';
 

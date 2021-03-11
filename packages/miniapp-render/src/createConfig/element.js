@@ -35,6 +35,7 @@ export default function() {
           cache.setElementInstance(this);
           const node = cache.getNode(this.properties.r.nodeId);
           node._internal = this;
+          node.__isCustomComponentRoot = true; // add __isCustomComponentRoot tag to mark the custom component when getting native component instance
         }
       })
     };

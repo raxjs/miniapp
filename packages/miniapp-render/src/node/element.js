@@ -14,16 +14,22 @@ class Element extends Node {
 
     super(options);
 
-    this.__tagName = options.tagName || '';
+    const { tagName = '', attrs = {}, nodeType = Node.ELEMENT_NODE } = options;
+    this.__tagName = tagName;
     this.__isBuiltinComponent = BUILTIN_COMPONENT_LIST.has(this.__tagName);
     this.__tmplName = this.__isBuiltinComponent ? this.__tagName : 'h-element';
+    if (attrs.catchTouchMove && (this.__tmplName === 'view' || this.__tmplName === 'h-element')) {
+      // Only view and h-element(rax-view) can add catchTouchMove
+      this.__tmplName = 'catch-' + this.__tmplName;
+    }
     this.childNodes = [];
-    this.__nodeType = options.nodeType || Node.ELEMENT_NODE;
+    this.__nodeType = nodeType;
     this.style = new Style(this);
     this.__attrs = new Attribute(this);
     cache.setNode(this.__nodeId, this);
     this.dataset = {};
-    this._initAttributes(options.attrs);
+    this.__internal = null; // Save miniapp native page or custom component instance
+    this._initAttributes(attrs);
     if (this.id && !this.ownerDocument.__idMap.has(this.id)) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
@@ -83,6 +89,21 @@ class Element extends Node {
       style: this.style.cssText,
       class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
     };
+  }
+
+  get _internal() {
+    if (this.__isCustomComponentRoot) {
+      // __isCustomComponentRoot is taged in createElementConfig
+      return this.__internal;
+    }
+    if (this.parentNode !== null) {
+      return this.parentNode._internal;
+    }
+    return this.__ownerDocument._internal;
+  }
+
+  set _internal(instance) {
+    this.__internal = instance;
   }
 
   // The cloneNode interface is called to process additional properties
