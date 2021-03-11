@@ -81,7 +81,7 @@ function buildUnrecursiveTemplateSjs(target) {
         var templateName = 'RAX_TMPL_' + level + '_' + nodeType;
         return templateName;
       },
-      d: function(nodeType, chains) {
+      d: function(chains, nodeType) {
         return chains + ',' + nodeType;
       }
 }`;
