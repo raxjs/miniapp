@@ -1,5 +1,9 @@
+const { constants: { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP }} = require('miniapp-builder-shared');
+
+const RECURSIVE_TEMPLATE_TYPE = new Set([MINIAPP]);
+const UNRECURSIVE_TEMPLATE_TYPE = new Set([WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP]);
+
 module.exports = {
-  MINIAPP: 'miniapp',
-  WECHAT_MINIPROGRAM: 'wechat-miniprogram',
-  VENDOR_CSS_FILE_NAME: 'vendor.css'
+  RECURSIVE_TEMPLATE_TYPE,
+  UNRECURSIVE_TEMPLATE_TYPE
 };

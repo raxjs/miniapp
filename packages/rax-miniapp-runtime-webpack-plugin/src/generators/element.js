@@ -1,50 +1,52 @@
-const ejs = require('ejs');
-const { MINIAPP } = require('../constants');
-const adapter = require('../adapter');
+const { platformMap } = require('miniapp-builder-shared');
+
+const { RECURSIVE_TEMPLATE_TYPE, UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
+
 const addFileToCompilation = require('../utils/addFileToCompilation');
-const getTemplate = require('../utils/getTemplate');
 const { generateRootTmpl } = require('./root');
+const { buildTemplate, buildNativeComponentTemplate, buildSjs } = require('./templates');
+
 
 function generateElementJS(compilation,
   { target, command }) {
   addFileToCompilation(compilation, {
     filename: 'comp.js',
-    content: `const render = require('./render');
+    content:
+`const render = require('./render');
 
-    Component(render.createElementConfig());`,
+Component(render.createElementConfig());`,
     target,
     command,
   });
 }
 
 function generateElementTemplate(compilation,
-  { usingPlugins, usingComponents, target, command, pluginDir }) {
-  let content = '<template is="{{r.nodeType || \'h-element\'}}" data="{{r: r}}" />';
-  if (target !== MINIAPP) {
-    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir });
-    content = `<import src="./root.${adapter[target].xml}"/>` + content;
+  { usingPlugins, usingComponents, target, command, pluginDir, modifyTemplate }) {
+  let content = `
+<template is="RAX_TMPL_ROOT_CONTAINER" data="{{r: r}}" />`;
+
+  const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
+  if (!isRecursiveTemplate) {
+    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir, modifyTemplate });
+    content = `<import src="./root${platformMap[target].extension.xml}"/>` + content;
   } else {
-    const pluginTmpl = ejs.render(getTemplate(pluginDir, 'plugin.xml', target), {
-      usingPlugins
+    const sjs = buildSjs(target);
+    addFileToCompilation(compilation, {
+      filename: `tool${platformMap[target].extension.script}`,
+      content: sjs,
+      target,
+      command,
     });
-    const componentTmpl = ejs.render(getTemplate(pluginDir, 'custom-component.xml', target), {
-      usingComponents
-    });
-    // In MiniApp, root.axml need be written into comp.axml
-    content = ejs.render(getTemplate(pluginDir, 'root.xml', target))
-    + pluginTmpl
-    + componentTmpl
-    + content;
+
+    const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
+    const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target, isRecursiveTemplate) + buildNativeComponentTemplate(usingComponents, target, isRecursiveTemplate);
+
+    // In recursiveTemplate, root.axml need be written into comp.axml
+    content = template + nativeComponentTemplate + content;
   }
   addFileToCompilation(compilation, {
-    filename: `comp.${adapter[target].xml}`,
+    filename: `comp${platformMap[target].extension.xml}`,
     content,
-    target,
-    command,
-  });
-  addFileToCompilation(compilation, {
-    filename: `tool.${adapter[target].script}`,
-    content: ejs.render(getTemplate(pluginDir, `tool.${adapter[target].script}`, target)),
     target,
     command,
   });
@@ -56,7 +58,7 @@ function generateElementJSON(compilation, { usingComponents, usingPlugins, targe
     usingComponents: {}
   };
 
-  if (target !== MINIAPP) {
+  if (UNRECURSIVE_TEMPLATE_TYPE.has(target)) {
     content.usingComponents.element = './comp';
   }
   Object.keys(usingComponents).forEach(component => {

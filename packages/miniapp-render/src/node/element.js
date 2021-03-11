@@ -23,6 +23,7 @@ class Element extends Node {
     this.__attrs = new Attribute(this);
     cache.setNode(this.__nodeId, this);
     this.dataset = {};
+    this.__internal = null; // Save miniapp native page or custom component instance
     this._initAttributes(options.attrs);
     if (this.id && !this.ownerDocument.__idMap.has(this.id)) {
       this.ownerDocument.__idMap.set(this.id, this);
@@ -83,6 +84,21 @@ class Element extends Node {
       style: this.style.cssText,
       class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
     };
+  }
+
+  get _internal() {
+    if (this.__isCustomComponentRoot) {
+      // __isCustomComponentRoot is taged in createElementConfig
+      return this.__internal;
+    }
+    if (this.parentNode !== null) {
+      return this.parentNode._internal;
+    }
+    return this.__ownerDocument._internal;
+  }
+
+  set _internal(instance) {
+    this.__internal = instance;
   }
 
   // The cloneNode interface is called to process additional properties

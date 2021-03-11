@@ -1,10 +1,11 @@
 const { resolve } = require('path');
 const { readFileSync } = require('fs-extra');
-const adapter = require('../adapter');
-const addFileToCompilation = require('../utils/addFileToCompilation');
 const {
   pathHelper: { getHighestPriorityPackageJSON },
+  platformMap
 } = require('miniapp-builder-shared');
+
+const addFileToCompilation = require('../utils/addFileToCompilation');
 
 module.exports = function(compilation, { target, command, rootDir }) {
   const miniappRenderPackageJsonFile = getHighestPriorityPackageJSON('miniapp-render', rootDir);
@@ -12,7 +13,7 @@ module.exports = function(compilation, { target, command, rootDir }) {
     miniappRenderPackageJsonFile,
     '..',
     'dist',
-    adapter[target].fileName,
+    platformMap[target].type,
     command === 'build' ? 'index.min.js' : 'index.js'
   );
   addFileToCompilation(compilation, {

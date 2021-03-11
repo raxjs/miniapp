@@ -1,9 +1,10 @@
-const { resolve, join, dirname } = require('path');
+const { resolve, join } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
 const execa = require('execa');
 const { checkAliInternal } = require('ice-npm-utils');
 const isEqual = require('lodash.isequal');
-const { MINIAPP } = require('./constants');
+const { constants: { MINIAPP } } = require('miniapp-builder-shared');
+const { UNRECURSIVE_TEMPLATE_TYPE } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
 const getSepProcessedPath = require('./utils/getSepProcessedPath');
@@ -41,7 +42,7 @@ class MiniAppRuntimePlugin {
     const { api, nativeLifeCycleMap, usingComponents = {}, usingPlugins = {}, routes = [], mainPackageRoot } = options;
     const { context: { command, userConfig: rootUserConfig, rootDir }, getValue } = api;
     const userConfig = rootUserConfig[target] || {};
-    const { subPackages } = userConfig;
+    const { subPackages, template: modifyTemplate = {} } = userConfig;
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
@@ -125,7 +126,7 @@ class MiniAppRuntimePlugin {
           needAutoInstallDependency = true;
         }
 
-        if (target !== MINIAPP || useComponent) {
+        if (UNRECURSIVE_TEMPLATE_TYPE.has(target) || useComponent) {
           // Generate self loop element
           generateElementJS(compilation, {
             target,
@@ -143,6 +144,7 @@ class MiniAppRuntimePlugin {
             target,
             command,
             pluginDir,
+            modifyTemplate
           });
         } else {
           // Only when there isn't native component, it need generate root template file
@@ -153,6 +155,7 @@ class MiniAppRuntimePlugin {
             pluginDir,
             usingPlugins,
             usingComponents,
+            modifyTemplate
           });
         }
       }
@@ -199,6 +202,7 @@ class MiniAppRuntimePlugin {
               compilation,
               pageConfig,
               useComponent,
+              usingComponents, usingPlugins,
               entryName,
               { target, command, outputPath }
             );

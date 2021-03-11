@@ -2,7 +2,7 @@ import Event from '../../event/event';
 
 
 export default function(eventName, evt) {
-  const domNode = this.getDomNodeFromEvt(eventName, evt);
+  const domNode = this.getDomNodeFromEvt(evt);
   if (!domNode) return;
 
   domNode.$$trigger(eventName, {

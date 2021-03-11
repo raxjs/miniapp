@@ -9,6 +9,7 @@
   "author": "Rax Team",
   "license": "MIT",
   "dependencies": {
-    "fs-extra": "^8.1.0"
+    "fs-extra": "^8.1.0",
+    "miniapp-builder-shared": "^0.2.0"
   }
 }
