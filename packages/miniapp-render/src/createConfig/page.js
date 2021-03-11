@@ -6,7 +6,7 @@ import injectLifeCycle from '../bridge/injectLifeCycle';
 import createEventProxy from '../bridge/createEventProxy';
 import createDocument from '../document';
 import { BODY_NODE_ID } from '../constants';
-import { createWindow } from '../window';
+import createWindow from '../window';
 
 export function getBaseLifeCycles(route, init, packageName = '') {
   return {

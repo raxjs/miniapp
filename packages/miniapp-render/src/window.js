@@ -168,6 +168,6 @@ class Window extends EventTarget {
   }
 }
 
-export function createWindow() {
+export default function createWindow() {
   return new Window();
 }
