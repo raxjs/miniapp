@@ -23,7 +23,6 @@ const traverse = require('../utils/traverseNodePath');
 module.exports = {
   parse(parsed, code, options) {
     const { imported } = parsed;
-    const cssFileMap = {};
     parsed.cssFiles = parsed.cssFiles || [];
 
     Object.keys(imported).forEach(rawPath => {
@@ -38,7 +37,6 @@ module.exports = {
             content: readFileSync(resolvedPath, 'utf-8'),
             type: isAnomyousImport || isCssModuleImport ? 'cssFile' : 'cssObject',
           });
-          if (isAnomyousImport || isCssModuleImport) cssFileMap[rawPath] = true; // For removing import statement.
         }
       }
     });
@@ -47,8 +45,12 @@ module.exports = {
     traverse(parsed.ast, {
       ImportDeclaration(path) {
         const { node } = path;
-        if (t.isStringLiteral(node.source) && cssFileMap[node.source.value.replace(/\\/g, '/')]) {
-          path.remove();
+        if (t.isStringLiteral(node.source)) {
+          const rawPath = node.source.value;
+          const isAnomyousImport = node.specifiers.length === 0;
+          if (isFilenameCSS(rawPath) && (isAnomyousImport || isFilenameCSSModule(rawPath))) {
+            path.remove();
+          }
         }
       }
     });
