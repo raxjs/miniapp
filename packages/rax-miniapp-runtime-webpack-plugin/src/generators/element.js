@@ -4,7 +4,7 @@ const { RECURSIVE_TEMPLATE_TYPE, UNRECURSIVE_TEMPLATE_TYPE } = require('../const
 
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const { generateRootTmpl } = require('./root');
-const { buildTemplate, buildNativeComponentTemplate } = require('./templates');
+const { buildTemplate, buildNativeComponentTemplate, buildSjs } = require('./templates');
 
 
 function generateElementJS(compilation,
@@ -30,10 +30,18 @@ function generateElementTemplate(compilation,
     generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, pluginDir, modifyTemplate });
     content = `<import src="./root${platformMap[target].extension.xml}"/>` + content;
   } else {
+    const sjs = buildSjs(target);
+    addFileToCompilation(compilation, {
+      filename: `tool${platformMap[target].extension.script}`,
+      content: sjs,
+      target,
+      command,
+    });
+
     const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
     const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target, isRecursiveTemplate) + buildNativeComponentTemplate(usingComponents, target, isRecursiveTemplate);
 
-    // In MiniApp, root.axml need be written into comp.axml
+    // In recursiveTemplate, root.axml need be written into comp.axml
     content = template + nativeComponentTemplate + content;
   }
   addFileToCompilation(compilation, {
