@@ -36,7 +36,7 @@ class CustomComponent extends Element {
       nativeInfo.events.forEach(event => {
         const eventName = `${this.__tagName}_${event}_${tool.getId()}`;
         renderInfo[event] = eventName;
-        cache.setElementMethods(eventName, (...args) => {
+        cache.setCustomComponentMethods(eventName, (...args) => {
           this.$$trigger(event, { args });
         });
       });

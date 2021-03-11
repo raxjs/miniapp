@@ -254,6 +254,7 @@ const Button = {
   events: {
     GetUserInfo: '',
     Contact: '',
+    GetPhoneNumber: '',
     Error: '',
     OpenSetting: '',
     LaunchApp: ''
