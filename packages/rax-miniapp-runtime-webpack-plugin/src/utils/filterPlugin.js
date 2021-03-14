@@ -5,7 +5,7 @@
 * @returns {Object}
 */
 module.exports = function filterPlugin(config = {}, usingPlugins = {}) {
- const result = {};
+  const result = {};
   Object.keys(usingPlugins).forEach((plugin) => {
     const a = /plugin\:\/\/([\s\S]+?)\//.exec(usingPlugins[plugin].path);
     const pluginName = a && a[1];
@@ -14,4 +14,4 @@ module.exports = function filterPlugin(config = {}, usingPlugins = {}) {
     }
   });
   return result;
-}
+};

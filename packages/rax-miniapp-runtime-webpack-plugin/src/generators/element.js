@@ -9,10 +9,9 @@ const { generateRootTmpl } = require('./root');
 const { buildTemplate, buildNativeComponentTemplate, buildSjs } = require('./templates');
 
 
-function generateElementJS(compilation,
-  { target, command, subAppRoot = '' }) {
-    const filename = join(subAppRoot, 'comp.js');
-    addFileToCompilation(compilation, {
+function generateElementJS(compilation, { target, command, subAppRoot = '' }) {
+  const filename = join(subAppRoot, 'comp.js');
+  addFileToCompilation(compilation, {
     filename,
     content:
 `const render = require('${getAssetPath('render.js', filename)}');
