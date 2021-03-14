@@ -37,7 +37,7 @@ function generatePageJS(
   nativeLifeCyclesMap = {},
   commonPageJSFilePaths = [],
   subAppRoot = '',
-  { target, command, pluginDir, outputPath }
+  { target, command }
 ) {
   const renderPath = getAssetPath('render', pageRoute);
   const route = getSepProcessedPath(pagePath);
@@ -62,13 +62,13 @@ function generatePageXML(
   compilation,
   pageRoute,
   useComponent,
-  { target, command, outputPath }
+  { target, command, outputPath, subAppRoot = '' }
 ) {
   let pageXmlContent;
   if (RECURSIVE_TEMPLATE_TYPE.has(target) && useComponent) {
     pageXmlContent = '<element r="{{root}}"  />';
   } else {
-    const rootTmplFileName = `root${platformMap[target].extension.xml}`;
+    const rootTmplFileName = join(subAppRoot, `root${platformMap[target].extension.xml}`);
     const pageTmplFilePath = `${pageRoute}${platformMap[target].extension.xml}`;
     pageXmlContent = `<import src="${getAssetPath(join(outputPath, rootTmplFileName), join(outputPath, pageTmplFilePath))}"/>
 <template is="RAX_TMPL_ROOT_CONTAINER" data="{{r: root}}"  />`;
@@ -88,14 +88,14 @@ function generatePageJSON(
   useComponent,
   usingComponents, usingPlugins,
   pageRoute,
-  { target, command }
+  { target, command, subAppRoot = '' }
 ) {
   if (!pageConfig.usingComponents) {
     pageConfig.usingComponents = {};
   }
 
   if (useComponent || !RECURSIVE_TEMPLATE_TYPE.has(target)) {
-    pageConfig.usingComponents.element = getAssetPath('comp', pageRoute);
+    pageConfig.usingComponents.element = getAssetPath(join(subAppRoot, 'comp'), pageRoute);
   }
 
   Object.keys(usingComponents).forEach(component => {

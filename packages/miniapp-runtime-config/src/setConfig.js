@@ -109,6 +109,8 @@ module.exports = (
       api,
       routes: completeRoutes,
       mainPackageRoot,
+      appConfig,
+      subAppConfigList,
       target,
       usingComponents,
       nativeLifeCycleMap,
