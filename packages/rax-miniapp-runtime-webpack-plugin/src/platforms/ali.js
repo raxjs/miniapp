@@ -422,6 +422,9 @@ const Image = {
     'lazy-load': 'false',
     'default-source': '',
   },
+  basicEvents: {
+    ...tapEvents
+  },
   events: {
     Load: '',
     Error: ''

@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.0.2] - 2021-03-15
+
+### Fixed
+
+- Miss click event in image component
+
 ## [4.0.1] - 2021-03-12
 
 ### Fixed
