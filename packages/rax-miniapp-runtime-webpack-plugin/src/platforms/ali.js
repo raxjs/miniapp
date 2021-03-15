@@ -42,7 +42,7 @@ const CatchView = Object.assign({}, View);
 
 const HElement = {
   props: {
-    animation: '{}',
+    animation: 'null',
   },
   basicEvents: {
     ...tapEvents,
