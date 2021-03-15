@@ -4,6 +4,7 @@ const { platformMap } = require('miniapp-builder-shared');
 const getAssetPath = require('../utils/getAssetPath');
 const getSepProcessedPath = require('../utils/getSepProcessedPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
+const isNpmModule = require('../utils/isNpmModule');
 const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 const { RECURSIVE_TEMPLATE_TYPE } = require('../constants');
 
@@ -98,7 +99,8 @@ function generatePageJSON(
   }
 
   Object.keys(usingComponents).forEach(component => {
-    pageConfig.usingComponents[component] = getAssetPath(usingComponents[component].path, pageRoute);
+    const componentPath = usingComponents[component].path;
+    pageConfig.usingComponents[component] = isNpmModule(componentPath) ? componentPath : getAssetPath(componentPath, pageRoute);
   });
   Object.keys(usingPlugins).forEach(plugin => {
     pageConfig.usingComponents[plugin] = usingPlugins[plugin].path;

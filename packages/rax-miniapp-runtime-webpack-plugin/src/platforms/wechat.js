@@ -873,7 +873,7 @@ exports.needModifyChildrenComponents = {
   'scroll-view': children => `
     <block wx:for="{{r.children}}" wx:key="nodeId">
       <block wx:if="{{item.nodeId}}">
-        <template is="{{tool.c(item.nodeType, c)}}" data="{{r: item, c: c, cid: cid}}" />
+        <template is="{{tool.c(item.nodeType, tool.d(c, 'scroll-view'))}}" data="{{r: item, c: tool.d(c, 'scroll-view'), cid: cid}}" />
       </block>
       <block wx:else>
         <block>{{item.content}}</block>

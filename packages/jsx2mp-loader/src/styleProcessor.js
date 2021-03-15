@@ -2,7 +2,7 @@ const { relative, join, dirname, extname } = require('path');
 const sass = require('sass');
 const less = require('less');
 const stylus = require('stylus');
-const stylesheetLoader = require('stylesheet-loader');
+const stylesheetLoader = require('stylesheet-loader').default;
 
 /**
  * convert sass/stylus to css
