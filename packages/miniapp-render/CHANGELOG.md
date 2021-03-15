@@ -1,15 +1,26 @@
 # Changelog
 
+## [2.1.1] - 2021-03-15
+
+### Fixed
+
+- Rename web-view related events
+
 ## [2.1.0] - 2021-03-11
 
 ### Added
+
 - Identify `catchTouchMove` to generate catch-view element
+
 ### Fixed
+
 - Can't use canvas event in WeChat MiniProgram
 
 ### Changed
+
 - Get `_internal` (native miniapp `this` instance) in element
 - Set custom component events to page instance
+
 ## [2.0.4] - 2021-02-25
 
 ### Fixed
