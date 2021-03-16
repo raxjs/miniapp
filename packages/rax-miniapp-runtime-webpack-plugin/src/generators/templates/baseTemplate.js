@@ -183,7 +183,7 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
       events.forEach(event => {
         if (result[camelCasedCompName].basicEvents && result[camelCasedCompName].basicEvents[event] !== undefined) {
           delete result[camelCasedCompName].basicEvents[event];
-        } else {
+        } else if (result[camelCasedCompName].events && result[camelCasedCompName].events[event] !== undefined) {
           delete result[camelCasedCompName].events[event];
         }
       });
