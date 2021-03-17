@@ -8,7 +8,7 @@ const { UNRECURSIVE_TEMPLATE_TYPE } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
 const getSepProcessedPath = require('./utils/getSepProcessedPath');
-const filterPlugin = require('./utils/filterPlugin');
+const { filterPlugin, filterComponent } = require('./utils/filterNativeComponentConfig');
 const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 
 const {
@@ -86,7 +86,11 @@ class MiniAppRuntimePlugin {
         return filePath.replace(sourcePath, '');
       });
       const useNativeComponentCount = Object.keys(usingComponents).length;
-      let mainPackageUsingPlugins = usingPlugins; // For sub packages mode use
+
+      // For sub packages mode use
+      let mainPackageUsingPlugins = usingPlugins;
+      let mainPackageUsingComponents = usingComponents;
+
       let useComponentChanged = false;
       if (!isFirstRender) {
         useComponentChanged =
@@ -153,6 +157,7 @@ class MiniAppRuntimePlugin {
         if (UNRECURSIVE_TEMPLATE_TYPE.has(target) || useComponent) {
           if (subPackages) {
             mainPackageUsingPlugins = filterPlugin(appConfig, usingPlugins);
+            mainPackageUsingComponents = filterComponent(usingComponents);
           }
           // Generate self loop element
           generateElementJS(compilation, {
@@ -160,14 +165,14 @@ class MiniAppRuntimePlugin {
             command
           });
           generateElementJSON(compilation, {
-            usingComponents,
+            usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
             target,
             command
           });
           generateElementTemplate(compilation, {
+            usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
-            usingComponents,
             target,
             command,
             modifyTemplate
@@ -205,48 +210,62 @@ class MiniAppRuntimePlugin {
           }
         }
 
-        // Check if plugin config in sub package json file
-        const subPackageConfigWithPlugin = subAppConfigList.find((config) => {
-          return config.subAppRoot === subAppRoot && !!config.plugins;
-        });
-        const isSubPackageContainsPlugin =
-          subPackages && subPackageConfigWithPlugin;
-        let subPackagesUsingPlugins = {};
-        // xml related files need to be generated in sub packages independently if plugin config exists in sub packages
-        if (isSubPackageContainsPlugin) {
-          subPackagesUsingPlugins = Object.assign(
-            mainPackageUsingPlugins,
-            filterPlugin(subPackageConfigWithPlugin, usingPlugins)
-          );
-          generateElementJS(compilation, {
-            target,
-            command,
-            subAppRoot
+        let subPackageUsingComponents = {};
+        let subPackageUsingPlugins = {};
+        let isSubPackageContainsNativeComponent = false;
+        let isSubPackageContainsPlugin = false;
+
+        if (subPackages) {
+          // Check if miniapp-native dir exist in sub package root
+          const subPackageNativeComponentPath = join(sourcePath, subAppRoot, 'miniapp-native');
+          isSubPackageContainsNativeComponent = existsSync(subPackageNativeComponentPath);
+          if (isSubPackageContainsNativeComponent) {
+            subPackageUsingComponents = filterComponent(usingComponents, 'sub', subAppRoot);
+          }
+
+          // Check if plugin config in sub package json file
+          const subPackageConfigWithPlugin = subAppConfigList.find((config) => {
+            return config.subAppRoot === subAppRoot && !!config.plugins;
           });
-          generateElementJSON(compilation, {
-            usingComponents,
-            usingPlugins: subPackagesUsingPlugins,
-            target,
-            command,
-            subAppRoot
-          });
-          generateElementTemplate(compilation, {
-            usingPlugins: subPackagesUsingPlugins,
-            usingComponents,
-            target,
-            command,
-            modifyTemplate,
-            subAppRoot
-          });
+          isSubPackageContainsPlugin = subPackageConfigWithPlugin;
+          if (isSubPackageContainsPlugin) {
+            subPackageUsingPlugins = Object.assign(
+              mainPackageUsingPlugins,
+              filterPlugin(subPackageConfigWithPlugin, usingPlugins)
+            );
+          }
+          // xml related files need to be generated in sub packages independently if plugin config exists or miniapp-native dir exists in sub packages
+          if (isSubPackageContainsNativeComponent || isSubPackageContainsPlugin) {
+            generateElementJS(compilation, {
+              target,
+              command,
+              subAppRoot
+            });
+            generateElementJSON(compilation, {
+              usingComponents: subPackageUsingComponents,
+              usingPlugins: subPackageUsingPlugins,
+              target,
+              command,
+              subAppRoot
+            });
+            generateElementTemplate(compilation, {
+              usingComponents: subPackageUsingComponents,
+              usingPlugins: subPackageUsingPlugins,
+              target,
+              command,
+              modifyTemplate,
+              subAppRoot
+            });
+          }
         }
+
         // xml/css/json file need be written in first render or using native component state changes
         if (isFirstRender || useComponentChanged) {
           // Page xml
           generatePageXML(compilation, entryName, useComponent, {
             target,
             command,
-            outputPath,
-            subAppRoot: isSubPackageContainsPlugin ? subAppRoot : ''
+            subAppRoot: isSubPackageContainsPlugin || isSubPackageContainsNativeComponent ? subAppRoot : ''
           });
 
           // Page css
@@ -261,14 +280,14 @@ class MiniAppRuntimePlugin {
             compilation,
             pageConfig,
             useComponent,
-            usingComponents,
-            isSubPackagePage ? subPackagesUsingPlugins : mainPackageUsingPlugins,
+            isSubPackagePage ? subPackageUsingComponents : mainPackageUsingComponents,
+            isSubPackagePage ? subPackageUsingPlugins : mainPackageUsingPlugins,
             entryName,
             {
               target,
               command,
               outputPath,
-              subAppRoot: isSubPackageContainsPlugin ? subAppRoot : ''
+              subAppRoot: isSubPackageContainsPlugin || isSubPackageContainsNativeComponent ? subAppRoot : ''
             }
           );
         }

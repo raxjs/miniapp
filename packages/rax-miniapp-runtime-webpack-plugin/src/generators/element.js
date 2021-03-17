@@ -5,6 +5,8 @@ const { RECURSIVE_TEMPLATE_TYPE, UNRECURSIVE_TEMPLATE_TYPE } = require('../const
 
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getAssetPath = require('../utils/getAssetPath');
+const isNpmModule = require('../utils/isNpmModule');
+const rmCurDirPathSymbol = require('../utils/rmCurDirPathSymbol');
 const { generateRootTmpl } = require('./root');
 const { buildTemplate, buildNativeComponentTemplate, buildSjs } = require('./templates');
 
@@ -34,7 +36,7 @@ function generateElementTemplate(compilation,
   } else {
     const sjs = buildSjs(target);
     addFileToCompilation(compilation, {
-      filename: `${subAppRoot}/tool${platformMap[target].extension.script}`,
+      filename: join(subAppRoot, `tool${platformMap[target].extension.script}`),
       content: sjs,
       target,
       command,
@@ -47,7 +49,7 @@ function generateElementTemplate(compilation,
     content = template + nativeComponentTemplate + content;
   }
   addFileToCompilation(compilation, {
-    filename: `${subAppRoot}/comp${platformMap[target].extension.xml}`,
+    filename: join(subAppRoot, `comp${platformMap[target].extension.xml}`),
     content,
     target,
     command,
@@ -64,14 +66,15 @@ function generateElementJSON(compilation, { usingComponents, usingPlugins, targe
     content.usingComponents.element = './comp';
   }
   Object.keys(usingComponents).forEach(component => {
-    content.usingComponents[component] = usingComponents[component].path;
+    const componentPath = usingComponents[component].path;
+    content.usingComponents[component] = isNpmModule(componentPath) ? componentPath : getAssetPath(rmCurDirPathSymbol(componentPath), join(subAppRoot, 'comp'));
   });
   Object.keys(usingPlugins).forEach(plugin => {
     content.usingComponents[plugin] = usingPlugins[plugin].path;
   });
 
   addFileToCompilation(compilation, {
-    filename: `${subAppRoot}/comp.json`,
+    filename: join(subAppRoot, 'comp.json'),
     content: JSON.stringify(content, null, 2),
     target,
     command,

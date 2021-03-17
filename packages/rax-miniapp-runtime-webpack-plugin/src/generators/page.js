@@ -1,11 +1,11 @@
 const { join } = require('path');
-const { platformMap } = require('miniapp-builder-shared');
+const { platformMap, pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 
 const getAssetPath = require('../utils/getAssetPath');
 const getSepProcessedPath = require('../utils/getSepProcessedPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const isNpmModule = require('../utils/isNpmModule');
-const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
+const rmCurDirPathSymbol = require('../utils/rmCurDirPathSymbol');
 const { RECURSIVE_TEMPLATE_TYPE } = require('../constants');
 
 function generatePageCSS(
@@ -62,7 +62,7 @@ function generatePageXML(
   compilation,
   pageRoute,
   useComponent,
-  { target, command, outputPath, subAppRoot = '' }
+  { target, command, subAppRoot = '' }
 ) {
   let pageXmlContent;
   if (RECURSIVE_TEMPLATE_TYPE.has(target) && useComponent) {
@@ -70,7 +70,7 @@ function generatePageXML(
   } else {
     const rootTmplFileName = join(subAppRoot, `root${platformMap[target].extension.xml}`);
     const pageTmplFilePath = `${pageRoute}${platformMap[target].extension.xml}`;
-    pageXmlContent = `<import src="${getAssetPath(join(outputPath, rootTmplFileName), join(outputPath, pageTmplFilePath))}"/>
+    pageXmlContent = `<import src="${getAssetPath(rootTmplFileName, pageTmplFilePath)}"/>
 <template is="RAX_TMPL_ROOT_CONTAINER" data="{{r: root}}"  />`;
   }
 
@@ -100,7 +100,7 @@ function generatePageJSON(
 
   Object.keys(usingComponents).forEach(component => {
     const componentPath = usingComponents[component].path;
-    pageConfig.usingComponents[component] = isNpmModule(componentPath) ? componentPath : getAssetPath(componentPath, pageRoute);
+    pageConfig.usingComponents[component] = isNpmModule(componentPath) ? componentPath : getAssetPath(rmCurDirPathSymbol(componentPath), pageRoute);
   });
   Object.keys(usingPlugins).forEach(plugin => {
     pageConfig.usingComponents[plugin] = usingPlugins[plugin].path;
