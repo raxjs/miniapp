@@ -42,7 +42,7 @@ const CatchView = Object.assign({}, View);
 
 const HElement = {
   props: {
-    animation: '{}',
+    animation: 'null',
   },
   basicEvents: {
     ...tapEvents,
@@ -421,6 +421,9 @@ const Image = {
     mode: addSingleQuote('scaleToFill'),
     'lazy-load': 'false',
     'default-source': '',
+  },
+  basicEvents: {
+    ...tapEvents
   },
   events: {
     Load: '',

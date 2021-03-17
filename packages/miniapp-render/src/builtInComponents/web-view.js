@@ -1,15 +1,15 @@
 export default {
   name: 'web-view',
   singleEvents: [{
-    name: 'onWebviewMessage',
+    name: 'onWebViewMessage',
     eventName: 'message'
   },
   {
-    name: 'onWebviewLoad',
+    name: 'onWebViewLoad',
     eventName: 'load'
   },
   {
-    name: 'onWebviewError',
+    name: 'onWebViewError',
     eventName: 'error'
   }]
 };
