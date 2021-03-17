@@ -41,8 +41,8 @@ export default function(init, config, packageName = '') {
       this.window = window;
     },
     onShow(options) {
+      this.__showOptions = options;
       if (this.window && this.launched) {
-        this.__showOptions = options;
         this.window.$$trigger('appshow', {
           event: {
             options,
