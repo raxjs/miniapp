@@ -15,6 +15,7 @@ const touchEvents = {
 
 const View = {
   props: {
+    'disable-scroll': 'false',
     'hover-class': '',
     'hover-start-time': '',
     'hover-stay-time': '',
