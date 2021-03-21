@@ -89,7 +89,7 @@ export default function(init, config, packageName = '') {
       }
     },
     requireModule(target) {
-      return require(target);
+      return require(`${target}`);
     }
   };
   if (isMiniApp) {
