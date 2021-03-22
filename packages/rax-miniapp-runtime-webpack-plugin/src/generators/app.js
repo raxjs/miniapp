@@ -10,15 +10,16 @@ function generateAppJS(
   compilation,
   commonAppJSFilePaths,
   mainPackageRoot = 'main',
-  { target, command }
+  { target, command, withNativeAppConfig }
 ) {
   const init =
 `function init(window, document) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document)`).join(';')}}`;
-  const appJsContent = `
+  const requireNativeAppConfig = withNativeAppConfig ? "const nativeAppConfig = require('./miniapp-native/app');" : 'const nativeAppConfig = {}';
+  const appJsContent = `${requireNativeAppConfig}
 const render = require('./render');
 const config = require('./config');
 ${init}
-App(render.createAppConfig(init, config, '${mainPackageRoot}'));
+App(render.createAppConfig(init, config, '${mainPackageRoot}', nativeAppConfig));
 `;
 
   addFileToCompilation(compilation, {

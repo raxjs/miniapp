@@ -113,9 +113,12 @@ class MiniAppRuntimePlugin {
           .getFiles()
           .filter((filePath) => !isCSSFile(filePath));
         // App js
+        const nativeAppConfigPath = join(sourcePath, 'miniapp-native', 'app.js');
+        const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
         generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
           target,
-          command
+          command,
+          withNativeAppConfig
         });
       }
 
