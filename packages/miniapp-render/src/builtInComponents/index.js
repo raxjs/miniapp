@@ -33,6 +33,7 @@ import webView from './web-view';
 import livePlayer from './live-player';
 import livePusher from './live-pusher';
 import officialAccount from './official-account';
+import contactButton from './contact-button';
 
 // Sub components
 import movableView from './movable-view';
@@ -76,7 +77,8 @@ const components = [
   movableView,
   swiperItem,
   pickerViewColumn,
-  officialAccount
+  officialAccount,
+  contactButton
 ];
 
 const handlesMap = {
