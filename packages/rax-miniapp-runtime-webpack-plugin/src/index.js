@@ -233,6 +233,7 @@ class MiniAppRuntimePlugin {
           isSubPackageContainsPlugin = subPackageConfigWithPlugin;
           if (isSubPackageContainsPlugin) {
             subPackageUsingPlugins = Object.assign(
+              {},
               mainPackageUsingPlugins,
               filterPlugin(subPackageConfigWithPlugin, usingPlugins)
             );
