@@ -249,7 +249,8 @@ const Button = {
     'send-message-path': '',
     'send-message-img': '',
     'app-parameter': '',
-    'show-message-card': 'false'
+    'show-message-card': 'false',
+    'data-params': '' // For share button
   },
   events: {
     GetUserInfo: '',

@@ -1,6 +1,8 @@
 const {
   getAppConfig,
   filterNativePages,
+  platformMap,
+  pathHelper: { getPlatformExtensions },
 } = require('miniapp-builder-shared');
 const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
 const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
@@ -69,6 +71,13 @@ module.exports = (
   config.output.filename('[name].js');
   // publicPath should not work in miniapp, just keep default value
   config.output.publicPath('/');
+
+  // Distinguish end construction
+  config.resolve.extensions
+    .clear()
+    .merge(
+      getPlatformExtensions(platformMap[target].type, ['.js', '.jsx', '.ts', '.tsx', '.json'])
+    );
 
   ['jsx', 'tsx'].forEach((ruleName) => {
     config.module

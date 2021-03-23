@@ -53,7 +53,7 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
   Object.keys(compilation.assets).forEach(asset => {
     if (extname(asset) === '.css') {
       delete compilation.assets[asset];
-      if (!subPackages) {
+      if (!subPackages || asset === 'vendors.css') {
         content += `@import "./${asset}${platformMap[target].extension.css}";`;
       }
     }

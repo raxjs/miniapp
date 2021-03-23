@@ -99,6 +99,9 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
         });
       }
     },
+    requireModule(target) {
+      return require(`${target}`);
+    },
     ...rest
   };
   if (isMiniApp) {
