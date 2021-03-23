@@ -74,10 +74,10 @@ module.exports = (
 
   // Distinguish end construction
   config.resolve.extensions
-  .clear()
-  .merge(
-    getPlatformExtensions(platformMap[target].type, ['.js', '.jsx', '.ts', '.tsx', '.json'])
-  );
+    .clear()
+    .merge(
+      getPlatformExtensions(platformMap[target].type, ['.js', '.jsx', '.ts', '.tsx', '.json'])
+    );
 
   ['jsx', 'tsx'].forEach((ruleName) => {
     config.module
