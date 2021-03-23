@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.0] - 2021-03-23
+
+### Added
+
+- Support inject native app licecycle methods
+- Add contact-button
+- Add `requireModule` method in app to support share memory in subpackages
+
+### Fixed
+- Miss official-account component import
+
 ## [2.1.1] - 2021-03-15
 
 ### Fixed
