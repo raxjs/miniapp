@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.0] - 2021-03-23
+
+### Added
+- Support using plugin ans native components in sub packages
+- Support import native app config
+- Add `disable-scroll` in ali miniapp view template
+- Add contact-button  in ali miniapp
+- Add `data-params` in wechat miniprogram button template
 ## [4.0.2] - 2021-03-15
 
 ### Fixed
