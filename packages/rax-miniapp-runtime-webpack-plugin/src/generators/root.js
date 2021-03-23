@@ -5,19 +5,19 @@ const { buildTemplate, buildSjs, buildNativeComponentTemplate } = require('./tem
 
 function generateRootTmpl(
   compilation,
-  { usingPlugins, usingComponents, target, command, modifyTemplate }
+  { usingPlugins, usingComponents, target, command, modifyTemplate, subAppRoot = '' }
 ) {
   const template = buildTemplate(target, modifyTemplate);
   const sjs = buildSjs(target);
   const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target) + buildNativeComponentTemplate(usingComponents, target);
 
   addFileToCompilation(compilation, {
-    filename: `root${platformMap[target].extension.xml}`,
+    filename: `${subAppRoot}/root${platformMap[target].extension.xml}`,
     content: template + nativeComponentTemplate,
     target, command
   });
   addFileToCompilation(compilation, {
-    filename: `tool${platformMap[target].extension.script}`,
+    filename: `${subAppRoot}/tool${platformMap[target].extension.script}`,
     content: sjs,
     target,
     command,
