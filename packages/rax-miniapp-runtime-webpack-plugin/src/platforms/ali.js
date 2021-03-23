@@ -593,7 +593,18 @@ const LivePusher = {
     Error: '',
     NetStatus: ''
   }
+};
 
+const ContactButton = {
+  props: {
+    'tnt-inst-id': '',
+    scene: '',
+    size: '25',
+    color: addSingleQuote('#00A3FF'),
+    icon: '',
+    'alipay-card-no': '',
+    'ext-info': ''
+  }
 };
 
 exports.internalComponents = {
@@ -634,6 +645,7 @@ exports.internalComponents = {
   OpenAvatar,
   LivePlayer,
   LivePusher,
+  ContactButton,
   HElement,
   CatchHElement,
   HComment
@@ -683,7 +695,8 @@ exports.voidChildrenElements = new Set([
   'lottie',
   'canvas',
   'live-player',
-  'live-pusher'
+  'live-pusher',
+  'contact-button'
 ]);
 
 exports.nestElements = new Map([
