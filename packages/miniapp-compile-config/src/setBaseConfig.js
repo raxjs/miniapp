@@ -20,7 +20,8 @@ module.exports = (
   const platformInfo = platformMap[target];
   const { rootDir, command } = context;
   const {
-    platform = platformInfo.type
+    platform = platformInfo.type,
+    virtualHost = false
   } = userConfig;
 
   const mode = command;
@@ -73,6 +74,7 @@ module.exports = (
     .options({
       ...loaderParams,
       entryPath,
+      virtualHost
     })
     .end()
     .use('platform')
