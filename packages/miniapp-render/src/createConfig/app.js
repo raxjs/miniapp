@@ -100,6 +100,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       }
     },
     requireModule(target) {
+      if (isMiniApp) return;
       return require(`${target}`);
     },
     ...rest
