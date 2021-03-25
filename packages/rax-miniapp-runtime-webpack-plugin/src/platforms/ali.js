@@ -224,7 +224,8 @@ const Button = {
     'form-type': '',
     'open-type': '',
     scope: '',
-    'public-id': ''
+    'public-id': '',
+    'data-params': '' // For share button
   },
   basicEvents: {
     ...tapEvents
