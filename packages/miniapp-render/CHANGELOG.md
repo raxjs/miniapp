@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.1] - 2021-03-25
+
+### Fixed
+- Can't identify contact-button as builtin components
+- Avoid `requireModule` effect building in ali miniapp
+- Update dataset didn't trigger update
 ## [2.2.0] - 2021-03-23
 
 ### Added
