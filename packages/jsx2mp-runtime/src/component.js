@@ -306,7 +306,7 @@ export default class Component {
         handler.call(this, newState);
         this.__shouldUpdate = true;
         if (!this.__mounted) {
-          this._mountComponent()
+          this._mountComponent();
         } else {
           this._updateComponent();
         }
