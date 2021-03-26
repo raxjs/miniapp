@@ -227,6 +227,10 @@ const Button = {
     'public-id': '',
     'data-params': '' // For share button
   },
+  events: {
+    GetAuthorize: '',
+    Error: '',
+  },
   basicEvents: {
     ...tapEvents
   }
