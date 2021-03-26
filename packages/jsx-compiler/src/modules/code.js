@@ -398,8 +398,6 @@ function addDefine({programPath, type, userDefineType, eventHandlers, useCreateS
 
   args.push(t.objectExpression(optionsVariableProperties));
 
-
-
   programPath.node.body.push(
     t.expressionStatement(
       t.callExpression(
