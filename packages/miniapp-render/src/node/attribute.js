@@ -12,10 +12,11 @@ class Attribute {
 
     if (name === 'style') {
       element.style.cssText = value;
-    } else if (name.indexOf('data-') === 0) {
-      const datasetName = tool.toCamel(name.substr(5));
-      element.dataset[datasetName] = value;
     } else {
+      if (name.indexOf('data-') === 0) {
+        const datasetName = tool.toCamel(name.substr(5));
+        element.dataset[datasetName] = value;
+      }
       const payload = {
         path: `${element._path}.${name}`,
         value: value
@@ -68,13 +69,12 @@ class Attribute {
       if (name.indexOf('data-') === 0) {
         const datasetName = tool.toCamel(name.substr(5));
         delete element.dataset[datasetName];
-      } else {
-        const payload = {
-          path: `${element._path}.${name}`,
-          value: ''
-        };
-        element._triggerUpdate(payload);
       }
+      const payload = {
+        path: `${element._path}.${name}`,
+        value: ''
+      };
+      element._triggerUpdate(payload);
     }
   }
 }

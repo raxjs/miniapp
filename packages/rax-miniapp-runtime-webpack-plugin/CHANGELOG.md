@@ -1,5 +1,11 @@
 # Changelog
 
+
+## [4.1.1] - 2021-03-25
+
+### Added
+
+- Add `data-params` in ali miniapp button template
 ## [4.1.0] - 2021-03-23
 
 ### Added
