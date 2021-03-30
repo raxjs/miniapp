@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "enhanced-resolve": "^4.3.0",
-    "fs-extra": "^8.0.1"
+    "execa": "^5.0.0",
+    "fs-extra": "^8.0.1",
+    "ice-npm-utils": "^2.1.0"
   }
 }

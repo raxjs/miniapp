@@ -11,6 +11,7 @@ const {
 const CopyJsx2mpRuntimePlugin = require('./plugins/CopyJsx2mpRuntime');
 const CopyPublicFilePlugin = require('./plugins/CopyPublicFile');
 const RemoveDefaultPlugin = require('./plugins/RemoveDefaultResult');
+const AutoInstallNpmPlugin = require('./plugins/AutoInstallNpm');
 
 module.exports = (
   chainConfig,
@@ -20,7 +21,8 @@ module.exports = (
   const platformInfo = platformMap[target];
   const { rootDir, command } = context;
   const {
-    platform = platformInfo.type
+    platform = platformInfo.type,
+    nativePackage = {}
   } = userConfig;
 
   const mode = command;
@@ -169,4 +171,9 @@ module.exports = (
   chainConfig
     .plugin('RemoveDefaultPlugin')
     .use(RemoveDefaultPlugin);
+
+  // Auto install npm for native miniapp
+  chainConfig
+    .plugin('AutoInstallNpmPlugin')
+    .use(AutoInstallNpmPlugin, [{ nativePackage }]);
 };
