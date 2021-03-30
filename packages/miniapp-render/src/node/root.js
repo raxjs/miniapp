@@ -48,32 +48,36 @@ class RootElement extends Element {
 
     if (internal.$batchedUpdates) {
       let callback;
-      internal.$batchedUpdates(() => {
-        this.renderStacks.forEach((task, index) => {
-          if (index === this.renderStacks.length - 1) {
-            callback = () => {
-              if (process.env.NODE_ENV === 'development') {
-                perf.stop('setData');
-              }
-              let fn;
-              while (fn = this.__renderCallbacks.pop()) {
-                fn();
-              }
-            };
-            internal.firstRenderCallback();
-          }
-          if (task.type === 'children') {
-            const spliceArgs = [task.start, task.deleteCount];
-            internal.$spliceData({
-              [task.path]: task.item ? spliceArgs.concat(task.item) : spliceArgs
-            }, callback);
-          } else {
-            internal.setData({
-              [task.path]: task.value
-            }, callback);
-          }
+      try {
+        internal.$batchedUpdates(() => {
+          this.renderStacks.forEach((task, index) => {
+            if (index === this.renderStacks.length - 1) {
+              callback = () => {
+                if (process.env.NODE_ENV === 'development') {
+                  perf.stop('setData');
+                }
+                let fn;
+                while (fn = this.__renderCallbacks.pop()) {
+                  fn();
+                }
+              };
+              internal.firstRenderCallback();
+            }
+            if (task.type === 'children') {
+              const spliceArgs = [task.start, task.deleteCount];
+              internal.$spliceData({
+                [task.path]: task.item ? spliceArgs.concat(task.item) : spliceArgs
+              }, callback);
+            } else {
+              internal.setData({
+                [task.path]: task.value
+              }, callback);
+            }
+          });
         });
-      });
+      } catch (e) {
+        console.warn(e.toString());
+      }
     } else {
       const renderObject = {};
       const pathCache = [];
@@ -101,15 +105,19 @@ class RootElement extends Element {
         }
       });
       internal.firstRenderCallback(renderObject);
-      internal.setData(renderObject, () => {
-        let fn;
-        while (fn = this.__renderCallbacks.pop()) {
-          fn();
-        }
-        if (process.env.NODE_ENV === 'development') {
-          perf.stop('setData');
-        }
-      });
+      try {
+        internal.setData(renderObject, () => {
+          let fn;
+          while (fn = this.__renderCallbacks.pop()) {
+            fn();
+          }
+          if (process.env.NODE_ENV === 'development') {
+            perf.stop('setData');
+          }
+        });
+      } catch (e) {
+        console.warn(e.toString());
+      }
     }
 
     this.renderStacks = [];
