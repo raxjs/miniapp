@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.2] - 2021-03-30
+
+### Fixed
+
+- Miss app instance in native app licecycle methods
+
 ## [2.2.1] - 2021-03-25
 
 ### Fixed

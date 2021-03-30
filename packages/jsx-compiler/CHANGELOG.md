@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [0.4.30] - 2021-03-30
+
+### Added
+
+- Support compiling virtualHost config into code
+
 ## [0.4.29] - 2021-03-04
 
 ### Fixed
