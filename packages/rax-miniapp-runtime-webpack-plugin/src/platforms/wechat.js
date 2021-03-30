@@ -26,6 +26,7 @@ const View = {
     'hover-start-time': '50',
     'hover-stay-time': '400',
     'hover-stop-propagation': 'false',
+    animation: ''
   },
   events: {
     ...animationEvents
