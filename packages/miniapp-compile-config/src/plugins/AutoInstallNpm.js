@@ -7,19 +7,21 @@ const { join } = require('path');
 module.exports = class AutoInstallNpmPlugin {
   constructor({ nativePackage = {} }) {
     this.autoInstall = nativePackage.autoInstall;
-    this.dependencies = nativePackage.dependencies || {};
+    this.dependencies = nativePackage.dependencies || null;
   }
   apply(compiler) {
     compiler.hooks.done.tapAsync('AutoInstallNpmPlugin', async(stats, callback) => {
+      const distDir = stats.compilation.outputOptions.path;
+      // Generate package.json
+      if (this.dependencies) {
+        const pkgFilePath = join(distDir, 'package.json');
+        writeJSONSync(pkgFilePath, {
+          dependencies: this.dependencies
+        });
+      }
       if (!this.autoInstall) {
         return callback();
       }
-      // Generate package.json
-      const distDir = stats.compilation.outputOptions.path;
-      const pkgFilePath = join(distDir, 'package.json');
-      writeJSONSync(pkgFilePath, {
-        dependencies: this.dependencies
-      });
       await autoInstallNpm(distDir, callback);
     });
   }
