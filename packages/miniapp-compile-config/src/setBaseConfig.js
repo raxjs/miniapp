@@ -22,6 +22,7 @@ module.exports = (
   const { rootDir, command } = context;
   const {
     platform = platformInfo.type,
+    virtualHost = false,
     nativePackage = {}
   } = userConfig;
 
@@ -75,6 +76,7 @@ module.exports = (
     .options({
       ...loaderParams,
       entryPath,
+      virtualHost
     })
     .end()
     .use('platform')

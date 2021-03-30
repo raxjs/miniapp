@@ -305,7 +305,11 @@ export default class Component {
       if (!is(this[`_${name}`], newState)) {
         handler.call(this, newState);
         this.__shouldUpdate = true;
-        this._updateComponent();
+        if (!this.__mounted) {
+          this._mountComponent();
+        } else {
+          this._updateComponent();
+        }
       }
     };
     this._registerLifeCycle(COMPONENT_WILL_UNMOUNT, () => {
