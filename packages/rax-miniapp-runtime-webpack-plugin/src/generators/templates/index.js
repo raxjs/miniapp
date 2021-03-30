@@ -38,7 +38,7 @@ function buildNativeComponentTemplate(usings, target) {
       const tmpl = ` ${adapter.event}${event}="{{r['${event}']}}"`;
       return cur + tmpl;
     }, '');
-    const elementTemplate = isRecursiveTemplate ? `<template is="{{tool.c(item.nodeType)}}" data="{{r: item}}" />` : '<element r="{{item}}" />';
+    const elementTemplate = isRecursiveTemplate ? '<template is="{{tool.c(item.nodeType)}}" data="{{r: item}}" />' : '<element r="{{item}}" />';
     const template = `
 <template name="RAX_TMPL_0_${componentTag}">
   <${componentTag}

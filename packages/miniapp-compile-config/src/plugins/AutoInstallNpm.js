@@ -4,7 +4,7 @@ const { join } = require('path');
 /**
  * Auto install npm
  */
- module.exports = class AutoInstallNpmPlugin {
+module.exports = class AutoInstallNpmPlugin {
   constructor({ nativePackage = {} }) {
     this.autoInstall = nativePackage.autoInstall;
     this.dependencies = nativePackage.dependencies || {};
