@@ -5,7 +5,10 @@ import createDocument from '../document';
 import cache from '../utils/cache';
 
 export default function(init, config, packageName = '', nativeAppConfig = {}) {
-  cache.setConfig(config);
+  cache.setConfig({
+    ...config,
+    mainPackageName: packageName,
+  });
   const { onLaunch, onShow, onHide, onError, onPageNotFound, ...rest } = nativeAppConfig;
   const appConfig = {
     launched: isMiniApp,
@@ -98,10 +101,6 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
           }
         });
       }
-    },
-    requireModule(target) {
-      if (isMiniApp) return;
-      return require(`${target}`);
     },
     ...rest
   };

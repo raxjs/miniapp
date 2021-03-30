@@ -169,5 +169,12 @@ class Window extends EventTarget {
 }
 
 export default function createWindow() {
+  const { mainPackageName, subPackages } = cache.getConfig();
+  const { shareMemory } = subPackages || {};
+  if (mainPackageName === '' || !shareMemory) {
+    return new Window();
+  }
+  const mainPackageWindow = cache.getWindow(mainPackageName);
+  if (mainPackageWindow) return mainPackageWindow;
   return new Window();
 }
