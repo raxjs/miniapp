@@ -13,7 +13,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
   const appConfig = {
     launched: isMiniApp,
     onLaunch(options) {
-      onLaunch && onLaunch(options);
+      onLaunch && onLaunch.call(this, options);
 
       const window = createWindow();
       cache.setWindow(packageName, window);
@@ -47,7 +47,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       this.window = window;
     },
     onShow(options) {
-      onShow && onShow(options);
+      onShow && onShow.call(this, options);
 
       this.__showOptions = options;
       if (this.window && this.launched) {
@@ -60,7 +60,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       }
     },
     onHide() {
-      onHide && onHide();
+      onHide && onHide.call(this);
 
       if (this.window) {
         this.window.$$trigger('apphide', {
@@ -71,7 +71,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       }
     },
     onError(err) {
-      onError && onError(err);
+      onError && onError.call(this, err);
 
       if (this.window) {
         // eslint-disable-next-line no-undef
@@ -91,7 +91,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       }
     },
     onPageNotFound(options) {
-      onPageNotFound && onPageNotFound(options);
+      onPageNotFound && onPageNotFound.call(this, options);
 
       if (this.window) {
         this.window.$$trigger('pagenotfound', {

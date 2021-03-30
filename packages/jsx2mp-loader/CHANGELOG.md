@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.25] - 2021-03-30
+
+### Added
+
+- Support passing virtualHost config into jsx-compiler
 ## [0.4.24] - 2021-03-11
 
 ### Chore

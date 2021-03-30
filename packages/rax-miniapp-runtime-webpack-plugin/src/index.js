@@ -1,7 +1,5 @@
 const { resolve, join } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
-const execa = require('execa');
-const { checkAliInternal } = require('ice-npm-utils');
 const isEqual = require('lodash.isequal');
 const { constants: { MINIAPP } } = require('miniapp-builder-shared');
 const { UNRECURSIVE_TEMPLATE_TYPE } = require('./constants');
@@ -9,7 +7,7 @@ const isCSSFile = require('./utils/isCSSFile');
 const wrapChunks = require('./utils/wrapChunks');
 const getSepProcessedPath = require('./utils/getSepProcessedPath');
 const { filterPlugin, filterComponent } = require('./utils/filterNativeComponentConfig');
-const { pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
+const { pathHelper: { getBundlePath }, autoInstallNpm } = require('miniapp-builder-shared');
 
 const {
   generateAppCSS,
@@ -55,13 +53,11 @@ class MiniAppRuntimePlugin {
       getValue
     } = api;
     const userConfig = rootUserConfig[target] || {};
-    const { subPackages, template: modifyTemplate = {} } = userConfig;
+    const { subPackages, template: modifyTemplate = {}, nativePackage = {} } = userConfig;
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
-    let isAliInternal;
-    let npmRegistry;
 
     // Execute when compilation created
     compiler.hooks.compilation.tap(PluginName, (compilation) => {
@@ -149,11 +145,13 @@ class MiniAppRuntimePlugin {
         // Only when developer may use native component, it will generate package.json in output
         if (
           useNativeComponentCount > 0 ||
-          existsSync(join(sourcePath, 'public'))
+          existsSync(join(sourcePath, 'public')) ||
+          nativePackage.dependencies
         ) {
           generatePkg(compilation, {
             target,
             command,
+            declaredDep: nativePackage.dependencies
           });
           needAutoInstallDependency = true;
         }
@@ -323,35 +321,11 @@ class MiniAppRuntimePlugin {
       callback();
     });
     compiler.hooks.done.tapAsync(PluginName, async(stats, callback) => {
-      if (!needAutoInstallDependency) {
+      if (nativePackage.autoInstall === false || !needAutoInstallDependency) {
         return callback();
       }
-      if (isAliInternal === undefined) {
-        isAliInternal = await checkAliInternal();
-        npmRegistry = isAliInternal
-          ? 'https://registry.npm.alibaba-inc.com'
-          : 'https://registry.npm.taobao.org';
-      }
       const distDir = stats.compilation.outputOptions.path;
-      execa('npm', ['install', '--production', `--registry=${npmRegistry}`], {
-        cwd: distDir,
-      })
-        .then(({ exitCode }) => {
-          if (!exitCode) {
-            callback();
-          } else {
-            console.log(
-              `\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`
-            );
-            callback();
-          }
-        })
-        .catch(() => {
-          console.log(
-            `\nInstall dependencies failed, please enter ${distDir} and retry by yourself\n`
-          );
-          callback();
-        });
+      await autoInstallNpm(distDir, callback);
     });
   }
 }

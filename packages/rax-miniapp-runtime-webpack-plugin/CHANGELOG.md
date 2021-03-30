@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.0] - 2021-03-30
+
+### Added
+
+- Support config native miniapp dependencies in build.json
+
+### Fixed
+
+- Native component template generation in ali miniapp
+- Miss `onGetAuthorize` and `onError` events in ali miniapp button template
+- Miss `animation` props in wechat miniapp view template
+
 
 ## [4.1.1] - 2021-03-25
 

@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp, isWeChatMiniProgram, isQuickApp, isByteDanceMicroApp } from 'universal-env';
 
-export default function() {
+export default function(baseConfig) {
   // For alibaba miniapp
   if (isMiniApp) {
     return {
@@ -21,7 +21,8 @@ export default function() {
       },
       options: {
         styleIsolation: 'shared',
-        multipleSlots: true
+        multipleSlots: true,
+        ...baseConfig
       }
     };
   }

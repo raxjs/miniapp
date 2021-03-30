@@ -22,7 +22,7 @@ module.exports = async function componentLoader(content) {
   }
 
   const loaderOptions = getOptions(this);
-  const { rootDir, platform, entryPath, outputPath, constantDir, mode, disableCopyNpm, turnOffSourceMap, aliasEntries, injectAppCssComponent } = loaderOptions;
+  const { rootDir, platform, entryPath, outputPath, constantDir, mode, disableCopyNpm, turnOffSourceMap, aliasEntries, injectAppCssComponent, virtualHost } = loaderOptions;
   const resourcePath = this.resourcePath;
   const rootContext = this.rootContext;
   const absoluteConstantDir = constantDir.map(dir => join(rootContext, dir));
@@ -46,7 +46,8 @@ module.exports = async function componentLoader(content) {
     sourceFileName: this.resourcePath,
     disableCopyNpm,
     turnOffSourceMap,
-    aliasEntries
+    aliasEntries,
+    virtualHost
   });
 
   const rawContentAfterDCE = eliminateDeadCode(content);
