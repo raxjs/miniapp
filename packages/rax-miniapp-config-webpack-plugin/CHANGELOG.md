@@ -1,6 +1,12 @@
 # Changelog
 
-## [2.0.1] - 2021-03-11
+## [2.0.3] - 2021-03-31
+
+### Feat
+
+- Add `subPackageBuildType` when `shareMemory`
+
+## [2.0.2] - 2021-03-11
 
 ### Changed
 

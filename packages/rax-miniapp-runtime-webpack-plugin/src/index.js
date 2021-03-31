@@ -138,7 +138,8 @@ class MiniAppRuntimePlugin {
           usingPlugins,
           pages,
           target,
-          command
+          command,
+          subPackages
         });
 
         // Only when developer may use native component, it will generate package.json in output

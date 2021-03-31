@@ -32,6 +32,10 @@ module.exports = class MiniAppConfigPlugin {
           .filter(subAppConfig => !subAppConfig.miniappMain)
           .map(subAppConfig => transformAppConfig(outputPath, subAppConfig, target, subPackages));
 
+        if (subPackages.shareMemory) {
+          config.subPackageBuildType = 'shared';
+        }
+
         // Transform main package pages
         const mainPackageConfig = subAppConfigList.filter(subAppConfig => subAppConfig.miniappMain)[0];
         config.pages = mainPackageConfig.pages;
