@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.3] - 2021-03-31
+
+### Changed
+
+- Share window when share memory in subpackages
+
 ## [2.2.2] - 2021-03-30
 
 ### Fixed

@@ -42,8 +42,12 @@ function generatePageJS(
   const renderPath = getAssetPath('render', pageRoute);
   const route = getSepProcessedPath(pagePath);
   const nativeLifeCycles = `[${Object.keys(nativeLifeCyclesMap).reduce((total, current, index) => index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`;
+  const requirePageBundle = commonPageJSFilePaths.reduce((prev, filePath) => {
+    if (filePath === 'webpack-runtime.js') return prev;
+    return `${prev}require('${getAssetPath(filePath, pageRoute)}')(window, document);`;
+  }, '');
   const init = `
-function init(window, document) {${commonPageJSFilePaths.map(filePath => `require('${getAssetPath(filePath, pageRoute)}')(window, document)`).join(';')}}`;
+function init(window, document) {${requirePageBundle}}`;
 
   const pageJsContent = `
 const render = require('${renderPath}');
