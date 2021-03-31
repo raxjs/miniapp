@@ -44,7 +44,7 @@ function generatePageJS(
   const nativeLifeCycles = `[${Object.keys(nativeLifeCyclesMap).reduce((total, current, index) => index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`;
   const requirePageBundle = commonPageJSFilePaths.reduce((prev, filePath) => {
     if (filePath === 'webpack-runtime.js') return prev;
-    return `${prev}require('${getAssetPath(filePath, pageRoute)}')(window, document);`
+    return `${prev}require('${getAssetPath(filePath, pageRoute)}')(window, document);`;
   }, '');
   const init = `
 function init(window, document) {${requirePageBundle}}`;
