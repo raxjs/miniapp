@@ -40,7 +40,9 @@ const View = {
 const CatchView = Object.assign({}, View);
 
 const HElement = {
-  props: {},
+  props: {
+    animation: ''
+  },
   basicEvents: {
     ...tapEvents,
     ...touchEvents
@@ -885,7 +887,18 @@ exports.needModifyChildrenComponents = {
   'picker-view': children => `
     <picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'picker-view')}}" />
-    </picker-view-column>`
+    </picker-view-column>
+  `,
+  'map': children => `
+    <block wx:for="{{r.children}}" wx:key="nodeId">
+      <block wx:if="{{item.nodeId}}">
+        <template is="{{tool.c(item.nodeType, tool.d(c, 'map'))}}" data="{{r: item, c: tool.d(c, 'map'), cid: cid}}" />
+      </block>
+      <block wx:else>
+        <block>{{item.content}}</block>
+      </block>
+    </block>
+  `
 };
 
 exports.adapter = {
