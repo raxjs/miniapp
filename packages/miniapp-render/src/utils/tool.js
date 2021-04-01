@@ -25,10 +25,10 @@ function getId() {
  * @param {object} attrs
  * @returns
  */
-function hasExtraAttribute (attrs) {
-  const res = Object.keys(attrs).find(prop => {
-    return !(/class|style|id/.test(prop) || prop.startsWith('data-'))
-  })
+function hasExtraAttribute(attrs) {
+  const res = Object.keys(attrs).find(attr => {
+    return !/class|style|id/.test(attr);
+  });
   return !!res;
 }
 
