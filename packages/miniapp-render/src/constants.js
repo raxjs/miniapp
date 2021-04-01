@@ -28,4 +28,4 @@ export const STATIC_COMPONENTS = ['view', 'text', 'image'];
 
 export const CATCH_COMPONENTS = ['view', 'h-element'];
 
-export const PURE_COMPONENTS = ['view', 'h-element']
+export const PURE_COMPONENTS = ['view', 'h-element'];
