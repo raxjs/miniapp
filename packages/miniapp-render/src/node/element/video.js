@@ -10,10 +10,10 @@ class HTMLVideoElement extends Element {
 
     super(options);
 
-    this.$_initRect();
+    this._initRect();
   }
 
-  $_initRect() {
+  _initRect() {
     const width = parseInt(this.__attrs.get('width'), 10);
     const height = parseInt(this.__attrs.get('height'), 10);
 
@@ -50,7 +50,7 @@ class HTMLVideoElement extends Element {
     if (typeof value !== 'number' || !isFinite(value) || value < 0) return;
 
     this.__attrs.set('width', value);
-    this.$_initRect();
+    this._initRect();
   }
 
   get height() {
@@ -61,7 +61,7 @@ class HTMLVideoElement extends Element {
     if (typeof value !== 'number' || !isFinite(value) || value < 0) return;
 
     this.__attrs.set('height', value);
-    this.$_initRect();
+    this._initRect();
   }
 
   get autoplay() {

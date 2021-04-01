@@ -6,7 +6,7 @@ import Attribute from './attribute';
 import cache from '../utils/cache';
 import tool from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, CATCH_COMPONENTS, PURE_COMPONENTS } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -18,10 +18,6 @@ class Element extends Node {
     this.__tagName = tagName;
     this.__isBuiltinComponent = BUILTIN_COMPONENT_LIST.has(this.__tagName);
     this.__tmplName = this.__isBuiltinComponent ? this.__tagName : 'h-element';
-    if (attrs.catchTouchMove && (this.__tmplName === 'view' || this.__tmplName === 'h-element')) {
-      // Only view and h-element(rax-view) can add catchTouchMove
-      this.__tmplName = 'catch-' + this.__tmplName;
-    }
     this.childNodes = [];
     this.__nodeType = nodeType;
     this.style = new Style(this);
@@ -35,16 +31,15 @@ class Element extends Node {
     }
   }
 
-  // Override the $$destroy method of the parent class
-  $$destroy() {
-    this.childNodes.forEach(child => child.$$destroy());
+  // Override the _destroy method of the parent class
+  _destroy() {
+    this.childNodes.forEach(child => child._destroy());
     cache.setNode(this.__nodeId, null);
     this.ownerDocument.__idMap.set(this.id, null);
-    super.$$destroy();
+    super._destroy();
     this.__tagName = '';
     this.childNodes.length = 0;
     this.__nodeType = Node.ELEMENT_NODE;
-    this.__attrs = null;
   }
 
   // Init attribute
@@ -80,11 +75,28 @@ class Element extends Node {
     }
   }
 
+  _processNodeType() {
+    let nodeType = this.__tmplName;
+    if (!this.__hasEventBinded && STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
+      nodeType = `static-${this.__tmplName}`;
+      if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !tool.hasExtraAttribute(this.__attrs.__value)) {
+        nodeType = `pure-${this.__tmplName}`;
+      }
+    }
+    if (this.__attrs.get('catchTouchMove') && CATCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
+      // Only view and h-element(rax-view) can add catchTouchMove
+      nodeType = `catch-${this.__tmplName}`;
+    }
+    return nodeType;
+  }
+
   get _renderInfo() {
+    const nodeType = this._processNodeType();
+
     return {
+      nodeType,
       nodeId: this.__nodeId,
       pageId: this.__pageId,
-      nodeType: this.__tmplName,
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,

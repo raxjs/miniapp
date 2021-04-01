@@ -9,7 +9,7 @@ class Node extends EventTarget {
 
     // unique node id
     this.__nodeId = `n_${tool.getId()}`;
-    this.$_type = options.type;
+    this.__type = options.type;
     this.parentNode = null;
     this.__ownerDocument = options.document;
   }
@@ -23,16 +23,15 @@ class Node extends EventTarget {
   }
 
   /**
-   * Override parent class $$destroy method
+   * Override parent class _destroy method
    */
-  $$destroy() {
-    super.$$destroy();
+  _destroy() {
+    super._destroy();
 
     this.__nodeId = null;
-    this.$_type = null;
+    this.__type = null;
     this.parentNode = null;
     this.__rendered = false;
-    this.__ownerDocument = null;
   }
 
   get _path() {
