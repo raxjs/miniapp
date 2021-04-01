@@ -39,6 +39,18 @@ const View = {
 
 const CatchView = Object.assign({}, View);
 
+const StaticView = {
+  props: {
+    'hover-class': addSingleQuote('none'),
+    'hover-start-time': '50',
+    'hover-stay-time': '400',
+    'hover-stop-propagation': 'false',
+    animation: ''
+  }
+};
+
+const PureView = {};
+
 const HElement = {
   props: {
     animation: ''
@@ -50,6 +62,8 @@ const HElement = {
 };
 
 const CatchHElement = Object.assign({}, HElement);
+
+const PureHElement = {};
 
 const HComment = {};
 
@@ -191,6 +205,15 @@ const Text = {
   basicEvents: {
     ...tapEvents,
     ...touchEvents
+  }
+};
+
+const StaticText = {
+  props: {
+    selectable: 'false',
+    space: '',
+    decode: 'false',
+    'number-of-lines': ''
   }
 };
 
@@ -513,6 +536,16 @@ const Image = {
   }
 };
 
+const StaticImage = {
+  props: {
+    src: '',
+    mode: addSingleQuote('scaleToFill'),
+    webp: 'false',
+    'lazy-load': 'false',
+    'show-menu-by-longpress': 'false',
+  }
+};
+
 const Video = {
   props: {
     src: '',
@@ -756,6 +789,8 @@ const OfficialAccount = {
 exports.internalComponents = {
   View,
   CatchView,
+  StaticView,
+  PureView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -764,6 +799,7 @@ exports.internalComponents = {
   MovableView,
   MovableArea,
   Text,
+  StaticText,
   Icon,
   Progress,
   RichText,
@@ -784,6 +820,7 @@ exports.internalComponents = {
   Picker,
   Navigator,
   Image,
+  StaticImage,
   Video,
   Canvas,
   Camera,
@@ -795,13 +832,19 @@ exports.internalComponents = {
   OfficialAccount,
   HElement,
   CatchHElement,
+  PureHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
   ['catch-view', 'view'],
+  ['static-view', 'view'],
+  ['pure-view', 'view'],
   ['catch-h-element', 'view'],
+  ['pure-h-element', 'view'],
   ['h-element', 'view'],
+  ['static-text', 'text'],
+  ['static-image', 'image'],
   ['h-comment', 'block']
 ]);
 

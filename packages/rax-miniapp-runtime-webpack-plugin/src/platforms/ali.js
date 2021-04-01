@@ -41,10 +41,23 @@ const View = {
 
 const CatchView = Object.assign({}, View);
 
-const HElement = {
+const StaticView = {
   props: {
+    'disable-scroll': 'false',
+    'hover-class': '',
+    'hover-start-time': '',
+    'hover-stay-time': '',
+    hidden: 'false',
+    'hover-stop-propagation': 'false',
+    role: '',
     animation: 'null',
   },
+};
+
+const PureView = {};
+
+const HElement = {
+  props: {},
   basicEvents: {
     ...tapEvents,
     ...touchEvents
@@ -52,6 +65,8 @@ const HElement = {
 };
 
 const CatchHElement = Object.assign({}, HElement);
+
+const PureHElement = {};
 
 const HComment = {};
 
@@ -176,6 +191,15 @@ const Text = {
   },
   basicEvents: {
     ...tapEvents
+  }
+};
+
+const StaticText = {
+  props: {
+    selectable: 'false',
+    space: '',
+    decode: 'false',
+    'number-of-lines': ''
   }
 };
 
@@ -437,6 +461,15 @@ const Image = {
   }
 };
 
+const StaticImage = {
+  props: {
+    src: '',
+    mode: addSingleQuote('scaleToFill'),
+    'lazy-load': 'false',
+    'default-source': '',
+  }
+};
+
 const Video = {
   props: {
     src: '',
@@ -615,6 +648,8 @@ const ContactButton = {
 exports.internalComponents = {
   View,
   CatchView,
+  StaticView,
+  PureView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -623,6 +658,7 @@ exports.internalComponents = {
   MovableView,
   MovableArea,
   Text,
+  StaticText,
   Icon,
   Progress,
   RichText,
@@ -642,6 +678,7 @@ exports.internalComponents = {
   Picker,
   Navigator,
   Image,
+  StaticImage,
   Video,
   Lottie,
   Canvas,
@@ -653,13 +690,19 @@ exports.internalComponents = {
   ContactButton,
   HElement,
   CatchHElement,
+  PureHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
   ['catch-view', 'view'],
+  ['static-view', 'view'],
+  ['pure-view', 'view'],
   ['catch-h-element', 'view'],
+  ['pure-h-element', 'view'],
   ['h-element', 'view'],
+  ['static-image', 'image'],
+  ['static-text', 'text'],
   ['h-comment', 'block']
 ]);
 
@@ -707,7 +750,6 @@ exports.voidChildrenElements = new Set([
 exports.nestElements = new Map([
   ['view', -1],
   ['cover-view', -1],
-  // ['block', -1],
   ['text', 6],
   ['label', 6],
   ['form', 4],
