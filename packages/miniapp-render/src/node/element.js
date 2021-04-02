@@ -1,4 +1,6 @@
 /* global CONTAINER */
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isMiniApp } from 'universal-env';
 import Node from './node';
 import ClassList from './class-list';
 import Style from './style';
@@ -6,7 +8,7 @@ import Attribute from './attribute';
 import cache from '../utils/cache';
 import tool from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, CATCH_COMPONENTS, PURE_COMPONENTS } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, CATCH_COMPONENTS, PURE_COMPONENTS, APPEAR_COMPONENTS, TOUCH_COMPONENTS } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -77,10 +79,23 @@ class Element extends Node {
 
   _processNodeType() {
     let nodeType = this.__tmplName;
-    if (!this.__hasEventBinded && STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
-      nodeType = `static-${this.__tmplName}`;
-      if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !tool.hasExtraAttribute(this.__attrs.__value)) {
-        nodeType = `pure-${this.__tmplName}`;
+    if (!this.__hasEventBinded) {
+      if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
+        nodeType = `static-${this.__tmplName}`;
+        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !tool.hasExtraAttribute(this.__attrs.__value)) {
+          nodeType = `pure-${this.__tmplName}`;
+        }
+      }
+    } else if (!this.__hasTouchEventBinded) {
+      if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
+        nodeType = `notouch-${this.__tmplName}`;
+      }
+    }
+    if (isMiniApp) {
+      if (!this.__hasAppearEventBinded) {
+        if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
+          nodeType = `noappear-${this.__tmplName}`;
+        }
       }
     }
     if (this.__attrs.get('catchTouchMove') && CATCH_COMPONENTS.indexOf(this.__tmplName) > -1) {

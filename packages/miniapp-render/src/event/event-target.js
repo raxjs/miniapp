@@ -85,6 +85,8 @@ class EventTarget {
     this.__miniappEvent = null;
     this.__eventHandlerMap = new Map();
     this.__hasEventBinded = false;
+    this.__hasAppearEventBinded = false;
+    this.__hasTouchEventBinded = false;
   }
 
   // Destroy instance
@@ -92,6 +94,7 @@ class EventTarget {
     this.__miniappEvent = null;
     this.__eventHandlerMap = null;
     this.__hasEventBinded = null;
+    this.__hasTouchEventBinded = null;
   }
 
   // Trigger event capture, bubble flow
@@ -279,6 +282,12 @@ class EventTarget {
     if (!this.__hasEventBinded) {
       this.__hasEventBinded = true;
     }
+    if (!this.__hasAppearEventBinded && eventName.indexOf('appear') > -1) {
+      this.__hasAppearEventBinded = true;
+    }
+    if (!this.__hasTouchEventBinded && eventName.indexOf('touch') > -1) {
+      this.__hasTouchEventBinded = true;
+    }
   }
 
   removeEventListener(eventName, handler, isCapture = false) {
@@ -288,14 +297,6 @@ class EventTarget {
     const handlers = this.__getHandles(eventName, isCapture);
 
     if (handlers && handlers.length) handlers.splice(handlers.indexOf(handler), 1);
-    if (handlers.length === 0) {
-      for (const handlerObj of this.__eventHandlerMap.values()) {
-        if (handlerObj.capture.length > 0 || handlerObj.bubble.length > 0) {
-          return;
-        }
-      }
-      this.__hasEventBinded = false;
-    }
   }
 
   dispatchEvent(evt) {
