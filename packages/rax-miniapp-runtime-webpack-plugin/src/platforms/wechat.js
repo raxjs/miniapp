@@ -462,9 +462,18 @@ const Picker = {
     'header-text': '',
     disabled: 'false',
     mode: addSingleQuote('selector'),
+    range: '[]',
+    'range-key': '',
+    value: '',
+    start: '',
+    end: '',
+    fields: '',
+    'custom-item': ''
   },
   events: {
+    Change: '',
     Cancel: '',
+    ColumnChange: ''
   },
 };
 
