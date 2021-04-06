@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef  } from '../../utils/tool';
+import { isUndef } from '../../utils/tool';
 
 class HTMLVideoElement extends Element {
   constructor(options) {

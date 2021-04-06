@@ -1,4 +1,5 @@
 import { isUndef } from '../utils/tool';
+
 export default class ClassList extends Set {
   static _create(className, element) {
     const instance = new Set();

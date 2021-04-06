@@ -124,7 +124,7 @@ const NoAppearTouchView = {
   basicEvents: {
     ...tapEvents
   }
-}
+};
 
 
 const HElement = {

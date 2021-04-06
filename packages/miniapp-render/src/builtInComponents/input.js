@@ -1,4 +1,5 @@
 import { isUndef } from '../utils/tool';
+
 const input = {
   name: 'input',
   simpleEvents: [{
