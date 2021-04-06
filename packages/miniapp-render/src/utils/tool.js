@@ -32,9 +32,19 @@ function hasExtraAttribute(attrs) {
   return !!res;
 }
 
-export default {
+/**
+ * Check whether the variable is undefined
+ * @param {*} variable
+ * @returns boolean
+ */
+function isUndef(variable) {
+  return variable === undefined;
+}
+
+export {
   toDash,
   toCamel,
   getId,
-  hasExtraAttribute
+  hasExtraAttribute,
+  isUndef
 };

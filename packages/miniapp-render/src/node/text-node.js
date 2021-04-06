@@ -1,4 +1,3 @@
-import tool from '../utils/tool';
 import Node from '../node/node';
 
 class TextNode extends Node {

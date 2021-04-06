@@ -1,5 +1,5 @@
 import EventTarget from '../event/event-target';
-import tool from '../utils/tool';
+import { getId } from '../utils/tool';
 import cache from '../utils/cache';
 import { BODY_NODE_ID } from '../constants';
 
@@ -8,7 +8,7 @@ class Node extends EventTarget {
     super();
 
     // unique node id
-    this.__nodeId = `n_${tool.getId()}`;
+    this.__nodeId = `n_${getId()}`;
     this.__type = options.type;
     this.parentNode = null;
     this.__ownerDocument = options.document;

@@ -1,4 +1,5 @@
 import Element from '../element';
+import { isUndef  } from '../../utils/tool';
 
 class HTMLVideoElement extends Element {
   constructor(options) {
@@ -93,7 +94,7 @@ class HTMLVideoElement extends Element {
 
   get controls() {
     const value = this.__attrs.get('controls');
-    return value !== undefined ? !!value : true;
+    return !isUndef(value) ? !!value : true;
   }
 
   set controls(value) {

@@ -1,3 +1,5 @@
+import { isUndef } from '../utils/tool';
+
 /**
  * Check the relationships between nodes
  */
@@ -147,7 +149,7 @@ class Event {
     if (typeof name !== 'string') return;
 
     this.__name = name.toLowerCase();
-    this.__bubbles = bubbles === undefined ? this.__bubbles : !!bubbles;
+    this.__bubbles = isUndef(bubbles) ? this.__bubbles : !!bubbles;
   }
 }
 
