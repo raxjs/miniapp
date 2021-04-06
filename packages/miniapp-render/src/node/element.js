@@ -6,7 +6,7 @@ import ClassList from './class-list';
 import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
-import tool from '../utils/tool';
+import { hasExtraAttribute, toDash } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
 import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, CATCH_COMPONENTS, PURE_COMPONENTS, APPEAR_COMPONENTS, TOUCH_COMPONENTS } from '../constants';
 
@@ -82,19 +82,25 @@ class Element extends Node {
     if (!this.__hasEventBinded) {
       if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
         nodeType = `static-${this.__tmplName}`;
-        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !tool.hasExtraAttribute(this.__attrs.__value)) {
+        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
           nodeType = `pure-${this.__tmplName}`;
         }
       }
     } else if (!this.__hasTouchEventBinded) {
       if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
-        nodeType = `notouch-${this.__tmplName}`;
+        nodeType = `no-touch-${this.__tmplName}`;
       }
-    }
-    if (isMiniApp) {
-      if (!this.__hasAppearEventBinded) {
+      if (isMiniApp) {
+        if (!this.__hasAppearEventBinded) {
+          if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
+            nodeType = `no-appear-touch-${this.__tmplName}`;
+          }
+        }
+      }
+    } else if (!this.__hasAppearEventBinded) {
+      if (isMiniApp) {
         if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
-          nodeType = `noappear-${this.__tmplName}`;
+          nodeType = `no-appear-${this.__tmplName}`;
         }
       }
     }
@@ -239,7 +245,7 @@ class Element extends Node {
   cloneNode(deep) {
     const dataset = {};
     Object.keys(this.dataset).forEach(name => {
-      dataset[`data-${tool.toDash(name)}`] = this.dataset[name];
+      dataset[`data-${toDash(name)}`] = this.dataset[name];
     });
     const newNode = this.ownerDocument._createElement({
       tagName: this.__tagName,

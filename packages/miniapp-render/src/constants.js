@@ -32,5 +32,5 @@ export const PURE_COMPONENTS = ['view', 'h-element']; // With no events or props
 
 export const APPEAR_COMPONENTS = ['view']; // Without appear event components
 
-export const TOUCH_COMPONENTS = ['view', 'text']; // Without touch event components
+export const TOUCH_COMPONENTS = ['view', 'text', 'h-element']; // Without touch event components
 

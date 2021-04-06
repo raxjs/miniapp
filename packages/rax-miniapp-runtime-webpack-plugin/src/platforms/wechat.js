@@ -51,6 +51,22 @@ const StaticView = {
 
 const PureView = {};
 
+const NoTouchView = {
+  props: {
+    'hover-class': addSingleQuote('none'),
+    'hover-start-time': '50',
+    'hover-stay-time': '400',
+    'hover-stop-propagation': 'false',
+    animation: ''
+  },
+  events: {
+    ...animationEvents
+  },
+  basicEvents: {
+    ...tapEvents
+  }
+};
+
 const HElement = {
   props: {
     animation: ''
@@ -64,6 +80,15 @@ const HElement = {
 const CatchHElement = Object.assign({}, HElement);
 
 const PureHElement = {};
+
+const NoTouchHElement = {
+  props: {
+    animation: ''
+  },
+  basicEvents: {
+    ...tapEvents
+  }
+};
 
 const HComment = {};
 
@@ -791,6 +816,7 @@ exports.internalComponents = {
   CatchView,
   StaticView,
   PureView,
+  NoTouchView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -833,91 +859,94 @@ exports.internalComponents = {
   HElement,
   CatchHElement,
   PureHElement,
+  NoTouchHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
-  ['catch-view', 'view'],
-  ['static-view', 'view'],
-  ['pure-view', 'view'],
-  ['catch-h-element', 'view'],
-  ['pure-h-element', 'view'],
-  ['h-element', 'view'],
-  ['static-text', 'text'],
-  ['static-image', 'image'],
-  ['h-comment', 'block']
+  ['CatchView', 'View'],
+  ['StaticView', 'View'],
+  ['PureView', 'View'],
+  ['NoTouchView', 'View'],
+  ['CatchHElement', 'View'],
+  ['PureHElement', 'View'],
+  ['NoTouchHElement', 'View'],
+  ['HElement', 'View'],
+  ['StaticText', 'Text'],
+  ['StaticImage', 'Image'],
+  ['HComment', 'Block']
 ]);
 
 exports.controlledComponents = new Set([
-  'input',
-  'checkbox',
-  'picker',
-  'picker-view',
-  'radio',
-  'slider',
-  'switch',
-  'textarea'
+  'Input',
+  'Checkbox',
+  'Picker',
+  'PickerView',
+  'Radio',
+  'Slider',
+  'Switch',
+  'Textarea'
 ]);
 
 exports.focusComponents = new Set([
-  'input',
-  'textarea'
+  'Input',
+  'Textarea'
 ]);
 
 exports.voidElements = new Set([
-  'h-comment'
+  'HComment'
 ]);
 
 exports.voidChildrenElements = new Set([
-  'progress',
-  'icon',
-  'rich-text',
-  'input',
-  'textarea',
-  'checkbox',
-  'radio',
-  'editor',
-  'slider',
-  'switch',
-  'live-pusher',
-  'h-comment',
-  'open-data',
-  'image',
-  'video',
-  'canvas',
-  'web-view',
-  'live-player',
-  'live-pusher',
-  'official-account'
+  'Progress',
+  'Icon',
+  'RichText',
+  'Input',
+  'Textarea',
+  'Checkbox',
+  'Radio',
+  'Editor',
+  'Slider',
+  'Switch',
+  'LivePusher',
+  'HComment',
+  'OpenData',
+  'Image',
+  'Video',
+  'Canvas',
+  'WebView',
+  'LivePlayer',
+  'LivePusher',
+  'OfficialAccount'
 ]);
 
 exports.nestElements = new Map([
-  ['view', -1],
-  ['cover-view', -1],
-  ['text', 6],
-  ['label', 6],
-  ['form', 4],
-  ['scroll-view', 4],
-  ['swiper', 4],
-  ['swiper-item', 4]
+  ['View', -1],
+  ['CoverView', -1],
+  ['Text', 6],
+  ['Label', 6],
+  ['Form', 4],
+  ['ScrollView', 4],
+  ['Swiper', 4],
+  ['SwiperItem', 4]
 ]);
 
 exports.shouldNotGenerateTemplateComponents = new Set([
-  'swiper-item',
-  'picker-view-column',
-  'movable-view'
+  'SwiperItem',
+  'PickerViewColumn',
+  'MovableView'
 ]);
 
 exports.needModifyChildrenComponents = {
-  swiper: (children, level) => `
+  Swiper: (children, level) => `
     <swiper-item wx:for="{{r.children}}" wx:if="{{item.nodeType !== 'h-comment'}}" wx:key="nodeId">
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'swiper')}}" />
     </swiper-item>`,
-  'movable-area': children => `
+  MovableArea: children => `
     <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'movable-area')}}" />
     </movable-view>`,
-  'scroll-view': children => `
+  ScrollView: children => `
     <block wx:for="{{r.children}}" wx:key="nodeId">
       <block wx:if="{{item.nodeId}}">
         <template is="{{tool.c(item.nodeType, tool.d(c, 'scroll-view'))}}" data="{{r: item, c: tool.d(c, 'scroll-view'), cid: cid}}" />
@@ -927,12 +956,12 @@ exports.needModifyChildrenComponents = {
       </block>
     </block>
   `,
-  'picker-view': children => `
+  PickerView: children => `
     <picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'picker-view')}}" />
     </picker-view-column>
   `,
-  'map': children => `
+  Map: children => `
     <block wx:for="{{r.children}}" wx:key="nodeId">
       <block wx:if="{{item.nodeId}}">
         <template is="{{tool.c(item.nodeType, tool.d(c, 'map'))}}" data="{{r: item, c: tool.d(c, 'map'), cid: cid}}" />
