@@ -6,9 +6,9 @@ import ClassList from './class-list';
 import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
-import { hasExtraAttribute, toDash } from '../utils/tool';
+import { toDash } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, CATCH_COMPONENTS, PURE_COMPONENTS, APPEAR_COMPONENTS, TOUCH_COMPONENTS } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, NO_APPEAR_COMPONENTS, NO_TOUCH_COMPONENTS } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -23,6 +23,7 @@ class Element extends Node {
     this.childNodes = [];
     this.__nodeType = nodeType;
     this.style = new Style(this);
+    this.__hasExtraAttribute = false; // Indicates that the element has extra attributes besides id/style/class
     this.__attrs = new Attribute(this);
     cache.setNode(this.__nodeId, this);
     this.dataset = {};
@@ -78,51 +79,37 @@ class Element extends Node {
   }
 
   _processNodeType() {
-    let nodeType = this.__tmplName;
+    let nodeTypePrefix = '';
+    /*
+      Explaination:
+      Static:  element in STATIC_OR_PURE_COMPONENTS && without any event binded
+      Pure: element in STATIC_OR_PURE_COMPONENTS && without any event or prop binded
+      NoTouch: element in NO_TOUCH_COMPONENTS && without any touch event binded
+      NoAppearTouch: element in NO_TOUCH_COMPONENTS and  NO_APPEAR_COMPONENTS && without any touch or appear event binded
+      NoAppear: element in NO_APPEAR_COMPONENTS && without any appear event binded
+      Catch: element in CATCH_COMPONENTS && with catchTouchMove
+    */
 
-    if (isMiniApp) {
-      // In alibaba miniapp, appear event is provided
-      if (!this.__hasEventBinded) {
-        if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
-          nodeType = `static-${this.__tmplName}`;
-        }
-        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
-          nodeType = `pure-${this.__tmplName}`;
-        }
-      } else if (!this.__hasTouchEventBinded) {
-        if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
-          nodeType = `no-touch-${this.__tmplName}`;
-        }
-        if (!this.__hasAppearEventBinded) {
-          if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
-            nodeType = `no-appear-touch-${this.__tmplName}`;
-          }
-        }
-      } else if (!this.__hasAppearEventBinded) {
-        if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
-          nodeType = `no-appear-${this.__tmplName}`;
-        }
-      }
-    } else {
-      if (!this.__hasEventBinded) {
-        if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
-          nodeType = `static-${this.__tmplName}`;
-        }
-        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
-          nodeType = `pure-${this.__tmplName}`;
-        }
-      } else if (!this.__hasTouchEventBinded) {
-        if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
-          nodeType = `no-touch-${this.__tmplName}`;
-        }
-      }
+    const hasEventBinded = this.__hasEventBinded;
+    const hasAppearEventBinded = this.__hasAppearEventBinded;
+    const hasTouchEventBinded = this.__hasTouchEventBinded;
+    const hasCatchTouchMoveFlag = this.__attrs.get('catchTouchMove');
+    const hasExtraAttribute = this.__hasExtraAttribute;
+
+    if (!hasEventBinded) {
+      STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
+      PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
+    } else if (!hasTouchEventBinded || (isMiniApp && !hasAppearEventBinded )) {
+      const matchNoAppearFlag = isMiniApp && !hasAppearEventBinded && NO_APPEAR_COMPONENTS.has(this.__tmplName);
+      const matchNoTouchFlag = !hasTouchEventBinded && NO_TOUCH_COMPONENTS.has(this.__tmplName);
+      nodeTypePrefix = `no-${matchNoAppearFlag ? 'appear-': ''}${matchNoTouchFlag ? 'touch-' : ''}`;
     }
 
-    if (this.__attrs.get('catchTouchMove') && CATCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
-      // Only view and h-element(rax-view) can add catchTouchMove
-      nodeType = `catch-${this.__tmplName}`;
+    if (hasCatchTouchMoveFlag) {
+      CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
     }
-    return nodeType;
+    return `${nodeTypePrefix}${this.__tmplName}`;
+
   }
 
   get _renderInfo() {

@@ -70,7 +70,7 @@ function compareEventInWechat(last, now) {
 }
 
 class EventTarget {
-  constructor(...args) {
+  constructor() {
     // Supplement the instance's properties for the 'XXX' in XXX judgment
     this.ontouchstart = null;
     this.ontouchmove = null;
@@ -95,6 +95,7 @@ class EventTarget {
     this.__eventHandlerMap = null;
     this.__hasEventBinded = null;
     this.__hasTouchEventBinded = null;
+    this.__hasAppearEventBinded = false;
   }
 
   // Trigger event capture, bubble flow

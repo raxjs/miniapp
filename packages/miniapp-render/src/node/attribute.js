@@ -17,6 +17,9 @@ class Attribute {
         const datasetName = toCamel(name.substr(5));
         element.dataset[datasetName] = value;
       }
+      if (name !== 'id' && name !== 'class') {
+        this.__element.__hasExtraAttribute = true; // Indicates that the element has extra attributes besides id/style/class
+      }
       const payload = {
         path: `${element._path}.${name}`,
         value: value

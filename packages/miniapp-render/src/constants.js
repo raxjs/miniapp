@@ -24,13 +24,12 @@ export const BUILTIN_COMPONENT_LIST = new Set([
 
 export const BODY_NODE_ID = 'e-body';
 
-export const STATIC_COMPONENTS = ['view', 'text', 'image']; // With no events
+export const STATIC_COMPONENTS = new Set(['view', 'text', 'image']); // With no events components
+export const PURE_COMPONENTS = new Set(['view', 'h-element']); // With no events or props
 
-export const CATCH_COMPONENTS = ['view', 'h-element']; // With catchTouchMove events
+export const CATCH_COMPONENTS = new Set(['view', 'h-element']); // With catchTouchMove events
 
-export const PURE_COMPONENTS = ['view', 'h-element']; // With no events or props
+export const NO_APPEAR_COMPONENTS = new Set(['view']); // Without appear event components
 
-export const APPEAR_COMPONENTS = ['view']; // Without appear event components
-
-export const TOUCH_COMPONENTS = ['view', 'text', 'h-element']; // Without touch event components
+export const NO_TOUCH_COMPONENTS = new Set(['view', 'text', 'h-element']); // Without touch event components
 
