@@ -82,9 +82,9 @@ class Element extends Node {
     if (!this.__hasEventBinded) {
       if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
         nodeType = `static-${this.__tmplName}`;
-        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
-          nodeType = `pure-${this.__tmplName}`;
-        }
+      }
+      if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
+        nodeType = `pure-${this.__tmplName}`;
       }
     } else if (!this.__hasTouchEventBinded) {
       if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
