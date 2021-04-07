@@ -99,17 +99,16 @@ class Element extends Node {
     if (!hasEventBinded) {
       STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
       PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
-    } else if (!hasTouchEventBinded || (isMiniApp && !hasAppearEventBinded )) {
+    } else if (!hasTouchEventBinded || isMiniApp && !hasAppearEventBinded ) {
       const matchNoAppearFlag = isMiniApp && !hasAppearEventBinded && NO_APPEAR_COMPONENTS.has(this.__tmplName);
       const matchNoTouchFlag = !hasTouchEventBinded && NO_TOUCH_COMPONENTS.has(this.__tmplName);
-      nodeTypePrefix = `no-${matchNoAppearFlag ? 'appear-': ''}${matchNoTouchFlag ? 'touch-' : ''}`;
+      nodeTypePrefix = `no-${matchNoAppearFlag ? 'appear-' : ''}${matchNoTouchFlag ? 'touch-' : ''}`;
     }
 
     if (hasCatchTouchMoveFlag) {
       CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
     }
     return `${nodeTypePrefix}${this.__tmplName}`;
-
   }
 
   get _renderInfo() {
