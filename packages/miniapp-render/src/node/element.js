@@ -79,31 +79,45 @@ class Element extends Node {
 
   _processNodeType() {
     let nodeType = this.__tmplName;
-    if (!this.__hasEventBinded) {
-      if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
-        nodeType = `static-${this.__tmplName}`;
-      }
-      if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
-        nodeType = `pure-${this.__tmplName}`;
-      }
-    } else if (!this.__hasTouchEventBinded) {
-      if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
-        nodeType = `no-touch-${this.__tmplName}`;
-      }
-      if (isMiniApp) {
+
+    if (isMiniApp) {
+      // In alibaba miniapp, appear event is provided
+      if (!this.__hasEventBinded) {
+        if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
+          nodeType = `static-${this.__tmplName}`;
+        }
+        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
+          nodeType = `pure-${this.__tmplName}`;
+        }
+      } else if (!this.__hasTouchEventBinded) {
+        if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
+          nodeType = `no-touch-${this.__tmplName}`;
+        }
         if (!this.__hasAppearEventBinded) {
           if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
             nodeType = `no-appear-touch-${this.__tmplName}`;
           }
         }
-      }
-    } else if (!this.__hasAppearEventBinded) {
-      if (isMiniApp) {
+      } else if (!this.__hasAppearEventBinded) {
         if (APPEAR_COMPONENTS.indexOf(this.__tmplName) > -1) {
           nodeType = `no-appear-${this.__tmplName}`;
         }
       }
+    } else {
+      if (!this.__hasEventBinded) {
+        if (STATIC_COMPONENTS.indexOf(this.__tmplName) > -1) {
+          nodeType = `static-${this.__tmplName}`;
+        }
+        if (PURE_COMPONENTS.indexOf(this.__tmplName) > -1 && !hasExtraAttribute(this.__attrs.__value)) {
+          nodeType = `pure-${this.__tmplName}`;
+        }
+      } else if (!this.__hasTouchEventBinded) {
+        if (TOUCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
+          nodeType = `no-touch-${this.__tmplName}`;
+        }
+      }
     }
+
     if (this.__attrs.get('catchTouchMove') && CATCH_COMPONENTS.indexOf(this.__tmplName) > -1) {
       // Only view and h-element(rax-view) can add catchTouchMove
       nodeType = `catch-${this.__tmplName}`;
