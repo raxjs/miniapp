@@ -1,4 +1,5 @@
 import styleList from './style-list';
+import { isUndef } from '../utils/tool';
 
 class Style {
   constructor(element) {
@@ -9,7 +10,7 @@ class Style {
 
   setStyle(val, styleKey) {
     const old = this[styleKey];
-    if (val) {
+    if (!isUndef(val)) {
       this.__settedStyle.add(styleKey);
     }
     this.__value.set(styleKey, val);
@@ -26,7 +27,7 @@ class Style {
     let cssText = '';
     this.__settedStyle.forEach(key => {
       const val = this[key];
-      if (!val) return;
+      if (isUndef(val)) return;
       cssText += `${styleMap.get(key)}: ${val};`;
     });
     return cssText;
@@ -117,7 +118,8 @@ Object.keys(styleList).forEach(name => {
   styleMap.set(styleList[name], name);
   properties[name] = {
     get() {
-      return this.__value.get(name) || '';
+      const val = this.__value.get(name);
+      return isUndef(val) ? '' : val;
     },
     set(value) {
       this.setStyle(value, name);

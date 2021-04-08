@@ -1,6 +1,6 @@
 import Element from '../element';
 import cache from '../../utils/cache';
-import tool from '../../utils/tool';
+import { getId } from '../../utils/tool';
 
 class CustomComponent extends Element {
   constructor(options) {
@@ -8,8 +8,8 @@ class CustomComponent extends Element {
     this.__nativeType = options.nativeType;
   }
 
-  $$destroy() {
-    super.$$destroy();
+  _destroy() {
+    super._destroy();
 
     this.__nativeType = null;
   }
@@ -34,10 +34,10 @@ class CustomComponent extends Element {
     if (nativeInfo) {
       // Bind methods to every element which is used recursively to generate dom tree
       nativeInfo.events.forEach(event => {
-        const eventName = `${this.__tagName}_${event}_${tool.getId()}`;
+        const eventName = `${this.__tagName}_${event}_${getId()}`;
         renderInfo[event] = eventName;
         cache.setCustomComponentMethods(eventName, (...args) => {
-          this.$$trigger(event, { args });
+          this._trigger(event, { args });
         });
       });
     }

@@ -1,5 +1,5 @@
 import Element from '../element';
-import cache from '../../utils/cache';
+import { isUndef } from '../../utils/tool';
 
 class HTMLTextAreaElement extends Element {
   constructor(options) {
@@ -135,7 +135,7 @@ class HTMLTextAreaElement extends Element {
 
   get selectionStart() {
     const value = +this.__attrs.get('selection-start');
-    return value !== undefined ? value : -1;
+    return !isUndef(value) ? value : -1;
   }
 
   set selectionStart(value) {
@@ -144,7 +144,7 @@ class HTMLTextAreaElement extends Element {
 
   get selectionEnd() {
     const value = +this.__attrs.get('selection-end');
-    return value !== undefined ? value : -1;
+    return !isUndef(value) ? value : -1;
   }
 
   set selectionEnd(value) {

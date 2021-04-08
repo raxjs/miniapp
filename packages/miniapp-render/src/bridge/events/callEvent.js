@@ -5,7 +5,7 @@ export default function(eventName, evt, extra, nodeId) {
   const originNode = cache.getNode(nodeId);
 
   if (!originNode) return;
-  EventTarget.$$process(
+  EventTarget._process(
     originNode,
     eventName,
     evt,

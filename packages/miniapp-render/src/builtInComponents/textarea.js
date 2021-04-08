@@ -1,3 +1,5 @@
+import { isUndef } from '../utils/tool';
+
 export default {
   name: 'textarea',
   singleEvents: [{
@@ -22,7 +24,7 @@ export default {
     eventName: 'blur',
     middleware(evt, domNode, nodeId) {
       domNode._setAttributeWithOutUpdate('focus-state', false);
-      if (domNode.__textareaOldValue !== undefined && domNode.value !== domNode.__textareaOldValue) {
+      if (!isUndef(domNode.__textareaOldValue) && domNode.value !== domNode.__textareaOldValue) {
         domNode.__textareaOldValue = undefined;
         this.callEvent('change', evt, null, nodeId);
       }

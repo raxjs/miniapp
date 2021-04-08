@@ -59,7 +59,7 @@ export function getBaseLifeCycles(route, init, packageName = '') {
       this.renderInfo.setDocument(this.document);
       this.renderInfo.render();
 
-      this.document.$$trigger('DOMContentLoaded');
+      this.document._trigger('DOMContentLoaded');
     },
     onShow() {
       if (this.window) {
@@ -70,25 +70,25 @@ export function getBaseLifeCycles(route, init, packageName = '') {
           // Update location page options
           this.window.history.location.__updatePageOption(this.query);
         }
-        this.document.$$trigger('miniapp_pageshow');
+        this.document._trigger('miniapp_pageshow');
         // compatible with original name
-        this.document.$$trigger('onShow');
+        this.document._trigger('onShow');
       }
     },
     onHide() {
       if (this.window) {
-        this.document.$$trigger('miniapp_pagehide');
+        this.document._trigger('miniapp_pagehide');
         // compatible with original name
-        this.document.$$trigger('onHide');
+        this.document._trigger('onHide');
       }
     },
     onUnload() {
-      this.document.$$trigger('miniapp_pagehide');
-      this.document.$$trigger('beforeunload');
-      this.document.$$trigger('pageunload');
+      this.document._trigger('miniapp_pagehide');
+      this.document._trigger('beforeunload');
+      this.document._trigger('pageunload');
 
       this.document.__unmount && this.document.__unmount(); // Manually unmount component instance
-      this.document.body.$$destroy();
+      this.document.body._destroy();
 
       cache.destroy(this.pageId);
 

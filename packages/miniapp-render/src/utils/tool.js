@@ -21,38 +21,30 @@ function getId() {
 }
 
 /**
- * Throttling, which is called only once in a synchronous flow
+ * check whether attrs with extra key besides class/style/id/dataset
+ * @param {object} attrs
+ * @returns
  */
-const waitFuncSet = new Set();
-function throttle(func) {
-  return (...args) => {
-    if (waitFuncSet.has(func)) return;
-
-    waitFuncSet.add(func);
-
-    Promise.resolve().then(() => {
-      if (waitFuncSet.has(func)) {
-        waitFuncSet.delete(func);
-        func(...args);
-      }
-    }).catch(() => {
-      // ignore
-    });
-  };
+function hasExtraAttribute(attrs) {
+  const res = Object.keys(attrs).find(attr => {
+    return !/class|style|id/.test(attr);
+  });
+  return !!res;
 }
 
 /**
- * Clear throttling cache
+ * Check whether the variable is undefined
+ * @param {*} variable
+ * @returns boolean
  */
-function flushThrottleCache() {
-  waitFuncSet.forEach(waitFunc => waitFunc && waitFunc());
-  waitFuncSet.clear();
+function isUndef(variable) {
+  return variable === undefined;
 }
 
-export default {
+export {
   toDash,
   toCamel,
   getId,
-  throttle,
-  flushThrottleCache,
+  hasExtraAttribute,
+  isUndef
 };

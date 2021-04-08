@@ -70,7 +70,7 @@ function compareEventInWechat(last, now) {
 }
 
 class EventTarget {
-  constructor(...args) {
+  constructor() {
     // Supplement the instance's properties for the 'XXX' in XXX judgment
     this.ontouchstart = null;
     this.ontouchmove = null;
@@ -82,26 +82,24 @@ class EventTarget {
     this.onchange = null;
 
     // Logs the triggered miniapp events
-    this.$_miniappEvent = null;
+    this.__miniappEvent = null;
     this.__eventHandlerMap = new Map();
+    this.__hasEventBinded = false;
+    this.__hasAppearEventBinded = false;
+    this.__hasTouchEventBinded = false;
   }
 
   // Destroy instance
-  $$destroy() {
-    Object.keys(this).forEach(key => {
-      // Handles properties beginning with on
-      if (key.indexOf('on') === 0) this[key] = null;
-      // Handles private properties that are hung externally
-      if (key[0] === '_') this[key] = null;
-      if (key[0] === '$' && (key[1] !== '_' && key[1] !== '$')) this[key] = null;
-    });
-
-    this.$_miniappEvent = null;
+  _destroy() {
+    this.__miniappEvent = null;
     this.__eventHandlerMap = null;
+    this.__hasEventBinded = null;
+    this.__hasTouchEventBinded = null;
+    this.__hasAppearEventBinded = false;
   }
 
   // Trigger event capture, bubble flow
-  static $$process(target, eventName, miniprogramEvent, extra, callback) {
+  static _process(target, eventName, miniprogramEvent, extra, callback) {
     let event;
 
     if (eventName instanceof CustomEvent || eventName instanceof Event) {
@@ -130,7 +128,7 @@ class EventTarget {
         touches: miniprogramEvent.touches,
         changedTouches: miniprogramEvent.changedTouches,
         bubbles: true,
-        $$extra: extra,
+        __extra: extra,
       });
     }
 
@@ -139,32 +137,32 @@ class EventTarget {
       const currentTarget = path[i];
 
       // Determine if the bubble is over
-      if (!event.$$canBubble) break;
+      if (!event._canBubble) break;
       if (currentTarget === target) continue;
 
-      event.$$setCurrentTarget(currentTarget);
-      event.$$setEventPhase(Event.CAPTURING_PHASE);
+      event._setCurrentTarget(currentTarget);
+      event._setEventPhase(Event.CAPTURING_PHASE);
 
-      currentTarget.$$trigger(eventName, {
+      currentTarget._trigger(eventName, {
         event,
         isCapture: true,
       });
       if (callback) callback(currentTarget, event, true);
     }
 
-    if (event.$$canBubble) {
-      event.$$setCurrentTarget(target);
-      event.$$setEventPhase(Event.AT_TARGET);
+    if (event._canBubble) {
+      event._setCurrentTarget(target);
+      event._setEventPhase(Event.AT_TARGET);
 
       // Both capture and bubble phase listening events are triggered
-      target.$$trigger(eventName, {
+      target._trigger(eventName, {
         event,
         isCapture: true,
         isTarget: true
       });
       if (callback) callback(target, event, true);
 
-      target.$$trigger(eventName, {
+      target._trigger(eventName, {
         event,
         isCapture: false,
         isTarget: true
@@ -175,13 +173,13 @@ class EventTarget {
     if (event.bubbles) {
       for (const currentTarget of path) {
         // Determine if the bubble is over
-        if (!event.$$canBubble) break;
+        if (!event._canBubble) break;
         if (currentTarget === target) continue;
 
-        event.$$setCurrentTarget(currentTarget);
-        event.$$setEventPhase(Event.BUBBLING_PHASE);
+        event._setCurrentTarget(currentTarget);
+        event._setEventPhase(Event.BUBBLING_PHASE);
 
-        currentTarget.$$trigger(eventName, {
+        currentTarget._trigger(eventName, {
           event,
           isCapture: false,
         });
@@ -190,8 +188,8 @@ class EventTarget {
     }
 
     // Reset event
-    event.$$setCurrentTarget(null);
-    event.$$setEventPhase(Event.NONE);
+    event._setCurrentTarget(null);
+    event._setEventPhase(Event.NONE);
 
     return event;
   }
@@ -218,7 +216,7 @@ class EventTarget {
   }
 
   // Trigger node event
-  $$trigger(eventName, { event, args = [], isCapture, isTarget } = {}) {
+  _trigger(eventName, { event, args = [], isCapture, isTarget } = {}) {
     eventName = eventName.toLowerCase();
     const handlers = this.__getHandles(eventName, isCapture) || [];
 
@@ -232,7 +230,7 @@ class EventTarget {
     const onEventName = `on${eventName}`;
     if ((!isCapture || !isTarget) && typeof this[onEventName] === 'function') {
       // The event that triggers the onXXX binding
-      if (event && event.$$immediateStop) return;
+      if (event && event._immediateStop) return;
       try {
         this[onEventName].call(this || null, event, ...args);
       } catch (err) {
@@ -243,7 +241,7 @@ class EventTarget {
     if (handlers && handlers.length) {
       // Trigger addEventListener binded events
       handlers.forEach(handler => {
-        if (event && event.$$immediateStop) return;
+        if (event && event._immediateStop) return;
         try {
           const processedArgs = event ? [event, ...args] : [...args];
           handler.call(this || null, ...processedArgs);
@@ -256,7 +254,7 @@ class EventTarget {
 
   // Check if the event can be triggered
   __checkEvent(miniprogramEvent) {
-    const last = this.$_miniappEvent;
+    const last = this.__miniappEvent;
     const now = miniprogramEvent;
 
     let flag = false;
@@ -267,18 +265,8 @@ class EventTarget {
       flag = compareEventInWechat(last, now);
     }
 
-    if (flag) this.$_miniappEvent = now;
+    if (flag) this.__miniappEvent = now;
     return flag;
-  }
-
-  // Empty all handles to an event
-  $$clearEvent(eventName, isCapture = false) {
-    if (typeof eventName !== 'string') return;
-
-    eventName = eventName.toLowerCase();
-    const handlers = this.__getHandles(eventName, isCapture);
-
-    if (handlers && handlers.length) handlers.length = 0;
   }
 
   addEventListener(eventName, handler, options) {
@@ -291,8 +279,16 @@ class EventTarget {
 
     eventName = eventName.toLowerCase();
     const handlers = this.__getHandles(eventName, isCapture, true);
-
     handlers.push(handler);
+    if (!this.__hasEventBinded) {
+      this.__hasEventBinded = true;
+    }
+    if (!this.__hasAppearEventBinded && eventName.indexOf('appear') > -1) {
+      this.__hasAppearEventBinded = true;
+    }
+    if (!this.__hasTouchEventBinded && eventName.indexOf('touch') > -1) {
+      this.__hasTouchEventBinded = true;
+    }
   }
 
   removeEventListener(eventName, handler, isCapture = false) {
@@ -306,7 +302,7 @@ class EventTarget {
 
   dispatchEvent(evt) {
     if (evt instanceof CustomEvent) {
-      EventTarget.$$process(this, evt);
+      EventTarget._process(this, evt);
     }
 
     // preventDefault is not supported, so it always returns true
