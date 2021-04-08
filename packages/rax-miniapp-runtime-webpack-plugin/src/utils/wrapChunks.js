@@ -1,8 +1,6 @@
 const ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
 const { RawSource, ConcatSource } = require('webpack-sources');
 const { platformMap } = require('miniapp-builder-shared');
-const { readFileSync } = require('fs-extra');
-const { resolve } = require('path');
 const adjustCSS = require('../utils/adjustCSS');
 const { UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
 
@@ -22,7 +20,15 @@ module.exports = function(compilation, chunks, target) {
         // Page js
         const headerContent =
 `${FunctionPolyfill}
-module.exports = function(window, document) {const HTMLElement = window["HTMLElement"];`;
+module.exports = function(window, document) {
+  const HTMLElement = window["HTMLElement"];
+  const documentModifyCallbacks = getApp().__documentModifyCallbacks;
+  if (Array.isArray(documentModifyCallbacks)) {
+    documentModifyCallbacks.push((val) => {
+      document = val;
+    });
+  }
+`;
 
         const footerContent = '}';
 

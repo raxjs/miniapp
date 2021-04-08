@@ -102,6 +102,14 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
         });
       }
     },
+    // document modify callback for override context's document
+    __documentModifyCallbacks: [],
+    _dispatchDocumentModify(val) {
+      // dispatch document modify when page toggle
+      this.__documentModifyCallbacks.forEach(cb => {
+        cb(val);
+      });
+    },
     ...rest
   };
   if (isMiniApp) {

@@ -4,6 +4,12 @@
 
 ### Changed
 
+- Add modify `document` callback front of wrapper chunk
+
+## [4.2.1] - 2021-03-31
+
+### Changed
+
 - Not require `webpack-runtime.js` in page js file
 
 ## [4.2.0] - 2021-03-30
