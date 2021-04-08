@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.3.0] - 2021-04-08
+
+### Added
+
+- Add static/pure/no-touch/no-appear/no-appear-touch components template
+
+### Fixed
+
+- Miss props in wechat picker template
+- Miss native component npm in subpackages mode
+
 ## [4.2.1] - 2021-03-31
 
 ### Changed
