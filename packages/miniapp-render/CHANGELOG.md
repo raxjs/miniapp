@@ -1,10 +1,17 @@
 # Changelog
 
-## [2.2.3] - 2021-03-31
+## [2.3.0] - 2021-04-08
+
+### Added
+
+- Grade view/text/image/h-element into static/pure/no-touch/no-appear/no-appear-touch level
 
 ### Changed
 
-- add dispatch document modify callback
+- Add dispatch document modify callback
+- Remove some unnecessary element destory logic in page unload lifecycle
+- Remove some useless code
+
 
 ## [2.2.3] - 2021-03-31
 

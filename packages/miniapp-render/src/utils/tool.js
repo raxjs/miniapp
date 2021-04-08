@@ -21,18 +21,6 @@ function getId() {
 }
 
 /**
- * check whether attrs with extra key besides class/style/id/dataset
- * @param {object} attrs
- * @returns
- */
-function hasExtraAttribute(attrs) {
-  const res = Object.keys(attrs).find(attr => {
-    return !/class|style|id/.test(attr);
-  });
-  return !!res;
-}
-
-/**
  * Check whether the variable is undefined
  * @param {*} variable
  * @returns boolean
@@ -45,6 +33,5 @@ export {
   toDash,
   toCamel,
   getId,
-  hasExtraAttribute,
   isUndef
 };
