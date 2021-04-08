@@ -27,7 +27,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
         this.__pageId = window.__pageId = currentPageId;
 
         init(window, currentDocument);
-        window.$$trigger('launch', {
+        window._trigger('launch', {
           event: {
             options,
             context: this
@@ -36,7 +36,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       } else {
         this.init = (document) => {
           init(window, document);
-          window.$$trigger('launch', {
+          window._trigger('launch', {
             event: {
               options,
               context: this
@@ -51,7 +51,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
 
       this.__showOptions = options;
       if (this.window && this.launched) {
-        this.window.$$trigger('appshow', {
+        this.window._trigger('appshow', {
           event: {
             options,
             context: this
@@ -63,7 +63,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       onHide && onHide.call(this);
 
       if (this.window) {
-        this.window.$$trigger('apphide', {
+        this.window._trigger('apphide', {
           event: {
             context: this
           }
@@ -78,11 +78,11 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
         const pages = getCurrentPages() || [];
         const currentPage = pages[pages.length - 1];
         if (currentPage && currentPage.window) {
-          currentPage.window.$$trigger('error', {
+          currentPage.window._trigger('error', {
             event: err
           });
         }
-        this.window.$$trigger('apperror', {
+        this.window._trigger('apperror', {
           event: {
             context: this,
             error: err
@@ -94,7 +94,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
       onPageNotFound && onPageNotFound.call(this, options);
 
       if (this.window) {
-        this.window.$$trigger('pagenotfound', {
+        this.window._trigger('pagenotfound', {
           event: {
             options,
             context: this
@@ -102,13 +102,21 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
         });
       }
     },
+    // document modify callback for override context's document
+    __documentModifyCallbacks: [],
+    _dispatchDocumentModify(val) {
+      // dispatch document modify when page toggle
+      this.__documentModifyCallbacks.forEach(cb => {
+        cb(val);
+      });
+    },
     ...rest
   };
   if (isMiniApp) {
     appConfig.onShareAppMessage = function(options) {
       if (this.window) {
         const shareInfo = {};
-        this.window.$$trigger('appshare', {
+        this.window._trigger('appshare', {
           event: { options, shareInfo }
         });
         return shareInfo.content;

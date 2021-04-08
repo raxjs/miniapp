@@ -1,3 +1,5 @@
+import { isUndef } from '../utils/tool';
+
 const input = {
   name: 'input',
   simpleEvents: [{
@@ -34,7 +36,7 @@ const input = {
     middleware(evt, domNode, nodeId) {
       domNode._setAttributeWithOutUpdate('focus-state', false);
 
-      if (domNode.__inputOldValue !== undefined && domNode.value !== domNode.__inputOldValue) {
+      if (!isUndef(domNode.__inputOldValue) && domNode.value !== domNode.__inputOldValue) {
         domNode.__inputOldValue = undefined;
         this.callEvent('change', evt, null, nodeId);
       }

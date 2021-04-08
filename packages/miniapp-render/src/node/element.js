@@ -1,12 +1,14 @@
 /* global CONTAINER */
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isMiniApp } from 'universal-env';
 import Node from './node';
 import ClassList from './class-list';
 import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
-import tool from '../utils/tool';
+import { toDash } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, NO_APPEAR_COMPONENTS, NO_TOUCH_COMPONENTS } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -18,13 +20,10 @@ class Element extends Node {
     this.__tagName = tagName;
     this.__isBuiltinComponent = BUILTIN_COMPONENT_LIST.has(this.__tagName);
     this.__tmplName = this.__isBuiltinComponent ? this.__tagName : 'h-element';
-    if (attrs.catchTouchMove && (this.__tmplName === 'view' || this.__tmplName === 'h-element')) {
-      // Only view and h-element(rax-view) can add catchTouchMove
-      this.__tmplName = 'catch-' + this.__tmplName;
-    }
     this.childNodes = [];
     this.__nodeType = nodeType;
     this.style = new Style(this);
+    this.__hasExtraAttribute = false; // Indicates that the element has extra attributes besides id/style/class
     this.__attrs = new Attribute(this);
     cache.setNode(this.__nodeId, this);
     this.dataset = {};
@@ -35,16 +34,15 @@ class Element extends Node {
     }
   }
 
-  // Override the $$destroy method of the parent class
-  $$destroy() {
-    this.childNodes.forEach(child => child.$$destroy());
+  // Override the _destroy method of the parent class
+  _destroy() {
+    this.childNodes.forEach(child => child._destroy());
     cache.setNode(this.__nodeId, null);
     this.ownerDocument.__idMap.set(this.id, null);
-    super.$$destroy();
+    super._destroy();
     this.__tagName = '';
     this.childNodes.length = 0;
     this.__nodeType = Node.ELEMENT_NODE;
-    this.__attrs = null;
   }
 
   // Init attribute
@@ -80,11 +78,46 @@ class Element extends Node {
     }
   }
 
+  _processNodeType() {
+    let nodeTypePrefix = '';
+    /*
+      Explaination:
+      Static:  element in STATIC_OR_PURE_COMPONENTS && without any event binded
+      Pure: element in STATIC_OR_PURE_COMPONENTS && without any event or prop binded
+      NoTouch: element in NO_TOUCH_COMPONENTS && without any touch event binded
+      NoAppearTouch: element in NO_TOUCH_COMPONENTS and  NO_APPEAR_COMPONENTS && without any touch or appear event binded
+      NoAppear: element in NO_APPEAR_COMPONENTS && without any appear event binded
+      Catch: element in CATCH_COMPONENTS && with catchTouchMove
+    */
+
+    const hasEventBinded = this.__hasEventBinded;
+    const hasAppearEventBinded = this.__hasAppearEventBinded;
+    const hasTouchEventBinded = this.__hasTouchEventBinded;
+    const hasCatchTouchMoveFlag = this.__attrs.get('catchTouchMove');
+    const hasExtraAttribute = this.__hasExtraAttribute;
+
+    if (!hasEventBinded) {
+      STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
+      PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
+    } else if (!hasTouchEventBinded || isMiniApp && !hasAppearEventBinded ) {
+      const matchNoAppearFlag = isMiniApp && !hasAppearEventBinded && NO_APPEAR_COMPONENTS.has(this.__tmplName);
+      const matchNoTouchFlag = !hasTouchEventBinded && NO_TOUCH_COMPONENTS.has(this.__tmplName);
+      nodeTypePrefix = `no-${matchNoAppearFlag ? 'appear-' : ''}${matchNoTouchFlag ? 'touch-' : ''}`;
+    }
+
+    if (hasCatchTouchMoveFlag) {
+      CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
+    }
+    return `${nodeTypePrefix}${this.__tmplName}`;
+  }
+
   get _renderInfo() {
+    const nodeType = this._processNodeType();
+
     return {
+      nodeType,
       nodeId: this.__nodeId,
       pageId: this.__pageId,
-      nodeType: this.__tmplName,
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
@@ -212,7 +245,7 @@ class Element extends Node {
   cloneNode(deep) {
     const dataset = {};
     Object.keys(this.dataset).forEach(name => {
-      dataset[`data-${tool.toDash(name)}`] = this.dataset[name];
+      dataset[`data-${toDash(name)}`] = this.dataset[name];
     });
     const newNode = this.ownerDocument._createElement({
       tagName: this.__tagName,

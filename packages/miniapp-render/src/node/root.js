@@ -13,8 +13,8 @@ class RootElement extends Element {
     this.__renderCallbacks = [];
   }
 
-  $$destroy() {
-    super.$$destroy();
+  _destroy() {
+    super._destroy();
     this.allowRender = null;
     this.renderStacks = null;
   }

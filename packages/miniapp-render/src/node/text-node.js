@@ -1,4 +1,3 @@
-import tool from '../utils/tool';
 import Node from '../node/node';
 
 class TextNode extends Node {
@@ -7,13 +6,13 @@ class TextNode extends Node {
 
     super(options);
 
-    this.$_content = options.content || '';
+    this.__content = options.content || '';
   }
 
-  $$destroy() {
-    super.$$destroy();
+  _destroy() {
+    super._destroy();
 
-    this.$_content = '';
+    this.__content = '';
   }
 
   _triggerUpdate(payload) {
@@ -22,8 +21,8 @@ class TextNode extends Node {
 
   get _renderInfo() {
     return {
-      nodeType: `h-${this.$_type}`,
-      content: this.$_content,
+      nodeType: `h-${this.__type}`,
+      content: this.__content,
     };
   }
 
@@ -44,13 +43,13 @@ class TextNode extends Node {
   }
 
   get textContent() {
-    return this.$_content;
+    return this.__content;
   }
 
   set textContent(value) {
     value += '';
 
-    this.$_content = value;
+    this.__content = value;
     if (this._isRendered()) {
       const payload = {
         path: `${this._path}.content`,
@@ -69,7 +68,7 @@ class TextNode extends Node {
   }
 
   cloneNode() {
-    return this.ownerDocument.createTextNode(this.$_content);
+    return this.ownerDocument.createTextNode(this.__content);
   }
 }
 
