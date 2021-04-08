@@ -105,7 +105,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
     __documentModifyCallbacks: [],
     _dispatchDocumentModify(val) {
       this.__documentModifyCallbacks.forEach(cb => {
-        cb(val)
+        cb(val);
       });
     },
     ...rest
