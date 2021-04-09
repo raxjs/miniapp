@@ -8,7 +8,7 @@ import Attribute from './attribute';
 import cache from '../utils/cache';
 import { toDash } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, TOUCH_COMPONENTS } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -95,11 +95,12 @@ class Element extends Node {
     const hasTouchEventBinded = this.__hasTouchEventBinded;
     const hasCatchTouchMoveFlag = this.__attrs.get('catchTouchMove');
     const hasExtraAttribute = this.__hasExtraAttribute;
-
+    const isPureComponent = PURE_COMPONENTS.has(this.__tmplName);
     if (!hasEventBinded) {
       STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
-      PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
-    } else if (TOUCH_COMPONENTS.has(this.__tmplName)) { // TOUCH_COMPONENTS contain APPEAR_COMPONENTS
+      isPureComponent && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
+    } else if (isPureComponent) {
+      // PURE_COMPONENTS are equal to TOUCH_COMPONENTS
       const matchNoAppearTmplFlag = isMiniApp && !hasAppearEventBinded && this.__tmplName === APPEAR_COMPONENT;
       if (matchNoAppearTmplFlag || !hasTouchEventBinded) {
         /* Example:
