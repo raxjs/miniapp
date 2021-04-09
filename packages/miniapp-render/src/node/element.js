@@ -99,7 +99,7 @@ class Element extends Node {
     if (!hasEventBinded) {
       STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
       PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
-    } else if (TOUCH_COMPONENTS.has(this.__tmplName)){ // TOUCH_COMPONENTS contain APPEAR_COMPONENTS
+    } else if (TOUCH_COMPONENTS.has(this.__tmplName)) { // TOUCH_COMPONENTS contain APPEAR_COMPONENTS
       const matchNoAppearTmplFlag = isMiniApp && !hasAppearEventBinded && this.__tmplName === APPEAR_COMPONENT;
       if (matchNoAppearTmplFlag || !hasTouchEventBinded) {
         /* Example:
