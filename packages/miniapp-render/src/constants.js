@@ -31,5 +31,5 @@ export const CATCH_COMPONENTS = new Set(['view', 'h-element']); // With catchTou
 
 export const APPEAR_COMPONENT = 'view'; // Without appear event components
 
-export const TOUCH_COMPONENTS = new Set(['view', 'text', 'h-element']); // Without touch event components
+export const TOUCH_COMPONENTS = new Set(['view', 'h-element']); // Without touch event components
 

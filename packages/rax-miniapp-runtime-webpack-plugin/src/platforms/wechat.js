@@ -228,8 +228,7 @@ const Text = {
     'number-of-lines': ''
   },
   basicEvents: {
-    ...tapEvents,
-    ...touchEvents
+    ...tapEvents
   }
 };
 
