@@ -29,7 +29,7 @@ export const PURE_COMPONENTS = new Set(['view', 'h-element']); // With no events
 
 export const CATCH_COMPONENTS = new Set(['view', 'h-element']); // With catchTouchMove events
 
-export const NO_APPEAR_COMPONENTS = new Set(['view']); // Without appear event components
+export const APPEAR_COMPONENT = 'view'; // Without appear event components
 
-export const NO_TOUCH_COMPONENTS = new Set(['view', 'text', 'h-element']); // Without touch event components
+export const TOUCH_COMPONENTS = new Set(['view', 'text', 'h-element']); // Without touch event components
 

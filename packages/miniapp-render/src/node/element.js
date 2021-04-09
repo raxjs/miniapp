@@ -8,7 +8,7 @@ import Attribute from './attribute';
 import cache from '../utils/cache';
 import { toDash } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, NO_APPEAR_COMPONENTS, NO_TOUCH_COMPONENTS } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, TOUCH_COMPONENTS } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -85,8 +85,8 @@ class Element extends Node {
       Static:  element in STATIC_OR_PURE_COMPONENTS && without any event binded
       Pure: element in STATIC_OR_PURE_COMPONENTS && without any event or prop binded
       NoTouch: element in NO_TOUCH_COMPONENTS && without any touch event binded
-      NoAppearTouch: element in NO_TOUCH_COMPONENTS and  NO_APPEAR_COMPONENTS && without any touch or appear event binded
-      NoAppear: element in NO_APPEAR_COMPONENTS && without any appear event binded
+      NoAppearTouch: element in TOUCH_COMPONENTS and  APPEAR_COMPONENTS && without any touch or appear event binded
+      NoAppear: element in APPEAR_COMPONENTS && without any appear event binded
       Catch: element in CATCH_COMPONENTS && with catchTouchMove
     */
 
@@ -99,10 +99,16 @@ class Element extends Node {
     if (!hasEventBinded) {
       STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
       PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
-    } else if (!hasTouchEventBinded || isMiniApp && !hasAppearEventBinded ) {
-      const matchNoAppearFlag = isMiniApp && !hasAppearEventBinded && NO_APPEAR_COMPONENTS.has(this.__tmplName);
-      const matchNoTouchFlag = !hasTouchEventBinded && NO_TOUCH_COMPONENTS.has(this.__tmplName);
-      nodeTypePrefix = `no-${matchNoAppearFlag ? 'appear-' : ''}${matchNoTouchFlag ? 'touch-' : ''}`;
+    } else if (TOUCH_COMPONENTS.has(this.__tmplName)){ // TOUCH_COMPONENTS contain APPEAR_COMPONENTS
+      const matchNoAppearTmplFlag = isMiniApp && !hasAppearEventBinded && this.__tmplName === APPEAR_COMPONENT;
+      if (matchNoAppearTmplFlag || !hasTouchEventBinded) {
+        /* Example:
+        1. no-appear-touch-view
+        2. no-appear-view
+        3. no-touch-view
+        */
+        nodeTypePrefix = `no-${matchNoAppearTmplFlag ? 'appear-' : ''}${!hasTouchEventBinded ? 'touch-' : ''}`;
+      }
     }
 
     if (hasCatchTouchMoveFlag) {
