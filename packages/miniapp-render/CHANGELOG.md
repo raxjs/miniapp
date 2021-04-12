@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.3.1] - 2021-04-12
+
+### Fixed
+
+- `_processNodeType` error in normal components
+
+### Changed
+
+- Remove text from touch components
+
 ## [2.3.0] - 2021-04-08
 
 ### Added

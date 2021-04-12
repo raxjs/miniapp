@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.3.1] - 2021-04-12
+
+### Fixed
+
+- Remove touch events in text component
+
 ## [4.3.0] - 2021-04-08
 
 ### Added
