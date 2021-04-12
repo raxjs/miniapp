@@ -12,22 +12,22 @@ class Image extends Element {
 
     super(options);
 
-    this.$_naturalWidth = 0;
-    this.$_naturalHeight = 0;
+    this.__naturalWidth = 0;
+    this.__naturalHeight = 0;
 
-    this.$_initRect();
+    this._initRect();
   }
 
   // Override the parent class's destroy instance method
-  $$destroy() {
-    super.$$destroy();
+  _destroy() {
+    super._destroy();
 
-    this.$_naturalWidth = null;
-    this.$_naturalHeight = null;
+    this.__naturalWidth = null;
+    this.__naturalHeight = null;
   }
 
   // Init length
-  $_initRect() {
+  _initRect() {
     const width = parseInt(this.__attrs.get('width'), 10);
     const height = parseInt(this.__attrs.get('height'), 10);
 
@@ -36,11 +36,11 @@ class Image extends Element {
   }
 
   // Reset width & height
-  $_resetRect(rect = {}) {
-    this.$_naturalWidth = rect.width || 0;
-    this.$_naturalHeight = rect.height || 0;
+  _resetRect(rect = {}) {
+    this.__naturalWidth = rect.width || 0;
+    this.__naturalHeight = rect.height || 0;
 
-    this.$_initRect();
+    this._initRect();
   }
 
   get _renderInfo() {
@@ -69,10 +69,10 @@ class Image extends Element {
           src: this.src,
           success: res => {
             // Load successfully, adjust the width and height of the picture
-            this.$_resetRect(res);
+            this._resetRect(res);
 
             // Load event
-            this.$$trigger('load', {
+            this._trigger('load', {
               event: new Event({
                 name: 'load',
                 target: this,
@@ -83,10 +83,10 @@ class Image extends Element {
           },
           fail: () => {
             // Load failed, adjust the width and height of the image
-            this.$_resetRect({width: 0, height: 0});
+            this._resetRect({width: 0, height: 0});
 
             // Trigger error event
-            this.$$trigger('error', {
+            this._trigger('error', {
               event: new Event({
                 name: 'error',
                 target: this,
@@ -108,7 +108,7 @@ class Image extends Element {
     if (typeof value !== 'number' || !isFinite(value) || value < 0) return;
 
     this.__attrs.set('width', value);
-    this.$_initRect();
+    this._initRect();
   }
 
   get height() {
@@ -119,15 +119,15 @@ class Image extends Element {
     if (typeof value !== 'number' || !isFinite(value) || value < 0) return;
 
     this.__attrs.set('height', value);
-    this.$_initRect();
+    this._initRect();
   }
 
   get naturalWidth() {
-    return this.$_naturalWidth;
+    return this.__naturalWidth;
   }
 
   get naturalHeight() {
-    return this.$_naturalHeight;
+    return this.__naturalHeight;
   }
 }
 

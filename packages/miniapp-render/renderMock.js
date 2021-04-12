@@ -1,4 +1,4 @@
-import { createWindow } from './src/window';
+import createWindow from './src/window';
 import createDocument from './src/document';
 import cache from './src/utils/cache';
 
@@ -125,7 +125,7 @@ export default {
     const pageId = '/pages/home/index-1';
     const window = createWindow();
     window.__pageId = pageId;
-    cache.setWindow('main', window);
+    cache.setWindow('', window);
     const document = createDocument(pageId);
     generateDOM(document);
     // document.body.innerHTML = html;

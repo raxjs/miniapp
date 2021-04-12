@@ -2,10 +2,10 @@ import Event from '../../event/event';
 
 
 export default function(eventName, evt) {
-  const domNode = this.getDomNodeFromEvt(eventName, evt);
+  const domNode = this.getDomNodeFromEvt(evt);
   if (!domNode) return;
 
-  domNode.$$trigger(eventName, {
+  domNode._trigger(eventName, {
     event: new Event({
       timeStamp: evt && evt.timeStamp,
       touches: evt && evt.touches,
@@ -14,7 +14,7 @@ export default function(eventName, evt) {
       target: domNode,
       eventPhase: Event.AT_TARGET,
       detail: evt && evt.detail,
-      $$extra: evt && evt.extra,
+      __extra: evt && evt.extra,
     }),
     currentTarget: domNode,
   });

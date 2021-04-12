@@ -1,3 +1,5 @@
+import { isUndef } from '../utils/tool';
+
 export default class ClassList extends Set {
   static _create(className, element) {
     const instance = new Set();
@@ -49,7 +51,7 @@ export default class ClassList extends Set {
   }
 
   toggle(token, force) {
-    if (force !== undefined) {
+    if (!isUndef(force)) {
       force === true ? this.add(token) : this.remove(token);
       return force;
     }

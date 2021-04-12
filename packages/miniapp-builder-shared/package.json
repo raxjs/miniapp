@@ -1,6 +1,6 @@
 {
   "name": "miniapp-builder-shared",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "miniapp project builder shared lib",
   "author": "Rax Team",
   "homepage": "https://github.com/raxjs/miniapp#readme",
@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "enhanced-resolve": "^4.3.0",
-    "fs-extra": "^8.0.1"
+    "execa": "^5.0.0",
+    "fs-extra": "^8.0.1",
+    "ice-npm-utils": "^2.1.0"
   }
 }

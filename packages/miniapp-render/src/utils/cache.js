@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isWeChatMiniProgram } from 'universal-env';
+
 const pageMap = {};
 const routeMap = new Map();
 const nodeIdMap = new Map();
@@ -5,6 +8,7 @@ let config = {};
 const windowMap = new Map();
 
 const elementsCache = [];
+const pagesCache = [];
 const elementMethodsCache = new Map();
 
 // Init
@@ -25,18 +29,18 @@ function getDocument(pageId) {
 }
 
 // Set window
-function setWindow(packageName = 'main', value) {
+function setWindow(packageName = '', value) {
   windowMap.set(packageName, value);
 }
 
 /**
  * Get window
  */
-function getWindow(packageName = 'main') {
+function getWindow(packageName = '') {
   return windowMap.get(packageName);
 }
 
-function hasWindow(packageName = 'main') {
+function hasWindow(packageName = '') {
   return windowMap.has(packageName);
 }
 
@@ -87,15 +91,22 @@ function setElementInstance(instance) {
   }
 }
 
-function getElementInstance() {
-  return elementsCache;
+function setPageInstance(instance) {
+  pagesCache.push(instance);
 }
 
-function setElementMethods(methodName, methodFn) {
+function setCustomComponentMethods(methodName, methodFn) {
   if (elementsCache.length > 0) {
     elementsCache.forEach(element => {
       element[methodName] = methodFn;
     });
+  }
+  if (isWeChatMiniProgram) {
+    if (pagesCache.length > 0) {
+      pagesCache.forEach(page => {
+        page[methodName] = methodFn;
+      });
+    }
   }
   elementMethodsCache.set(methodName, methodFn);
 }
@@ -114,6 +125,6 @@ export default {
   getConfig,
   getRouteId,
   setElementInstance,
-  getElementInstance,
-  setElementMethods
+  setCustomComponentMethods,
+  setPageInstance
 };

@@ -2,19 +2,19 @@ const canvas = {
   name: 'canvas',
   singleEvents: [{
     name: 'onCanvasTouchStart',
-    eventName: 'canvastouchstart'
+    eventName: 'touchstart'
   },
   {
     name: 'onCanvasTouchMove',
-    eventName: 'canvastouchmove'
+    eventName: 'touchmove'
   },
   {
     name: 'onCanvasTouchEnd',
-    eventName: 'canvastouchend'
+    eventName: 'touchend'
   },
   {
     name: 'onCanvasTouchCancel',
-    eventName: 'canvastouchcancel'
+    eventName: 'touchcancel'
   },
   {
     name: 'onCanvasLongTap',

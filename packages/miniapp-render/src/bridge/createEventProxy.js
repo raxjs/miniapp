@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp } from 'universal-env';
+import { isWeChatMiniProgram } from 'universal-env';
 import getDomNodeFromEvt from './events/getDomNodeFromEvt';
 import baseEvents from './events/baseEvents';
 import { handlesMap } from '../builtInComponents';
@@ -8,15 +8,16 @@ import callSimpleEvent from './events/callSimpleEvent';
 import callSingleEvent from './events/callSingleEvent';
 import cache from '../utils/cache';
 
-function getPageId(internal, pageId) {
-  if (pageId) return pageId;
-  let props;
-  if (!isMiniApp) {
-    props = internal.properties;
-  } else {
-    props = internal.props;
+/**
+ * Add event.currentTarget for canvas event
+ * @param {Object} evt
+ */
+function adaptCanvasEvent(evt) {
+  // currentTarget is missed in wechat canvas event
+  if (!evt.currentTarget) {
+    evt.currentTarget = { dataset: {}};
+    evt.currentTarget.dataset.privateNodeId = evt.target.dataset.privateNodeId;
   }
-  return props && props.r.pageId;
 }
 
 export default function() {
@@ -32,7 +33,7 @@ export default function() {
   // Add reactive event define which will bubble
   baseEvents.forEach(({ name, extra = null, eventName }) => {
     config[name] = function(evt) {
-      const domNode = this.getDomNodeFromEvt(eventName, evt);
+      const domNode = this.getDomNodeFromEvt(evt);
       const document = domNode.ownerDocument;
       if (document && document.__checkEvent(evt)) {
         this.callEvent(eventName, evt, extra, evt.currentTarget.dataset.privateNodeId); // Default Left button
@@ -52,6 +53,9 @@ export default function() {
   // Add reactive event define which only trigger once
   handlesMap.singleEvents.forEach(({ name, eventName }) => {
     config[name] = function(evt) {
+      if (isWeChatMiniProgram) {
+        adaptCanvasEvent(evt);
+      }
       this.callSingleEvent(eventName, evt);
     };
   });
@@ -59,7 +63,7 @@ export default function() {
   // Add reactive event define which only trigger once and need middleware
   handlesMap.functionalSingleEvents.forEach(({ name, eventName, middleware }) => {
     config[name] = function(evt) {
-      const domNode = this.getDomNodeFromEvt(eventName, evt);
+      const domNode = this.getDomNodeFromEvt(evt);
       if (!domNode) return;
       middleware.call(this, evt, domNode);
       this.callSingleEvent(eventName, evt);
@@ -69,7 +73,7 @@ export default function() {
   // Add reactive event define which complex
   handlesMap.complexEvents.forEach(({ name, eventName, middleware }) => {
     config[name] = function(evt) {
-      const domNode = this.getDomNodeFromEvt(eventName, evt);
+      const domNode = this.getDomNodeFromEvt(evt);
       if (!domNode) return;
       middleware.call(this, evt, domNode, evt.currentTarget.dataset.privateNodeId);
     };
