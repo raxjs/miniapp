@@ -15,6 +15,7 @@ const touchEvents = {
 
 const View = {
   props: {
+    'disable-scroll': 'false',
     'hover-class': '',
     'hover-start-time': '',
     'hover-stay-time': '',
@@ -40,9 +41,37 @@ const View = {
 
 const CatchView = Object.assign({}, View);
 
-const HElement = {
+const StaticView = {
   props: {
+    'disable-scroll': 'false',
+    'hover-class': '',
+    'hover-start-time': '',
+    'hover-stay-time': '',
+    hidden: 'false',
+    'hover-stop-propagation': 'false',
+    role: '',
     animation: 'null',
+  },
+};
+
+const PureView = {};
+
+const NoAppearView = {
+  props: {
+    'disable-scroll': 'false',
+    'hover-class': '',
+    'hover-start-time': '',
+    'hover-stay-time': '',
+    hidden: 'false',
+    'hover-stop-propagation': 'false',
+    role: '',
+    animation: 'null',
+  },
+  events: {
+    TransitionEnd: '',
+    AnimationIteration: '',
+    AnimationStart: '',
+    AnimationEnd: '',
   },
   basicEvents: {
     ...tapEvents,
@@ -50,7 +79,73 @@ const HElement = {
   }
 };
 
+const NoTouchView = {
+  props: {
+    'disable-scroll': 'false',
+    'hover-class': '',
+    'hover-start-time': '',
+    'hover-stay-time': '',
+    hidden: 'false',
+    'hover-stop-propagation': 'false',
+    role: '',
+    animation: 'null',
+  },
+  events: {
+    TransitionEnd: '',
+    AnimationIteration: '',
+    AnimationStart: '',
+    AnimationEnd: '',
+    Appear: '',
+    Disappear: '',
+    FirstAppear: '',
+  },
+  basicEvents: {
+    ...tapEvents
+  }
+};
+
+const NoAppearTouchView = {
+  props: {
+    'disable-scroll': 'false',
+    'hover-class': '',
+    'hover-start-time': '',
+    'hover-stay-time': '',
+    hidden: 'false',
+    'hover-stop-propagation': 'false',
+    role: '',
+    animation: 'null',
+  },
+  events: {
+    TransitionEnd: '',
+    AnimationIteration: '',
+    AnimationStart: '',
+    AnimationEnd: '',
+  },
+  basicEvents: {
+    ...tapEvents
+  }
+};
+
+
+const HElement = {
+  props: {},
+  basicEvents: {
+    ...tapEvents,
+    ...touchEvents
+  }
+};
+
+const NoTouchHElement = {
+  props: {},
+  basicEvents: {
+    ...tapEvents
+  }
+};
+
+
 const CatchHElement = Object.assign({}, HElement);
+
+const PureHElement = {};
 
 const HComment = {};
 
@@ -178,6 +273,15 @@ const Text = {
   }
 };
 
+const StaticText = {
+  props: {
+    selectable: 'false',
+    space: '',
+    decode: 'false',
+    'number-of-lines': ''
+  }
+};
+
 const Icon = {
   props: {
     type: '',
@@ -223,7 +327,12 @@ const Button = {
     'form-type': '',
     'open-type': '',
     scope: '',
-    'public-id': ''
+    'public-id': '',
+    'data-params': '' // For share button
+  },
+  events: {
+    GetAuthorize: '',
+    Error: '',
   },
   basicEvents: {
     ...tapEvents
@@ -431,6 +540,15 @@ const Image = {
   }
 };
 
+const StaticImage = {
+  props: {
+    src: '',
+    mode: addSingleQuote('scaleToFill'),
+    'lazy-load': 'false',
+    'default-source': '',
+  }
+};
+
 const Video = {
   props: {
     src: '',
@@ -592,12 +710,28 @@ const LivePusher = {
     Error: '',
     NetStatus: ''
   }
+};
 
+const ContactButton = {
+  props: {
+    'tnt-inst-id': '',
+    scene: '',
+    size: '25',
+    color: addSingleQuote('#00A3FF'),
+    icon: '',
+    'alipay-card-no': '',
+    'ext-info': ''
+  }
 };
 
 exports.internalComponents = {
   View,
   CatchView,
+  StaticView,
+  PureView,
+  NoAppearView,
+  NoTouchView,
+  NoAppearTouchView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -606,6 +740,7 @@ exports.internalComponents = {
   MovableView,
   MovableArea,
   Text,
+  StaticText,
   Icon,
   Progress,
   RichText,
@@ -625,6 +760,7 @@ exports.internalComponents = {
   Picker,
   Navigator,
   Image,
+  StaticImage,
   Video,
   Lottie,
   Canvas,
@@ -633,86 +769,101 @@ exports.internalComponents = {
   OpenAvatar,
   LivePlayer,
   LivePusher,
+  ContactButton,
   HElement,
+  NoTouchHElement,
   CatchHElement,
+  PureHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
-  ['catch-view', 'view'],
-  ['catch-h-element', 'view'],
-  ['h-element', 'view'],
-  ['h-comment', 'block']
+  ['CatchView', 'View'],
+  ['StaticView', 'View'],
+  ['PureView', 'View'],
+  ['NoAppearView', 'View'],
+  ['NoTouchView', 'View'],
+  ['NoAppearTouchView', 'View'],
+  ['CatchHElement', 'View'],
+  ['PureHElement', 'View'],
+  ['NoTouchHElement', 'View'],
+  ['HElement', 'View'],
+  ['StaticText', 'Text'],
+  ['StaticImage', 'Image'],
+  ['HComment', 'Block']
 ]);
 
 exports.controlledComponents = new Set([
-  'input',
-  'checkbox',
-  'picker',
-  'picker-view',
-  'radio',
-  'slider',
-  'switch',
-  'textarea'
+  'Input',
+  'Checkbox',
+  'Picker',
+  'PickerView',
+  'Radio',
+  'Slider',
+  'Switch',
+  'Textarea'
 ]);
 
 exports.focusComponents = new Set([
-  'input',
-  'textarea'
+  'Input',
+  'Textarea'
 ]);
 
 exports.voidElements = new Set([
-  'h-comment'
+  'HComment'
 ]);
 
 exports.voidChildrenElements = new Set([
-  'progress',
-  'icon',
-  'rich-text',
-  'input',
-  'textarea',
-  'slider',
-  'switch',
-  'live-pusher',
-  'h-comment',
-  'open-avatar',
-  'web-view',
-  'image',
-  'video',
-  'lottie',
-  'canvas',
-  'live-player',
-  'live-pusher'
+  'Progress',
+  'Icon',
+  'RichText',
+  'Input',
+  'Textarea',
+  'Checkbox',
+  'Radio',
+  'Slider',
+  'Switch',
+  'LivePusher',
+  'HComment',
+  'Image',
+  'Video',
+  'Lottie',
+  'Canvas',
+  'WebView',
+  'LivePlayer',
+  'LivePusher',
+  'ContactButton',
+  'OpenAvatar'
 ]);
 
+
 exports.nestElements = new Map([
-  ['view', -1],
-  ['cover-view', -1],
-  // ['block', -1],
-  ['text', 6],
-  ['label', 6],
-  ['form', 4],
-  ['scroll-view', 4],
-  ['swiper', 4],
-  ['swiper-item', 4]
+  ['View', -1],
+  ['CoverView', -1],
+  ['Text', 6],
+  ['Label', 6],
+  ['Form', 4],
+  ['ScrollView', 4],
+  ['Swiper', 4],
+  ['SwiperItem', 4]
 ]);
 
 exports.shouldNotGenerateTemplateComponents = new Set([
-  'swiper-item',
-  'picker-view-column',
-  'movable-view'
+  'SwiperItem',
+  'PickerViewColumn',
+  'MovableView'
 ]);
 
 exports.needModifyChildrenComponents = {
-  swiper: children => `
+  Swiper: children => `
     <swiper-item a:for="{{r.children}}" a:key="nodeId">
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </swiper-item>`,
-  'movable-area': children => `
+  MovableArea: children => `
     <movable-view a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],false)}}" onChange="onMovableViewChange" onChangeEnd="onMovableViewChangeEnd" onScale="onMovableViewScale" onTouchStart="onTouchStart" onTouchMove="onTouchMove" onTouchEnd="onTouchEnd" onTouchCancel="onTouchCancel" onLongTap="onLongTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
-  'picker-view': children => `
+  PickerView: children => `
     <picker-view-column a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
       <view a:for="{{item.children}}" a:for-item="pickerColumnItem">
         <block a:if="{{pickerColumnItem.nodeId}}">
@@ -723,7 +874,7 @@ exports.needModifyChildrenComponents = {
         </block>
       </view>
     </picker-view-column>`,
-  picker: children => `
+  Picker: children => `
     <view>
       ${children}
     </view>`

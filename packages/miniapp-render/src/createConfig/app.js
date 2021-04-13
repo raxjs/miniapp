@@ -4,11 +4,17 @@ import createWindow from '../window';
 import createDocument from '../document';
 import cache from '../utils/cache';
 
-export default function(init, config, packageName = '') {
-  cache.setConfig(config);
+export default function(init, config, packageName = '', nativeAppConfig = {}) {
+  cache.setConfig({
+    ...config,
+    mainPackageName: packageName,
+  });
+  const { onLaunch, onShow, onHide, onError, onPageNotFound, ...rest } = nativeAppConfig;
   const appConfig = {
     launched: isMiniApp,
     onLaunch(options) {
+      onLaunch && onLaunch.call(this, options);
+
       const window = createWindow();
       cache.setWindow(packageName, window);
 
@@ -21,7 +27,7 @@ export default function(init, config, packageName = '') {
         this.__pageId = window.__pageId = currentPageId;
 
         init(window, currentDocument);
-        window.$$trigger('launch', {
+        window._trigger('launch', {
           event: {
             options,
             context: this
@@ -30,7 +36,7 @@ export default function(init, config, packageName = '') {
       } else {
         this.init = (document) => {
           init(window, document);
-          window.$$trigger('launch', {
+          window._trigger('launch', {
             event: {
               options,
               context: this
@@ -41,9 +47,11 @@ export default function(init, config, packageName = '') {
       this.window = window;
     },
     onShow(options) {
+      onShow && onShow.call(this, options);
+
+      this.__showOptions = options;
       if (this.window && this.launched) {
-        this.__showOptions = options;
-        this.window.$$trigger('appshow', {
+        this.window._trigger('appshow', {
           event: {
             options,
             context: this
@@ -52,8 +60,10 @@ export default function(init, config, packageName = '') {
       }
     },
     onHide() {
+      onHide && onHide.call(this);
+
       if (this.window) {
-        this.window.$$trigger('apphide', {
+        this.window._trigger('apphide', {
           event: {
             context: this
           }
@@ -61,16 +71,18 @@ export default function(init, config, packageName = '') {
       }
     },
     onError(err) {
+      onError && onError.call(this, err);
+
       if (this.window) {
         // eslint-disable-next-line no-undef
         const pages = getCurrentPages() || [];
         const currentPage = pages[pages.length - 1];
         if (currentPage && currentPage.window) {
-          currentPage.window.$$trigger('error', {
+          currentPage.window._trigger('error', {
             event: err
           });
         }
-        this.window.$$trigger('apperror', {
+        this.window._trigger('apperror', {
           event: {
             context: this,
             error: err
@@ -79,21 +91,32 @@ export default function(init, config, packageName = '') {
       }
     },
     onPageNotFound(options) {
+      onPageNotFound && onPageNotFound.call(this, options);
+
       if (this.window) {
-        this.window.$$trigger('pagenotfound', {
+        this.window._trigger('pagenotfound', {
           event: {
             options,
             context: this
           }
         });
       }
-    }
+    },
+    // document modify callback for override context's document
+    __documentModifyCallbacks: [],
+    _dispatchDocumentModify(val) {
+      // dispatch document modify when page toggle
+      this.__documentModifyCallbacks.forEach(cb => {
+        cb(val);
+      });
+    },
+    ...rest
   };
   if (isMiniApp) {
     appConfig.onShareAppMessage = function(options) {
       if (this.window) {
         const shareInfo = {};
-        this.window.$$trigger('appshare', {
+        this.window._trigger('appshare', {
           event: { options, shareInfo }
         });
         return shareInfo.content;

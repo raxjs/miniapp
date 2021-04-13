@@ -277,13 +277,13 @@ function createConfig(component, options) {
     ? component
     : createReactiveClass(component);
 
-  const { events, isPage } = options;
+  const { events, baseConfig = {}, isPage } = options;
   const cycles = isPage ? getPageCycles(Klass) : getComponentCycles(Klass);
 
   const config = {
     data: {},
     ...cycles,
-    ...getComponentBaseConfig()
+    ...getComponentBaseConfig(baseConfig)
   };
 
   const proxiedMethods = createProxyMethods(events);

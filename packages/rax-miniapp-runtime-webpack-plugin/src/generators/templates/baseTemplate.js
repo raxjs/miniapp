@@ -64,12 +64,13 @@ function buildAttribute(attrs, adapter) {
  */
 function buildFocusComponentTemplate(compInfo, level, adapter) {
   const { nodeName, nodeAttributes } = compInfo;
+  const componentName = toDash(nodeName);
   const attrs = { ...nodeAttributes };
   delete attrs.focus;
 
   return `
-<template name="RAX_TMPL_${level}_${nodeName}">
-  <${nodeName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} focus="{{tool.a(r['focus-state'],false)}}" />
+<template name="RAX_TMPL_${level}_${componentName}">
+  <${componentName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} focus="{{tool.a(r['focus-state'],false)}}" />
 </template>
 `;
 }
@@ -86,7 +87,9 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
 function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
   const { nodeName, nodeAttributes, nodeActualName } = compInfo;
   const { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents } = compSet;
-  const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.d(c, '${nodeName}')`;
+  const componentName = toDash(nodeName); // Virtual components like h-element
+  const componentActualName = toDash(nodeActualName); // Actual components like view
+  const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.d(c, '${componentName}')`;
   const templateName = isRecursiveTemplate ? 'RAX_TMPL_CHILDREN_0' : '{{tool.b(cid + 1)}}';
   let children = voidChildrenElements.has(nodeName)
     ? ''
@@ -99,7 +102,7 @@ function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isR
   }
 
   let generateRes = child => `
-<template name="RAX_TMPL_${level}_${nodeName}">
+<template name="RAX_TMPL_${level}_${componentName}">
   ${child}
 </template>
 `;
@@ -109,7 +112,7 @@ function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isR
   } else if (shouldNotGenerateTemplateComponents.has(nodeName)) {
     return '';
   } else {
-    return generateRes(`<${nodeActualName} ${buildAttribute(nodeAttributes, adapter)} id="{{r.id}}" data-private-node-id="{{r.nodeId}}">${children}</${nodeActualName}>`);
+    return generateRes(`<${componentActualName} ${buildAttribute(nodeAttributes, adapter)} id="{{r.id}}" data-private-node-id="{{r.nodeId}}">${children}</${componentActualName}>`);
   }
 }
 
@@ -119,11 +122,11 @@ function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isR
  * @param {Object} components - component props and events original config
  * @param {Object} adapter - directive adapter for different miniapp platforms
  */
-function createMiniComponents(components, adapter) {
+function createMiniComponents(components, derivedComponents, adapter) {
   const result = Object.create(null);
-  for (let key in components) {
-    let component = components[key];
-    const compName = toDash(key);
+  for (let compName in components) {
+    let component = components[compName];
+    const actualCompName = derivedComponents.get(compName) || compName;
     const newComp = Object.create(null);
     const { props = {}, events = {}, basicEvents = {} } = component;
     // Process props
@@ -143,11 +146,11 @@ function createMiniComponents(components, adapter) {
     // Process events
     for (let event in events) {
       const eventName = adapter.eventToLowerCase ? `${adapter.event}${event}`.toLocaleLowerCase() : `${adapter.event}${event}`;
-      const eventValue = 'on' + key + event;
+      const eventValue = 'on' + actualCompName + event;
       newComp[eventName] = eventValue;
     }
     for (let basicEvent in basicEvents) {
-      const isCatchComponent = compName.indexOf('catch') === 0;
+      const isCatchComponent = compName.indexOf('Catch') === 0;
       const isTouchMoveEvent = basicEvent === 'TouchMove';
 
       const originalEventName = `${isCatchComponent && isTouchMoveEvent ? adapter.catchEvent : adapter.event}${basicEvent}`;

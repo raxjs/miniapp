@@ -43,8 +43,8 @@ class Document extends EventTarget {
   }
 
   // Event trigger
-  $$trigger(eventName, options) {
-    return this.documentElement.$$trigger(eventName, options);
+  _trigger(eventName, options) {
+    return this.documentElement._trigger(eventName, options);
   }
 
   _isRendered() {

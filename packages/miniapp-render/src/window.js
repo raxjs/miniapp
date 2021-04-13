@@ -1,6 +1,5 @@
 import EventTarget from './event/event-target';
 import OriginalCustomEvent from './event/custom-event';
-import tool from './utils/tool';
 import cache from './utils/cache';
 import Node from './node/node';
 import Element from './node/element';
@@ -11,7 +10,7 @@ class Window extends EventTarget {
     super();
     const timeOrigin = +new Date();
 
-    this.$_customEventConstructor = class CustomEvent extends OriginalCustomEvent {
+    this._customEventConstructor = class CustomEvent extends OriginalCustomEvent {
       constructor(name = '', options = {}) {
         options.timeStamp = +new Date() - timeOrigin;
         super(name, options);
@@ -25,13 +24,8 @@ class Window extends EventTarget {
     this.HTMLIFrameElement = function() {};
   }
 
-  // Forces the setData cache to be emptied
-  $$forceRender() {
-    tool.flushThrottleCache();
-  }
-
   // Trigger node event
-  $$trigger(eventName, options = {}) {
+  _trigger(eventName, options = {}) {
     if (eventName === 'error' && typeof options.event === 'string') {
       const errStack = options.event;
       const errLines = errStack.split('\n');
@@ -47,9 +41,9 @@ class Window extends EventTarget {
 
       const error = new Error(message);
       error.stack = errStack;
-      options.event = new this.$_customEventConstructor('error', {
+      options.event = new this._customEventConstructor('error', {
         target: this,
-        $$extra: {
+        __extra: {
           message,
           filename: '',
           lineno: 0,
@@ -59,15 +53,15 @@ class Window extends EventTarget {
       });
       options.args = [message, error];
 
-      if (typeof this.onerror === 'function' && !this.onerror.$$isOfficial) {
+      if (typeof this.onerror === 'function' && !this.onerror.__isOfficial) {
         const oldOnError = this.onerror;
         this.onerror = (event, message, error) => {
           oldOnError.call(this, message, '', 0, 0, error);
         };
-        this.onerror.$$isOfficial = true;
+        this.onerror.__isOfficial = true;
       }
     }
-    return super.$$trigger(eventName, options);
+    return super._trigger(eventName, options);
   }
 
   /**
@@ -78,15 +72,11 @@ class Window extends EventTarget {
   }
 
   get CustomEvent() {
-    return this.$_customEventConstructor;
+    return this._customEventConstructor;
   }
 
   get self() {
     return this;
-  }
-
-  get Image() {
-    return this.document.$$imageConstructor;
   }
 
   get setTimeout() {
@@ -169,5 +159,12 @@ class Window extends EventTarget {
 }
 
 export default function createWindow() {
+  const { mainPackageName, subPackages } = cache.getConfig();
+  const { shareMemory } = subPackages || {};
+  if (mainPackageName === '' || !shareMemory) {
+    return new Window();
+  }
+  const mainPackageWindow = cache.getWindow(mainPackageName);
+  if (mainPackageWindow) return mainPackageWindow;
   return new Window();
 }

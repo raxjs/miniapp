@@ -21,38 +21,17 @@ function getId() {
 }
 
 /**
- * Throttling, which is called only once in a synchronous flow
+ * Check whether the variable is undefined
+ * @param {*} variable
+ * @returns boolean
  */
-const waitFuncSet = new Set();
-function throttle(func) {
-  return (...args) => {
-    if (waitFuncSet.has(func)) return;
-
-    waitFuncSet.add(func);
-
-    Promise.resolve().then(() => {
-      if (waitFuncSet.has(func)) {
-        waitFuncSet.delete(func);
-        func(...args);
-      }
-    }).catch(() => {
-      // ignore
-    });
-  };
+function isUndef(variable) {
+  return variable === undefined;
 }
 
-/**
- * Clear throttling cache
- */
-function flushThrottleCache() {
-  waitFuncSet.forEach(waitFunc => waitFunc && waitFunc());
-  waitFuncSet.clear();
-}
-
-export default {
+export {
   toDash,
   toCamel,
   getId,
-  throttle,
-  flushThrottleCache,
+  isUndef
 };

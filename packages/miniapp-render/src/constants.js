@@ -19,7 +19,16 @@ export const BUILTIN_COMPONENT_LIST = new Set([
   'audio', 'camera', 'image', 'live-player', 'live-pusher', 'video',
   'map',
   'canvas',
-  'ad', 'official-account', 'open-data', 'web-view', 'open-avatar', 'lottie'
+  'ad', 'official-account', 'open-data', 'web-view', 'open-avatar', 'lottie', 'contact-button'
 ]);
 
 export const BODY_NODE_ID = 'e-body';
+
+export const STATIC_COMPONENTS = new Set(['view', 'text', 'image']); // With no events components
+
+export const PURE_COMPONENTS = new Set(['view', 'h-element']); // With no events or props && equal to TOUCH_COMPONENTS
+
+export const CATCH_COMPONENTS = new Set(['view', 'h-element']); // With catchTouchMove events
+
+export const APPEAR_COMPONENT = 'view'; // Without appear event components
+
