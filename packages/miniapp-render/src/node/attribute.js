@@ -20,11 +20,13 @@ class Attribute {
       if (!element.__hasExtraAttribute && name !== 'id' && name !== 'class') {
         element.__hasExtraAttribute = true; // Indicates that the element has extra attributes besides id/style/class
       }
-      const payload = {
-        path: `${element._path}.${name}`,
-        value: value
-      };
-      element._triggerUpdate(payload, immediate);
+      if (immediate && element._isRendered()) {
+        const payload = {
+          path: `${element._path}.${name}`,
+          value: value
+        };
+        element._triggerUpdate(payload, immediate);
+      }
     }
   }
 
