@@ -2,7 +2,6 @@ import Element from './element';
 import cache from '../utils/cache';
 import perf from '../utils/perf';
 import getProperty from '../utils/getProperty';
-import { BODY_NODE_ID } from '../constants';
 
 class RootElement extends Element {
   constructor(options) {
