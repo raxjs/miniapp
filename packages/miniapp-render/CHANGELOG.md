@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.2] - 2021-04-22
+
+### Fixed
+
+- Can't get correct window in subpackages mode
+
 ## [2.3.1] - 2021-04-12
 
 ### Fixed
