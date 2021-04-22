@@ -30,7 +30,10 @@ function filterComponent(usingComponents, type = 'main', subAppRoot = '') {
   Object.keys(usingComponents).forEach(component => {
     // Put npm native components to every package temporarily
     const isNpmNativeComponents = isNpmModule(usingComponents[component].path);
-    if (isNpmNativeComponents) {
+    // miniapp-compiled are only supported in main package
+    const isMainPackageRaxCompiledComponentDir = usingComponents[component].path.indexOf('./miniapp-compiled') === 0;
+
+    if (isNpmNativeComponents || isMainPackageRaxCompiledComponentDir) {
       result[component] = usingComponents[component];
       return;
     }
