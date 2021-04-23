@@ -1,4 +1,4 @@
-简体中文 | [English](./README_en-US.md)
+English | [简体中文](./README.md)
 
 <p align="center">
   <a href="https://rax.js.org/docs/guide/about-miniapp">
@@ -7,29 +7,30 @@
 </p>
 
 <p align="center">
-Rax 小程序是基于运行时驱动的完整跨端小程序开发体系。
+
+Rax miniapp is a complete cross end miniapp development system based on runtime.
 
 ---
 
-💌 **完整的 Rax DSL：** 使用完整的 Rax（React） DSL，没有任何语法约束
+💌 **Complete Rax DSL:** Use complete Rax (React) without any syntax constraints
 
-⏱ **兼容 W3C 标准：** 支持标准 DOM 和 BOM API，像开发 Web 应用一样快速开发小程序
+⏱ **Compatible with W3C standard:** Support standard DOM and BOM API, which helps develop miniapps as fast as Web applications
 
-✈️ **支持双引擎混用：** 在运行时中，支持局部高性能组件使用编译时方案构建，提供更极致的性能体验
+✈️ **Support dual engine mixing:** Support using compile-time engine to build high performance components used in runtime miniapps, which can provide more extreme performance experience
 
-📤 **多端支持：** 完整支持阿里小程序及微信小程序，即将支持字节跳动、百度、快手小程序
+📤 **Multi miniapp platforms support:** Fully support Ali MiniApp and WeChat MiniProgram and will support ByteDance MicroApp, Baidu SmartProgram and  KuaiShou MiniProgram.
 
-### 文档
+### Doc
 
-点击 [Rax 官网](https://rax.js.org/docs/guide/about-miniapp) 查看使用文档
+Check [Rax Official Site](https://rax.js.org/docs/guide/about-miniapp) to read the document
 
-### 示例
+### Example
 
-<https://github.com/raxjs/miniapp/blob/master/examples/README.md>
+https://github.com/raxjs/miniapp/blob/master/examples/README.md
 
-### 上线项目案例
+### Online project cases
 
-#### 微信
+#### WeChat MiniProgram
 
 | 盒马集市                                                     | 优酷视频                                                     | 全球精品免税城                                               | 阿里巴巴零售通                                               |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -39,7 +40,7 @@ Rax 小程序是基于运行时驱动的完整跨端小程序开发体系。
 | 蜂觅                                                         | 盒马集市团长端                                               |                                                              |                                                              |
 | <img src="https://img.alicdn.com/imgextra/i1/O1CN012DxUlN1xRZKv9EyaW_!!6000000006440-0-tps-860-860.jpg" width="300" /> | <img src="https://img.alicdn.com/imgextra/i3/O1CN01la3ujm1SIdWcElAuz_!!6000000002224-0-tps-258-258.jpg" width="300" /> |                                                              |                                                              |
 
-#### 支付宝
+#### Alipay MiniApp
 
 | 浙里办                                                       | 电影演出                                                     | 浙大一院总部一期                                             | 游戏充值                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -52,7 +53,7 @@ Rax 小程序是基于运行时驱动的完整跨端小程序开发体系。
 | <img src="https://img.alicdn.com/imgextra/i4/O1CN01Wu3v4Y1czMdILeUj1_!!6000000003671-0-tps-1540-1906.jpg" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01uqOe0n1bDRZoVKCDV_!!6000000003431-0-tps-1540-1906.jpg" width="300" /> |                         <img src="https://img.alicdn.com/imgextra/i2/O1CN01otmZRp1V9QPBbWtkU_!!6000000002610-2-tps-410-410.png" width="300" />                                     |                                                              |
 
 
-#### 手淘
+#### TaoBao MiniApp
 
 | 躺平                                                         | 天猫香港                                                     | 火车机票                                                     | 淘宝买菜                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -64,22 +65,22 @@ Rax 小程序是基于运行时驱动的完整跨端小程序开发体系。
 | 魅力惠                                                       | 海宁皮革城                                                   |                                                              |                                                              |
 | <img src="https://img.alicdn.com/imgextra/i4/O1CN01flxvRK1l3xX524KLN_!!6000000004764-2-tps-300-300.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01HvIiC21IsE91bcLzZ_!!6000000000948-2-tps-300-300.png" width="300" /> |                                                              |                                                              |
 
-如果你也在用 Rax 开发小程序并想分享案例给大家，请在该 [案例收集](https://github.com/raxjs/miniapp/issues/132)的 issue 中填写。
+If you are also developing a miniapp with rax and want to share the case with us, please fill in the issue of [case collection](https://github.com/raxjs/miniapp/issues/132).
 
-### 更新日志
+### Changelog
 
 <https://rax.js.org/docs/guide/changelog>
 
-### 开发支持
+### Community Support
 
-| 答疑钉钉群                                                   | GitHub issues                                            |
+| DingTalk community                                                   | GitHub issues                                            |
 | ------------------------------------------------------------ | -------------------------------------------------------- |
 | <a href="https://ice.alicdn.com/assets/images/rax-outside.jpeg"><img src="https://ice.alicdn.com/assets/images/rax-outside.jpeg" width="200" /></a> | [GitHub issues](https://github.com/raxjs/miniapp/issues) |
 
-### 贡献代码
+### Contributing
 
-请阅读 [Rax 贡献代码指南](https://github.com/alibaba/rax/wiki/CONTRIBUTING)
+Please read [guidelines for contributing](https://github.com/alibaba/rax/wiki/CONTRIBUTING).
 
-### 协议
+### License
 
 [BSD License](https://github.com/raxjs/miniapp/blob/master/LICENSE)
