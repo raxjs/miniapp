@@ -2,7 +2,6 @@ import Element from './element';
 import cache from '../utils/cache';
 import perf from '../utils/perf';
 import getProperty from '../utils/getProperty';
-import { BODY_NODE_ID } from '../constants';
 
 class RootElement extends Element {
   constructor(options) {
@@ -45,6 +44,8 @@ class RootElement extends Element {
     // type 2: { path, value }
 
     const internal = cache.getDocument(this.__pageId)._internal;
+    const { mainPackageName } = cache.getConfig();
+    const window = cache.getWindow(mainPackageName);
 
     if (internal.$batchedUpdates) {
       let callback;
@@ -52,6 +53,7 @@ class RootElement extends Element {
         this.renderStacks.forEach((task, index) => {
           if (index === this.renderStacks.length - 1) {
             callback = () => {
+              window._trigger('setDataFinished');
               if (process.env.NODE_ENV === 'development') {
                 perf.stop('setData');
               }
@@ -102,6 +104,7 @@ class RootElement extends Element {
       });
       internal.firstRenderCallback(renderObject);
       internal.setData(renderObject, () => {
+        window._trigger('setDataFinished');
         let fn;
         while (fn = this.__renderCallbacks.pop()) {
           fn();
