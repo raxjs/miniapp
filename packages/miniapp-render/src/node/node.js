@@ -11,6 +11,7 @@ class Node extends EventTarget {
     this.__nodeId = `n_${getId()}`;
     this.__type = options.type;
     this.parentNode = null;
+    this.__rendered = false;
     this.__ownerDocument = options.document;
   }
 
