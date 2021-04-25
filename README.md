@@ -90,30 +90,23 @@ $ npm start
 运行以下命令：
 
 ```shell
-git clone git@github.com:raxjs/miniapp.git
-cd miniapp
-npm install
-npm run setup
+$ git clone git@github.com:raxjs/miniapp.git
+$ cd miniapp
+$ npm install
+$ npm run setup
 ```
-
-
 
 ### 调试代码包
 
 以调试 `rax-miniapp-runtime-webpack-plugin` 为例：
 
 ```shell
-cd packages/rax-miniapp-runtime-webpack-plugin
-npm link
-# 新建 rax-miniapp-example 项目，参考上面快速开始示例
-cd rax-miniapp-example
-npm install
-npm link rax-miniapp-runtime-webpack-plugin
-npm start # 启动项目，打开小程序 IDE 进行调试
-
+# 进入示例项目
+$ cd examples/app-lifecycle
+$ npm install
+$ npm link ../../packages/rax-miniapp-runtime-webpack-plugin # 本地 link 要调试的代码包
+$ npm start # 启动项目，打开小程序 IDE 进行调试
 ```
-
-
 
 ### 代码包组成
 
@@ -132,8 +125,6 @@ npm start # 启动项目，打开小程序 IDE 进行调试
 | jsx2mp-runtime                     | Rax 小程序编译时方案运行时垫片                               |
 | miniapp-builder-shared             | Rax 小程序公用方法及变量等                                   |
 | miniapp-compile-config             | Rax 小程序编译时方案工程公共配置                             |
-
-
 
 ## 协议
 
