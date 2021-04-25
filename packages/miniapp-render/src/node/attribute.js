@@ -79,7 +79,7 @@ class Attribute {
         path: `${element._path}.${name}`,
         value: ''
       };
-      element._enqueueRender(payload);
+      element._triggerUpdate(payload);
     }
   }
 }
