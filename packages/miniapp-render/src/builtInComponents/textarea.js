@@ -49,7 +49,7 @@ if (isWeChatMiniProgram) {
   textarea.simpleEvents = textarea.simpleEvents.concat([{
     name: 'onTextareaLineChange',
     eventName: 'linechange'
-  }])
+  }]);
 }
 
 export default textarea;
