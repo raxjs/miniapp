@@ -33,7 +33,7 @@ $ npm start
 
 然后使用小程序 IDE 即可开始调试：
 
-<img height="400" src="https://img.alicdn.com/imgextra/i3/O1CN016IaaIu1oz9qNNjm32_!!6000000005295-2-tps-1000-700.png" />
+<img height="400" src="https://img.alicdn.com/imgextra/i4/O1CN012SVwTs1XkBQWAurR1_!!6000000002961-2-tps-1000-700.png" />
 
 ## 文档
 
@@ -61,9 +61,9 @@ $ npm start
 
 | 浙里办                                                       | 电影演出                                                     | 浙大一院总部一期                                             | 游戏充值                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://img.alicdn.com/imgextra/i2/O1CN01JBq1951xVEVUN1Xic_!!6000000006448-2-tps-256-256.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i3/O1CN01ypn5cs1FuZJx5uLoI_!!6000000000547-2-tps-538-550.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i3/O1CN01B7bYBu1Z8kHTQOY82_!!6000000003150-2-tps-1540-1906.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i4/O1CN01athTdk25oU51Jvggd_!!6000000007573-2-tps-400-400.png" width="300" /> |
+| <img src="https://img.alicdn.com/imgextra/i2/O1CN01JBq1951xVEVUN1Xic_!!6000000006448-2-tps-256-256.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i3/O1CN01ypn5cs1FuZJx5uLoI_!!6000000000547-2-tps-538-550.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN011811q01iXK4r9iRwK_!!6000000004422-2-tps-1312-1312.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i4/O1CN01athTdk25oU51Jvggd_!!6000000007573-2-tps-400-400.png" width="300" /> |
 | 盒马集市                                                     | 飞猪周边游                                                   | 阿里健康大药房                                               | CUBA我的主场                                                 |
-| <img src="https://img.alicdn.com/imgextra/i1/O1CN01DEPRRE22ks6teYNsT_!!6000000007159-2-tps-256-256.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01Y9CAU11WwieFTqHWd_!!6000000002853-0-tps-1540-1906.jpg" width="300" /> | <img src="https://img.alicdn.com/imgextra/i1/O1CN01kH43st1DdxjHnVIQf_!!6000000000240-0-tps-1540-1906.jpg" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01hdlRZ11tAO0zdP4dh_!!6000000005861-2-tps-600-600.png" width="300" /> |
+| <img src="https://img.alicdn.com/imgextra/i1/O1CN01DEPRRE22ks6teYNsT_!!6000000007159-2-tps-256-256.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i3/O1CN01869HDq1uZPGoy8nqd_!!6000000006051-0-tps-1322-1322.jpg" width="300" /> | <img src="https://img.alicdn.com/imgextra/i4/O1CN01xXI6XV1wyFzRR2Sp2_!!6000000006376-0-tps-1340-1340.jpg" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01hdlRZ11tAO0zdP4dh_!!6000000005861-2-tps-600-600.png" width="300" /> |
 
 [点击查看更多使用 Rax 的支付宝小程序](https://github.com/raxjs/miniapp/issues/132#issuecomment-825370301)
 
@@ -85,7 +85,55 @@ $ npm start
 
 请首先阅读 [Rax 贡献代码指南](https://github.com/alibaba/rax/wiki/CONTRIBUTING)，了解基础的规范。
 
-> TODO 补充仓库如何开发调试
+### 开发配置
+
+运行以下命令：
+
+```shell
+git clone git@github.com:raxjs/miniapp.git
+cd miniapp
+npm install
+npm run setup
+```
+
+
+
+### 调试代码包
+
+以调试 `rax-miniapp-runtime-webpack-plugin` 为例：
+
+```shell
+cd packages/rax-miniapp-runtime-webpack-plugin
+npm link
+# 新建 rax-miniapp-example 项目，参考上面快速开始示例
+cd rax-miniapp-example
+npm install
+npm link rax-miniapp-runtime-webpack-plugin
+npm start # 启动项目，打开小程序 IDE 进行调试
+
+```
+
+
+
+### 代码包组成
+
+| NPM 包                             | 描述                                                         |
+| ---------------------------------- | ------------------------------------------------------------ |
+| miniapp-render                     | Rax 小程序运行时方案模拟 DOM/BOM API                         |
+| miniapp-runtime-config             | Rax 小程序运行时方案工程公共配置                             |
+| miniapp-history                    | Rax 小程序模拟 history                                       |
+| rax-miniapp-babel-plugins          | Rax 小程序代码扫描 babel 插件                                |
+| rax-miniapp-config-webpack-plugin  | Rax 小程序配置生成 Webpack 插件                              |
+| rax-miniapp-runtime-webpack-plugin | Rax 小程序运行时方案模板代码生成 Webpack插件                 |
+| driver-miniapp                     | Rax 小程序运行时方案 driver（[什么是 driver](https://github.com/alibaba/rax/wiki/Driver-Specification)） |
+| jsx-compiler                       | Rax 小程序编译时方案核心编译器                               |
+| jsx2mp-cli                         | Rax 小程序编译时方案命令行启动工具（废弃）                   |
+| jsx2mp-loader                      | Rax 小程序编译时方案 Webpack loader                          |
+| jsx2mp-runtime                     | Rax 小程序编译时方案运行时垫片                               |
+| miniapp-builder-shared             | Rax 小程序公用方法及变量等                                   |
+| miniapp-compile-config             | Rax 小程序编译时方案工程公共配置                             |
+
+
 
 ## 协议
 
