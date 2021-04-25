@@ -65,7 +65,6 @@ module.exports = [
   'p',
   'param',
   'pre',
-  'progress',
   'q',
   's',
   'samp',
@@ -101,4 +100,5 @@ module.exports = [
   // 'canvas',
   // 'label',
   // 'form',
+  // 'progress',
 ];
