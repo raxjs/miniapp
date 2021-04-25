@@ -25,7 +25,7 @@ class Attribute {
           path: `${element._path}.${name}`,
           value: value
         };
-        element._triggerUpdate(payload, immediate);
+        element._enqueueRender(payload);
       }
     }
   }
@@ -79,7 +79,7 @@ class Attribute {
         path: `${element._path}.${name}`,
         value: ''
       };
-      element._triggerUpdate(payload);
+      element._enqueueRender(payload);
     }
   }
 }

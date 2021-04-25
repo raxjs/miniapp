@@ -19,7 +19,7 @@ class Style {
         path: `${this.__element._path}.style`,
         value: this.cssText
       };
-      this.__element._triggerUpdate(payload);
+      this.__element._enqueueRender(payload);
     }
   }
 
