@@ -1,9 +1,11 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isWeChatMiniProgram } from 'universal-env';
 import { isUndef } from '../utils/tool';
 
-export default {
+const textarea = {
   name: 'textarea',
   singleEvents: [{
-    name: 'keyboardheightchange',
+    name: 'onTextareaKeyboardHeightChange',
     eventName: 'keyboardheightchange'
   }],
   simpleEvents: [{
@@ -42,3 +44,12 @@ export default {
     }
   }]
 };
+
+if (isWeChatMiniProgram) {
+  textarea.simpleEvents = textarea.simpleEvents.concat([{
+    name: 'onTextareaLineChange',
+    eventName: 'linechange'
+  }])
+}
+
+export default textarea;
