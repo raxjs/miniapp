@@ -47,7 +47,7 @@ $ npm start
 
 > 如果你也在使用 Rax 开发小程序，欢迎补充到 [案例收集](https://github.com/raxjs/miniapp/issues/132) 的 issue 中。
 
-### 微信
+### 微信小程序
 
 | 盒马集市                                                     | 优酷视频                                                     | 全球精品免税城                                               | 阿里巴巴零售通                                               |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -57,7 +57,7 @@ $ npm start
 
 [点击查看更多使用 Rax 的微信小程序](https://github.com/raxjs/miniapp/issues/132#issuecomment-826252099)
 
-### 支付宝
+### 支付宝小程序
 
 | 浙里办                                                       | 电影演出                                                     | 浙大一院总部一期                                             | 游戏充值                                                     |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -67,17 +67,9 @@ $ npm start
 
 [点击查看更多使用 Rax 的支付宝小程序](https://github.com/raxjs/miniapp/issues/132#issuecomment-825370301)
 
-### 手淘
+### 淘宝小程序
 
-| 躺平                                                         | 天猫香港                                                     | 火车机票                                                     | 淘宝买菜                                                     |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://img.alicdn.com/imgextra/i4/O1CN01DHpHOi21O8plr5d94_!!6000000006974-2-tps-300-300.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01AsHtxs1HaXEGHLfpM_!!6000000000774-2-tps-502-476.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i1/O1CN01yvgirN1aLOq7wXcEX_!!6000000003313-2-tps-300-300.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i4/O1CN01hFVB5d1Ul9PjRi5IL_!!6000000002557-2-tps-300-300.png" width="300" /> |
-| 天猫游戏                                                     | 土货鲜食                                                     | 天猫精灵                                                     | 新车补贴                                                     |
-| <img src="https://img.alicdn.com/imgextra/i2/O1CN01eaAVue1GW7naoZWPL_!!6000000000629-2-tps-300-300.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i1/O1CN011WsZyx25HVYzEeXRj_!!6000000007501-2-tps-300-300.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i2/O1CN01F1thAW1uX7HtQDqn6_!!6000000006046-2-tps-300-300.png" width="300" /> | <img src="https://img.alicdn.com/imgextra/i3/O1CN01L5jIX31piV3KGPTu9_!!6000000005394-2-tps-300-300.png" width="300" /> |
-
-
-[点击查看更多使用 Rax 的淘宝小程序](https://github.com/raxjs/miniapp/issues/132#issuecomment-826252138)
-
+[点击查看使用 Rax 的淘宝小程序](https://github.com/raxjs/miniapp/issues/132#issuecomment-826252138)
 
 ## 更新日志
 
