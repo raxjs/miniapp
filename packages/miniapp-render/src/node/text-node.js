@@ -15,7 +15,7 @@ class TextNode extends Node {
     this.__content = '';
   }
 
-  _enqueueRender(payload) {
+  _triggerUpdate(payload) {
     this._root._enqueueRender(payload);
   }
 
@@ -55,7 +55,7 @@ class TextNode extends Node {
         path: `${this._path}.content`,
         value
       };
-      this._enqueueRender(payload);
+      this._triggerUpdate(payload);
     }
   }
 

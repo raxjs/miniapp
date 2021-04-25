@@ -52,6 +52,14 @@ class Element extends Node {
     });
   }
 
+  _triggerUpdate(payload, immediate = true) {
+    if (immediate) {
+      this._enqueueRender(payload);
+    } else {
+      this._root.__renderStacks.push(payload);
+    }
+  }
+
   // Child ownerDocument may be incorrect if the node created during the page hide period
   // Here we should adjust its ownerDocument when the node mounted
   _adjustDocument(child) {
@@ -217,7 +225,7 @@ class Element extends Node {
         deleteCount: this.childNodes.length
       };
       this.childNodes.length = 0;
-      this._enqueueRender(payload);
+      this._triggerUpdate(payload);
     } else {
       this.childNodes.length = 0;
       const child = this.ownerDocument.createTextNode(text);
@@ -289,7 +297,7 @@ class Element extends Node {
         deleteCount: 0,
         item: simplifyDomTree(node)
       };
-      this._enqueueRender(payload);
+      this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
 
@@ -316,7 +324,7 @@ class Element extends Node {
           start: index,
           deleteCount: 1
         };
-        this._enqueueRender(payload);
+        this._triggerUpdate(payload);
       }
     }
 
@@ -352,7 +360,7 @@ class Element extends Node {
       };
 
       // Trigger update
-      this._enqueueRender(payload);
+      this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
 
@@ -387,7 +395,7 @@ class Element extends Node {
         deleteCount: replaceIndex === -1 ? 0 : 1,
         item: simplifyDomTree(node)
       };
-      this._enqueueRender(payload);
+      this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
 
