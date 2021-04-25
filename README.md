@@ -1,5 +1,3 @@
-简体中文 | [English](./README_en-US.md)
-
 <p align="center">
   <a href="https://rax.js.org/docs/guide/about-miniapp">
     <img alt="Rax" src="https://user-images.githubusercontent.com/677114/59907138-e99f7180-943c-11e9-8769-07021d9fe1ca.png" width="66">
