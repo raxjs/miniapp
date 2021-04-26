@@ -55,7 +55,24 @@ const StaticView = {
 };
 
 const PureView = {};
-
+const Camera = {
+  props: {
+    id: '',
+    mode: 'normal',
+    'device-position': 'back',
+    flash: 'auto',
+    outputDimension: '720P',
+    applyMicPermissionWhenInit: true,
+    'frame-size': 'medium',
+    'frame-format': 'rgba',
+    'max-duration': 30
+  },
+  events:{
+    Stop: '',
+    Error: '',
+    ScanCode: ''
+  }
+}
 const NoAppearView = {
   props: {
     'disable-scroll': 'false',
@@ -763,6 +780,7 @@ exports.internalComponents = {
   StaticImage,
   Video,
   Lottie,
+  Camera,
   Canvas,
   Map: MiniappMap,
   WebView,
@@ -828,6 +846,7 @@ exports.voidChildrenElements = new Set([
   'Image',
   'Video',
   'Lottie',
+  'Camera',
   'Canvas',
   'WebView',
   'LivePlayer',
