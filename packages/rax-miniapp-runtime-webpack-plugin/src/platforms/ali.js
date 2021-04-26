@@ -597,12 +597,12 @@ const Camera = {
     'frame-format': addSingleQuote('rgba'),
     'max-duration': '30'
   },
-  events:{
+  events: {
     Stop: '',
     Error: '',
     ScanCode: ''
   }
-}
+};
 
 const Lottie = {
   props: {
