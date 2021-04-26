@@ -55,24 +55,7 @@ const StaticView = {
 };
 
 const PureView = {};
-const Camera = {
-  props: {
-    id: '',
-    mode: 'normal',
-    'device-position': 'back',
-    flash: 'auto',
-    outputDimension: '720P',
-    applyMicPermissionWhenInit: true,
-    'frame-size': 'medium',
-    'frame-format': 'rgba',
-    'max-duration': 30
-  },
-  events:{
-    Stop: '',
-    Error: '',
-    ScanCode: ''
-  }
-}
+
 const NoAppearView = {
   props: {
     'disable-scroll': 'false',
@@ -602,6 +585,25 @@ const Video = {
   }
 };
 
+const Camera = {
+  props: {
+    id: '',
+    mode: addSingleQuote('normal'),
+    'device-position': addSingleQuote('back'),
+    flash: addSingleQuote('auto'),
+    outputDimension: addSingleQuote('720P'),
+    applyMicPermissionWhenInit: 'true',
+    'frame-size': addSingleQuote('medium'),
+    'frame-format': addSingleQuote('rgba'),
+    'max-duration': '30'
+  },
+  events:{
+    Stop: '',
+    Error: '',
+    ScanCode: ''
+  }
+}
+
 const Lottie = {
   props: {
     autoplay: 'false',
@@ -779,8 +781,8 @@ exports.internalComponents = {
   Image,
   StaticImage,
   Video,
-  Lottie,
   Camera,
+  Lottie,
   Canvas,
   Map: MiniappMap,
   WebView,
@@ -845,8 +847,8 @@ exports.voidChildrenElements = new Set([
   'HComment',
   'Image',
   'Video',
-  'Lottie',
   'Camera',
+  'Lottie',
   'Canvas',
   'WebView',
   'LivePlayer',
