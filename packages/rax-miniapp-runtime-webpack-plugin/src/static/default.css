@@ -237,15 +237,6 @@ dt {
 
 /* Form elements */
 
-form {
-  display: block;
-  margin-top: 0em;
-}
-
-label {
-  cursor: default;
-}
-
 legend {
   display: block;
   -webkit-padding-start: 2px;
@@ -269,17 +260,14 @@ fieldset {
 input,
 textarea,
 keygen,
-select,
-button,
-progress {
+select {
   -webkit-writing-mode: horizontal-tb !important;
 }
 
 input,
 textarea,
 keygen,
-select,
-button {
+select {
   margin: 0em;
   font: -webkit-small-control;
   color: initial;
@@ -450,50 +438,12 @@ br {
 a,
 abbr,
 b,
-button,
 code,
 i,
-label,
 small,
 span,
 strong,
 time {
   display: inline;
-}
-
-/* Remove button component default style */
-button {
-  position: relative;
-  display: block;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 0;
-  padding-right: 0;
-  box-sizing: border-box;
-  font-size: inherit;
-  text-align: inherit;
-  text-decoration: inherit;
-  line-height: inherit;
-  border-radius: inherit;
-  -webkit-tap-highlight-color: inherit;
-  overflow: hidden;
-  color: inherit;
-  background-color: inherit;
-}
-
-button:after {
-  content: "";
-  width: auto;
-  height: auto;
-  position: static;
-  top: 0;
-  left: 0;
-  border: none;
-  -webkit-transform: none;
-  transform: none;
-  -webkit-transform-origin: 0 0;
-  transform-origin: 0 0;
-  box-sizing: border-box;
-  border-radius: 0;
 }
 
