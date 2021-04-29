@@ -1,7 +1,5 @@
 # rax-miniapp-babel-plugins
 
-<a href="https://travis-ci.com/raxjs/rax-scripts"><img src="https://travis-ci.com/raxjs/rax-scripts.svg?branch=master"></a>
-
 [简体中文](./README-zh.md)
 
 🚀  We can optimize the miniapp code to a greater extent by these babel plugins.

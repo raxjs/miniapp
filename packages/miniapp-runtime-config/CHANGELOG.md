@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.6] - 2021-04-27
+
+### Changed
+
+- Update homepage url in `package.json`
+
 ## [0.3.5] - 2021-03-23
 
 ### Added
