@@ -2,12 +2,12 @@ const { resolve, dirname, join } = require('path');
 const { existsSync, readJSONSync } = require('fs-extra');
 const {
   pathHelper: { absoluteModuleResolve, removeExt },
+  platformMap
 } = require('miniapp-builder-shared');
 const extMap = require('../utils/extMap');
 const { collectComponentAttr, collectUsings } = require('../utils/handleComponentAST');
 
-const { WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP, MINIAPP_COMPILED_DIR } = require('../constants');
-
+const MINIAPP_COMPILED_DIR = 'miniapp-compiled';
 const RELATIVE_COMPONENTS_REG = /^\./;
 
 const baseComponents = [
@@ -48,7 +48,7 @@ function getNpmSourcePath(rootDir, source, target, runtimeDependencies) {
     if (!miniappConfig || baseComponents.includes(source) || isInRuntimeDependencies(source, runtimeDependencies)) {
       return source;
     }
-    const miniappEntry = target === 'miniapp' ? miniappConfig.main : miniappConfig[`main:${targetMap[target]}`];
+    const miniappEntry = target === 'miniapp' ? miniappConfig.main : miniappConfig[`main:${platformMap[target].type}`];
     // Ensure component has target platform rax complie result
     if (!miniappEntry) {
       return source;
