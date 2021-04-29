@@ -54,9 +54,9 @@ class Element extends Node {
 
   _triggerUpdate(payload, immediate = true) {
     if (immediate) {
-      this.enqueueRender(payload);
+      this._enqueueRender(payload);
     } else {
-      this._root.renderStacks.push(payload);
+      this._root.__renderStacks.push(payload);
     }
   }
 
@@ -497,8 +497,8 @@ class Element extends Node {
     return false;
   }
 
-  enqueueRender(payload) {
-    this._root.enqueueRender(payload);
+  _enqueueRender(payload) {
+    this._root._enqueueRender(payload);
   }
 
   getBoundingClientRect() {

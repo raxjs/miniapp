@@ -1,11 +1,11 @@
 {
   "name": "rax-miniapp-babel-plugins",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "rax miniapp babel plugins",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raxjs/rax-scripts.git"
+    "url": "git+https://github.com/raxjs/miniapp.git"
   },
   "keywords": [
     "rax",

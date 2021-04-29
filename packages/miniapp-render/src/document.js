@@ -91,7 +91,8 @@ class Document extends EventTarget {
   }
 
   get defaultView() {
-    return cache.getWindow() || null;
+    const { mainPackageName } = cache.getConfig();
+    return cache.getWindow(mainPackageName) || null;
   }
 
   getElementById(id) {
@@ -197,7 +198,8 @@ class Document extends EventTarget {
   }
 
   createEvent() {
-    const window = cache.getWindow();
+    const { mainPackageName } = cache.getConfig();
+    const window = cache.getWindow(mainPackageName);
 
     return new window.CustomEvent();
   }

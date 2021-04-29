@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.3.2] - 2021-04-22
+
+### Fixed
+
+- Can't use rax miniapp compile components in subpackages mode
+
+### Changed
+
+- Remove some components that miniapp and web both have in webTagList
+
 ## [4.3.1] - 2021-04-12
 
 ### Fixed

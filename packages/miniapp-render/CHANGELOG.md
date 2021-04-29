@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.3.3] - 2021-04-25
+
+### Changed
+
+- Remove unnecessary setData caused by setAttribute in un-rendered element
+- Remove unnecessary setData caused by get classList action
+
+### Fixed
+
+- Miss some events in textarea component
+- Remove miniapp components default style like button
+
+## [2.3.2] - 2021-04-22
+
+### Fixed
+
+- Can't get correct window in subpackages mode
+
 ## [2.3.1] - 2021-04-12
 
 ### Fixed
