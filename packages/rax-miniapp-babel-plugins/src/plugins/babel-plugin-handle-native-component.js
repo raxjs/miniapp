@@ -26,12 +26,6 @@ const baseComponents = [
   'rax-embed'
 ];
 
-const targetMap = {
-  [WECHAT_MINIPROGRAM]: 'wechat',
-  [BYTEDANCE_MICROAPP]: 'bytedance',
-  [QUICKAPP]: 'quickapp'
-};
-
 /**
  * Get native component npm path
  * @param {string} rootDir project root dir
