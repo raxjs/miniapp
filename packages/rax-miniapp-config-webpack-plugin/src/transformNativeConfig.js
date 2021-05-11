@@ -1,8 +1,5 @@
 const { join } = require('path');
-const {
-  constants: { WECHAT_MINIPROGRAM },
-  platformMap
-} = require('miniapp-builder-shared');
+const { constants: { WECHAT_MINIPROGRAM }, platformMap } = require('miniapp-builder-shared');
 
 const safeWriteFile = require('./safeWriteFile');
 

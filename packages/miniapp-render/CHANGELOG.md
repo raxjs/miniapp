@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.4] - 2021-05-10
+
+### Added
+
+- Support camera component in ali miniapp
+
 ## [2.3.3] - 2021-04-25
 
 ### Changed

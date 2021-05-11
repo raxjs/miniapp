@@ -2,11 +2,8 @@
 import { isWeChatMiniProgram } from 'universal-env';
 
 const camera = {
-  name: 'camera'
-};
-
-if (isWeChatMiniProgram) {
-  camera.singleEvents = [{
+  name: 'camera',
+  singleEvents: [{
     name: 'onCameraStop',
     eventName: 'stop'
   },
@@ -15,13 +12,16 @@ if (isWeChatMiniProgram) {
     eventName: 'error'
   },
   {
-    name: 'onCameraInitDone',
-    eventName: 'initdone'
-  },
-  {
     name: 'onCameraScanCode',
     eventName: 'scancode'
-  }];
+  }]
+};
+
+if (isWeChatMiniProgram) {
+  camera.singleEvents = camera.singleEvents.concat([{
+    name: 'onCameraInitDone',
+    eventName: 'initdone'
+  }]);
 }
 
 export default camera;
