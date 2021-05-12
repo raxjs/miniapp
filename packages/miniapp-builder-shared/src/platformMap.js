@@ -53,7 +53,7 @@ module.exports = {
     extension: {
       xml: '.ksml',
       css: '.css',
-      script: '.sjs'
+      script: '.wxs'
     }
   },
   [QUICKAPP]: {
