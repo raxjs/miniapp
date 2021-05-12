@@ -212,8 +212,8 @@ class MiniAppRuntimePlugin {
           }
         }
 
-        let subPackageUsingComponents = {};
-        let subPackageUsingPlugins = {};
+        let subPackageUsingComponents = Object.assign({}, mainPackageUsingComponents);
+        let subPackageUsingPlugins = Object.assign({}, mainPackageUsingPlugins);
         let isSubPackageContainsNativeComponent = false;
         let isSubPackageContainsPlugin = false;
 
