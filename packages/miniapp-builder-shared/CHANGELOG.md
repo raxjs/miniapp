@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.4] - 2021-05-10
+
+### Added
+
+- Add baidu and kuaishou config
+
 ## [0.2.3] - 2021-04-27
 
 ### Changed

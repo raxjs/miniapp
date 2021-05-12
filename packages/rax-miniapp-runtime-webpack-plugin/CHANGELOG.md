@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.3.4] - 2021-05-10
+
+### Added
+
+- Support camera component in ali miniapp
+
+## [4.3.3] - 2021-04-30
+
+### Fixed
+
+- Remove default styles of button, progress and label
+
 ## [4.3.2] - 2021-04-22
 
 ### Fixed
