@@ -36,7 +36,7 @@ export default function() {
       const domNode = this.getDomNodeFromEvt(evt);
       const document = domNode.ownerDocument;
       if (document && document.__checkEvent(evt)) {
-        this.callEvent(eventName, evt, extra, evt.currentTarget.dataset.privateNodeId); // Default Left button
+        this.callEvent(eventName, evt, extra, evt.target.dataset.privateNodeId); // Default Left button
       }
     };
   });
