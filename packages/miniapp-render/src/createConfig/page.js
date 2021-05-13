@@ -83,6 +83,7 @@ export function getBaseLifeCycles(route, init, packageName = '') {
       }
     },
     onUnload() {
+      // When reLaunch api is invoked, onUnload will be triggered without onShow trigger
       this.renderInfo.setDocument(this.document);
 
       this.document._trigger('miniapp_pagehide');
