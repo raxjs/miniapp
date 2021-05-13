@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.4.0] - 2021-05-13
+
+### Added
+
+- Support config `anchorScroll` in scroll-view in wechat to use custom scroll-view template without scroll-top or scroll-left
+
+### Fixed
+
+- Can't use native components of main package in subpackages
+
 ## [4.3.4] - 2021-05-10
 
 ### Added
