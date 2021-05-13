@@ -163,6 +163,43 @@ const ScrollView = {
   basicEvents: {}
 };
 
+const AnchorScrollView = {
+  props: {
+    'scroll-x': 'false',
+    'scroll-y': 'false',
+    'upper-threshold': '50',
+    'lower-threshold': '50',
+    'scroll-into-view': '',
+    'scroll-with-animation': 'false',
+    'enable-back-to-top': 'false',
+    'enable-flex': 'false',
+    'scroll-anchoring': 'false',
+    'refresher-enabled': 'false',
+    'refresher-threshold': '45',
+    'refresher-default-style': addSingleQuote('black'),
+    'refresher-background': addSingleQuote('#FFF'),
+    'refresher-triggered': 'false',
+    enhanced: 'false',
+    bounces: 'true',
+    'show-scrollbar': 'true',
+    'paging-enabled': 'false',
+    'fast-deceleration': 'false',
+  },
+  events: {
+    DragStart: '',
+    Dragging: '',
+    DragEnd: '',
+    ScrollToUpper: '',
+    ScrollToLower: '',
+    Scroll: '',
+    RefresherPulling: '',
+    RefresherRefresh: '',
+    RefresherRestore: '',
+    RefresherAbort: ''
+  },
+  basicEvents: {}
+};
+
 const CoverView = {
   props: {
     'scroll-top': ''
@@ -828,6 +865,7 @@ exports.internalComponents = {
   Swiper,
   SwiperItem,
   ScrollView,
+  AnchorScrollView,
   CoverView,
   CoverImage,
   MovableView,
@@ -876,6 +914,7 @@ exports.derivedComponents = new Map([
   ['StaticView', 'View'],
   ['PureView', 'View'],
   ['NoTouchView', 'View'],
+  ['AnchorScrollView', 'ScrollView'],
   ['CatchHElement', 'View'],
   ['PureHElement', 'View'],
   ['NoTouchHElement', 'View'],
@@ -963,6 +1002,16 @@ exports.needModifyChildrenComponents = {
         <block>{{item.content}}</block>
       </block>
     </block>
+  `,
+  AnchorScrollView: children => `
+  <block wx:for="{{r.children}}" wx:key="nodeId">
+    <block wx:if="{{item.nodeId}}">
+      <template is="{{tool.c(item.nodeType, tool.d(c, 'anchor-scroll-view'))}}" data="{{r: item, c: tool.d(c, 'anchor-scroll-view'), cid: cid}}" />
+    </block>
+    <block wx:else>
+      <block>{{item.content}}</block>
+    </block>
+  </block>
   `,
   PickerView: children => `
     <picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
