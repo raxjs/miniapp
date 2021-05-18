@@ -202,7 +202,9 @@ const AnchorScrollView = {
 
 const CoverView = {
   props: {
-    'scroll-top': ''
+    'scroll-top': '',
+    'marker-id': '',
+    slot: ''
   },
   basicEvents: {
     ...tapEvents
