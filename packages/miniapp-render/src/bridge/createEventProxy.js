@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
 import getDomNodeFromEvt from './events/getDomNodeFromEvt';
 import baseEvents from './events/baseEvents';
 import { handlesMap } from '../builtInComponents';
@@ -36,7 +36,11 @@ export default function() {
       const domNode = this.getDomNodeFromEvt(evt);
       const document = domNode.ownerDocument;
       if (document && document.__checkEvent(evt)) {
-        this.callEvent(eventName, evt, extra, evt.currentTarget.dataset.privateNodeId); // Default Left button
+        if (isMiniApp) {
+          this.callEvent(eventName, evt, extra, evt.target.targetDataset.privateNodeId);
+        } else {
+          this.callEvent(eventName, evt, extra, evt.target.dataset.privateNodeId);
+        }
       }
     };
   });
