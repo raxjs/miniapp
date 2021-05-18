@@ -1041,7 +1041,8 @@ exports.adapter = {
   xs: 'wxs',
   event: 'bind',
   catchEvent: 'catch',
-  eventToLowerCase: true
+  eventToLowerCase: true,
+  formatBindedData: (value) => `${value}`
 };
 
 
@@ -1052,3 +1053,5 @@ exports.sjs = {
   from: 'src',
   exportExpression: 'module.exports ='
 };
+
+exports.formatBindedData = (value) => value;

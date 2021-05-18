@@ -10,7 +10,7 @@ const platformConfig = require('../../platforms');
 function buildRecursiveTemplate(target, customComponentsConfig) {
   const { internalComponents, derivedComponents, sjs, adapter } = platformConfig[target];
 
-  let template = buildBaseTemplate(sjs, {});
+  let template = buildBaseTemplate(sjs, { adapter });
   template += buildChildrenTemplate(0, adapter, {});
 
   const customInternalComponents = modifyInternalComponents(internalComponents, customComponentsConfig);

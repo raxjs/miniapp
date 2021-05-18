@@ -28,6 +28,7 @@ function buildSjs(target) {
 function buildNativeComponentTemplate(usings, target) {
   const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   const { adapter } = platformConfig[target];
+  const { formatBindedData } = adapter;
 
   return Object.keys(usings).reduce((current, componentTag) => {
     const props = usings[componentTag].props.reduce((cur, prop) => {
@@ -38,7 +39,7 @@ function buildNativeComponentTemplate(usings, target) {
       const tmpl = ` ${adapter.event}${event}="{{r['${event}']}}"`;
       return cur + tmpl;
     }, '');
-    const elementTemplate = isRecursiveTemplate ? '<template is="{{tool.c(item.nodeType)}}" data="{{r: item}}" />' : '<element r="{{item}}" />';
+    const elementTemplate = isRecursiveTemplate ? `<template is="{{tool.c(item.nodeType)}}" data="{{${formatBindedData('r: item')}}}" />` : '<element r="{{item}}" />';
     const template = `
 <template name="RAX_TMPL_0_${componentTag}">
   <${componentTag}
