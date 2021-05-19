@@ -52,7 +52,7 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
   let content = `@import "./default${platformMap[target].extension.css}";`;
 
   const isCssExtension = platformMap[target].extension.css === '.css';
-Object.keys(compilation.assets).forEach(asset => {
+  Object.keys(compilation.assets).forEach(asset => {
     if (extname(asset) === '.css' && !isCssExtension) {
       delete compilation.assets[asset];
     }

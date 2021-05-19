@@ -12,10 +12,9 @@ const defaultConfig = {
   [BYTEDANCE_MICROAPP]: {
     setting: {}
   }
-}
+};
 
 module.exports = function(outputPath, nativeConfig = {}, target) {
-
   const configContent = Object.assign(defaultConfig[target] || {}, nativeConfig);
   safeWriteFile(join(outputPath, platformMap[target].nativeConfigFileName), configContent, true);
 };
