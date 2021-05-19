@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.4] - 2021-05-19
+
+### Changed
+
+- Update kuaishou miniprogram wxs extension name
+
 ## [0.2.4] - 2021-05-10
 
 ### Added
