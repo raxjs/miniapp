@@ -1004,5 +1004,3 @@ exports.sjs = {
   from: 'src',
   exportExpression: 'module.exports ='
 };
-
-exports.formatBindedData = (value) => value;
