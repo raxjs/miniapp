@@ -1,6 +1,7 @@
 const { join } = require('path');
 const { platformMap, pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
 
+const platformConfig = require('../platforms');
 const getAssetPath = require('../utils/getAssetPath');
 const getSepProcessedPath = require('../utils/getSepProcessedPath');
 const addFileToCompilation = require('../utils/addFileToCompilation');
@@ -16,7 +17,8 @@ function generatePageCSS(
 ) {
   let pageCssContent = '/* required by usingComponents */\n';
   const pageCssPath = `${pageRoute}${platformMap[target].extension.css}`;
-  const subAppCssPath = `${getBundlePath(subAppRoot)}.css${platformMap[target].extension.css}`;
+  const isCssExtension = platformMap[target].extension.css === '.css';
+  const subAppCssPath = `${getBundlePath(subAppRoot)}.css${isCssExtension ? '' : platformMap[target].extension.css}`;
   if (compilation.assets[subAppCssPath]) {
     pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
   }
@@ -68,6 +70,8 @@ function generatePageXML(
   useComponent,
   { target, command, subAppRoot = '' }
 ) {
+  const { adapter: { formatBindedData } } = platformConfig[target];
+
   let pageXmlContent;
   if (RECURSIVE_TEMPLATE_TYPE.has(target) && useComponent) {
     pageXmlContent = '<element r="{{root}}"  />';
@@ -75,7 +79,7 @@ function generatePageXML(
     const rootTmplFileName = join(subAppRoot, `root${platformMap[target].extension.xml}`);
     const pageTmplFilePath = `${pageRoute}${platformMap[target].extension.xml}`;
     pageXmlContent = `<import src="${getAssetPath(rootTmplFileName, pageTmplFilePath)}"/>
-<template is="RAX_TMPL_ROOT_CONTAINER" data="{{r: root}}"  />`;
+<template is="RAX_TMPL_ROOT_CONTAINER" data="{{${formatBindedData('r: root')}}}"  />`;
   }
 
   addFileToCompilation(compilation, {

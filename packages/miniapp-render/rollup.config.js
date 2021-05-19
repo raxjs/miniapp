@@ -36,6 +36,12 @@ function getContainerIdentifierName(platform) {
   switch (platform) {
     case 'wechat':
       return 'wx';
+    case 'bytedance':
+      return 'tt';
+    case 'baidu':
+      return 'swan';
+    case 'kuaishou':
+      return 'ks';
     case 'ali':
     default:
       return 'my';
@@ -72,4 +78,10 @@ export default [
   getRollupConfig('ali', 'production'),
   getRollupConfig('wechat'),
   getRollupConfig('wechat', 'production'),
+  getRollupConfig('bytedance'),
+  getRollupConfig('bytedance', 'production'),
+  getRollupConfig('baidu'),
+  getRollupConfig('baidu', 'production'),
+  getRollupConfig('kuaishou'),
+  getRollupConfig('kuaishou', 'production'),
 ];

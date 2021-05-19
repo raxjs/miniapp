@@ -912,7 +912,8 @@ exports.adapter = {
   xs: 'sjs',
   event: 'on',
   catchEvent: 'catch',
-  eventToLowerCase: false
+  eventToLowerCase: false,
+  formatBindedData: (value) => `${value}`
 };
 
 exports.sjs = {

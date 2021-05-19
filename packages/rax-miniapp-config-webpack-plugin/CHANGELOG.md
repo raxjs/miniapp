@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.0] - 2021-05-19
+
+- Support bytedance microapp/baidu smartprogram/kuaishou miniprogram
+
 ## [2.0.4] - 2021-05-10
 
 - Use constants from miniapp-builder-shared

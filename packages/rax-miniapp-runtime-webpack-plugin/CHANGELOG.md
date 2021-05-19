@@ -1,10 +1,15 @@
 # Changelog
 
+## [4.5.0] - 2021-05-19
+
+- Support bytedance microapp/baidu smartprogram/kuaishou miniprogram
+
 ## [4.4.0] - 2021-05-13
 
 ### Added
 
 - Support config `anchorScroll` in scroll-view in wechat to use custom scroll-view template without scroll-top or scroll-left
+- Support use cover-view in map
 
 ### Fixed
 

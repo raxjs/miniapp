@@ -4,7 +4,10 @@ const specified = [];
 const platformEnvValues = ['isMiniApp', 'isWeChatMiniProgram'];
 const platformMap = {
   ali: 'isMiniApp',
-  wechat: 'isWeChatMiniProgram'
+  wechat: 'isWeChatMiniProgram',
+  bytedance: 'isByteDanceMicroApp',
+  baidu: 'isBaiduSmartProgram',
+  kuaishou: 'isKuaishouMiniProgram'
 };
 
 function variableDeclarationMethod(name, value) {

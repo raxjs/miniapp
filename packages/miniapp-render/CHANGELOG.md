@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.5.0] - 2021-0519
+
+### Added
+
+- Support bytedance microapp/baidu smartprogram/kuaishou miniprogram
+
+### Fixed
+
+- Can't get correct target of basic events in global event
+
 ## [2.4.0] - 2021-0513
 
 ### Added
