@@ -86,6 +86,7 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
  */
 function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
   const { nodeName, nodeAttributes, nodeActualName } = compInfo;
+  const { formatBindedData } = adapter;
   const { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents } = compSet;
   const componentName = toDash(nodeName); // Virtual components like h-element
   const componentActualName = toDash(nodeActualName); // Actual components like view
@@ -94,7 +95,7 @@ function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isR
   let children = voidChildrenElements.has(nodeName)
     ? ''
     : `
-    <template is="${templateName}" data="{{${data}}}" />
+    <template is="${templateName}" data="{{${formatBindedData(data)}}}" />
 `;
 
   if (needModifyChildrenComponents[nodeName]) {
@@ -201,14 +202,16 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
  * @param {Object} sjs - sjs config
  * @param {Object} options
  * @param {boolean} options.isRecursiveTemplate
+ * @param {Object} options.adapter
  */
-function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
+function buildBaseTemplate(sjs, { isRecursiveTemplate = true, adapter }) {
+  const { formatBindedData } = adapter;
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
   const templateName = isRecursiveTemplate ? 'tool.c(r.nodeType)' : "tool.c(r.nodeType, '')";
   return `${buildSjsTemplate(sjs)}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
-  <template is="{{${templateName}}}" data="{{${data}}}" />
+  <template is="{{${templateName}}}" data="{{${formatBindedData(data)}}}" />
 </template>
 `;
 }
@@ -222,9 +225,10 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
  * @param {boolean} options.restart - Use custom component to restart the recursive template
  */
 function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, restart = false }) {
+  const { formatBindedData } = adapter;
   const data = isRecursiveTemplate ? 'r: item' : `r: item, c: c, cid: ${level}`;
   const templateName = isRecursiveTemplate ? 'tool.c(item.nodeType)' : 'tool.c(item.nodeType, c)';
-  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateName}}}" data="{{${data}}}" />`;
+  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateName}}}" data="{{${formatBindedData(data)}}}" />`;
   return `
 <template name="RAX_TMPL_CHILDREN_${level}">
   <block ${adapter.for}="{{r}}" ${adapter.key}="nodeId">

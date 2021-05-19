@@ -1,8 +1,8 @@
 const { join, relative, dirname, extname } = require('path');
 const enhancedResolve = require('enhanced-resolve');
 const chalk = require('chalk');
+const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 
-const { QUICKAPP } = require('./constants');
 const { isNpmModule, isWeexModule, isQuickAppModule, isRaxModule, isRaxAppModule, isJsx2mpRuntimeModule, isNodeNativeModule } = require('./utils/judgeModule');
 const { addRelativePathPrefix, normalizeOutputFilePath, removeExt } = require('./utils/pathHelper');
 const getAliasCorrespondingValue = require('./utils/getAliasCorrespondingValue');

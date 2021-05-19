@@ -1,6 +1,6 @@
 const { resolve, extname } = require('path');
 const { readFileSync } = require('fs-extra');
-const { platformMap } = require('miniapp-builder-shared');
+const { platformMap, constants: { BAIDU_SMARTPROGRAM } } = require('miniapp-builder-shared');
 const { UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getAssetPath = require('../utils/getAssetPath');
@@ -41,20 +41,25 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     resolve(pluginDir, 'static', 'rax-default.css'),
     'utf-8'
   );
+  const defaultCSSContent = target === BAIDU_SMARTPROGRAM ? raxDefaultCSSTmpl : defaultCSSTmpl + raxDefaultCSSTmpl; // default CSS in baidu will cause render error
   addFileToCompilation(compilation, {
     filename: `default${platformMap[target].extension.css}`,
-    content: defaultCSSTmpl + raxDefaultCSSTmpl,
+    content: defaultCSSContent,
     target,
     command,
   });
 
   let content = `@import "./default${platformMap[target].extension.css}";`;
 
+  const isCssExtension = platformMap[target].extension.css === '.css';
   Object.keys(compilation.assets).forEach(asset => {
-    if (extname(asset) === '.css') {
+    if (extname(asset) === '.css' && !isCssExtension) {
       delete compilation.assets[asset];
-      if (!subPackages || asset === 'vendors.css') {
-        content += `@import "./${asset}${platformMap[target].extension.css}";`;
+    }
+    if (extname(asset) === platformMap[target].extension.css && asset !== `default${platformMap[target].extension.css}`) {
+      if (!subPackages || asset.includes('vendors.css')) {
+        // In sub packages mode, only vendors.css should be imported in app.css
+        content += `@import "./${asset}";`;
       }
     }
   });

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 
 export function getComponentLifeCycle({ mount, unmount, update }) {
   if (isMiniApp) {
@@ -14,8 +14,7 @@ export function getComponentLifeCycle({ mount, unmount, update }) {
         unmount && unmount.apply(this, args);
       }
     };
-  }
-  if (isWeChatMiniProgram) {
+  } else {
     return {
       attached(...args) {
         mount && mount.apply(this, args);
