@@ -37,9 +37,9 @@ export default function() {
       const document = domNode.ownerDocument;
       if (document && document.__checkEvent(evt)) {
         if (isMiniApp) {
-          this.callEvent(eventName, evt, extra, evt.target.targetDataset.privateNodeId); // Default Left button
+          this.callEvent(eventName, evt, extra, evt.target.targetDataset.privateNodeId);
         } else {
-          this.callEvent(eventName, evt, extra, evt.target.dataset.privateNodeId); // Default Left button
+          this.callEvent(eventName, evt, extra, evt.target.dataset.privateNodeId);
         }
       }
     };
