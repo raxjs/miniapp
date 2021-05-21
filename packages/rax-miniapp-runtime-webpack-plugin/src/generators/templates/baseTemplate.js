@@ -208,7 +208,8 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
 function buildBaseTemplate(sjs, { isRecursiveTemplate = true, adapter }) {
   const { formatBindedData, supportSjs } = adapter;
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
-  const templateNameExpression = isRecursiveTemplate ? (supportSjs ? 'tool.c(r.nodeType)' : "'RAX_TMPL_0_' + r.nodeType") : "tool.c(r.nodeType, '')";
+  const recursiveTemplateNameExpression = supportSjs ? 'tool.c(r.nodeType)' : "'RAX_TMPL_0_' + r.nodeType";
+  const templateNameExpression = isRecursiveTemplate ? recursiveTemplateNameExpression : "tool.c(r.nodeType, '')";
   return `${supportSjs ? buildSjsTemplate(sjs) : ''}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
@@ -228,7 +229,8 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true, adapter }) {
 function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, restart = false }) {
   const { formatBindedData, supportSjs } = adapter;
   const data = isRecursiveTemplate ? 'r: item' : `r: item, c: c, cid: ${level}`;
-  const templateNameExpression = isRecursiveTemplate ? (supportSjs ? 'tool.c(item.nodeType)' : "'RAX_TMPL_0_' + item.nodeType") : "tool.c(item.nodeType, c)";
+  const recursiveTemplateNameExpression = supportSjs ? 'tool.c(item.nodeType)' : "'RAX_TMPL_0_' + item.nodeType";
+  const templateNameExpression = isRecursiveTemplate ? recursiveTemplateNameExpression : 'tool.c(item.nodeType, c)';
   const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateNameExpression}}}" data="{{${formatBindedData(data)}}}" />`;
   return `
 <template name="RAX_TMPL_CHILDREN_${level}">
