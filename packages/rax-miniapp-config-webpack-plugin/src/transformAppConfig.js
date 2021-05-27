@@ -1,5 +1,4 @@
-const { resolve, relative } = require('path');
-const { copy } = require('fs-extra');
+const { relative } = require('path');
 const adaptAppConfig = require('./adaptConfig');
 const handleIcon = require('./handleIcon');
 
@@ -25,14 +24,11 @@ module.exports = function transformAppConfig(outputPath, originalAppConfig, targ
             if (itemConfig.activeIcon) {
               itemConfig.activeIcon = handleIcon(itemConfig.activeIcon, outputPath);
             }
+            if (!itemConfig.pagePath) {
+              itemConfig.pagePath = originalAppConfig.routes.find(({ path }) => path === itemConfig.path);
+            }
             return adaptAppConfig(itemConfig, 'items', target);
           });
-        }
-        // Handle custom tabBar
-        if (config.custom && typeof config.custom === 'string') {
-          // Custom tab bar should be native component
-          copy(resolve('src', config.custom), resolve(outputPath, 'custom-tab-bar'));
-          config.custom = true;
         }
         appConfig[configKey] = adaptAppConfig(config, 'tabBar', target);
         break;
