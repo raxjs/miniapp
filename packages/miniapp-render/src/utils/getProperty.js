@@ -21,7 +21,7 @@ export default function(currentData, setDataPath, cacheData) {
   let latestValue = currentData;
 
   if (Object.prototype.toString.call(latestValue) !== '[object Object]' && !Array.isArray(latestValue)) {
-    return latestValue
+    return latestValue;
   }
   const keys = setDataPath.split('.');
   if (keys.length > 0) {
@@ -36,5 +36,5 @@ export default function(currentData, setDataPath, cacheData) {
     }
   }
 
-  return latestValue
+  return latestValue;
 }
