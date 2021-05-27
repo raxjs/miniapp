@@ -32,7 +32,6 @@ const configKeyMap = {
       name: 'text',
       icon: 'iconPath',
       activeIcon: 'selectedIconPath',
-      text: 'name',
     }
   },
   [BYTEDANCE_MICROAPP]: {
@@ -49,7 +48,6 @@ const configKeyMap = {
       name: 'text',
       icon: 'iconPath',
       activeIcon: 'selectedIconPath',
-      text: 'name',
     }
   },
   [QUICKAPP]: {
