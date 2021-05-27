@@ -18,16 +18,23 @@ module.exports = function transformAppConfig(outputPath, originalAppConfig, targ
         // Handle tab item
         if (config.items) {
           config.items = config.items.map(itemConfig => {
-            if (itemConfig.icon) {
-              itemConfig.icon = handleIcon(itemConfig.icon, outputPath);
+            const { icon, activeIcon, path: itemPath, pageName, ...others } = itemConfig;
+            const newItemConfig = {};
+            if (icon) {
+              newItemConfig.icon = handleIcon(icon, outputPath);
             }
-            if (itemConfig.activeIcon) {
-              itemConfig.activeIcon = handleIcon(itemConfig.activeIcon, outputPath);
+            if (activeIcon) {
+              newItemConfig.activeIcon = handleIcon(activeIcon, outputPath);
             }
             if (!itemConfig.pagePath) {
-              itemConfig.pagePath = originalAppConfig.routes.find(({ path }) => path === itemConfig.path);
+              const targetRoute = originalAppConfig.routes.find(({ path }) =>
+                path === itemPath || path === pageName
+              );
+              if (targetRoute) {
+                newItemConfig.pagePath = targetRoute.source;
+              }
             }
-            return adaptAppConfig(itemConfig, 'items', target);
+            return adaptAppConfig(Object.assign(newItemConfig, others), 'items', target);
           });
         }
         appConfig[configKey] = adaptAppConfig(config, 'tabBar', target);
