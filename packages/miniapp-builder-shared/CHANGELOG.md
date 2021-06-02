@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.2.4] - 2021-05-19
+## [0.2.6] - 2021-06-01
+
+### Changed
+
+- Move transform `tabItem.path => tabItem.pagePath` logic to `rax-miniapp-config-webpack-plugin`
+
+## [0.2.5] - 2021-05-19
 
 ### Changed
 
