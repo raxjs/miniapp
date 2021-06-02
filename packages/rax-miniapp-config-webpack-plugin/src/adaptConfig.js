@@ -15,7 +15,7 @@ const configKeyMap = {
       name: 'name',
       icon: 'icon',
       activeIcon: 'activeIcon',
-      path: 'pagePath'
+      text: 'name',
     }
   },
   [WECHAT_MINIPROGRAM]: {
@@ -32,7 +32,6 @@ const configKeyMap = {
       name: 'text',
       icon: 'iconPath',
       activeIcon: 'selectedIconPath',
-      path: 'pagePath'
     }
   },
   [BYTEDANCE_MICROAPP]: {
@@ -49,7 +48,6 @@ const configKeyMap = {
       name: 'text',
       icon: 'iconPath',
       activeIcon: 'selectedIconPath',
-      path: 'pagePath'
     }
   },
   [QUICKAPP]: {
