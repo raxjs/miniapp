@@ -14,7 +14,6 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
   const appConfig = readJSONSync(resolve(rootDir, 'src', subAppRoot, 'app.json'));
   appConfig.pages = [];
   const routes = [];
-  const pagesMap = {};
 
   if (!Array.isArray(appConfig.routes)) {
     throw new Error('routes in app.json must be array');
@@ -26,7 +25,6 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
     );
     appConfig.pages.push(page);
     routes.push(route);
-    pagesMap[route.path] = page;
     if (nativeLifeCycleMap) {
       nativeLifeCycleMap[resolve(entryPath, route.source)] = {};
     }
@@ -45,15 +43,6 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
       addPage(route);
     }
   });
-
-  if (appConfig.tabBar) {
-    appConfig.tabBar.items.map(tab => {
-      // Use path only if pagePath is not configured
-      if (!tab.pagePath) {
-        tab.path = pagesMap[tab.path];
-      }
-    });
-  }
 
   appConfig.routes = routes;
 

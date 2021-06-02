@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.1] - 2021-06-01
+
+- Support transform tabBar config
+- Remove custom tabBar logic
+
 ## [2.1.0] - 2021-05-19
 
 - Support bytedance microapp/baidu smartprogram/kuaishou miniprogram
