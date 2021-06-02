@@ -1,6 +1,13 @@
 # Changelog
 
-## [2.5.0] - 2021-0519
+## [2.6.0] - 2021-06-02
+
+### Added
+
+- Support `setDataFinished` event in window after setData finished
+- Support passing `WebkitLineClamp` in style
+
+## [2.5.0] - 2021-05-19
 
 ### Added
 
@@ -10,7 +17,7 @@
 
 - Can't get correct target of basic events in global event
 
-## [2.4.0] - 2021-0513
+## [2.4.0] - 2021-05-13
 
 ### Added
 
