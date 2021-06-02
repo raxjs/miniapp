@@ -175,13 +175,15 @@ function createMiniComponents(components, derivedComponents, adapter) {
 /**
  * Apply the custom component config
  * @param {Object} internalComponents
- * @param {Object} customComponentsConfig - Configed by developer using build script plugin
+ * @param {Object} customComponentsConfig - Configured by developer using build script plugin
  */
 function modifyInternalComponents(internalComponents, customComponentsConfig) {
   const result = Object.assign({}, internalComponents);
   Object.keys(customComponentsConfig).forEach(comp => {
     const componentConfig = customComponentsConfig[comp];
-    const { 'delete': { props = [], events = [] } } = componentConfig; // Only support deleting temporarily
+    const { add: added = {}, 'delete': deleted = {}} = componentConfig;
+    const { props = [], events = [] } = deleted;
+    const { props: addedProps = [] } = added;
     const camelCasedCompName = toCamel(comp);
     if (result[camelCasedCompName]) {
       props.forEach(prop => delete result[camelCasedCompName].props[prop]);
@@ -190,6 +192,13 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
           delete result[camelCasedCompName].basicEvents[event];
         } else if (result[camelCasedCompName].events && result[camelCasedCompName].events[event] !== undefined) {
           delete result[camelCasedCompName].events[event];
+        }
+      });
+      addedProps.forEach(prop => {
+        // Make sure the prop to be added doesn't exist at start
+        if (!result[camelCasedCompName].props[prop]) {
+          const defaultValue = prop.default === undefined ? '' : typeof prop.default === 'string' ? addSingleQuote(prop.default) : JSON.stringify(prop.default);
+          result[camelCasedCompName].props[prop.name] = defaultValue;
         }
       });
     }
