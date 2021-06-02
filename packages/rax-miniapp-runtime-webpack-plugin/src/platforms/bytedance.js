@@ -945,7 +945,6 @@ exports.shouldNotGenerateTemplateComponents = new Set([
   'MovableView'
 ]);
 
-// v === undefined ? dv : v;
 exports.needModifyChildrenComponents = {
   Swiper: (children, level) => `
     <swiper-item tt:for="{{r.children}}" tt:if="{{item.nodeType !== 'h-comment'}}" tt:key="nodeId">
