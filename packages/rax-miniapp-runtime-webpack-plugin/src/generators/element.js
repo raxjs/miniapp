@@ -1,6 +1,7 @@
 const { join } = require('path');
 const { platformMap } = require('miniapp-builder-shared');
 
+const platformConfig = require('../platforms');
 const { RECURSIVE_TEMPLATE_TYPE, UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
 
 const addFileToCompilation = require('../utils/addFileToCompilation');
@@ -26,8 +27,9 @@ Component(render.createElementConfig());`,
 
 function generateElementTemplate(compilation,
   { usingPlugins, usingComponents, target, command, subAppRoot = '', modifyTemplate }) {
+  const { adapter: { formatBindedData } } = platformConfig[target];
   let content = `
-<template is="RAX_TMPL_ROOT_CONTAINER" data="{{r: r}}" />`;
+<template is="RAX_TMPL_ROOT_CONTAINER" data="{{${formatBindedData('r: r')}}}" />`;
 
   const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   if (!isRecursiveTemplate) {

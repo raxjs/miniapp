@@ -1,5 +1,32 @@
 # Changelog
 
+## [4.5.0] - 2021-05-19
+
+- Support bytedance microapp/baidu smartprogram/kuaishou miniprogram
+
+## [4.4.0] - 2021-05-13
+
+### Added
+
+- Support config `anchorScroll` in scroll-view in wechat to use custom scroll-view template without scroll-top or scroll-left
+- Support use cover-view in map
+
+### Fixed
+
+- Can't use native components of main package in subpackages
+
+## [4.3.4] - 2021-05-10
+
+### Added
+
+- Support camera component in ali miniapp
+
+## [4.3.3] - 2021-04-30
+
+### Fixed
+
+- Remove default styles of button, progress and label
+
 ## [4.3.2] - 2021-04-22
 
 ### Fixed

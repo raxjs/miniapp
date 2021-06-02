@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.5.0] - 2021-0519
+
+### Added
+
+- Support bytedance microapp/baidu smartprogram/kuaishou miniprogram
+
+### Fixed
+
+- Can't get correct target of basic events in global event
+
+## [2.4.0] - 2021-0513
+
+### Added
+
+- Support config `anchorScroll` in scroll-view in wechat to use custom scroll-view template without scroll-top or scroll-left
+
+### Fixed
+
+- Global document is not switched when reLaunch api is invoked in unload lifecycle
+
+## [2.3.4] - 2021-05-10
+
+### Added
+
+- Support camera component in ali miniapp
+
 ## [2.3.3] - 2021-04-25
 
 ### Changed

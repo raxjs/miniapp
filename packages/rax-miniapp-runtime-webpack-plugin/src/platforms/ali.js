@@ -585,6 +585,25 @@ const Video = {
   }
 };
 
+const Camera = {
+  props: {
+    id: '',
+    mode: addSingleQuote('normal'),
+    'device-position': addSingleQuote('back'),
+    flash: addSingleQuote('auto'),
+    outputDimension: addSingleQuote('720P'),
+    applyMicPermissionWhenInit: 'true',
+    'frame-size': addSingleQuote('medium'),
+    'frame-format': addSingleQuote('rgba'),
+    'max-duration': '30'
+  },
+  events: {
+    Stop: '',
+    Error: '',
+    ScanCode: ''
+  }
+};
+
 const Lottie = {
   props: {
     autoplay: 'false',
@@ -762,6 +781,7 @@ exports.internalComponents = {
   Image,
   StaticImage,
   Video,
+  Camera,
   Lottie,
   Canvas,
   Map: MiniappMap,
@@ -827,6 +847,7 @@ exports.voidChildrenElements = new Set([
   'HComment',
   'Image',
   'Video',
+  'Camera',
   'Lottie',
   'Canvas',
   'WebView',
@@ -891,7 +912,8 @@ exports.adapter = {
   xs: 'sjs',
   event: 'on',
   catchEvent: 'catch',
-  eventToLowerCase: false
+  eventToLowerCase: false,
+  formatBindedData: (value) => `${value}`
 };
 
 exports.sjs = {

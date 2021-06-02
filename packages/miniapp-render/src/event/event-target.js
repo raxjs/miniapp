@@ -51,7 +51,7 @@ function compareEventProperty(property, last, now) {
   return false;
 }
 
-function compareEventInAlipay(last, now) {
+function compareEventWithUncertainty(last, now) {
   // In Alipay, timestamps of the same event may have slight differences when bubbling
   // Set the D-value threshold to 10
   if (!last || now.timeStamp - last.timeStamp > 10) {
@@ -61,7 +61,7 @@ function compareEventInAlipay(last, now) {
   return compareEventProperty('detail', last, now) || compareEventProperty('touches', last, now) || compareEventProperty('changedTouches', last, now);
 }
 
-function compareEventInWechat(last, now) {
+function compareEventWithAccurateness(last, now) {
   // TimeStamps are different
   if (!last || last.timeStamp !== now.timeStamp) {
     return true;
@@ -260,9 +260,9 @@ class EventTarget {
     let flag = false;
 
     if (isMiniApp) {
-      flag = compareEventInAlipay(last, now);
-    } else if (isWeChatMiniProgram) {
-      flag = compareEventInWechat(last, now);
+      flag = compareEventWithUncertainty(last, now);
+    } else {
+      flag = compareEventWithAccurateness(last, now);
     }
 
     if (flag) this.__miniappEvent = now;

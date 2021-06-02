@@ -37,7 +37,7 @@ module.exports = function(window, document) {
           compilation.assets[fileName],
           footerContent
         );
-      } else if (matchFile(fileName, 'css')) {
+      } else if (matchFile(fileName, 'css') && platformMap[target].extension.css !== '.css') {
         compilation.assets[
           `${fileName}${platformMap[target].extension.css}`
         ] = new RawSource(

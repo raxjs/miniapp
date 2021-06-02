@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.25] - 2021-05-19
+
+### Chore
+
+- Use constants in miniapp-builder-shared
+
 ## [0.4.25] - 2021-03-30
 
 ### Added

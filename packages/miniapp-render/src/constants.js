@@ -32,3 +32,4 @@ export const CATCH_COMPONENTS = new Set(['view', 'h-element']); // With catchTou
 
 export const APPEAR_COMPONENT = 'view'; // Without appear event components
 
+export const ANCHOR_COMPONENT = 'scroll-view'; // Components which only use scrollIntoView to scroll

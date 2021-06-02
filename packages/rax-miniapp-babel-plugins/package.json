@@ -1,11 +1,11 @@
 {
   "name": "rax-miniapp-babel-plugins",
-  "version": "0.1.12",
+  "version": "0.1.15",
   "description": "rax miniapp babel plugins",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raxjs/rax-scripts.git"
+    "url": "git+https://github.com/raxjs/miniapp.git"
   },
   "keywords": [
     "rax",
@@ -22,6 +22,6 @@
     "@babel/code-frame": "^7.8.3",
     "fs-extra": "^9.0.1",
     "md5": "^2.2.1",
-    "miniapp-builder-shared": "^0.1.7"
+    "miniapp-builder-shared": "^0.2.0"
   }
 }

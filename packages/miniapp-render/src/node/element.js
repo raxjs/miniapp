@@ -1,6 +1,6 @@
 /* global CONTAINER */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp } from 'universal-env';
+import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
 import Node from './node';
 import ClassList from './class-list';
 import Style from './style';
@@ -8,7 +8,7 @@ import Attribute from './attribute';
 import cache from '../utils/cache';
 import { toDash } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, ANCHOR_COMPONENT } from '../constants';
 
 class Element extends Node {
   constructor(options) {
@@ -94,6 +94,7 @@ class Element extends Node {
     const hasAppearEventBinded = this.__hasAppearEventBinded;
     const hasTouchEventBinded = this.__hasTouchEventBinded;
     const hasCatchTouchMoveFlag = this.__attrs.get('catchTouchMove');
+    const hasAnchorScrollFlag = this.__attrs.get('anchorScroll');
     const hasExtraAttribute = this.__hasExtraAttribute;
     const isPureComponent = PURE_COMPONENTS.has(this.__tmplName);
     if (!hasEventBinded) {
@@ -114,6 +115,9 @@ class Element extends Node {
 
     if (hasCatchTouchMoveFlag) {
       CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
+    }
+    if (isWeChatMiniProgram && hasAnchorScrollFlag) {
+      ANCHOR_COMPONENT === this.__tmplName && (nodeTypePrefix = 'anchor-');
     }
     return `${nodeTypePrefix}${this.__tmplName}`;
   }
