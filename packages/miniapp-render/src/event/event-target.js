@@ -92,10 +92,10 @@ class EventTarget {
   // Destroy instance
   _destroy() {
     this.__miniappEvent = null;
-    this.__eventHandlerMap = null;
     this.__hasEventBinded = null;
     this.__hasTouchEventBinded = null;
     this.__hasAppearEventBinded = false;
+    this.__eventHandlerMap.clear();
   }
 
   // Trigger event capture, bubble flow
