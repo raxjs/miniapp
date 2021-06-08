@@ -957,7 +957,7 @@ exports.needModifyChildrenComponents = {
   ScrollView: children => `
     <block tt:for="{{r.children}}" tt:key="nodeId">
       <block tt:if="{{item.nodeId}}">
-        <template is="RAX_TMPL_0_scroll-view" data="{{r: item}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
       </block>
       <block tt:else>
         <block>{{item.content}}</block>
@@ -972,7 +972,7 @@ exports.needModifyChildrenComponents = {
   Map: children => `
     <block tt:for="{{r.children}}" tt:key="nodeId">
       <block tt:if="{{item.nodeId}}">
-        <template is="RAX_TMPL_0_map" data="{{r: item}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
       </block>
       <block tt:else>
         <block>{{item.content}}</block>
