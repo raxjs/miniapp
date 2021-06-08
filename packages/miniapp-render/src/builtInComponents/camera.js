@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram } from 'universal-env';
+import { isWeChatMiniProgram, isByteDanceMicroApp } from 'universal-env';
 
 const camera = {
   name: 'camera',
@@ -17,7 +17,7 @@ const camera = {
   }]
 };
 
-if (isWeChatMiniProgram) {
+if (isWeChatMiniProgram || isByteDanceMicroApp) {
   camera.singleEvents = camera.singleEvents.concat([{
     name: 'onCameraInitDone',
     eventName: 'initdone'

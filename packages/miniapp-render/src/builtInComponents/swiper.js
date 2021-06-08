@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 
 const swiper = {
   name: 'swiper',
@@ -23,8 +23,7 @@ if (isMiniApp) {
     name: 'onSwiperAnimationEnd',
     eventName: 'animationEnd'
   });
-}
-if (isWeChatMiniProgram) {
+} else {
   swiper.singleEvents.push({
     name: 'onSwiperAnimationFinish',
     eventName: 'animationfinish'
