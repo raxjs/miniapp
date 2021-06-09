@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.6.1] - 2021-06-09
+
+### Fixed
+
+- template error in bytedance microapp
+
 ## [4.6.0] - 2021-06-02
 
 - Support miniapps that don't support sjs

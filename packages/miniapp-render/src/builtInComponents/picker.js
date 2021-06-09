@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 
 const picker = {
   name: 'picker',
@@ -18,7 +18,7 @@ const picker = {
   ]
 };
 
-if (isWeChatMiniProgram) {
+if (!isMiniApp) {
   picker.singleEvents.push({
     name: 'onPickerColumnChange',
     eventName: 'columnchange'

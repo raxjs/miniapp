@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.6.1] - 2021-06-09
+
+### Fixed
+
+- Add missed component events in bytedance/baidu/kuaishou
+
 ## [2.6.0] - 2021-06-02
 
 ### Added
