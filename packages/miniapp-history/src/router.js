@@ -1,3 +1,4 @@
+/* global my wx tt swan ks */
 import { isMiniApp, isWeChatMiniProgram, isByteDanceMicroApp, isBaiduSmartProgram, isKuaiShouMiniProgram } from 'universal-env';
 import { fireListeners } from './listeners';
 import { REPLACE, POP, PUSH } from './constants';
