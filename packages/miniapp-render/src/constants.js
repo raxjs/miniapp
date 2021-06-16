@@ -24,6 +24,8 @@ export const BUILTIN_COMPONENT_LIST = new Set([
 
 export const BODY_NODE_ID = 'e-body';
 
+export const INDEX_PAGE = 'index-page';
+
 export const STATIC_COMPONENTS = new Set(['view', 'text', 'image']); // With no events components
 
 export const PURE_COMPONENTS = new Set(['view', 'h-element']); // With no events or props && equal to TOUCH_COMPONENTS

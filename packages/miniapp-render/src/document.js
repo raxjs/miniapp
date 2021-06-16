@@ -73,6 +73,12 @@ class Document extends EventTarget {
     }
   }
 
+  _switchPageId(pageId) {
+    this.__pageId = pageId;
+    const rootNodeId = `${BODY_NODE_ID}-${pageId}`;
+    cache.setNode(rootNodeId, this.__root);
+  }
+
   // Node type
   get nodeType() {
     return Node.DOCUMENT_NODE;
@@ -220,9 +226,7 @@ class Document extends EventTarget {
 export default function createDocument(pageId) {
   const document = new Document(pageId);
 
-  cache.init(pageId, {
-    document
-  });
+  cache.init(pageId, document);
 
   return document;
 };

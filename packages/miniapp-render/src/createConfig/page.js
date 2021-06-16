@@ -5,7 +5,7 @@ import cache from '../utils/cache';
 import injectLifeCycle from '../bridge/injectLifeCycle';
 import createEventProxy from '../bridge/createEventProxy';
 import createDocument from '../document';
-import { BODY_NODE_ID } from '../constants';
+import { BODY_NODE_ID, INDEX_PAGE } from '../constants';
 import createWindow from '../window';
 
 export function getBaseLifeCycles(route, init, packageName = '') {
@@ -15,7 +15,14 @@ export function getBaseLifeCycles(route, init, packageName = '') {
       const app = getApp();
 
       this.pageId = route + '-' + cache.getRouteId(route);
-      if (this.pageId === app.__pageId) {
+      // In non alibaba miniapp, pageId is set to 'home-page' in app onLaunch
+      if (app.__pageId === INDEX_PAGE) {
+        this.document = cache.getDocument(INDEX_PAGE);
+        this.document._switchPageId(this.pageId);
+        cache.destroy(INDEX_PAGE);
+        cache.init(this.pageId, this.document);
+        app.__pageId = this.pageId;
+      } else if (this.pageId === app.__pageId) {
         this.document = cache.getDocument(this.pageId);
       } else {
         this.document = createDocument(this.pageId);
@@ -31,13 +38,6 @@ export function getBaseLifeCycles(route, init, packageName = '') {
         init(this.window, this.document);
       }
 
-      // In wechat miniprogram web bundle need be executed in first page
-      if (!isMiniApp && !app.launched) {
-        app.init(this.document);
-        app.launched = true;
-        // The real app show has passed when init function execute
-        app.onShow.call(app, app.__showOptions);
-      }
       // Bind page internal to page document
       this.document._internal = this;
       if (isWeChatMiniProgram) {

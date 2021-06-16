@@ -3,6 +3,8 @@ import { isMiniApp } from 'universal-env';
 import createWindow from '../window';
 import createDocument from '../document';
 import cache from '../utils/cache';
+import { INDEX_PAGE } from '../constants';
+
 
 export default function(init, config, packageName = '', nativeAppConfig = {}) {
   cache.setConfig({
@@ -11,53 +13,36 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
   });
   const { onLaunch, onShow, onHide, onError, onPageNotFound, ...rest } = nativeAppConfig;
   const appConfig = {
-    launched: isMiniApp,
     onLaunch(options) {
       onLaunch && onLaunch.call(this, options);
 
       const window = createWindow();
       cache.setWindow(packageName, window);
+      // Only in alibaba miniapp `getCurrentPages()` can get the first page in app onLaunch
+      // eslint-disable-next-line no-undef
+      const currentPageId = isMiniApp ? `${getCurrentPages()[0].route}-1` : INDEX_PAGE;
+      const currentDocument = createDocument(currentPageId);
+      this.__pageId = window.__pageId = currentPageId;
 
-      // In wechat miniprogram getCurrentPages() length is 0, so web bundle only can be executed in first page
-      if (isMiniApp) {
-        // Use page route as pageId key word
-        // eslint-disable-next-line no-undef
-        const currentPageId = `${getCurrentPages()[0].route}-1`;
-        const currentDocument = createDocument(currentPageId);
-        this.__pageId = window.__pageId = currentPageId;
+      init(window, currentDocument, this);
+      window._trigger('launch', {
+        event: {
+          options,
+          context: this
+        }
+      });
 
-        init(window, currentDocument);
-        window._trigger('launch', {
-          event: {
-            options,
-            context: this
-          }
-        });
-      } else {
-        this.init = (document) => {
-          init(window, document);
-          window._trigger('launch', {
-            event: {
-              options,
-              context: this
-            }
-          });
-        };
-      }
       this.window = window;
     },
     onShow(options) {
       onShow && onShow.call(this, options);
 
-      this.__showOptions = options;
-      if (this.window && this.launched) {
-        this.window._trigger('appshow', {
-          event: {
-            options,
-            context: this
-          }
-        });
-      }
+      this.window && this.window._trigger('appshow', {
+        event: {
+          options,
+          context: this
+        }
+      });
     },
     onHide() {
       onHide && onHide.call(this);
