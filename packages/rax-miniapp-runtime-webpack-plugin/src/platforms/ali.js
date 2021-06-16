@@ -587,7 +587,6 @@ const Video = {
 
 const Camera = {
   props: {
-    id: '',
     mode: addSingleQuote('normal'),
     'device-position': addSingleQuote('back'),
     flash: addSingleQuote('auto'),
