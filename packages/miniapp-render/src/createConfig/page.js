@@ -15,7 +15,7 @@ export function getBaseLifeCycles(route, init, packageName = '') {
       const app = getApp();
 
       this.pageId = route + '-' + cache.getRouteId(route);
-      // In non alibaba miniapp, pageId is set to 'home-page' in app onLaunch
+      // In non alibaba miniapp or the first page is from plugin, pageId is set to 'home-page' in app onLaunch
       if (app.__pageId === INDEX_PAGE) {
         this.document = cache.getDocument(INDEX_PAGE);
         this.document._switchPageId(this.pageId);

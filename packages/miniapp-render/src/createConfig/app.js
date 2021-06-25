@@ -18,9 +18,10 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
 
       const window = createWindow();
       cache.setWindow(packageName, window);
-      // Only in alibaba miniapp `getCurrentPages()` can get the first page in app onLaunch
-      // eslint-disable-next-line no-undef
-      const currentPageId = isMiniApp ? `${getCurrentPages()[0].route}-1` : INDEX_PAGE;
+      // `getCurrentPages()` can get the first page in app onLaunch in the following situation:
+      // 1. In alibaba miniapp
+      // 2. The first page is not from plugin
+      const currentPageId = getCurrentPages()[0] ? `${getCurrentPages()[0].route}-1` : INDEX_PAGE;
       const currentDocument = createDocument(currentPageId);
       this.__pageId = window.__pageId = currentPageId;
 
