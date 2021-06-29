@@ -2,6 +2,7 @@ const { join, dirname, relative, resolve, sep, extname } = require('path');
 
 const { copySync, existsSync, mkdirpSync, ensureFileSync, writeJSONSync, readFileSync, readJSONSync } = require('fs-extra');
 const { getOptions } = require('loader-utils');
+const resolveModule = require('resolve');
 const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const cached = require('./cached');
 const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPrefix, isFromTargetDirs } = require('./utils/pathHelper');
@@ -122,9 +123,7 @@ module.exports = function scriptLoader(content) {
             const componentPath = componentConfig.usingComponents[key];
             if (isNpmModule(componentPath)) {
               // component from node module
-              const realComponentPath = require.resolve(componentPath, {
-                paths: [this.resourcePath]
-              });
+              const realComponentPath = resolveModule.sync(componentPath, { paths: [this.resourcePath], preserveSymlinks: false });
               const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
               componentConfig.usingComponents[key] = normalizeOutputFilePath(removeExt(relativeComponentPath));
               // Native miniapp component js file will loaded by script-loader
