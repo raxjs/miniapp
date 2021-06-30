@@ -290,7 +290,8 @@ function renameNpmModules(ast, targetFileDir, outputPath, cwd) {
     const npmName = getNpmName(value);
     const nodeModulePath = join(rootContext, 'node_modules');
     const searchPaths = [nodeModulePath];
-    const target = require.resolve(npmName, { paths: searchPaths });
+    // Use resolve instead of require.resolve because require.resolve will read the exports field first, which is not expected
+    const target = resolveModule.sync(npmName, { paths: searchPaths, preserveSymlinks: false });
     // In tnpm, target will be like following (symbol linked path):
     // ***/_universal-toast_1.0.0_universal-toast/lib/index.js
     let packageJSONPath;
