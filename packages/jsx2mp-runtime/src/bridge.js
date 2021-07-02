@@ -347,15 +347,18 @@ export function runApp(...args) {
     },
     onError(error) {
       executeCallback(this, ON_ERROR, error);
-    },
-    onShareAppMessage(shareOptions) {
+    }
+  };
+
+  if (appCycles[ON_SHARE_APP_MESSAGE]) {
+    appOptions.onShareAppMessage = function(shareOptions) {
       // There will be one callback fn for shareAppMessage at most
       const callbackQueue = appCycles[ON_SHARE_APP_MESSAGE];
       if (Array.isArray(callbackQueue) && callbackQueue[0]) {
         return callbackQueue[0].call(this, shareOptions);
       }
-    }
-  };
+    };
+  }
 
   if (isQuickApp) {
     // Quickapp's app returns config as JSON
