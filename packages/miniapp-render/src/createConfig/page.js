@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+import { isWeChatMiniProgram } from 'universal-env';
 
 import cache from '../utils/cache';
 import injectLifeCycle from '../bridge/injectLifeCycle';
@@ -11,19 +11,24 @@ import createWindow from '../window';
 export function getBaseLifeCycles(route, init, packageName = '') {
   return {
     onLoad(query) {
-      // eslint-disable-next-line no-undef
-      const app = getApp();
-
       this.pageId = route + '-' + cache.getRouteId(route);
-      // In non alibaba miniapp or the first page is from plugin, pageId is set to 'home-page' in app onLaunch
-      if (app.__pageId === INDEX_PAGE) {
-        this.document = cache.getDocument(INDEX_PAGE);
-        this.document._switchPageId(this.pageId);
-        cache.destroy(INDEX_PAGE);
-        cache.init(this.pageId, this.document);
-        app.__pageId = this.pageId;
-      } else if (this.pageId === app.__pageId) {
-        this.document = cache.getDocument(this.pageId);
+      // getApp may not exist in situations like plugin project
+      // eslint-disable-next-line no-undef
+      if (typeof getApp === 'function') {
+        // eslint-disable-next-line no-undef
+        const app = getApp();
+        // In non alibaba miniapp or the first page is from plugin, pageId is set to 'home-page' in app onLaunch
+        if (app.__pageId === INDEX_PAGE) {
+          this.document = cache.getDocument(INDEX_PAGE);
+          this.document._switchPageId(this.pageId);
+          cache.destroy(INDEX_PAGE);
+          cache.init(this.pageId, this.document);
+          app.__pageId = this.pageId;
+        } else if (this.pageId === app.__pageId) {
+          this.document = cache.getDocument(this.pageId);
+        } else {
+          this.document = createDocument(this.pageId);
+        }
       } else {
         this.document = createDocument(this.pageId);
       }
