@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.6.1] - 2021-06-09
+
+### Fixed
+
+- template error in bytedance microapp
+
+## [4.6.0] - 2021-06-02
+
+- Support miniapps that don't support sjs
+
+- Identify bytedance microapp as miniapp platform that doesn't support sjs
+
+- Support configuring adding props of component template in `build.json`
+
 ## [4.5.0] - 2021-05-19
 
 - Support bytedance microapp/baidu smartprogram/kuaishou miniprogram

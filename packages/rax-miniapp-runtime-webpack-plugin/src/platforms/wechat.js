@@ -1044,6 +1044,7 @@ exports.adapter = {
   event: 'bind',
   catchEvent: 'catch',
   eventToLowerCase: true,
+  supportSjs: true,
   formatBindedData: (value) => `${value}`
 };
 

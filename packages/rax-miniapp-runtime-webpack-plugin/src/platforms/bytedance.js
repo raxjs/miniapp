@@ -948,16 +948,16 @@ exports.shouldNotGenerateTemplateComponents = new Set([
 exports.needModifyChildrenComponents = {
   Swiper: (children, level) => `
     <swiper-item tt:for="{{r.children}}" tt:if="{{item.nodeType !== 'h-comment'}}" tt:key="nodeId">
-      <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'swiper')}}" />
+      <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </swiper-item>`,
   MovableArea: children => `
-    <movable-view tt:for="{{r.children}}" tt:key="nodeId" tt:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
-      <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'movable-area')}}" />
+    <movable-view tt:for="{{r.children}}" tt:key="nodeId" tt:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{item['inertia'] === undefined ? false : item['inertia']}}" out-of-bounds="{{item['out-of-bounds'] ? false : item['out-of-bounds']}}" x="{{item['x'] === undefined ? 0 : item['x']}}" y="{{item['y'] === undefined ? 0 : item['x']}}" damping="{{item['damping'] === undefined ? 20 : item['damping']}}" friction="{{item['friction'] === undefined ? 20 : item['friction']}}" disabled="{{item['disabled'] === undefined ? false : item['disabled']}}" scale="{{item['scale'] === undefined ? false : item['scale']}}" scale-min="{{item['scale-min'] === undefined ? 0.5 : item['scale-min']}}" scale-max="{{item['scale-max'] === undefined ? 10 : item['scale-min']}}" scale-value="{{item['scale-value'] === undefined ? 1 : item['scale-value']}}" animation="{{item['animation'] === undefined ? true : item['animation']}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
+      <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
   ScrollView: children => `
     <block tt:for="{{r.children}}" tt:key="nodeId">
       <block tt:if="{{item.nodeId}}">
-        <template is="{{tool.c(item.nodeType, tool.d(c, 'scroll-view'))}}" data="{{r: item, c: tool.d(c, 'scroll-view'), cid: cid}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
       </block>
       <block tt:else>
         <block>{{item.content}}</block>
@@ -966,13 +966,13 @@ exports.needModifyChildrenComponents = {
   `,
   PickerView: children => `
     <picker-view-column tt:for="{{r.children}}" tt:key="nodeId" tt:if="{{item.nodeType !== 'h-comment'}}">
-      <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'picker-view')}}" />
+      <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </picker-view-column>
   `,
   Map: children => `
     <block tt:for="{{r.children}}" tt:key="nodeId">
       <block tt:if="{{item.nodeId}}">
-        <template is="{{tool.c(item.nodeType, tool.d(c, 'map'))}}" data="{{r: item, c: tool.d(c, 'map'), cid: cid}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
       </block>
       <block tt:else>
         <block>{{item.content}}</block>
@@ -993,6 +993,7 @@ exports.adapter = {
   event: 'bind',
   catchEvent: 'catch',
   eventToLowerCase: true,
+  supportSjs: false,
   formatBindedData: (value) => `${value}`
 };
 

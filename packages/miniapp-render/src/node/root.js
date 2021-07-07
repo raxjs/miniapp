@@ -44,6 +44,8 @@ class RootElement extends Element {
     // type 2: { path, value }
 
     const internal = cache.getDocument(this.__pageId)._internal;
+    const { mainPackageName } = cache.getConfig();
+    const window = cache.getWindow(mainPackageName);
 
     if (internal.$batchedUpdates) {
       let callback;
@@ -51,6 +53,7 @@ class RootElement extends Element {
         this.__renderStacks.forEach((task, index) => {
           if (index === this.__renderStacks.length - 1) {
             callback = () => {
+              window._trigger('setDataFinished');
               if (process.env.NODE_ENV === 'development') {
                 perf.stop('setData');
               }
@@ -116,6 +119,7 @@ class RootElement extends Element {
 
       internal.firstRenderCallback(renderObject);
       internal.setData(renderObject, () => {
+        window._trigger('setDataFinished');
         let fn;
         while (fn = this.__renderCallbacks.pop()) {
           fn();

@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram } from 'universal-env';
+import { isWeChatMiniProgram, isBaiduSmartProgram } from 'universal-env';
 import { isUndef } from '../utils/tool';
 
 const textarea = {
@@ -45,7 +45,7 @@ const textarea = {
   }]
 };
 
-if (isWeChatMiniProgram) {
+if (isWeChatMiniProgram || isBaiduSmartProgram) {
   textarea.simpleEvents = textarea.simpleEvents.concat([{
     name: 'onTextareaLineChange',
     eventName: 'linechange'
