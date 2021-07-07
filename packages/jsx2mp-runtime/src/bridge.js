@@ -313,6 +313,7 @@ export function runApp(...args) {
   if (staticConfig) {
     throw new Error('runApp can only be called once.');
   }
+  let appProps = {};
   if (args.length === 1) {
     // runApp(staticConfig)
     staticConfig = args[0];
@@ -325,6 +326,7 @@ export function runApp(...args) {
     setModernMode(true);
     staticConfig = args[1];
     if (args[0].app) {
+      appProps = args[0].app;
       [ON_LAUNCH, ON_ERROR, ON_HIDE, ON_SHOW, ON_SHARE_APP_MESSAGE].forEach(cycle => {
         if (typeof args[0].app[cycle] === 'function') {
           useAppEffect(cycle, args[0].app[cycle]);
@@ -335,6 +337,7 @@ export function runApp(...args) {
   __updateRouterMap(staticConfig);
 
   const appOptions = {
+    ...appProps,
     // Bridge app launch.
     onLaunch(launchOptions) {
       executeCallback(this, ON_LAUNCH, launchOptions);
