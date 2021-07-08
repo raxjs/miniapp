@@ -82,12 +82,11 @@ class RootElement extends Element {
       const cacheData = [];
 
       const childrenValuePaths = [];
-      const nonChildrenValuePaths = [];
       this.__renderStacks.forEach(task => {
         const path = task.path;
         if (task.type === 'children') {
           const latestValue = getProperty(internal.data, path, cacheData);
-          // path cache should save lastest latestValue
+          // path cache should save latest latestValue
           cacheData.push({
             cachedPath: task.path,
             value: latestValue
@@ -104,16 +103,16 @@ class RootElement extends Element {
           childrenValuePaths.push(path);
         } else {
           renderObject[path] = task.value;
-          nonChildrenValuePaths.push(path);
         }
       });
 
-      // Remove those specific values that have included in setting children value
-      for (const nonChilrenValuePath of nonChildrenValuePaths) {
-        for (const childrenValuePath of childrenValuePaths) {
-          if (nonChilrenValuePath.includes(childrenValuePath)) {
-            delete renderObject[nonChilrenValuePath];
-          }
+      if (!internal.firstRender) {
+        for (const path in renderObject) {
+          childrenValuePaths.forEach(cp => {
+            if (path.includes(cp) && cp !== path) {
+              delete renderObject[path];
+            }
+          })
         }
       }
 
