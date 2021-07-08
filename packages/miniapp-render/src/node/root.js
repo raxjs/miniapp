@@ -64,6 +64,7 @@ class RootElement extends Element {
             };
             internal.firstRenderCallback();
           }
+          // there is no need to aggregate arrays if $batchedUpdate and $spliceData exist
           if (task.type === 'children') {
             const spliceArgs = [task.start, task.deleteCount];
             internal.$spliceData({
@@ -78,30 +79,43 @@ class RootElement extends Element {
       });
     } else {
       const renderObject = {};
-      const pathCache = [];
+      const cacheData = [];
+
+      const childrenValuePaths = [];
       this.__renderStacks.forEach(task => {
         const path = task.path;
-        // there is no need to aggregate arrays if $batchedUpdate and $spliceData exist
         if (task.type === 'children') {
-          const taskInfo = getProperty(internal.data, path, pathCache);
-          // path cache should save lastest taskInfo value
-          pathCache.push({
-            path: task.path,
-            value: taskInfo.value
+          const latestValue = getProperty(internal.data, path, cacheData);
+          // path cache should save latest latestValue
+          cacheData.push({
+            cachedPath: task.path,
+            value: latestValue
           });
 
           if (!renderObject[path]) {
-            renderObject[path] = taskInfo.value ? [...taskInfo.value] : [];
+            renderObject[path] = latestValue ? [...latestValue] : [];
           }
           if (task.item) {
             renderObject[path].splice(task.start, task.deleteCount, task.item);
           } else {
             renderObject[path].splice(task.start, task.deleteCount);
           }
+          childrenValuePaths.push(path);
         } else {
           renderObject[path] = task.value;
         }
       });
+
+      if (!internal.firstRender) {
+        for (const path in renderObject) {
+          childrenValuePaths.forEach(cp => {
+            if (path.includes(cp) && cp !== path) {
+              delete renderObject[path];
+            }
+          })
+        }
+      }
+
       internal.firstRenderCallback(renderObject);
       internal.setData(renderObject, () => {
         window._trigger('setDataFinished');
