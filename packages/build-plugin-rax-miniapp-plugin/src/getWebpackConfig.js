@@ -12,8 +12,8 @@ const { platformMap } = require('miniapp-builder-shared');
 
 const ProcessPluginJsonPlugin = require('./plugins/ProcessPluginJson');
 const formatPath = require('./utils/formatPath');
-const EntryLoader = require.resolve('./loaders/EntryLoader');
 
+const EntryLoader = require.resolve('./loaders/EntryLoader');
 
 module.exports = (options) => {
   const { isCompileProject, mode, target, api, outputPath } = options;
@@ -86,7 +86,7 @@ module.exports = (options) => {
 
     webpackConfig
       .entry('bundle')
-      .add(`${EntryLoader}!${formatPath(path.join(rootDir, './src/plugin.json'))}`)
+      .add(`${EntryLoader}!${formatPath(path.join(rootDir, './src/plugin.json'))}`);
 
     webpackConfig
       .output
@@ -102,4 +102,4 @@ module.exports = (options) => {
 
     return webpackConfig;
   }
-}
+};

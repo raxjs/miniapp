@@ -8,5 +8,4 @@ module.exports = (context, { target = MINIAPP, demoClientFolder = false}) => {
     return path.resolve(rootDir, 'demo', target);
   }
   return path.resolve(rootDir, 'demo', target, 'plugin');
-
 };

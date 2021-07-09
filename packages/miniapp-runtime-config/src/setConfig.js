@@ -17,14 +17,12 @@ const setBaseConfig = require('./setBaseConfig');
  * @param {string} options.outputPath - outputPath
  */
 module.exports = (config, options) => {
-  const { api, outputPath, target } = options;
+  const { api, target } = options;
   const { context } = api;
   const { rootDir, userConfig: rootUserConfig } = context;
   const userConfig = rootUserConfig[target] || {};
 
-  if (!outputPath) {
-    outputPath = resolve(rootDir, 'build', target);
-  }
+  const outputPath = options.outputPath || resolve(rootDir, 'build', target);
 
   // Native lifecycle map
   const nativeLifeCycleMap = {};
