@@ -294,13 +294,11 @@ class MiniAppRuntimePlugin {
             }
           );
         }
-        let commonPageJSFilePaths = [];
-        if (subPackages && mainPackageRoot !== subAppRoot) {
-          commonPageJSFilePaths = compilation.entrypoints
-            .get(getBundlePath(subAppRoot))
-            .getFiles()
-            .filter((filePath) => !isCSSFile(filePath));
-        }
+
+        const commonPageJSFilePaths = compilation.entrypoints
+          .get(getBundlePath(subAppRoot))
+          .getFiles()
+          .filter((filePath) => !isCSSFile(filePath));
         let pagePath = entryName;
         if (!subPackages) {
           pagePath = finalRouteMap[getSepProcessedPath(source)];
