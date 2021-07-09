@@ -75,7 +75,7 @@ describe('Transform condition', () => {
     `);
     _transformTemplate(ast, {}, adapter, {});
     expect(genCode(ast).code).toEqual(`<View>
-        <block a:if={a}><View>1</View></block><block a:else>{a}</block>
+        <block a:if={a}><View>1</View></block>
       </View>`);
   });
 
@@ -87,7 +87,7 @@ describe('Transform condition', () => {
     `);
     _transformTemplate(ast, {}, adapter, {});
     expect(genCode(ast).code).toEqual(`<View>
-        <block a:if={!a}><block a:if={b}><View>1</View></block><block a:else>{b}</block></block><block a:else>{a}</block>
+        <block a:if={!a}><block a:if={b}><View>1</View></block></block>
       </View>`);
   });
 
