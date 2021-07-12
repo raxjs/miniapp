@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.7] - 2021-07-12
+
+### Changed
+
+- Remove copy-webpack-plugin dependency and inherit the config from build-plugin-rax-miniapp
 ## [0.3.6] - 2021-04-27
 
 ### Changed
