@@ -125,7 +125,7 @@ module.exports = function scriptLoader(content) {
             const componentPath = componentConfig.usingComponents[key];
             if (isNpmModule(componentPath)) {
               // component from node module
-              const realComponentPath = resolveModule.sync(componentPath, { basedir: cwd, paths: [this.resourcePath], preserveSymlinks: false });
+              const realComponentPath = resolveModule.sync(componentPath, { basedir: this.resourcePath, paths: [this.resourcePath], preserveSymlinks: false });
               const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
               componentConfig.usingComponents[key] = normalizeOutputFilePath(removeExt(relativeComponentPath));
               // Native miniapp component js file will loaded by script-loader

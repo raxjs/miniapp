@@ -4,8 +4,6 @@ const {
 } = require('miniapp-builder-shared');
 const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
 const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { resolve } = require('path');
 
 /**
  * Set miniapp runtime project webpack config
@@ -84,11 +82,9 @@ module.exports = (
   ]);
 
   if (needCopyList.length > 0) {
-    config.plugin('copyWebpackPluginForRuntimeMiniapp').use(CopyWebpackPlugin, [
-      {
-        patterns: needCopyList,
-      },
-    ]);
+    config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
+      return [copyList.concat(needCopyList)];
+    });
   }
 
   config.devServer.writeToDisk(true).noInfo(true).inline(false);
