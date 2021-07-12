@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.29] - 2021-07-12
+
+### Fixed
+
+- Use file resourcePath as basedir
+
 ## [0.4.28] - 2021-06-30
 
 ### Fixed
