@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.23] - 2021-07-12
+
+### Changed
+
+- Set modern mode default value to true to satisfy plugin project
+
 ## [0.4.22] - 2021-07-6
 
 ### Fixed
