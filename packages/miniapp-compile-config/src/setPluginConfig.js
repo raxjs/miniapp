@@ -99,11 +99,7 @@ module.exports = (
       from: resolve(rootDir, 'src', 'miniapp-native'),
       to: resolve(outputPath, 'miniapp-native'),
     }];
-    config.plugin('CopyWebpackPlugin').use(CopyWebpackPlugin, [
-      {
-        patterns: needCopyDirs,
-      },
-    ]);
+    config.plugin('CopyWebpackPlugin').use(CopyWebpackPlugin, [needCopyDirs]);
   }
 
   return config;
