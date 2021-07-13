@@ -245,8 +245,7 @@ class EventTarget {
         if (event && event._immediateStop) return;
         try {
           const processedArgs = event ? [event, ...args] : [...args];
-          result = handler.call(this || null, ...processedArgs);
-          return result;
+          result = handler.call(this || null, ...processedArgs);  // Only the last result will be returned
         } catch (err) {
           console.error(err);
         }
