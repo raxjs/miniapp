@@ -5,19 +5,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'multiple return',
-      category: 'Fill me in',
+      url: docUrl('no_multiple_return'),
       recommended: false,
     },
     messages: {
-      avoidMethod: 'multiple return is forbidden.',
+      noMultipleReturn: 'multiple return is forbidden.',
     },
   },
 
@@ -45,7 +43,7 @@ module.exports = {
               parentMap[parentRange] += 1;
               context.report({
                 node: returnList[0],
-                messageId: 'avoidMethod',
+                messageId: 'noMultipleReturn',
               });
             }
           });

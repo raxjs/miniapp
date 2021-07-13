@@ -61,7 +61,7 @@ ruleTester.run('no_multilevel_condition', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noMultiLevelCondition',
         },
       ],
     },
@@ -80,7 +80,7 @@ ruleTester.run('no_multilevel_condition', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noMultiLevelCondition',
         },
       ],
     }

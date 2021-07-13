@@ -38,7 +38,7 @@ ruleTester.run('no-double-quotation', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noDoubleQuotation',
         },
       ],
     },

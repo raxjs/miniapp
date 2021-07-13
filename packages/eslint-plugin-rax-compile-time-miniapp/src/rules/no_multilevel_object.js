@@ -4,18 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no multilevel object like item.info.list',
       recommended: false,
+      url: docUrl('no_multilevel_object'),
     },
     messages: {
-      avoidMethod: "currently doesn't support render list by multilevel object, like item.info.list.",
+      noMultilevelObject: "currently doesn't support render list by multilevel object, like item.info.list.",
     },
   },
 
@@ -69,7 +68,7 @@ module.exports = {
             if (findAncestor(node) && isMultiLoop(node.parent) && isJSX(node)) {
               context.report({
                 node,
-                messageId: 'avoidMethod',
+                messageId: 'noMultilevelObject',
               });
             }
           }

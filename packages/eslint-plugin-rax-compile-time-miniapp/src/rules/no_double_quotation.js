@@ -4,6 +4,8 @@
  */
 'use strict';
 
+const { docUrl } = require('../utils');
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -12,11 +14,11 @@ module.exports = {
   meta: {
     docs: {
       description: 'no double quotation mask in jsx',
-      category: 'Fill me in',
+      url: docUrl('no_double_quotation'),
       recommended: false,
     },
     messages: {
-      avoidMethod: 'no double quotation mask in jsx.',
+      noDoubleQuotation: 'no double quotation mask in jsx.',
     },
   },
 
@@ -27,7 +29,7 @@ module.exports = {
           if(/^\"/.test(node.value.raw)){
             context.report({
               node,
-              messageId: 'avoidMethod',
+              messageId: 'noDoubleQuotation',
             });
           }
         }

@@ -18,7 +18,7 @@ module.exports = {
       recommended: false,
     },
     messages: {
-      avoidMethod: `shouldn't handle 'props.children'`,
+      noChildrenHandler: `shouldn't handle 'props.children'`,
     },
   },
 
@@ -35,7 +35,7 @@ module.exports = {
               if (node.parent.property) {
                 context.report({
                   node,
-                  messageId: 'avoidMethod',
+                  messageId: 'noChildrenHandler',
                 });
               }
             }
@@ -54,7 +54,7 @@ module.exports = {
             ) {
               context.report({
                 node,
-                messageId: 'avoidMethod',
+                messageId: 'noChildrenHandler',
               });
             }
           }

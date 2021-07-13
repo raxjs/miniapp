@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-rax-compile-time-miniapp",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "for rax-compile-time-miniapp",
   "keywords": [
     "eslint",

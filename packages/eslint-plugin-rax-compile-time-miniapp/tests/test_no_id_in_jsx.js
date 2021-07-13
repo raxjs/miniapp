@@ -38,7 +38,7 @@ ruleTester.run('export-default-component', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noIdInJsx',
         },
       ],
     },
@@ -50,7 +50,7 @@ ruleTester.run('export-default-component', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noIdInJsx',
         },
       ],
     },

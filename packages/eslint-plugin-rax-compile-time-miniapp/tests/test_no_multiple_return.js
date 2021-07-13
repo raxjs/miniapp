@@ -41,7 +41,7 @@ ruleTester.run('no-multiple-return', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noMultipleReturn',
         },
       ],
     },
@@ -57,7 +57,7 @@ ruleTester.run('no-multiple-return', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noMultipleReturn',
         },
       ],
     },

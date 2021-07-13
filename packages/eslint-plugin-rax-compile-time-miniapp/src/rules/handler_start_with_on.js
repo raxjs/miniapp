@@ -15,7 +15,7 @@ module.exports = {
       recommended: false,
     },
     messages: {
-      avoidMethod: 'props handler name should start with on.',
+      recommendHandlerName: 'props handler name should start with on.',
     },
   },
 
@@ -27,7 +27,7 @@ module.exports = {
           if (parent.value.expression.type === 'ArrowFunctionExpression') {
             context.report({
               node,
-              messageId: 'avoidMethod',
+              messageId: 'recommendHandlerName',
             });
           }
         }
@@ -43,7 +43,7 @@ module.exports = {
             !/^render[A-Z]/.test(property.name)
           ) {
             context.report({
-              messageId: 'avoidMethod',
+              messageId: 'recommendHandlerName',
               node,
             });
           }

@@ -34,7 +34,7 @@ ruleTester.run('no-spread-operator', rule, {
       code: '<View {...props}></View>',
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noSpreadOperator',
         },
       ],
     },

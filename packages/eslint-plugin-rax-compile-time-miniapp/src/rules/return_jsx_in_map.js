@@ -4,21 +4,18 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
 const jsxElement = ['JSXFragment', 'JSXElement', 'JSXText', 'JSXExpressionContainer'];
-const { findAncestor } = require('../utils');
+const { findAncestor, docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'must return jsx element in map',
       recommended: false,
+      url: docUrl('return_jsx_in_map'),
     },
     messages: {
-      errorMsg: 'must return jsx element in map.',
+      mustReturnJsxInMap: 'must return jsx element in map.',
     },
   },
 
@@ -51,7 +48,7 @@ module.exports = {
             if (!jsxElement.includes(type) && isMapCall) {
               context.report({
                 node,
-                messageId: 'errorMsg',
+                messageId: 'mustReturnJsxInMap',
               });
             }
           }

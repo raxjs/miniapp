@@ -4,6 +4,8 @@
  */
 'use strict';
 
+const { docUrl } = require('../utils');
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -13,9 +15,10 @@ module.exports = {
     docs: {
       description: 'export default only supports component',
       recommended: false,
+      url: docUrl('export_default_component')
     },
     messages: {
-      avoidMethod: 'export default should be component.',
+      shouldBeComponent: 'export default should be component.',
     },
   },
 
@@ -38,7 +41,7 @@ module.exports = {
             if (/tsx|jsx$/.test(context.getFilename())) {
               context.report({
                 node,
-                messageId: 'avoidMethod',
+                messageId: 'shouldBeComponent',
               });
             }
           }

@@ -20,4 +20,4 @@ Examples of **correct** code for this rule:
 ```
 
 ## More
-https://rax.alibaba-inc.com/docs/guide/compile-miniapp-syntax-constraints#%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6
+https://rax.js.org/docs/guide/compile-miniapp-syntax-constraints#%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6

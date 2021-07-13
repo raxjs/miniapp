@@ -4,9 +4,7 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 const description = '微信小程序的基础视图架构是通过 Web Components 实现的，导致如果在自定义组件上写 id 会造成在组件中无法通过 props.id 获取的情况。例如：<Child id={someId} /> ，此时在 Child 中是无法通过 props.id 获取到值的。因此，Rax 在编译时做了转化，当开发者 <Child id={someId} /> 这样写的时候，不仅会保留外层的 id，还会添加一个等值的 componentId，开发者在自定义组件中可以通过 props.componentId 获取到想要的值。';
 module.exports = {
@@ -14,9 +12,10 @@ module.exports = {
     docs: {
       description,
       recommended: false,
+      url: docUrl('no_id_in_jsx'),
     },
     messages: {
-      avoidMethod: 'Using id as attribute in custom components is not recommended',
+      noIdInJsx: 'Using id as attribute in custom components is not recommended',
     },
   },
 
@@ -27,7 +26,7 @@ module.exports = {
         if (node.name && 'id' === node.name) {
           context.report({
             node,
-            messageId: 'avoidMethod',
+            messageId: 'noIdInJsx',
           });
         }
       },
@@ -40,7 +39,7 @@ module.exports = {
           'id' === property.name
         ) {
           context.report({
-            messageId: 'avoidMethod',
+            messageId: 'noIdInJsx',
             node,
           });
         }

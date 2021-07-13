@@ -65,7 +65,7 @@ ruleTester.run('no-multiple-component', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noMultipleComponent',
         },
       ],
     }

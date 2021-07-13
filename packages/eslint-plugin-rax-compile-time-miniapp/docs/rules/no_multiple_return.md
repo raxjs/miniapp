@@ -17,4 +17,4 @@ function App() {
 ```
 
 ## More
-https://rax.alibaba-inc.com/docs/guide/compile-miniapp-syntax-constraints#%E5%A4%9A%E4%B8%AA%20return
+https://rax.js.org/docs/guide/compile-miniapp-syntax-constraints#%E5%A4%9A%E4%B8%AA%20return

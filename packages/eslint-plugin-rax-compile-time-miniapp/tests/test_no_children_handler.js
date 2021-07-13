@@ -41,7 +41,7 @@ ruleTester.run('no-children-handler', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noChildrenHandler',
         },
       ],
       filename: 'test.jsx',
@@ -57,7 +57,7 @@ ruleTester.run('no-children-handler', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noChildrenHandler',
         },
       ],
       filename: 'test.jsx',

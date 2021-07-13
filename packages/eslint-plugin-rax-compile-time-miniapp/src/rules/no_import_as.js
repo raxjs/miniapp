@@ -8,7 +8,7 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-const description = `no import Component as CustomComponent`;
+const description = `no 'import component as' , like : import { Component as CustomComponent } from 'rax' `;
 
 module.exports = {
   meta: {
@@ -17,7 +17,7 @@ module.exports = {
       recommended: false,
     },
     messages: {
-      avoidMethod: description,
+      noImportAs: description,
     },
   },
 
@@ -30,7 +30,7 @@ module.exports = {
               if (node.local && node.local.name !== 'Component') {
                 context.report({
                   node,
-                  messageId: 'avoidMethod',
+                  messageId: 'noImportAs',
                 });
               }
             }

@@ -4,18 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no multipile component',
       recommended: false,
+      url: docUrl('no_multiple_component'),
     },
     messages: {
-      avoidMethod: 'no multipile component in one file.',
+      noMultipleComponent: 'no multipile component in one file.',
     },
   },
 
@@ -41,7 +40,7 @@ module.exports = {
           if (count >= 2) {
             context.report({
               node,
-              messageId: 'avoidMethod',
+              messageId: 'noMultipleComponent',
             });
           }
         }

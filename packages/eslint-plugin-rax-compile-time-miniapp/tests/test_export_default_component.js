@@ -48,7 +48,7 @@ ruleTester.run('export-default-component', rule, {
           export default Component2;`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'shouldBeComponent',
         },
       ],
       filename: 'test.tsx',

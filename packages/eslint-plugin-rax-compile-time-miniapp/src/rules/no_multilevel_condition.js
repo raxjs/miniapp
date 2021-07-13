@@ -4,18 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no multilevel condition statement for JSX',
       recommended: false,
+      url: docUrl('no_multilevel_condition'),
     },
     messages: {
-      avoidMethod: 'no multilevel condition statement for JSX',
+      noMultiLevelCondition: 'no multilevel condition statement for JSX',
     },
   },
 
@@ -52,7 +51,7 @@ module.exports = {
           if (parentConditionCount >= 2) {
             context.report({
               node,
-              messageId: 'avoidMethod',
+              messageId: 'noMultiLevelCondition',
             });
           }
         }

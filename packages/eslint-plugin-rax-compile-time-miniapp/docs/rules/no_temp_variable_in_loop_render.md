@@ -36,4 +36,4 @@ Examples of **correct** code for this rule:
 ```
 
 ## More
-https://rax.alibaba-inc.com/docs/guide/compile-miniapp-syntax-constraints#%E5%9C%A8%E5%BE%AA%E7%8E%AF%E4%B8%AD%E5%90%91%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0
+https://rax.js.org/docs/guide/compile-miniapp-syntax-constraints#%E5%9C%A8%E5%BE%AA%E7%8E%AF%E4%B8%AD%E5%90%91%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E4%BC%A0%E9%80%92%E5%8F%82%E6%95%B0

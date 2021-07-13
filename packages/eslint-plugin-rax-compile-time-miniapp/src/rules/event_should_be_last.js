@@ -4,6 +4,8 @@
  */
 'use strict';
 
+const { docUrl } = require('../utils');
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -20,6 +22,7 @@ const eventList = [
 module.exports = {
   meta: {
     docs: {
+      url: docUrl('event_should_be_last'),
       description: 'If handler has `event` , it should be the last param , like `(count, event) => {}`',
       recommended: false,
     },

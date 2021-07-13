@@ -21,4 +21,4 @@ function handleComponent() {
 ```
 
 ## More
-https://rax.alibaba-inc.com/docs/guide/compile-miniapp-syntax-constraints#%E7%BB%84%E4%BB%B6%E5%AF%BC%E5%87%BA%E6%96%B9%E5%BC%8F
+https://rax.js.org/docs/guide/compile-miniapp-syntax-constraints#%E7%BB%84%E4%BB%B6%E5%AF%BC%E5%87%BA%E6%96%B9%E5%BC%8F

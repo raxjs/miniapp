@@ -4,18 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no hoc',
       recommended: false,
+      url: docUrl('no_hoc'),
     },
     messages: {
-      avoidMethod: 'hoc "{{name}}" is forbidden.',
+      noHoc: 'hoc "{{name}}" is forbidden.',
     },
   },
 
@@ -49,7 +48,7 @@ module.exports = {
                     if (sb.argument && sb.argument.openingElement && sb.argument.openingElement.name) {
                       context.report({
                         node,
-                        messageId: 'avoidMethod',
+                        messageId: 'noHoc',
                         data: {
                           name: node.id.name,
                         },

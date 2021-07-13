@@ -73,7 +73,7 @@ ruleTester.run('no-multilevel-object', rule, {
           </View>`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noMultilevelObject',
         },
       ],
     },

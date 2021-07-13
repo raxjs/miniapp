@@ -4,18 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no import next export in jsx',
       recommended: false,
+      url: docUrl('no_import_next_export'),
     },
     messages: {
-      avoidMethod: 'no import next export in jsx',
+      noImportNextExport: 'no import next export in jsx',
     },
   },
 
@@ -43,7 +42,7 @@ module.exports = {
         if (result) {
           context.report({
             node,
-            messageId: 'avoidMethod',
+            messageId: 'noImportNextExport',
             data: {
               name: exportDeclarationName,
             },

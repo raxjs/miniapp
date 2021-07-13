@@ -4,19 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no spread_operator',
-      category: 'Fill me in',
+      url: docUrl('no_spread'),
       recommended: false,
     },
     messages: {
-      avoidMethod: "spread operator '{{name}}' is forbidden. FYI: https://rax.alibaba-inc.com/docs/guide/syntax-constraints#%E6%89%A9%E5%B1%95%E8%BF%90%E7%AE%97%E7%AC%A6",
+      noSpreadOperator: "spread operator '{{name}}' is forbidden. FYI: https://rax.js.org/docs/guide/compile-miniapp-syntax-constraints",
     },
   },
 
@@ -31,7 +29,7 @@ module.exports = {
           if (hasSpreadAttribute) {
             context.report({
               node,
-              messageId: 'avoidMethod',
+              messageId: 'noSpreadOperator',
               data: {
                 name: node.name,
               },

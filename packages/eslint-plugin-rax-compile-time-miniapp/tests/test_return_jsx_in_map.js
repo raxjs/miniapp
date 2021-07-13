@@ -166,7 +166,7 @@ ruleTester.run('return_jsx_in_map', rule, {
 
       errors: [
         {
-          messageId: 'errorMsg',
+          messageId: 'mustReturnJsxInMap',
         },
       ],
     },

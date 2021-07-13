@@ -4,19 +4,17 @@
  */
 'use strict';
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 module.exports = {
   meta: {
     docs: {
       description: 'no return arrays',
-      category: 'Fill me in',
+      url: docUrl('no_return_arrays'),
       recommended: false,
     },
     messages: {
-      avoidMethod: 'return jsx array is forbidden.',
+      noReturnArrays: 'return jsx array is forbidden.',
     },
   },
 
@@ -31,7 +29,7 @@ module.exports = {
           ) {
             context.report({
               node,
-              messageId: 'avoidMethod',
+              messageId: 'noReturnArrays',
             });
           }
         }

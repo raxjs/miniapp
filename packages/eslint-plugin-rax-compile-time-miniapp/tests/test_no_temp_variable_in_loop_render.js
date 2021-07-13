@@ -101,7 +101,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -118,7 +118,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -135,7 +135,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -152,7 +152,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -169,7 +169,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -186,7 +186,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -203,7 +203,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -220,7 +220,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -237,7 +237,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -254,7 +254,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -271,7 +271,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -288,7 +288,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -305,7 +305,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -322,7 +322,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -339,7 +339,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -356,7 +356,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -373,7 +373,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
        })`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },
@@ -399,7 +399,7 @@ ruleTester.run('test_no_temp_variable_in_loop_render', rule, {
         }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         },
       ],
     },

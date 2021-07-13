@@ -37,7 +37,7 @@ ruleTester.run('import-as', rule, {
       code: `import { Component as RaxComponent } from 'rax'`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noImportAs',
         },
       ],
       filename: 'test.jsx'

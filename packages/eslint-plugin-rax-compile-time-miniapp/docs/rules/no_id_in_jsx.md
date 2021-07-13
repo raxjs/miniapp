@@ -6,4 +6,4 @@
 此条规则目前只是 `warning` 
 
 ## More
-https://rax.alibaba-inc.com/docs/guide/compile-miniapp-syntax-constraints#%E5%85%B3%E9%94%AE%E8%AF%8D
+https://rax.js.org/docs/guide/compile-miniapp-syntax-constraints#%E5%85%B3%E9%94%AE%E8%AF%8D

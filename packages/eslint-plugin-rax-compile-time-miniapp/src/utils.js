@@ -15,6 +15,7 @@ module.exports = {
     'rax-view',
     'rax-text'
   ],
+  docUrl,
 };
 
 /**
@@ -30,4 +31,12 @@ function findAncestor(node, finder) {
   const isFind = finder(parent);
 
   return isFind ? parent : findAncestor(parent, finder);
+}
+
+/**
+ * 返回用户可查看的 doc url
+ */
+function docUrl(docName){
+  const repoUrl = 'https://github.com/raxjs/miniapp/tree/master/packages/eslint-plugin-rax-compile-time-miniapp';
+  return `${repoUrl}/docs/rules/${docName}.md`
 }

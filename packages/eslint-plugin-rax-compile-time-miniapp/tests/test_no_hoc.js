@@ -41,7 +41,7 @@ ruleTester.run('no-hoc', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noHoc',
         },
       ],
     },
@@ -55,7 +55,7 @@ ruleTester.run('no-hoc', rule, {
           }`,
       errors: [
         {
-          messageId: 'avoidMethod',
+          messageId: 'noHoc',
         },
       ],
     },

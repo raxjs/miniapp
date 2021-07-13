@@ -6,9 +6,7 @@
 
 const { baseComponents } = require('../utils');
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
+const { docUrl } = require('../utils');
 
 const TYPE = {
   JSXExpressionContainer: 'JSXExpressionContainer',
@@ -56,14 +54,13 @@ module.exports = {
   meta: {
     docs: {
       description: 'no temporary variable in loop render',
-      category: 'Fill me in',
+      url: docUrl('no_temp_variable_in_loop_render'),
       recommended: false,
     },
     messages: {
-      avoidMethod:
+      noTempVariableInLoopRender:
         'Do not use temporary variable like "item" or "index" in loop render,' +
-        'if necessary, use CallExpression instead of BlockStatement. e.g. <View onClick={() => handleClick(index)}> ' +
-        'https://rax.alibaba-inc.com/docs/guide/syntax-constraints',
+        'if necessary, use CallExpression instead of BlockStatement. e.g. <View onClick={() => handleClick(index)}> '
     },
   },
 
@@ -138,7 +135,7 @@ class Checker {
       if (hasParam) {
         this.context.report({
           node,
-          messageId: 'avoidMethod',
+          messageId: 'noTempVariableInLoopRender',
         });
       }
     });
