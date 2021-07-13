@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "chokidar": "^3.4.2",
-    "copy-webpack-plugin": "^6.0.3",
+    "copy-webpack-plugin": "^5.0.4",
     "fs-extra": "^8.0.1",
     "json-loader": "^0.5.7",
     "jsx2mp-loader": "^0.4.21",

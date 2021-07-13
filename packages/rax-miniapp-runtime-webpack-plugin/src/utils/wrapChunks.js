@@ -22,11 +22,13 @@ module.exports = function(compilation, chunks, target) {
 `${FunctionPolyfill}
 module.exports = function(window, document, app) {
   const HTMLElement = window["HTMLElement"];
-  const documentModifyCallbacks = (getApp() || app).__documentModifyCallbacks;
-  if (Array.isArray(documentModifyCallbacks)) {
-    documentModifyCallbacks.push((val) => {
-      document = val;
-    });
+  if (typeof getApp === 'function') {
+    const documentModifyCallbacks = (getApp() || app).__documentModifyCallbacks;
+    if (Array.isArray(documentModifyCallbacks)) {
+      documentModifyCallbacks.push((val) => {
+        document = val;
+      });
+    }
   }
 `;
 
