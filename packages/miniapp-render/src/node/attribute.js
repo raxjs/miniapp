@@ -24,6 +24,8 @@ class Attribute {
       }
       if (element._isRendered()) {
         const payload = {
+          // In baidu smartprogram, setData path supports like: root.children.0['scroll-into-view']
+          // While in wechat miniprogram, the same setData path muse be: root.children.[0].scroll-into-view
           path: isBaiduSmartProgram ? `${element._path}['${name}']` : `${element._path}.${name}`,
           value: value
         };
