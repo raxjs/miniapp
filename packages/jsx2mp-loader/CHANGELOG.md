@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.29] - 2021-07-12
+
+### Fixed
+
+- Use file resourcePath as basedir
+
+## [0.4.28] - 2021-06-30
+
+### Fixed
+
+- Miss basedir config in resolve
+
+## [0.4.27] - 2021-06-29
+
+### Changed
+
+- Use resolve to replace `require.resolve` to make exports field compatible
+
 ## [0.4.25] - 2021-05-19
 
 ### Chore

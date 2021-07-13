@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.32] - 2021-06-30
+
+### Fixed
+
+- Miss basedir config in resolve
+
+## [0.4.31] - 2021-06-29
+
+### Changed
+
+- Use resolve to replace `require.resolve` to make exports field compatible
 
 ## [0.4.30] - 2021-03-30
 
