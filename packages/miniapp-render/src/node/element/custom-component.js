@@ -37,7 +37,7 @@ class CustomComponent extends Element {
         const eventName = `${this.__tagName}_${event}_${getId()}`;
         renderInfo[event] = eventName;
         cache.setCustomComponentMethods(eventName, (...args) => {
-          this._trigger(event, { args });
+          return this._trigger(event, { args });
         });
       });
     }

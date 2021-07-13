@@ -20,7 +20,7 @@ module.exports = function(compilation, chunks, target) {
         // Page js
         const headerContent =
 `${FunctionPolyfill}
-module.exports = function(window, document) {
+module.exports = function(window, document, app) {
   const HTMLElement = window["HTMLElement"];
   if (typeof getApp === 'function') {
     const documentModifyCallbacks = (getApp() || app).__documentModifyCallbacks;
