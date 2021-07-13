@@ -239,16 +239,19 @@ class EventTarget {
     }
 
     if (handlers && handlers.length) {
+      let result;
       // Trigger addEventListener binded events
       handlers.forEach(handler => {
         if (event && event._immediateStop) return;
         try {
           const processedArgs = event ? [event, ...args] : [...args];
-          handler.call(this || null, ...processedArgs);
+          result = handler.call(this || null, ...processedArgs); // Only the last result will be returned
         } catch (err) {
           console.error(err);
         }
       });
+
+      return result;
     }
   }
 
