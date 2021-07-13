@@ -13,6 +13,8 @@ const { output, transformCode } = require('./output');
 
 const ScriptLoader = __filename;
 
+const cwd = process.cwd();
+
 const MINIAPP_CONFIG_FIELD = 'miniappConfig';
 
 // 1. JSON file will be written later because usingComponents may be modified
@@ -123,7 +125,7 @@ module.exports = function scriptLoader(content) {
             const componentPath = componentConfig.usingComponents[key];
             if (isNpmModule(componentPath)) {
               // component from node module
-              const realComponentPath = resolveModule.sync(componentPath, { paths: [this.resourcePath], preserveSymlinks: false });
+              const realComponentPath = resolveModule.sync(componentPath, { basedir: this.resourcePath, paths: [this.resourcePath], preserveSymlinks: false });
               const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
               componentConfig.usingComponents[key] = normalizeOutputFilePath(removeExt(relativeComponentPath));
               // Native miniapp component js file will loaded by script-loader
@@ -270,8 +272,6 @@ module.exports = function scriptLoader(content) {
  */
 function normalizeNpmFileName(filename) {
   const repalcePathname = pathname => pathname.replace(/@/g, '_').replace(/node_modules/g, 'npm');
-
-  const cwd = process.cwd();
 
   if (!filename.includes(cwd)) return repalcePathname(filename);
 
