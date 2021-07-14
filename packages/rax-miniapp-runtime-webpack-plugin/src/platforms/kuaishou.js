@@ -957,7 +957,7 @@ exports.needModifyChildrenComponents = {
   ScrollView: children => `
     <block ks:for="{{r.children}}" ks:key="nodeId">
       <block ks:if="{{item.nodeId}}">
-        <template is="RAX_TMPL_0_scroll-view" data="{{r: item}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
       </block>
       <block ks:else>
         <block>{{item.content}}</block>
