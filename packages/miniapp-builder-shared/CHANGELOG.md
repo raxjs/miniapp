@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.7] - 2021-06-10
+
+### Fixed
+
+- windows tabBar item `pagePath`
+
 ## [0.2.6] - 2021-06-01
 
 ### Changed

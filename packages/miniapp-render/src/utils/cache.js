@@ -12,8 +12,8 @@ const pagesCache = [];
 const elementMethodsCache = new Map();
 
 // Init
-function init(pageId, options) {
-  pageMap[pageId] = options.document;
+function init(pageId, document) {
+  pageMap[pageId] = document;
 }
 
 // Destroy
