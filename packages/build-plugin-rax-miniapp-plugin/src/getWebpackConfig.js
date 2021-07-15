@@ -73,8 +73,9 @@ module.exports = (options) => {
       .use('loader')
       .loader(require.resolve('./loaders/PluginConfigLoader'));
 
-    webpackConfig.module
-      .rule('css')
+    ['css', 'less', 'scss'].forEach(style => {
+      webpackConfig.module
+      .rule(style)
       .use('postcss-loader')
       .tap((options) => {
         return {
@@ -83,6 +84,7 @@ module.exports = (options) => {
         };
       })
       .end();
+    });
 
     webpackConfig
       .entry('bundle')
