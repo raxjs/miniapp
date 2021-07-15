@@ -75,15 +75,15 @@ module.exports = (options) => {
 
     ['css', 'less', 'scss'].forEach(style => {
       webpackConfig.module
-      .rule(style)
-      .use('postcss-loader')
-      .tap((options) => {
-        return {
-          ...options,
-          plugins: [ atImport() ]
-        };
-      })
-      .end();
+        .rule(style)
+        .use('postcss-loader')
+        .tap((options) => {
+          return {
+            ...options,
+            plugins: [ atImport() ]
+          };
+        })
+        .end();
     });
 
     webpackConfig
