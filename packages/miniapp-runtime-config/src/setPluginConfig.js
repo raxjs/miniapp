@@ -27,7 +27,7 @@ module.exports = (config, options) => {
   // Need copy files or dir
   const needCopyList = [];
 
-  const pluginConfig = getPluginConfig(rootDir, target, nativeLifeCycleMap);
+  const pluginConfig = getPluginConfig(rootDir, nativeLifeCycleMap);
 
   setValue('staticConfig', pluginConfig);
 
@@ -37,5 +37,5 @@ module.exports = (config, options) => {
     outputPath,
   });
 
-  setBaseConfig(config, { completeRoutes, subAppConfigList, nativeLifeCycleMap, pluginConfig, needCopyList, ...options });
+  setBaseConfig(config, { isPluginProject: true, completeRoutes, subAppConfigList, nativeLifeCycleMap, appConfig: pluginConfig, needCopyList, ...options });
 };

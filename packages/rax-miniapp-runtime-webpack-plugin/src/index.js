@@ -47,6 +47,7 @@ class MiniAppRuntimePlugin {
       mainPackageRoot,
       appConfig,
       subAppConfigList = [],
+      isPluginProject = false
     } = options;
     const {
       context: { command, userConfig: rootUserConfig, rootDir },
@@ -104,23 +105,26 @@ class MiniAppRuntimePlugin {
         // render.js
         generateRender(compilation, { target, command, rootDir });
         // Collect app.js
-        const commonAppJSFilePaths = compilation.entrypoints
-          .get(getBundlePath(subPackages ? mainPackageRoot : ''))
-          .getFiles()
-          .filter((filePath) => !isCSSFile(filePath));
-        // App js
-        const nativeAppConfigPath = join(sourcePath, 'miniapp-native', 'app.js');
-        const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
-        generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
-          target,
-          command,
-          withNativeAppConfig
-        });
+        if (!isPluginProject) {
+          const commonAppJSFilePaths = compilation.entrypoints
+            .get(getBundlePath(subPackages ? mainPackageRoot : ''))
+            .getFiles()
+            .filter((filePath) => !isCSSFile(filePath));
+          // App js
+          const nativeAppConfigPath = join(sourcePath, 'miniapp-native', 'app.js');
+          const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
+          generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
+            target,
+            command,
+            withNativeAppConfig
+          });
+        }
       }
 
       if (
-        isFirstRender ||
-        changedFiles.some((filePath) => isCSSFile(filePath))
+        (isFirstRender ||
+        changedFiles.some((filePath) => isCSSFile(filePath))) &&
+        !isPluginProject
       ) {
         generateAppCSS(compilation, {
           subPackages,

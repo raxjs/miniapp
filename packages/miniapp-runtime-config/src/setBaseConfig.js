@@ -17,10 +17,11 @@ const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
  * @param {array} options.subAppConfigList - sub packages config list
  * @param {object} options.nativeLifeCycleMap - native lifecycle map
  * @param {array} options.needCopyList - need copy files or dir
+ * @param {boolean} options.isPluginProject - whether is plugin project
  */
 module.exports = (
   config,
-  { api, target, babelRuleName = 'babel-loader', appConfig, completeRoutes, subAppConfigList, nativeLifeCycleMap, needCopyList, mainPackageRoot = '' }
+  { api, target, babelRuleName = 'babel-loader', appConfig, completeRoutes, subAppConfigList, nativeLifeCycleMap, needCopyList, mainPackageRoot = '', isPluginProject = false }
 ) => {
   const { context } = api;
   const { rootDir, command, userConfig: rootUserConfig } = context;
@@ -78,6 +79,7 @@ module.exports = (
       nativeLifeCycleMap,
       usingPlugins,
       needCopyList,
+      isPluginProject
     },
   ]);
 
