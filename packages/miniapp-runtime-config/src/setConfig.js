@@ -7,7 +7,6 @@ const {
 const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
 const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
 const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { resolve, dirname } = require('path');
 
 /**
