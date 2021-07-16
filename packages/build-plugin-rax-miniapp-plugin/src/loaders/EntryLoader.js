@@ -26,8 +26,6 @@ module.exports = function() {
     () => {}
   );
 
-  console.log(123123);
-
   function runApp() {
     miniappRenderer(
       {
