@@ -122,7 +122,7 @@ class EventTarget {
       // Special handling here, not directly return the applet's event object
       event = new Event({
         name: eventName,
-        target,
+        target: miniprogramEvent.target || target, // Use native event target first
         detail: miniprogramEvent.detail || { ...miniprogramEvent }, // Some info doesn't exist in event.detail but in event directly, like Alibaba MiniApp
         timeStamp: miniprogramEvent.timeStamp,
         touches: miniprogramEvent.touches,
