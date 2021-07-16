@@ -129,11 +129,9 @@ module.exports = (
   ]);
 
   if (needCopyList.length > 0) {
-    config.plugin('copyWebpackPluginForRuntimeMiniapp').use(CopyWebpackPlugin, [
-      {
-        patterns: needCopyList,
-      },
-    ]);
+    config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
+      return [copyList.concat(needCopyList)];
+    });
   }
 
   config.devServer.writeToDisk(true).noInfo(true).inline(false);

@@ -123,7 +123,7 @@ module.exports = {
     renameAppConfig(ast, sourcePath, resourcePath, type);
 
     if (!disableCopyNpm) {
-      renameNpmModules(ast, targetFileDir, outputPath, cwd);
+      renameNpmModules(ast, targetFileDir, outputPath, cwd, resourcePath);
     }
 
     if (type !== 'app') {
@@ -285,13 +285,13 @@ function ensureIndexPathInImports(ast, sourcePath, resourcePath, type) {
   });
 }
 
-function renameNpmModules(ast, targetFileDir, outputPath, cwd) {
+function renameNpmModules(ast, targetFileDir, outputPath, cwd, resourcePath) {
   const source = (value, targetFileDir, outputPath, rootContext) => {
     const npmName = getNpmName(value);
     const nodeModulePath = join(rootContext, 'node_modules');
     const searchPaths = [nodeModulePath];
     // Use resolve instead of require.resolve because require.resolve will read the exports field first, which is not expected
-    const target = resolveModule.sync(npmName, { paths: searchPaths, preserveSymlinks: false });
+    const target = resolveModule.sync(npmName, { basedir: dirname(resourcePath), paths: searchPaths, preserveSymlinks: false });
     // In tnpm, target will be like following (symbol linked path):
     // ***/_universal-toast_1.0.0_universal-toast/lib/index.js
     let packageJSONPath;

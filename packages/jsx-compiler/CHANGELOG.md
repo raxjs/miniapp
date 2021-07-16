@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.32] - 2021-06-30
+
+### Fixed
+
+- Miss basedir config in resolve
+
 ## [0.4.31] - 2021-06-29
 
 ### Changed

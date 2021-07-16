@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.7.0] - 2021-07-13
+
+### Changed
+
+- Pass app instance to js bundle in cases that getApp() can't get app instance
+
 ## [4.6.1] - 2021-06-09
 
 ### Fixed
