@@ -622,7 +622,7 @@ const Video = {
     Pause: '',
     Ended: '',
     TimeUpdate: '',
-    ScreenChange: '',
+    FullScreenChange: '',
     Waiting: '',
     Error: '',
     Progress: '',
