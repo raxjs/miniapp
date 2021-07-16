@@ -112,7 +112,7 @@ class RootElement extends Element {
             if (path.includes(cp) && cp !== path) {
               delete renderObject[path];
             }
-          })
+          });
         }
       }
 
