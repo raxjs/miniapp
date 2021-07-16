@@ -1,22 +1,34 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+import { isWeChatMiniProgram } from 'universal-env';
 
 import cache from '../utils/cache';
 import injectLifeCycle from '../bridge/injectLifeCycle';
 import createEventProxy from '../bridge/createEventProxy';
 import createDocument from '../document';
-import { BODY_NODE_ID } from '../constants';
+import { BODY_NODE_ID, INDEX_PAGE } from '../constants';
 import createWindow from '../window';
 
 export function getBaseLifeCycles(route, init, packageName = '') {
   return {
     onLoad(query) {
-      // eslint-disable-next-line no-undef
-      const app = getApp();
-
       this.pageId = route + '-' + cache.getRouteId(route);
-      if (this.pageId === app.__pageId) {
-        this.document = cache.getDocument(this.pageId);
+      // getApp may not exist in situations like plugin project
+      // eslint-disable-next-line no-undef
+      if (typeof getApp === 'function') {
+        // eslint-disable-next-line no-undef
+        const app = getApp();
+        // In non alibaba miniapp or the first page is from plugin, pageId is set to 'home-page' in app onLaunch
+        if (app.__pageId === INDEX_PAGE) {
+          this.document = cache.getDocument(INDEX_PAGE);
+          this.document._switchPageId(this.pageId);
+          cache.destroy(INDEX_PAGE);
+          cache.init(this.pageId, this.document);
+          app.__pageId = this.pageId;
+        } else if (this.pageId === app.__pageId) {
+          this.document = cache.getDocument(this.pageId);
+        } else {
+          this.document = createDocument(this.pageId);
+        }
       } else {
         this.document = createDocument(this.pageId);
       }
@@ -31,13 +43,6 @@ export function getBaseLifeCycles(route, init, packageName = '') {
         init(this.window, this.document);
       }
 
-      // In wechat miniprogram web bundle need be executed in first page
-      if (!isMiniApp && !app.launched) {
-        app.init(this.document);
-        app.launched = true;
-        // The real app show has passed when init function execute
-        app.onShow.call(app, app.__showOptions);
-      }
       // Bind page internal to page document
       this.document._internal = this;
       if (isWeChatMiniProgram) {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0] - 2021-07-13
+
+### Changed
+
+- Move js bundle execution time to app onLaunch licecycle in wechat
+- Support return result in trigger function of event-target
+
 ## [2.6.1] - 2021-06-09
 
 ### Fixed
