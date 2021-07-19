@@ -12,7 +12,7 @@ module.exports = (api, options = {}) => {
 
   const { targets } = userConfig;
 
-  targets.forEach(async(target) => {
+  targets.forEach((target) => {
     const isCompileProject = userConfig[target] && userConfig[target].buildType === 'compile';
 
     // Get output dir
