@@ -1,7 +1,7 @@
 const { resolve, extname } = require('path');
 const { readFileSync } = require('fs-extra');
 const { platformMap, constants: { BAIDU_SMARTPROGRAM } } = require('miniapp-builder-shared');
-const { UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
+const { NEED_REPLACE_ROOT_TARGET } = require('../constants');
 const addFileToCompilation = require('../utils/addFileToCompilation');
 const getAssetPath = require('../utils/getAssetPath');
 const adjustCSS = require('../utils/adjustCSS');
@@ -35,7 +35,7 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
   const defaultCSSTmpl = adjustCSS(readFileSync(
     resolve(pluginDir, 'static', 'default.css'),
     'utf-8'
-  ), UNRECURSIVE_TEMPLATE_TYPE.has(target));
+  ), NEED_REPLACE_ROOT_TARGET.has(target));
   // Generate __rax-view and __rax-text style for rax compiled components
   const raxDefaultCSSTmpl = readFileSync(
     resolve(pluginDir, 'static', 'rax-default.css'),
