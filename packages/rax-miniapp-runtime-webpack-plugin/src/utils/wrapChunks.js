@@ -2,7 +2,7 @@ const ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
 const { RawSource, ConcatSource } = require('webpack-sources');
 const { platformMap } = require('miniapp-builder-shared');
 const adjustCSS = require('../utils/adjustCSS');
-const { UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
+const { NEED_REPLACE_ROOT_TARGET } = require('../constants');
 
 const matchFile = (fileName, ext) =>
   ModuleFilenameHelpers.matchObject(
@@ -22,11 +22,13 @@ module.exports = function(compilation, chunks, target) {
 `${FunctionPolyfill}
 module.exports = function(window, document, app) {
   const HTMLElement = window["HTMLElement"];
-  const documentModifyCallbacks = (getApp() || app).__documentModifyCallbacks;
-  if (Array.isArray(documentModifyCallbacks)) {
-    documentModifyCallbacks.push((val) => {
-      document = val;
-    });
+  if (typeof getApp === 'function') {
+    const documentModifyCallbacks = (getApp() || app).__documentModifyCallbacks;
+    if (Array.isArray(documentModifyCallbacks)) {
+      documentModifyCallbacks.push((val) => {
+        document = val;
+      });
+    }
   }
 `;
 
@@ -41,7 +43,7 @@ module.exports = function(window, document, app) {
         compilation.assets[
           `${fileName}${platformMap[target].extension.css}`
         ] = new RawSource(
-          adjustCSS(compilation.assets[fileName].source(), UNRECURSIVE_TEMPLATE_TYPE.has(target))
+          adjustCSS(compilation.assets[fileName].source(), NEED_REPLACE_ROOT_TARGET.has(target))
         );
       }
     });

@@ -622,7 +622,7 @@ const Video = {
     Pause: '',
     Ended: '',
     TimeUpdate: '',
-    ScreenChange: '',
+    FullScreenChange: '',
     Waiting: '',
     Error: '',
     Progress: '',
@@ -957,7 +957,7 @@ exports.needModifyChildrenComponents = {
   ScrollView: children => `
     <block s-for="{{r.children}}" s-key="nodeId">
       <block s-if="{{item.nodeId}}">
-        <template is="RAX_TMPL_0_scroll-view" data="{{{r: item}}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
       </block>
       <block s-else>
         <block>{{item.content}}</block>
