@@ -1,6 +1,6 @@
 const { dirname, join } = require('path');
 const {
-  pathHelper: { absoluteModuleResolve, getDepPath },
+  pathHelper: { absoluteModuleResolve, getDepPath, removeExt },
   getAppConfig,
   filterNativePages
 } = require('miniapp-builder-shared');
@@ -58,7 +58,38 @@ function setMultiplePackageEntry(config, routes, options) {
   });
 }
 
+function getPluginEntry(entryIndexFilePath, pluginConfig) {
+  const { pages, publicComponents, main } = pluginConfig;
+  const rootDir = dirname(entryIndexFilePath);
+  const entry = {};
+
+  if (pages) {
+    Object.keys(pages).forEach(pageName => {
+      entry[`@${pageName}`] = `${getDepPath('.', pages[pageName], rootDir)}?role=page`;
+    });
+  }
+  if (publicComponents) {
+    Object.keys(publicComponents).forEach(compName => {
+      entry[`@${compName}`] = `${getDepPath('.', publicComponents[compName], rootDir)}?role=component`;
+    });
+  }
+  if (main) {
+    entry.main = removeExt(getDepPath('.', main, rootDir));
+  }
+  return entry;
+}
+
+function setPluginEntry(config, pluginConfig, entryPath) {
+  clearEntry(config);
+  const entries = getPluginEntry(entryPath, pluginConfig);
+  for (const [entryName, source] of Object.entries(entries)) {
+    const entryConfig = config.entry(entryName);
+    entryConfig.add(source);
+  }
+}
+
 module.exports = {
   setEntry,
-  setMultiplePackageEntry
+  setMultiplePackageEntry,
+  setPluginEntry
 };
