@@ -1,13 +1,11 @@
 const {
   getAppConfig,
-  filterNativePages,
-  platformMap,
-  pathHelper: { getPlatformExtensions },
+  filterNativePages
 } = require('miniapp-builder-shared');
-const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
-const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
 const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
-const { resolve, dirname } = require('path');
+const { dirname, resolve } = require('path');
+
+const setBaseConfig = require('./setBaseConfig');
 
 /**
  * Set miniapp runtime project webpack config
@@ -16,27 +14,20 @@ const { resolve, dirname } = require('path');
  * @param {object} options.api - build scripts api
  * @param {string} options.target - miniapp platform
  * @param {string} options.babelRuleName - babel loader name in webpack chain
+ * @param {string} options.outputPath - outputPath
  */
-module.exports = (
-  config,
-  { api, target, babelRuleName = 'babel-loader', outputPath }
-) => {
+module.exports = (config, options) => {
+  const { api, target } = options;
   const { context } = api;
-  const { rootDir, command, userConfig: rootUserConfig } = context;
+  const { rootDir, userConfig: rootUserConfig } = context;
   const userConfig = rootUserConfig[target] || {};
 
-  if (!outputPath) {
-    outputPath = resolve(rootDir, 'build', target);
-  }
-  // Using components
-  const usingComponents = {};
+  const outputPath = options.outputPath || resolve(rootDir, 'build', target);
+
   // Native lifecycle map
   const nativeLifeCycleMap = {};
 
-  // Using plugins
-  const usingPlugins = {};
-
-  // Need Copy files or dir
+  // Need copy files or dir
   const needCopyList = [];
 
   // Sub packages config
@@ -55,7 +46,6 @@ module.exports = (
       if (app.miniappMain) mainPackageRoot = subAppRoot;
       subAppConfig.miniappMain = app.miniappMain;
       subAppConfigList.push(subAppConfig);
-      completeRoutes = completeRoutes.concat(subAppConfig.routes);
     });
   } else {
     completeRoutes = appConfig.routes;
@@ -67,38 +57,14 @@ module.exports = (
     outputPath,
   });
 
-  config.output.filename('[name].js');
-  // publicPath should not work in miniapp, just keep default value
-  config.output.publicPath('/');
-
-  // Distinguish end construction
-  config.resolve.extensions
-    .clear()
-    .merge(
-      getPlatformExtensions(platformMap[target].type, ['.js', '.jsx', '.ts', '.tsx', '.json'])
-    );
-
-  ['jsx', 'tsx'].forEach((ruleName) => {
-    config.module
-      .rule(ruleName)
-      .use(babelRuleName)
-      .tap((options) => {
-        options.cacheDirectory = false; // rax-miniapp-babel-plugins needs to be executed every time
-        options.presets = [
-          ...options.presets,
-          {
-            plugins: getMiniAppBabelPlugins({
-              usingComponents,
-              nativeLifeCycleMap,
-              target,
-              rootDir,
-              usingPlugins,
-              runtimeDependencies: userConfig.runtimeDependencies,
-            }),
-          },
-        ];
-        return options;
-      });
+  setBaseConfig(config, {
+    appConfig,
+    completeRoutes,
+    subAppConfigList,
+    nativeLifeCycleMap,
+    needCopyList,
+    mainPackageRoot,
+    ...options
   });
 
   config.plugin('MiniAppConfigPlugin').use(MiniAppConfigPlugin, [
@@ -112,31 +78,4 @@ module.exports = (
       nativeConfig: userConfig.nativeConfig,
     },
   ]);
-  config.plugin('MiniAppRuntimePlugin').use(MiniAppRuntimePlugin, [
-    {
-      api,
-      routes: completeRoutes,
-      mainPackageRoot,
-      appConfig,
-      subAppConfigList,
-      target,
-      usingComponents,
-      nativeLifeCycleMap,
-      usingPlugins,
-      needCopyList,
-    },
-  ]);
-
-  if (needCopyList.length > 0) {
-    config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
-      return [copyList.concat(needCopyList)];
-    });
-  }
-
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
-  if (!config.get('devtool')) {
-    config.devtool(false);
-  } else if (command === 'start') {
-    config.devtool('inline-source-map');
-  }
 };
