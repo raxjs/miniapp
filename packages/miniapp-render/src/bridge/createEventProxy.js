@@ -36,11 +36,7 @@ export default function() {
       const domNode = this.getDomNodeFromEvt(evt);
       const document = domNode.ownerDocument;
       if (document && document.__checkEvent(evt)) {
-        if (isMiniApp) {
-          this.callEvent(eventName, evt, extra, evt.target.targetDataset.privateNodeId);
-        } else {
-          this.callEvent(eventName, evt, extra, evt.target.dataset.privateNodeId);
-        }
+        this.callEvent(eventName, evt, extra, evt.currentTarget.dataset.privateNodeId);
       }
     };
   });
