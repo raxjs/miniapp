@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.8.0] - 2021-07-20
+
+### Added
+
+- Support configuring miniapp plugin project
+
 ## [4.7.0] - 2021-07-13
 
 ### Changed

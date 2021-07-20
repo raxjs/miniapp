@@ -6,7 +6,11 @@ It will filter native miniapp pages and return a need copy native page files lis
 
 ### getAppConfig
 
-It will return a vaild app config for miniapp.
+It will return a valid app config for miniapp.
+
+### getPluginConfig
+
+It will return a valid plugin config for miniapp.
 
 ### pathHelper
 
