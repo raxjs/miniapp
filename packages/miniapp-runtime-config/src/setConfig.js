@@ -46,6 +46,7 @@ module.exports = (config, options) => {
       if (app.miniappMain) mainPackageRoot = subAppRoot;
       subAppConfig.miniappMain = app.miniappMain;
       subAppConfigList.push(subAppConfig);
+      completeRoutes = completeRoutes.concat(subAppConfig.routes);
     });
   } else {
     completeRoutes = appConfig.routes;
