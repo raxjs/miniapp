@@ -30,11 +30,11 @@ module.exports = function visitor({ types: t }, { nativeLifeCycleMap, isPluginPr
             if (t.isIdentifier(path.node.callee, {
               name: 'addNativeEventListener'
             })) {
-              path.get('callee').replaceWith(t.memberExpression(t.identifier('document'), t.identifier('addEventListener')))
+              path.get('callee').replaceWith(t.memberExpression(t.identifier('document'), t.identifier('addEventListener')));
             } else if (t.isIdentifier(path.node.callee, {
               name: 'removeNativeEventListener'
             })) {
-              path.get('callee').replaceWith(t.memberExpression(t.identifier('document'), t.identifier('removeEventListener')))
+              path.get('callee').replaceWith(t.memberExpression(t.identifier('document'), t.identifier('removeEventListener')));
             }
           }
         }
