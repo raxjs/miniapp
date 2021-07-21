@@ -60,6 +60,7 @@ module.exports = (
               rootDir,
               usingPlugins,
               runtimeDependencies: userConfig.runtimeDependencies,
+              isPluginProject
             }),
           },
         ];
