@@ -1,0 +1,27 @@
+{
+  "name": "miniapp-lifecycles",
+  "version": "1.0.0",
+  "description": "Miniapp lifecycles registration for rax",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "lib/index.d.ts",
+  "author": "Rax Team",
+  "files": [
+    "es",
+    "lib"
+  ],
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raxjs/miniapp"
+  },
+  "bugs": {
+    "url": "https://github.com/raxjs/miniapp/issues"
+  },
+  "homepage": "https://github.com/raxjs/miniapp#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
