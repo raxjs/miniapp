@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.8.0] - 2021-07-20
+
+### Added
+
+- Support configuring miniapp plugin project
+- Replace :root to page in bytedance/baidu/kuaishou miniapp
+
+### Fixed
+
+- Template generation error
+
 ## [4.7.0] - 2021-07-13
 
 ### Changed
