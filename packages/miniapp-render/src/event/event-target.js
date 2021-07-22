@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram, isMiniApp } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 import Event from './event';
+import cache from '../utils/cache';
 import CustomEvent from './custom-event';
 
 /**
@@ -120,9 +121,12 @@ class EventTarget {
 
     if (!event) {
       // Special handling here, not directly return the applet's event object
+      const targetNodeId = isMiniApp ? miniprogramEvent.target.targetDataset.privateNodeId : miniprogramEvent.target.dataset.privateNodeId;
+      // If different and native event target contains dataset, use native event target first
+      const realTarget = (targetNodeId && (targetNodeId !== target.__nodeId)) ? cache.getNode(targetNodeId) : target;
       event = new Event({
         name: eventName,
-        target: miniprogramEvent.target || target, // Use native event target first
+        target: realTarget,
         detail: miniprogramEvent.detail || { ...miniprogramEvent }, // Some info doesn't exist in event.detail but in event directly, like Alibaba MiniApp
         timeStamp: miniprogramEvent.timeStamp,
         touches: miniprogramEvent.touches,
