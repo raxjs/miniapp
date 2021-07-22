@@ -9,16 +9,17 @@
 //------------------------------------------------------------------------------
 
 const { findAncestor } = require('../utils');
+
 const jsxElement = ['JSXFragment', 'JSXElement', 'JSXText', 'JSXExpressionContainer'];
 
 module.exports = {
   meta: {
     docs: {
-      description: `shouldn't handle 'props.children'`,
+      description: 'shouldn\'t handle \'props.children\'',
       recommended: false,
     },
     messages: {
-      noChildrenHandler: `shouldn't handle 'props.children'`,
+      noChildrenHandler: 'shouldn\'t handle \'props.children\'',
     },
   },
 

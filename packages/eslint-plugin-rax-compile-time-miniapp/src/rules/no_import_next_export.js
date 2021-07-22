@@ -18,7 +18,7 @@ module.exports = {
     },
   },
 
-  create: function (context) {
+  create: function(context) {
     // 页面导入组件名称
     const importNameArray = [];
     // 导出组件名称

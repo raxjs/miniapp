@@ -143,7 +143,6 @@ class Checker {
 
   // handle:  `const { target: { dataset: { item } = {} } = {} } = e , c = xx;`
   traverseVariableDeclaration(node) {
-
     const handleParam = this.handleParam.bind(this);
 
     if (node.id && node.id.type === 'Identifier') {

@@ -18,7 +18,7 @@ let ruleTester = new RuleTester({
     ecmaFeatures: {
       jsx: true,
     },
-    sourceType: "module",
+    sourceType: 'module',
   },
 });
 

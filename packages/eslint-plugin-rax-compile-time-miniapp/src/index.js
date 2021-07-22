@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = {
   rules: {
@@ -20,7 +20,7 @@ module.exports = {
 
     /**
       Below is supported:
-    'handler-start-with-on': require('./rules/handler_start_with_on'),  
+    'handler-start-with-on': require('./rules/handler_start_with_on'),
     'no-double-quotation': require('./rules/no_double_quotation'),
      */
   },
@@ -41,10 +41,10 @@ module.exports = {
         'rax-compile-time-miniapp/no-multilevel-condition': 2,
         'rax-compile-time-miniapp/no-temp-variable-in-loop-render': 2,
         'rax-compile-time-miniapp/no-children-handler': 2,
-        'rax-compile-time-miniapp/no-import-as': 2
+        'rax-compile-time-miniapp/no-import-as': 2,
         // 'rax-compile-time-miniapp/no-double-quotation': 1,
         // 'rax-compile-time-miniapp/handler-start-with-on': 2,
       },
     },
   },
-}
+};

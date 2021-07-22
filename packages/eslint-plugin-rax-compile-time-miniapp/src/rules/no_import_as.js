@@ -8,7 +8,7 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-const description = `no 'import component as' , like : import { Component as CustomComponent } from 'rax' `;
+const description = 'no \'import component as\' , like : import { Component as CustomComponent } from \'rax\' ';
 
 module.exports = {
   meta: {

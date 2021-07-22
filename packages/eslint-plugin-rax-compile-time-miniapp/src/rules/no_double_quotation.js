@@ -26,7 +26,7 @@ module.exports = {
     return {
       JSXAttribute: (node) => {
         if (node.value && node.value.type === 'Literal') {
-          if(/^\"/.test(node.value.raw)){
+          if (/^\"/.test(node.value.raw)) {
             context.report({
               node,
               messageId: 'noDoubleQuotation',

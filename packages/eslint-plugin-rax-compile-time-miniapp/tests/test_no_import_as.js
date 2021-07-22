@@ -26,7 +26,7 @@ ruleTester.run('import-as', rule, {
   valid: [
     // 合法示例
     {
-      code: `import { Component } from 'rax'`,
+      code: 'import { Component } from \'rax\'',
       filename: 'test.jsx',
     },
   ],
@@ -34,7 +34,7 @@ ruleTester.run('import-as', rule, {
   invalid: [
     // 不合法示例
     {
-      code: `import { Component as RaxComponent } from 'rax'`,
+      code: 'import { Component as RaxComponent } from \'rax\'',
       errors: [
         {
           messageId: 'noImportAs',

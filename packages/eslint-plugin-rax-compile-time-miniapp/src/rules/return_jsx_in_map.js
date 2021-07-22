@@ -22,7 +22,6 @@ module.exports = {
   create: function(context) {
     return {
       ReturnStatement: (node) => {
-
         if (!node.argument) {
           return;
         }
