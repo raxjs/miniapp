@@ -10,10 +10,7 @@
     "es",
     "lib"
   ],
-  "scripts": {
-    "lint": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx ./",
-    "lint-fix": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx ./ --fix"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/raxjs/miniapp"
