@@ -123,7 +123,7 @@ class EventTarget {
       // Special handling here, not directly return the applet's event object
       const targetNodeId = isMiniApp ? miniprogramEvent.target.targetDataset.privateNodeId : miniprogramEvent.target.dataset.privateNodeId;
       // If different and native event target contains dataset, use native event target first
-      const realTarget = (targetNodeId && (targetNodeId !== target.__nodeId)) ? cache.getNode(targetNodeId) : target;
+      const realTarget = targetNodeId && targetNodeId !== target.__nodeId ? cache.getNode(targetNodeId) : target;
       event = new Event({
         name: eventName,
         target: realTarget,
