@@ -9,6 +9,7 @@ class Comment extends Node {
 
   get _renderInfo() {
     return {
+      nodeId: this.__nodeId,
       nodeType: 'h-' + this.__type,
     };
   }

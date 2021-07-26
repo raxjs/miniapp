@@ -131,7 +131,7 @@ class Element extends Node {
       pageId: this.__pageId,
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
+      class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`
     };
   }
 
@@ -196,6 +196,10 @@ class Element extends Node {
     return this.childNodes.filter(child => child.nodeType === Node.ELEMENT_NODE);
   }
 
+  get _children() {
+    return this.childNodes.map(node => node.__nodeId);
+  }
+
   get firstChild() {
     return this.childNodes[0];
   }
@@ -224,7 +228,7 @@ class Element extends Node {
     if (!text) {
       const payload = {
         type: 'children',
-        path: `${this._path}.children`,
+        path: this._path,
         start: 0,
         deleteCount: this.childNodes.length
       };
@@ -296,10 +300,12 @@ class Element extends Node {
       // Trigger update
       const payload = {
         type: 'children',
-        path: `${this._path}.children`,
+        path: this._path,
         start: this.childNodes.length - 1,
         deleteCount: 0,
-        item: simplifyDomTree(node)
+        item: simplifyDomTree(node),
+        nodeId: node.__nodeId,
+        children: this._children
       };
       this._triggerUpdate(payload);
       this._adjustDocument(node);
@@ -324,9 +330,11 @@ class Element extends Node {
         // Trigger update
         const payload = {
           type: 'children',
-          path: `${this._path}.children`,
+          path: this._path,
           start: index,
-          deleteCount: 1
+          deleteCount: 1,
+          nodeId: node.__nodeId,
+          children: this._children
         };
         this._triggerUpdate(payload);
       }
@@ -357,10 +365,12 @@ class Element extends Node {
       node.__rendered = true;
       const payload = {
         type: 'children',
-        path: `${this._path}.children`,
+        path: this._path,
         deleteCount: 0,
         item: simplifyDomTree(node),
-        start: insertIndex === -1 ? this.childNodes.length - 1 : insertIndex
+        start: insertIndex === -1 ? this.childNodes.length - 1 : insertIndex,
+        nodeId: node.__nodeId,
+        children: this._children
       };
 
       // Trigger update
@@ -394,10 +404,12 @@ class Element extends Node {
       // Trigger update
       const payload = {
         type: 'children',
-        path: `${this._path}.children`,
+        path: this._path,
         start: replaceIndex === -1 ? this.childNodes.length - 1 : replaceIndex,
         deleteCount: replaceIndex === -1 ? 0 : 1,
-        item: simplifyDomTree(node)
+        item: simplifyDomTree(node),
+        nodeId: node.__nodeId,
+        children: this._children
       };
       this._triggerUpdate(payload);
       this._adjustDocument(node);

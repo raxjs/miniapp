@@ -67,7 +67,7 @@ class RootElement extends Element {
           if (task.type === 'children') {
             const spliceArgs = [task.start, task.deleteCount];
             internal.$spliceData({
-              [task.path]: task.item ? spliceArgs.concat(task.item) : spliceArgs
+              [`${task.path}.children`]: task.item ? spliceArgs.concat(task.item) : spliceArgs
             }, callback);
           } else {
             internal.setData({
@@ -78,25 +78,38 @@ class RootElement extends Element {
       });
     } else {
       const renderObject = {};
-      const pathCache = [];
+      // const pathCache = [];
+      // this.__renderStacks.forEach(task => {
+      //   const path = task.path;
+      //   // there is no need to aggregate arrays if $batchedUpdate and $spliceData exist
+      //   if (task.type === 'children') {
+      //     const taskInfo = getProperty(internal.data, path, pathCache);
+      //     // path cache should save lastest taskInfo value
+      //     pathCache.push({
+      //       path: task.path,
+      //       value: taskInfo.value
+      //     });
+
+      //     if (!renderObject[path]) {
+      //       renderObject[path] = taskInfo.value ? [...taskInfo.value] : [];
+      //     }
+      //     if (task.item) {
+      //       renderObject[path].splice(task.start, task.deleteCount, task.item);
+      //     } else {
+      //       renderObject[path].splice(task.start, task.deleteCount);
+      //     }
+      //   } else {
+      //     renderObject[path] = task.value;
+      //   }
+      // });
       this.__renderStacks.forEach(task => {
         const path = task.path;
+
         // there is no need to aggregate arrays if $batchedUpdate and $spliceData exist
         if (task.type === 'children') {
-          const taskInfo = getProperty(internal.data, path, pathCache);
-          // path cache should save lastest taskInfo value
-          pathCache.push({
-            path: task.path,
-            value: taskInfo.value
-          });
-
-          if (!renderObject[path]) {
-            renderObject[path] = taskInfo.value ? [...taskInfo.value] : [];
-          }
-          if (task.item) {
-            renderObject[path].splice(task.start, task.deleteCount, task.item);
-          } else {
-            renderObject[path].splice(task.start, task.deleteCount);
+          renderObject[`${path}.nodes.${task.nodeId}`] = task.item || {};
+          if (task.children) {
+            renderObject[`${path}.children`] = task.children || [];
           }
         } else {
           renderObject[path] = task.value;
