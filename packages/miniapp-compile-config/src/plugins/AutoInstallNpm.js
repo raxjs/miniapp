@@ -23,7 +23,7 @@ module.exports = class AutoInstallNpmPlugin {
         this.subPackages.forEach(({ dependencies = {}, source = '' }) => {
           writeJSONSync(join(distDir, dirname(source), 'package.json'), { dependencies });
           packageJsonFilePath.push(dirname(source));
-        })
+        });
       }
 
       if (!this.autoInstall) {

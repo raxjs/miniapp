@@ -6,13 +6,11 @@ let isAliInternal;
 let npmRegistry;
 
 function executeInstall(cwd) {
-  return execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd })
+  return execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd });
 }
 
 function warnInstallManually() {
-  console.log(
-    `\nInstall dependencies failed, please enter dist path and retry installing by yourself\n`
-  );
+  console.log('\nInstall dependencies failed, please enter dist path and retry installing by yourself\n');
 }
 
 async function autoInstallNpm(callback, { distDir, packageJsonFilePath = []}) {
@@ -23,7 +21,7 @@ async function autoInstallNpm(callback, { distDir, packageJsonFilePath = []}) {
       : 'https://registry.npm.taobao.org';
   }
   const installPromiseArray = packageJsonFilePath.map(installPath => {
-    return executeInstall(join(distDir, installPath))
+    return executeInstall(join(distDir, installPath));
   });
   Promise.all(installPromiseArray)
     .then((results) => {
@@ -35,7 +33,7 @@ async function autoInstallNpm(callback, { distDir, packageJsonFilePath = []}) {
     .catch(() => {
       warnInstallManually();
       callback();
-  })
+    });
 }
 
 module.exports = autoInstallNpm;
