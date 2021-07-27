@@ -40,7 +40,7 @@ if (isMiniApp) {
       domNode._setAttributeWithOutUpdate('x', evt.detail.x);
       domNode._setAttributeWithOutUpdate('y', evt.detail.y);
     }
-  },)
+  });
 }
 
 export default movableView;

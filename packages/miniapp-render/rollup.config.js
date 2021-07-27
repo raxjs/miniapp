@@ -27,7 +27,7 @@ function getBabelConfig(platform) {
     ],
     plugins: [
       '@babel/plugin-proposal-class-properties',
-      ["@babel/plugin-proposal-private-methods", { "loose": false }],
+      ['@babel/plugin-proposal-private-methods', { 'loose': false }],
       ['./scripts/platform-plugin', { platform }]
     ]
   };
