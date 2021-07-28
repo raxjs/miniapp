@@ -32,7 +32,7 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
 
   appConfig.routes.map(route => {
     if (subAppRoot) {
-      route.source = join(subAppRoot, route.source); // TODO: windows system error
+      route.source = normalizeOutputFilePath(join(subAppRoot, route.source));
       route.subAppRoot = subAppRoot;
     }
     route.name = route.source;

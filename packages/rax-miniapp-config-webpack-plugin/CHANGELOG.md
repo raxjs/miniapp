@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.2] - 2021-07-27
+
+### Fixed
+
+- route error in windows
+
 ## [2.1.1] - 2021-06-01
 
 - Support transform tabBar config

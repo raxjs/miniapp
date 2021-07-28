@@ -1,6 +1,7 @@
 const { relative } = require('path');
 const adaptAppConfig = require('./adaptConfig');
 const handleIcon = require('./handleIcon');
+const { pathHelper: { normalizeOutputFilePath }} = require('miniapp-builder-shared');
 
 module.exports = function transformAppConfig(outputPath, originalAppConfig, target, subPackages) {
   const appConfig = {};
@@ -44,7 +45,7 @@ module.exports = function transformAppConfig(outputPath, originalAppConfig, targ
         break;
       case 'pages':
         if (subPackages) {
-          appConfig[configKey] = config.map(page => relative(originalAppConfig.subAppRoot, page));
+          appConfig[configKey] = config.map(page => normalizeOutputFilePath(relative(originalAppConfig.subAppRoot, page)));
           break;
         }
       default:
