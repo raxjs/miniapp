@@ -1,4 +1,5 @@
-import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
+/* global my wx tt swan ks */
+import { isMiniApp, isWeChatMiniProgram, isByteDanceMicroApp, isBaiduSmartProgram, isKuaiShouMiniProgram } from 'universal-env';
 import { fireListeners } from './listeners';
 import { REPLACE, POP, PUSH } from './constants';
 
@@ -10,6 +11,12 @@ if (isMiniApp) {
   apiCore = my;
 } else if (isWeChatMiniProgram) {
   apiCore = wx;
+} else if (isByteDanceMicroApp) {
+  apiCore = tt;
+} else if (isBaiduSmartProgram) {
+  apiCore = swan;
+} else if (isKuaiShouMiniProgram) {
+  apiCore = ks;
 }
 
 function redirectTo(location, options) {

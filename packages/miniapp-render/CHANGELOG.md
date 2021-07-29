@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.7.2] - 2021-07-27
+
+### Added
+
+- Support onChangeEnd event of movable-view in ali miniapp
+
+### Fixed
+
+- Return event target object in js memory instead of native event target
+
+
+## [2.7.1] - 2021-07-20
+
+### Fixed
+
+- Can't get correct event target in some circumstance
+
 ## [2.7.0] - 2021-07-13
 
 ### Changed
