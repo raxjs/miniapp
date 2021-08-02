@@ -79,7 +79,7 @@ class RootElement extends Element {
       });
     } else {
       const renderObject = {};
-      const childrenValuePaths = []
+      const childrenValuePaths = [];
       this.__renderStacks.forEach(task => {
         const path = task.path;
         if (task.type === 'children') {
@@ -88,6 +88,7 @@ class RootElement extends Element {
         renderObject[path] = task.value;
       });
       for (const path in renderObject) {
+        // If the whole father children path is set, then its children path can be deleted
         childrenValuePaths.forEach(cp => {
           if (path.includes(cp) && cp !== path) {
             delete renderObject[path];

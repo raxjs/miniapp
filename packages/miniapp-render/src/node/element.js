@@ -235,7 +235,7 @@ class Element extends Node {
           type: 'children',
           path: `${this._path}.children`,
           value: () => []
-        }
+        };
       }
       this.childNodes.length = 0;
       this._triggerUpdate(payload);
@@ -316,7 +316,7 @@ class Element extends Node {
         payload = {
           path: node._path,
           value: () => simplifyDomTree(node)
-        }
+        };
       }
       this._triggerUpdate(payload);
       this._adjustDocument(node);
@@ -352,7 +352,7 @@ class Element extends Node {
             type: 'children',
             path: `${this._path}.children`,
             value: () => this.childNodes.map(simplifyDomTree)
-          }
+          };
         }
         this._triggerUpdate(payload);
       }
@@ -401,7 +401,7 @@ class Element extends Node {
             type: 'children',
             path: `${this._path}.children`,
             value: () => this.childNodes.map(simplifyDomTree)
-          }
+          };
         }
       }
 
@@ -447,7 +447,7 @@ class Element extends Node {
         payload = {
           path: node._path,
           value: () => simplifyDomTree(node)
-        }
+        };
       }
       this._triggerUpdate(payload);
       this._adjustDocument(node);
