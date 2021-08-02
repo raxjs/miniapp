@@ -226,7 +226,7 @@ class Element extends Node {
       if (isMiniApp) {
         payload = {
           type: 'children',
-          path: this._path,
+          path: `${this._path}.children`,
           start: 0,
           deleteCount: this.childNodes.length
         };
@@ -307,7 +307,7 @@ class Element extends Node {
       if (isMiniApp) {
         payload = {
           type: 'children',
-          path: this._path,
+          path: `${this._path}.children`,
           start: this.childNodes.length - 1,
           deleteCount: 0,
           item: simplifyDomTree(node)

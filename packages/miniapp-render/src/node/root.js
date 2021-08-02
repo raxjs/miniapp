@@ -68,7 +68,7 @@ class RootElement extends Element {
           if (task.type === 'children') {
             const spliceArgs = [task.start, task.deleteCount];
             internal.$spliceData({
-              [`${task.path}.children`]: task.item ? spliceArgs.concat(task.item) : spliceArgs
+              [task.path]: task.item ? spliceArgs.concat(task.item) : spliceArgs
             }, callback);
           } else {
             internal.setData({
