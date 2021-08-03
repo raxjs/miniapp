@@ -1,0 +1,6 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/build-plugin-rax-miniapp-faas" },
+  ]
+}
