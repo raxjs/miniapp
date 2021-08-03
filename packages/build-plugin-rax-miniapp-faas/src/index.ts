@@ -12,6 +12,7 @@ async function packageCloudFunctions() {
   const child = fork(join(__dirname, './package_process.js'), {
     env: {
       NODE_ENV: 'production',
+      baseDir
     },
     stdio: 'inherit'
   });

@@ -6,13 +6,13 @@ const { WeChatPlugin } = require('@midwayjs/fcli-plugin-wechat');
 (async() => {
   const core = new CommandCore({
     config: {
-      servicePath: baseDir,
+      servicePath: process.env.baseDir,
     },
     options: {
       verbose: process.env.MIDWAY_FAAS_VERBOSE,
     },
     commands: ['package'],
-    service: loadSpec(baseDir),
+    service: loadSpec(process.env.baseDir),
     provider: 'wechat',
     log: {
       ...console,
