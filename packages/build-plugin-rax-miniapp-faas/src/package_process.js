@@ -2,8 +2,9 @@ const { CommandCore } = require('@midwayjs/command-core');
 const { loadSpec } = require('@midwayjs/serverless-spec-builder');
 const { PackagePlugin } = require('@midwayjs/fcli-plugin-package');
 const { WeChatPlugin } = require('@midwayjs/fcli-plugin-wechat');
+
 const baseDir = process.cwd();
-(async () => {
+(async() => {
   const core = new CommandCore({
     config: {
       servicePath: baseDir,

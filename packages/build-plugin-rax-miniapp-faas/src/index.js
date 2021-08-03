@@ -21,7 +21,7 @@ async function packageCloudFunctions() {
       if (signal === 0) {
         resolve(signal);
       } else {
-        reject(signal)
+        reject(signal);
       }
     });
     child.on('error', e => {
@@ -53,7 +53,7 @@ async function handleBuildFiles(outputPath) {
   const outputClientPath = join(outputPath, CLIENT_DIR);
   const outputCloudPath = join(outputPath, CLOUD_DIR);
   const start = Date.now();
-  console.log('[Midway] Build cloud functions…')
+  console.log('[Midway] Build cloud functions…');
   await packageCloudFunctions();
   moveCloudFunctions(outputCloudPath);
   if (firstCompile) {
@@ -78,7 +78,7 @@ module.exports = ({ context, onGetWebpackConfig, onHook }) => {
         });
       }
     });
-    onHook('after.start.compile', async () => await handleBuildFiles(outputPath));
-    onHook('after.build.compile', async () => await handleBuildFiles(outputPath));
+    onHook('after.start.compile', async() => await handleBuildFiles(outputPath));
+    onHook('after.build.compile', async() => await handleBuildFiles(outputPath));
   }
-}
+};
