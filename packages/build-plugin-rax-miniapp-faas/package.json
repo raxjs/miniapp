@@ -2,7 +2,7 @@
   "name": "build-plugin-rax-miniapp-faas",
   "version": "1.0.0",
   "description": "rax miniapp-faas base plugins",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
