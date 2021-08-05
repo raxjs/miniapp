@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram, isMiniApp } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 import Event from './event';
+import cache from '../utils/cache';
 import CustomEvent from './custom-event';
 
 /**
@@ -120,10 +121,13 @@ class EventTarget {
 
     if (!event) {
       // Special handling here, not directly return the applet's event object
+      const targetNodeId = isMiniApp ? miniprogramEvent.target.targetDataset.privateNodeId : miniprogramEvent.target.dataset.privateNodeId;
+      // If different and native event target contains dataset, use native event target first
+      const realTarget = targetNodeId && targetNodeId !== target.__nodeId ? cache.getNode(targetNodeId) : target;
       event = new Event({
         name: eventName,
         target,
-        detail: miniprogramEvent.detail || { ...miniprogramEvent }, // Some info doesn't exist in event.detail but in event directly, like Alibaba MiniApp
+        detail: realTarget, // Some info doesn't exist in event.detail but in event directly, like Alibaba MiniApp
         timeStamp: miniprogramEvent.timeStamp,
         touches: miniprogramEvent.touches,
         changedTouches: miniprogramEvent.changedTouches,
@@ -239,16 +243,19 @@ class EventTarget {
     }
 
     if (handlers && handlers.length) {
+      let result;
       // Trigger addEventListener binded events
       handlers.forEach(handler => {
         if (event && event._immediateStop) return;
         try {
           const processedArgs = event ? [event, ...args] : [...args];
-          handler.call(this || null, ...processedArgs);
+          result = handler.call(this || null, ...processedArgs); // Only the last result will be returned
         } catch (err) {
           console.error(err);
         }
       });
+
+      return result;
     }
   }
 

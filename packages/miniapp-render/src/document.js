@@ -220,9 +220,7 @@ class Document extends EventTarget {
 export default function createDocument(pageId) {
   const document = new Document(pageId);
 
-  cache.init(pageId, {
-    document
-  });
+  cache.init(pageId, document);
 
   return document;
 };
