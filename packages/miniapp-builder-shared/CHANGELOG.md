@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.10] - 2021-08-05
+
+### Changed
+
+- Update autoInstallNpm method to support multiple install action
+
 ## [0.2.9] - 2021-07-27
 
 ### Fixed

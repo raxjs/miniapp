@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.9.0] - 2021-08-05
+
+### Added
+
+- Support generating multiple package.json file in subpackages mode
+
+### Fixed
+
+- Data binding error in scroll-view template in baidu smartprogram
+- Text can't be nested in baidu smartprogram
+- Can't generate native components template in windows system
+
 ## [4.8.0] - 2021-07-20
 
 ### Added
