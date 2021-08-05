@@ -161,7 +161,6 @@ class MiniAppRuntimePlugin {
           packageJsonFilePath.push('');
           needAutoInstallDependency = true;
         }
-        debugger;
         if (nativePackage.subPackages) {
           nativePackage.subPackages.forEach(({ dependencies = {}, source = '' }) => {
             generatePkg(compilation, {
