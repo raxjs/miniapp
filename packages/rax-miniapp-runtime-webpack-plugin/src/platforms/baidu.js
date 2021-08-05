@@ -957,7 +957,7 @@ exports.needModifyChildrenComponents = {
   ScrollView: children => `
     <block s-for="{{r.children}}" s-key="nodeId">
       <block s-if="{{item.nodeId}}">
-        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{r: item}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{{r: item}}}" />
       </block>
       <block s-else>
         <block>{{item.content}}</block>
@@ -977,6 +977,16 @@ exports.needModifyChildrenComponents = {
       <block s-else>
         <block>{{item.content}}</block>
       </block>
+    </block>
+  `,
+  Text: children => `
+    <block s-for="{{r.children}}">
+      <block>{{item.content}}</block>
+    </block>
+  `,
+  StaticText: children => `
+    <block s-for="{{r.children}}">
+      <block>{{item.content}}</block>
     </block>
   `
 };

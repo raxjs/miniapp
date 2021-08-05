@@ -1,4 +1,4 @@
-const { join } = require('path');
+const { join, sep } = require('path');
 const isNpmModule = require('./isNpmModule');
 /**
 * Filter plugins that configed in config json
@@ -31,17 +31,17 @@ function filterComponent(usingComponents, type = 'main', subAppRoot = '') {
     // Put npm native components to every package temporarily
     const isNpmNativeComponents = isNpmModule(usingComponents[component].path);
     // miniapp-compiled are only supported in main package
-    const isMainPackageRaxCompiledComponentDir = usingComponents[component].path.indexOf('./miniapp-compiled') === 0;
+    const isMainPackageRaxCompiledComponentDir = usingComponents[component].path.indexOf(`.${sep}miniapp-compiled`) === 0;
 
     if (isNpmNativeComponents || isMainPackageRaxCompiledComponentDir) {
       result[component] = usingComponents[component];
       return;
     }
     // miniapp-native path in main package must start with './miniapp-native'
-    const isMainPackageNativeComponentDir = usingComponents[component].path.indexOf('./miniapp-native') === 0;
+    const isMainPackageNativeComponentDir = usingComponents[component].path.indexOf(`.${sep}miniapp-native`) === 0;
     if (type === 'main' && isMainPackageNativeComponentDir) {
       result[component] = usingComponents[component];
-    } else if (type === 'sub' && (usingComponents[component].path.indexOf(`./${join(subAppRoot, 'miniapp-native')}`) === 0 || isMainPackageNativeComponentDir)) {
+    } else if (type === 'sub' && (usingComponents[component].path.indexOf(`.${sep}${join(subAppRoot, 'miniapp-native')}`) === 0 || isMainPackageNativeComponentDir)) {
       result[component] = usingComponents[component];
     }
   });
