@@ -1,4 +1,7 @@
-export default {
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isMiniApp } from 'universal-env';
+
+const movableView = {
   name: 'movable-view',
   singleEvents: [{
     name: 'onMovableViewHtouchmove',
@@ -28,3 +31,16 @@ export default {
     }
   ]
 };
+
+if (isMiniApp) {
+  movableView.functionalSingleEvents.push({
+    name: 'onMovableViewChangeEnd',
+    eventName: 'changeend',
+    middleware(evt, domNode) {
+      domNode._setAttributeWithOutUpdate('x', evt.detail.x);
+      domNode._setAttributeWithOutUpdate('y', evt.detail.y);
+    }
+  });
+}
+
+export default movableView;

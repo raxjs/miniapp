@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.9] - 2021-07-27
+
+### Fixed
+
+- route error in windows
+
 ## [0.2.8] - 2021-07-20
 
 ### Added
