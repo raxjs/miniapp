@@ -31,6 +31,9 @@ module.exports = (
   // Write to Disk
   chainConfig.devServer.writeToDisk(true);
 
+  // Support symlinks
+  chainConfig.resolve.symlinks(false);
+
   // Remove useless alias
   ['babel-runtime-jsx-plus', '@babel/runtime', 'rax-app', 'rax-app$', 'rax'].forEach(packageName => {
     chainConfig.resolve.alias.delete(packageName);
