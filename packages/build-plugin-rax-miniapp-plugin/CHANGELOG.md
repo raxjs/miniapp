@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.1
+
+- fix: make compile mode as default mode
+
 ## v1.0.0
 
 - feat: Support runtime mode
