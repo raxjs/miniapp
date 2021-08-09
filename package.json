@@ -18,7 +18,7 @@
     "@iceworks/spec": "^1.0.3",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
     "@typescript-eslint/parser": "^3.4.0",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.3.0",
     "babel-plugin-transform-jsx-stylesheet": "^1.0.0",
@@ -56,7 +56,8 @@
     "clean": "lerna clean --yes && rimraf packages/*/lib",
     "clean:lib": "rm -rf ./packages/*/lib",
     "check-and-publish": "node ./scripts/check-and-publish",
-    "ci": "npm run setup && npm run lint && npm run test"
+    "ci": "npm run setup && npm run lint && npm run test",
+    "release": "ts-node ./scripts/release.ts"
   },
   "config": {
     "commitizen": {
