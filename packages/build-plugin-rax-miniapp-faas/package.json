@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@midwayjs/command-core": "^1.2.76",
-    "@midwayjs/fcli-plugin-package": "1.2.77-beta.1",
-    "@midwayjs/fcli-plugin-wechat": "1.2.77-beta.1",
-    "@midwayjs/serverless-spec-builder": "1.2.77-beta.1",
+    "@midwayjs/fcli-plugin-package": "^1.2.78",
+    "@midwayjs/fcli-plugin-wechat": "^1.2.78",
+    "@midwayjs/serverless-spec-builder": "^1.2.78",
     "fs-extra": "^10.0.0",
     "miniapp-builder-shared": "^0.2.9"
   }
