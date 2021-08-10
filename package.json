@@ -46,13 +46,12 @@
     "universal-env": "^3.2.2"
   },
   "scripts": {
-    "setup": "rm -rf node_modules && npm install && npm run bootstrap",
-    "bootstrap": "lerna bootstrap --no-ci && npm run build",
+    "setup": "rm -rf node_modules && yarn install && npm run bootstrap",
+    "bootstrap": "SASS_BINARY_SITE=https://npm.taobao.org/mirrors/node-sass/ npm run clean && lerna bootstrap && npm run build",
     "lint": "eslint --ext .js --ext .jsx ./",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest --logHeapUsage --detectOpenHandles",
-    "build": "npm run clean && npm run build:compile",
-    "build:compile": "ts-node ./scripts/build.ts",
+    "build": "ts-node ./scripts/build.ts",
     "clean": "lerna clean --yes && rimraf packages/*/lib",
     "clean:lib": "rm -rf ./packages/*/lib",
     "check-and-publish": "node ./scripts/check-and-publish",

@@ -1,13 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.7.0",
+  "npmClient": "yarn",
   "packages": [
     "packages/*"
   ],
   "command": {
     "bootstrap": {
-      "npmClientArgs": [
-        "--no-package-lock"
-      ]
+      "npmClientArgs": ["--no-lockfile"]
     },
     "publish": {
       "skipGit": true,
