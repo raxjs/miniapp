@@ -1,7 +1,7 @@
-const { CommandCore } = require('@midwayjs/command-core');
-const { loadSpec } = require('@midwayjs/serverless-spec-builder');
-const { PackagePlugin } = require('@midwayjs/fcli-plugin-package');
-const { WeChatPlugin } = require('@midwayjs/fcli-plugin-wechat');
+import { CommandCore } from '@midwayjs/command-core';
+import { loadSpec } from '@midwayjs/serverless-spec-builder';
+import { PackagePlugin } from '@midwayjs/fcli-plugin-package';
+import { WeChatPlugin } from '@midwayjs/fcli-plugin-wechat';
 
 (async() => {
   const core = new CommandCore({

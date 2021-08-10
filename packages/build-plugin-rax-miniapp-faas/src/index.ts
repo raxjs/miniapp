@@ -1,7 +1,8 @@
-const { resolve, join } = require('path');
-const { moveSync, removeSync, writeJSONSync, readJSONSync } = require('fs-extra');
-const { fork } = require('child_process');
-const { constants: { WECHAT_MINIPROGRAM } } = require('miniapp-builder-shared');
+import { resolve, join } from "path";
+import { moveSync, removeSync, writeJSONSync, readJSONSync } from 'fs-extra';
+import { fork } from 'child_process';
+import { constants } from 'miniapp-builder-shared';
+const { WECHAT_MINIPROGRAM } = constants;
 
 const baseDir = process.cwd();
 const CLIENT_DIR = 'miniprogram';
@@ -64,7 +65,7 @@ async function handleBuildFiles(outputPath) {
   console.log(`[Midway] Build finished, cost ${Date.now() - start}ms`);
 }
 
-module.exports = ({ context, onGetWebpackConfig, onHook }) => {
+export default ({ context, onGetWebpackConfig, onHook }) => {
   const { rootDir, userConfig } = context;
   const { targets, outputDir = 'build' } = userConfig;
   if (targets.includes(WECHAT_MINIPROGRAM)) {

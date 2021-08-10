@@ -1,6 +1,6 @@
 {
   "name": "build-plugin-rax-miniapp-faas",
-  "version": "1.0.0",
+  "version": "1.0.0-3",
   "description": "rax miniapp-faas base plugins",
   "main": "lib/index.js",
   "scripts": {
