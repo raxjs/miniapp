@@ -48,7 +48,7 @@ class Element extends Node {
   // Init attribute
   _initAttributes(attrs = {}) {
     Object.keys(attrs).forEach(name => {
-      this._setAttributeWithOutUpdate(name, attrs[name]);
+      this._setAttributeWithDelayUpdate(name, attrs[name]);
     });
   }
 
@@ -157,6 +157,11 @@ class Element extends Node {
 
   // Sets properties, but does not trigger updates
   _setAttributeWithOutUpdate(name, value) {
+    this.__attrs.setWithOutUpdate(name, value);
+  }
+
+  // Sets properties, and trigger later
+  _setAttributeWithDelayUpdate(name, value) {
     this.__attrs.set(name, value, false);
   }
 

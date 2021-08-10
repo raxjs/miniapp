@@ -16,17 +16,17 @@ const movableView = {
       name: 'onMovableViewChange',
       eventName: 'change',
       middleware(evt, domNode) {
-        domNode._setAttributeWithOutUpdate('x', evt.detail.x);
-        domNode._setAttributeWithOutUpdate('y', evt.detail.y);
+        domNode._setAttributeWithDelayUpdate('x', evt.detail.x);
+        domNode._setAttributeWithDelayUpdate('y', evt.detail.y);
       }
     },
     {
       name: 'onMovableViewScale',
       eventName: 'scale',
       middleware(evt, domNode) {
-        domNode._setAttributeWithOutUpdate('x', evt.detail.x);
-        domNode._setAttributeWithOutUpdate('y', evt.detail.y);
-        domNode._setAttributeWithOutUpdate('scale-value', evt.detail.scale);
+        domNode._setAttributeWithDelayUpdate('x', evt.detail.x);
+        domNode._setAttributeWithDelayUpdate('y', evt.detail.y);
+        domNode._setAttributeWithDelayUpdate('scale-value', evt.detail.scale);
       }
     }
   ]
@@ -37,8 +37,8 @@ if (isMiniApp) {
     name: 'onMovableViewChangeEnd',
     eventName: 'changeend',
     middleware(evt, domNode) {
-      domNode._setAttributeWithOutUpdate('x', evt.detail.x);
-      domNode._setAttributeWithOutUpdate('y', evt.detail.y);
+      domNode._setAttributeWithDelayUpdate('x', evt.detail.x);
+      domNode._setAttributeWithDelayUpdate('y', evt.detail.y);
     }
   });
 }

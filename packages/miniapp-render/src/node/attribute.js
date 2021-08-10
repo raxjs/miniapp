@@ -8,6 +8,10 @@ class Attribute {
     this.__value = {};
   }
 
+  setWithOutUpdate(name, value) {
+    this.__value[name] = value;
+  }
+
   set(name, value, immediate = true) {
     const element = this.__element;
     this.__value[name] = value;
