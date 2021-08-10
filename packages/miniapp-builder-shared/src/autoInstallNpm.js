@@ -1,33 +1,37 @@
 const execa = require('execa');
+const { join } = require('path');
 const { checkAliInternal } = require('ice-npm-utils');
 
 let isAliInternal;
 let npmRegistry;
 
-async function autoInstallNpm(dir, callback) {
+function executeInstall(cwd) {
+  return execa('npm', ['install', '--production', `--registry=${npmRegistry}`], { cwd });
+}
+
+function warnInstallManually() {
+  console.log('\nInstall dependencies failed, please enter dist path and retry installing by yourself\n');
+}
+
+async function autoInstallNpm(callback, { distDir, packageJsonFilePath = []}) {
   if (isAliInternal === undefined) {
     isAliInternal = await checkAliInternal();
     npmRegistry = isAliInternal
       ? 'https://registry.npm.alibaba-inc.com'
       : 'https://registry.npm.taobao.org';
   }
-  execa('npm', ['install', '--production', `--registry=${npmRegistry}`], {
-    cwd: dir,
-  })
-    .then(({ exitCode }) => {
-      if (!exitCode) {
-        callback();
-      } else {
-        console.log(
-          `\nInstall dependencies failed, please enter ${dir} and retry by yourself\n`
-        );
-        callback();
+  const installPromiseArray = packageJsonFilePath.map(installPath => {
+    return executeInstall(join(distDir, installPath));
+  });
+  Promise.all(installPromiseArray)
+    .then((results) => {
+      if (results.some(result => result.exitCode)) {
+        warnInstallManually();
       }
+      callback();
     })
     .catch(() => {
-      console.log(
-        `\nInstall dependencies failed, please enter ${dir} and retry by yourself\n`
-      );
+      warnInstallManually();
       callback();
     });
 }
