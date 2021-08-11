@@ -1,6 +1,15 @@
 # Changelog
 
-## [2.8.0]
+## [2.8.0] - 2021-08-11
+
+### Added
+
+- Support passing css variables in style
+
+### Changed
+
+- Refactor DOM API in non-ali miniapp to improve performance and fix render error bug
+- Do not update scroll info from jscore to renderview to fix scroll-view shake
 
 ## [2.7.2] - 2021-07-27
 
