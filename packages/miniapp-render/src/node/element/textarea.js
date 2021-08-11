@@ -35,7 +35,7 @@ class HTMLTextAreaElement extends Element {
   }
 
   // Sets properties, but does not trigger updates
-  _setAttributeWithOutUpdate(name, value) {
+  _setAttributeWithDelayUpdate(name, value) {
     if (name === 'focus' || name === 'autofocus' || name === 'autoFocus') {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
@@ -43,7 +43,7 @@ class HTMLTextAreaElement extends Element {
     if (name === 'value') {
       this.__changed = true;
     }
-    super._setAttributeWithOutUpdate(name, value);
+    super._setAttributeWithDelayUpdate(name, value);
   }
 
   getAttribute(name) {
