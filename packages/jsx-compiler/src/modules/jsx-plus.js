@@ -377,7 +377,7 @@ function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code,
       const skipIds = node.skipIds = node.skipIds || new Map();
       skipIds.set(arg.name, true);
     });
-    
+
     node.__jsxlist.generated = true;
   }
 }

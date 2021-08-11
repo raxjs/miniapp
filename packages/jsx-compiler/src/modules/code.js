@@ -160,17 +160,9 @@ module.exports = {
           ));
         });
         if (propMaps.length > 0) {
-          // const key2 = this._getTagId(1 + '-' + key1, item.key, index2);
-          const getTagIdArgs = [
-            tagIdExpression ? genTagIdExp(tagIdExpression, true) : t.stringLiteral(tagId),
-            listKey,
-            listIndex
-          ];
-          const getTagIdStat = t.expressionStatement(t.callExpression(getTagId, getTagIdArgs));
-
           let argPIDExp = tagIdExpression
-          ? genTagIdExp(tagIdExpression)
-          : t.stringLiteral(tagId);
+            ? genTagIdExp(tagIdExpression)
+            : t.stringLiteral(tagId);
 
           // this._updateChildProps(1 + '-' + key1 + '-' + key2 ,{});
           const updatePropsArgs = [
@@ -179,10 +171,20 @@ module.exports = {
           ];
           const callUpdateProps = t.expressionStatement(t.callExpression(updateProps, updatePropsArgs));
 
-          isAddUpdateProps = true;
-          targetNode.unshift(getTagIdStat);
+          // const key2 = this._getTagId(1 + '-' + key1, item.key, index2);
+          const getTagIdArgs = [
+            tagIdExpression ? genTagIdExp(tagIdExpression, true) : t.stringLiteral(tagId),
+            listKey,
+            listIndex
+          ];
+          const keyDeclaration = t.variableDeclaration('const', [
+            t.variableDeclarator(t.identifier(tagIdExpression[tagIdExpression.length - 1] + ''), t.callExpression(getTagId, getTagIdArgs))
+          ]);
 
+          isAddUpdateProps = true;
           const targetNode = parentNode || fnBody;
+          targetNode.unshift(keyDeclaration);
+
           if (t.isReturnStatement(targetNode[targetNode.length - 1])) {
             targetNode.splice(targetNode.length - 1, 0, callUpdateProps);
           } else {

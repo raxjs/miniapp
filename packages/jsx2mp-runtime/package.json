@@ -1,6 +1,6 @@
 {
   "name": "jsx2mp-runtime",
-  "version": "0.4.22",
+  "version": "0.5.0",
   "description": "Runtime for jsx2mp.",
   "miniprogram": ".",
   "files": [

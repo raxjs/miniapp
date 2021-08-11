@@ -13,6 +13,7 @@ const getCompiledComponents = require('../getCompiledComponents');
 const replaceComponentTagName = require('../utils/replaceComponentTagName');
 const { getNpmName, normalizeFileName, addRelativePathPrefix, normalizeOutputFilePath, SCRIPT_FILE_EXTENSIONS } = require('../utils/pathHelper');
 const { RELATIVE_COMPONENTS_REG, MINIAPP_PLUGIN_COMPONENTS_REG, PKG_NAME_REG, GROUP_PKG_NAME_REG} = require('../constants');
+const { parseExpression } = require('../parser');
 
 let tagCount = 0;
 
@@ -54,13 +55,13 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
 
           const keyValue = args.length > 0 ? `${genExpression(args[0])}._key` : 'index';
           tagId += `-{{${keyValue}}}`;
-          
-          if (i === l - 1) {
+
+          if (i === 0) {
             parentPath.node.__listIndex = args.length > 1 ? args[1] : new Expression('index');
             // new Expression(args.length > 1 ? genExpression(args[1]) : 'index');
-            parentPath.node.__listKey = new Expression(definedKey);
+            parentPath.node.__listKey = definedKey ? parseExpression(definedKey) : t.nullLiteral();
           }
-          parentPath.node.__tagIdExpression.push(new Expression(listKey));
+          parentPath.node.__tagIdExpression.push(new Expression(genExpression(listKey)));
         }
         parentPath.node.__tagIdExpression.unshift(tagCount);
       }
