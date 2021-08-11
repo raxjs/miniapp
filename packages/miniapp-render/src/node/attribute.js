@@ -8,7 +8,7 @@ class Attribute {
     this.__value = {};
   }
 
-  setWithOutUpdate(name, value) {
+  setWithoutUpdate(name, value) {
     this.__value[name] = value;
   }
 

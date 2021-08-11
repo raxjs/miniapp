@@ -156,8 +156,8 @@ class Element extends Node {
   }
 
   // Sets properties, but does not trigger updates
-  _setAttributeWithOutUpdate(name, value) {
-    this.__attrs.setWithOutUpdate(name, value);
+  _setAttributeWithoutUpdate(name, value) {
+    this.__attrs.setWithoutUpdate(name, value);
   }
 
   // Sets properties, and trigger later
