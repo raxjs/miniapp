@@ -34,7 +34,7 @@ function isUndef(variable) {
  * @param {*} variable
  * @returns boolean
  */
- function isFunction(variable) {
+function isFunction(variable) {
   return typeof variable === 'function';
 }
 
