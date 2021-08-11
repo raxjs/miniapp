@@ -1,4 +1,4 @@
-const { resolve, join } = require('path');
+const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
 const isEqual = require('lodash.isequal');
 const { constants: { MINIAPP } } = require('miniapp-builder-shared');
@@ -59,6 +59,7 @@ class MiniAppRuntimePlugin {
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
+    const packageJsonFilePath = [];
 
     // Execute when compilation created
     compiler.hooks.compilation.tap(PluginName, (compilation) => {
@@ -156,6 +157,19 @@ class MiniAppRuntimePlugin {
             target,
             command,
             declaredDep: nativePackage.dependencies
+          });
+          packageJsonFilePath.push('');
+          needAutoInstallDependency = true;
+        }
+        if (nativePackage.subPackages) {
+          nativePackage.subPackages.forEach(({ dependencies = {}, source = '' }) => {
+            generatePkg(compilation, {
+              target,
+              command,
+              declaredDep: dependencies,
+              source
+            });
+            packageJsonFilePath.push(dirname(source));
           });
           needAutoInstallDependency = true;
         }
@@ -327,7 +341,7 @@ class MiniAppRuntimePlugin {
         return callback();
       }
       const distDir = stats.compilation.outputOptions.path;
-      await autoInstallNpm(distDir, callback);
+      await autoInstallNpm(callback, { distDir, packageJsonFilePath });
     });
   }
 }
