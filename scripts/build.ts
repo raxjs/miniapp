@@ -4,8 +4,6 @@ import * as fs from 'fs-extra';
 import { run } from './fn/shell';
 
 (async () => {
-  await run('npm run clean');
-
   const filePatten = '*/src/**/!(*.ts|*.tsx)';
   console.log(`[COPY]: ${filePatten}`);
 
