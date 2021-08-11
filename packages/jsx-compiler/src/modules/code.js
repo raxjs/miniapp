@@ -143,10 +143,12 @@ module.exports = {
       }
 
       const updateProps = t.memberExpression(t.identifier('this'), t.identifier('_updateChildProps'));
+      const getTagId = t.memberExpression(t.identifier('this'), t.identifier('_getTagId'));
       const componentsDependentProps = componentDependentProps || {};
+      let isAddUpdateProps = false;
 
       Object.keys(componentsDependentProps).forEach((tagId) => {
-        const { props, tagIdExpression, parentNode } = componentsDependentProps[tagId];
+        const { props, tagIdExpression, parentNode, listKey, listIndex } = componentsDependentProps[tagId];
 
         // Setup propMaps.
         const propMaps = [];
@@ -157,17 +159,29 @@ module.exports = {
             value
           ));
         });
+        if (propMaps.length > 0) {
+          // const key2 = this._getTagId(1 + '-' + key1, item.key, index2);
+          const getTagIdArgs = [
+            tagIdExpression ? genTagIdExp(tagIdExpression, true) : t.stringLiteral(tagId),
+            listKey,
+            listIndex
+          ];
+          const getTagIdStat = t.expressionStatement(t.callExpression(getTagId, getTagIdArgs));
 
-        let argPIDExp = tagIdExpression
+          let argPIDExp = tagIdExpression
           ? genTagIdExp(tagIdExpression)
           : t.stringLiteral(tagId);
 
-        const updatePropsArgs = [
-          argPIDExp,
-          t.objectExpression(propMaps)
-        ];
-        const callUpdateProps = t.expressionStatement(t.callExpression(updateProps, updatePropsArgs));
-        if (propMaps.length > 0) {
+          // this._updateChildProps(1 + '-' + key1 + '-' + key2 ,{});
+          const updatePropsArgs = [
+            argPIDExp,
+            t.objectExpression(propMaps)
+          ];
+          const callUpdateProps = t.expressionStatement(t.callExpression(updateProps, updatePropsArgs));
+
+          isAddUpdateProps = true;
+          targetNode.unshift(getTagIdStat);
+
           const targetNode = parentNode || fnBody;
           if (t.isReturnStatement(targetNode[targetNode.length - 1])) {
             targetNode.splice(targetNode.length - 1, 0, callUpdateProps);
@@ -183,15 +197,19 @@ module.exports = {
       addRenderPropsListener(renderPropsListener, renderFunctionPath);
       addUpdateData(dynamicValue, dynamicRef, dynamicStyle, renderItemFunctions, renderPropsFunctions, renderFunctionPath);
       addUpdateEvent(dynamicEvents, eventHandler, renderFunctionPath);
+      if (isAddUpdateProps) {
+        addClearTagCache(renderFunctionPath);
+      }
       addProviderIniter(contextList, renderFunctionPath);
       addRegisterRefs(refs, renderFunctionPath);
     }
   },
 };
 
-function genTagIdExp(expressions) {
+function genTagIdExp(expressions, isPre) {
   let ret = '';
-  for (let i = 0, l = expressions.length; i < l; i++) {
+  const l = isPre ? expressions.length - 1 : expressions.length;
+  for (let i = 0; i < l; i++) {
     if (expressions[i] && expressions[i].isExpression) {
       ret += expressions[i];
     } else {
@@ -614,4 +632,10 @@ function removeJSExtension(filePath) {
 function isImportAppJSON(mod, resourcePath, sourcePath, type) {
   const appConfigSourcePath = type === 'app' ? join(dirname(resourcePath), 'app.json') : join(sourcePath, 'app.json');
   return resolve(dirname(resourcePath), mod) === appConfigSourcePath;
+}
+
+function addClearTagCache(renderFunctionPath) {
+  const fnBody = renderFunctionPath.node.body.body;
+  // this._clearTagCache();
+  fnBody.push(t.expressionStatement(t.callExpression(t.memberExpression(t.thisExpression(), t.identifier('_clearTagCache')), [])));
 }

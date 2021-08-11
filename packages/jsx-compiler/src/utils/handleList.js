@@ -86,6 +86,7 @@ module.exports = function(
     // Record original expression
     replaceNode.__originalExpression = originalExpression;
     replaceNode.__index = targetPath.node.__index;
+    replaceNode.__originalDefinedKey = replaceVariable;
     node.value = replaceNode;
     // Record current properties
     replaceNode.__properties = properties;

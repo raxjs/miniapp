@@ -12,6 +12,7 @@ const handleListStyle = require('../utils/handleListStyle');
 const handleListProps = require('../utils/handleListProps');
 const handleListJSXExpressionContainer = require('../utils/handleListJSXExpressionContainer');
 const getParentListPath = require('../utils/getParentListPath');
+const createListKey = require('../utils/createListKey');
 
 /**
  * Transfrom map method
@@ -52,6 +53,7 @@ function transformMapMethod(path, parsed, code, adapter) {
         }
         // Create increasing new index identifier
         const renamedIndex = createListIndex();
+        const forKeyIndex = createListKey();
 
         // record original index identifier
         if (params[1]) {
@@ -65,7 +67,8 @@ function transformMapMethod(path, parsed, code, adapter) {
         const forIndex = params[1];
         const properties = [
           t.objectProperty(params[0], params[0]),
-          t.objectProperty(renamedIndex, renamedIndex)
+          t.objectProperty(renamedIndex, renamedIndex),
+          t.objectProperty(t.identifier('_key'), forKeyIndex),
         ];
 
         const iterValue = callee.object;
@@ -84,11 +87,13 @@ function transformMapMethod(path, parsed, code, adapter) {
 
         // __jsxlist
         const jsxList = {
+          listKey: forKeyIndex,
           args: [t.identifier(forItem.name), t.identifier(renamedIndex.name)],
           iterValue,
           jsxplus: false,
           parentList,
-          loopFnBody: body
+          loopFnBody: body,
+          definedKey: '' // 用户自定义的key
         };
 
         mapCallbackFnBodyPath.get('body').filter(p => !p.isReturnStatement()).map(statementPath => {
@@ -187,11 +192,14 @@ function transformMapMethod(path, parsed, code, adapter) {
           [adapter.forIndex]: t.stringLiteral(renamedIndex.name),
         };
 
-        if (adapter.needTransformKey && t.isJSXElement(returnElPath.node)) {
+        if (t.isJSXElement(returnElPath.node)) {
           const attributes = returnElPath.node.openingElement.attributes;
           const keyIndex = findIndex(attributes, attr => t.isJSXIdentifier(attr.name, { name: 'key' }));
           if (keyIndex > -1) {
-            listAttr.key = attributes[keyIndex].value;
+            // listAttr.key = attributes[keyIndex].value;
+            // todo
+            jsxList.definedKey = attributes[keyIndex].value.__originalDefinedKey;
+            listAttr.key = t.stringLiteral('_key');
             attributes.splice(keyIndex, 1);
           } else {
             listAttr.key = t.stringLiteral('*this');

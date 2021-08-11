@@ -9,6 +9,8 @@ const handleListStyle = require('../utils/handleListStyle');
 const handleListProps = require('../utils/handleListProps');
 const handleListJSXExpressionContainer = require('../utils/handleListJSXExpressionContainer');
 const getParentListPath = require('../utils/getParentListPath');
+const findIndex = require('../utils/findIndex');
+const createListKey = require('../utils/createListKey');
 
 const directiveIf = 'x-if';
 const directiveElseif = 'x-elseif';
@@ -182,6 +184,7 @@ function transformDirectiveList(parsed, code, adapter) {
         let originalIndex;
         // create new index identifier
         const forIndex = createListIndex();
+        const forKeyIndex = createListKey();
         if (t.isBinaryExpression(expression, { operator: 'in' })) {
           // x-for={(item, index) in value}
           const { left, right } = expression;
@@ -208,7 +211,8 @@ function transformDirectiveList(parsed, code, adapter) {
         // Transform x-for forNode to map function
         const properties = [
           t.objectProperty(params[0], params[0]),
-          t.objectProperty(params[1], params[1])
+          t.objectProperty(params[1], params[1]),
+          t.objectProperty(t.identifier('_key'), forKeyIndex),
         ];
         const loopFnBody = t.blockStatement([
           t.returnStatement(
@@ -228,12 +232,14 @@ function transformDirectiveList(parsed, code, adapter) {
 
         // <Component x-for={(item in list)} /> => <Component a:for={list} a:for-item="item" />
         parentJSXEl.node.__jsxlist = {
+          listKey: forKeyIndex,
           args: params,
           forNode,
           loopFnBody,
           parentList,
           originalIndex,
-          jsxplus: true
+          jsxplus: true,
+          definedKey: '' // 用户自定义的key
         };
         transformListJSXElement(parsed, parentJSXEl, dynamicStyle, dynamicValue, code, adapter);
         path.remove();
@@ -350,6 +356,16 @@ function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code,
         t.jsxExpressionContainer(forNode)
       )
     );
+
+    const keyIndex = findIndex(attributes, attr => t.isJSXIdentifier(attr.name, { name: 'key' }));
+    if (keyIndex > -1) {
+      // todo
+      node.__jsxlist.definedKey = attributes[keyIndex].value.__originalDefinedKey;
+
+      attributes.splice(keyIndex, 1);
+      attributes.push(t.jsxAttribute(t.jSXIdentifier('key'), t.stringLiteral('_key')));
+    }
+
     args.forEach((arg, index) => {
       attributes.push(
         t.jsxAttribute(
@@ -361,6 +377,7 @@ function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code,
       const skipIds = node.skipIds = node.skipIds || new Map();
       skipIds.set(arg.name, true);
     });
+    
     node.__jsxlist.generated = true;
   }
 }
