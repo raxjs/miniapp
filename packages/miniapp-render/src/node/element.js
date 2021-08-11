@@ -227,12 +227,21 @@ class Element extends Node {
 
     // An empty string does not add a textNode node
     if (!text) {
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        start: 0,
-        deleteCount: this.childNodes.length
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          start: 0,
+          deleteCount: this.childNodes.length
+        };
+      } else {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          value: () => []
+        };
+      }
       this.childNodes.length = 0;
       this._triggerUpdate(payload);
     } else {
@@ -299,13 +308,21 @@ class Element extends Node {
     if (this._isRendered()) {
       node.__rendered = true;
       // Trigger update
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        start: this.childNodes.length - 1,
-        deleteCount: 0,
-        item: simplifyDomTree(node)
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          start: this.childNodes.length - 1,
+          deleteCount: 0,
+          item: simplifyDomTree(node)
+        };
+      } else {
+        payload = {
+          path: node._path,
+          value: () => simplifyDomTree(node)
+        };
+      }
       this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
@@ -327,12 +344,21 @@ class Element extends Node {
       if (this._isRendered()) {
         node.__rendered = false;
         // Trigger update
-        const payload = {
-          type: 'children',
-          path: `${this._path}.children`,
-          start: index,
-          deleteCount: 1
-        };
+        let payload;
+        if (isMiniApp) {
+          payload = {
+            type: 'children',
+            path: `${this._path}.children`,
+            start: index,
+            deleteCount: 1
+          };
+        } else {
+          payload = {
+            type: 'children',
+            path: `${this._path}.children`,
+            value: () => this.childNodes.map(simplifyDomTree)
+          };
+        }
         this._triggerUpdate(payload);
       }
     }
@@ -360,13 +386,29 @@ class Element extends Node {
     }
     if (this._isRendered()) {
       node.__rendered = true;
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        deleteCount: 0,
-        item: simplifyDomTree(node),
-        start: insertIndex === -1 ? this.childNodes.length - 1 : insertIndex
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          deleteCount: 0,
+          item: simplifyDomTree(node),
+          start: insertIndex === -1 ? this.childNodes.length - 1 : insertIndex
+        };
+      } else {
+        if (insertIndex === -1) {
+          payload = {
+            path: node._path,
+            value: () => simplifyDomTree(node)
+          };
+        } else {
+          payload = {
+            type: 'children',
+            path: `${this._path}.children`,
+            value: () => this.childNodes.map(simplifyDomTree)
+          };
+        }
+      }
 
       // Trigger update
       this._triggerUpdate(payload);
@@ -397,13 +439,21 @@ class Element extends Node {
     if (this._isRendered()) {
       node.__rendered = true;
       // Trigger update
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        start: replaceIndex === -1 ? this.childNodes.length - 1 : replaceIndex,
-        deleteCount: replaceIndex === -1 ? 0 : 1,
-        item: simplifyDomTree(node)
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          start: replaceIndex === -1 ? this.childNodes.length - 1 : replaceIndex,
+          deleteCount: replaceIndex === -1 ? 0 : 1,
+          item: simplifyDomTree(node)
+        };
+      } else {
+        payload = {
+          path: node._path,
+          value: () => simplifyDomTree(node)
+        };
+      }
       this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
