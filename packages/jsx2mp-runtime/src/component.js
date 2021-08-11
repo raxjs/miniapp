@@ -52,6 +52,7 @@ export default class Component {
     this._hooks = {};
     this.hooks = [];
     this._hookID = 0;
+    this._tagCache = new Set();
 
     this._pendingStates = [];
     this._pendingCallbacks = [];
@@ -97,6 +98,25 @@ export default class Component {
   _registerLifeCycle(cycle, fn) {
     const currentCycles = this._cycles[cycle] = this._cycles[cycle] || [];
     currentCycles.push(fn);
+  }
+
+  _clearTagCache() {
+    this._tagCache = new Set();
+  }
+
+  /**
+   * generate uniq tagId
+   */
+  _getTagId(pre, key, index) {
+    if (typeof key === 'number' || typeof key === 'string') {
+      const tagId = `${pre}-${key}`;
+      if (!this._tagCache.has(tagId)) {
+        this._tagCache.add(tagId);
+        return tagId;
+      }
+    }
+
+    return `${pre}-idx_${index}`;
   }
 
   /**
