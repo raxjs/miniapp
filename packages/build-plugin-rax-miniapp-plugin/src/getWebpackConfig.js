@@ -16,10 +16,10 @@ const formatPath = require('./utils/formatPath');
 const EntryLoader = require.resolve('./loaders/EntryLoader');
 
 module.exports = (options) => {
-  const { isCompileProject, mode, target, api, outputPath } = options;
+  const { isRuntimeProject, mode, target, api, outputPath } = options;
   const { context } = api;
   const { rootDir, userConfig } = context;
-  if (isCompileProject) {
+  if (!isRuntimeProject) {
     const config = new Chain();
     config.plugin('processPluginJson').use(ProcessPluginJsonPlugin, [{ outputPath, rootDir, target }]);
     return setPluginConfig(config, userConfig[target] || {}, { context, target, outputPath });
