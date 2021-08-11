@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.6.2] - 2021-08-11
+
+### Changed
+
+- Refactor DOM API in non-ali miniapp to improve performance and fix render error bug
+
 ## [2.6.1] - 2021-06-09
 
 ### Fixed
