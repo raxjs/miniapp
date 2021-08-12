@@ -172,18 +172,23 @@ module.exports = {
           const callUpdateProps = t.expressionStatement(t.callExpression(updateProps, updatePropsArgs));
 
           // const key2 = this._getTagId(1 + '-' + key1, item.key, index2);
-          const getTagIdArgs = [
-            tagIdExpression ? genTagIdExp(tagIdExpression, true) : t.stringLiteral(tagId),
-            listKey,
-            listIndex
-          ];
-          const keyDeclaration = t.variableDeclaration('const', [
-            t.variableDeclarator(t.identifier(tagIdExpression[tagIdExpression.length - 1] + ''), t.callExpression(getTagId, getTagIdArgs))
-          ]);
+          let keyDeclaration;
+          if (tagIdExpression && tagIdExpression.length > 0) {
+            const getTagIdArgs = [
+              genTagIdExp(tagIdExpression, true),
+              listKey,
+              listIndex
+            ];
+            keyDeclaration = t.variableDeclaration('const', [
+              t.variableDeclarator(t.identifier(tagIdExpression[tagIdExpression.length - 1] + ''), t.callExpression(getTagId, getTagIdArgs))
+            ]);
+          }
 
-          isAddUpdateProps = true;
           const targetNode = parentNode || fnBody;
-          targetNode.unshift(keyDeclaration);
+          if (keyDeclaration) {
+            isAddUpdateProps = true;
+            targetNode.unshift(keyDeclaration);
+          }
 
           if (t.isReturnStatement(targetNode[targetNode.length - 1])) {
             targetNode.splice(targetNode.length - 1, 0, callUpdateProps);
