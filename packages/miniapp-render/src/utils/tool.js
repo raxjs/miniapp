@@ -29,9 +29,19 @@ function isUndef(variable) {
   return variable === undefined;
 }
 
+/**
+ * Check whether the variable is a function
+ * @param {*} variable
+ * @returns boolean
+ */
+function isFunction(variable) {
+  return typeof variable === 'function';
+}
+
 export {
   toDash,
   toCamel,
   getId,
-  isUndef
+  isUndef,
+  isFunction
 };
