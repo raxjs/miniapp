@@ -3,11 +3,11 @@ import { isMiniApp } from 'universal-env';
 import { NATIVE_EVENTS_LIST } from '../constants';
 
 function createLifeCycleCallback(lifeCycle) {
-  if (lifeCycle === 'onShareAppMessage') {
+  if (lifeCycle === 'onShareAppMessage' || lifeCycle === 'onShareTimeline') {
     return function(options) {
       if (this.document) {
         const shareInfo = {};
-        const returnedShareInfo = this.document._trigger('onShareAppMessage', {
+        const returnedShareInfo = this.document._trigger(lifeCycle, {
           event: { options, shareInfo }
         });
         return returnedShareInfo || shareInfo.content;
