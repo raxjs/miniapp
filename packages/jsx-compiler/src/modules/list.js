@@ -69,7 +69,6 @@ function transformMapMethod(path, parsed, code, adapter) {
         const forIndex = params[1];
         const properties = [
           t.objectProperty(params[0], params[0]),
-          t.objectProperty(renamedIndex, renamedIndex),
           t.objectProperty(t.identifier('_key'), renamedKey),
         ];
 
@@ -192,6 +191,7 @@ function transformMapMethod(path, parsed, code, adapter) {
           [adapter.for]: t.jsxExpressionContainer(forNode),
           [adapter.forItem]: t.stringLiteral(forItem.name),
           [adapter.forIndex]: t.stringLiteral(renamedIndex.name),
+          [adapter.key]: t.stringLiteral('_key'),
         };
 
         if (t.isJSXElement(returnElPath.node)) {
@@ -199,10 +199,7 @@ function transformMapMethod(path, parsed, code, adapter) {
           const keyIndex = findIndex(attributes, attr => t.isJSXIdentifier(attr.name, { name: 'key' }));
           if (keyIndex > -1) {
             jsxList.definedKey = attributes[keyIndex].value.__originalDefinedKey;
-            listAttr.key = t.stringLiteral('_key');
             attributes.splice(keyIndex, 1);
-          } else {
-            listAttr.key = t.stringLiteral('*this');
           }
         }
 

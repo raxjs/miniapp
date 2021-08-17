@@ -216,7 +216,6 @@ function transformDirectiveList(parsed, code, adapter) {
         // Transform x-for forNode to map function
         const properties = [
           t.objectProperty(params[0], params[0]),
-          t.objectProperty(params[1], params[1]),
           t.objectProperty(t.identifier('_key'), renamedKey),
         ];
         const loopFnBody = t.blockStatement([
@@ -368,12 +367,16 @@ function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code,
       )
     );
 
+    attributes.push(
+      t.jsxAttribute(
+        t.jSXIdentifier(adapter.key),
+        t.stringLiteral('_key')
+      )
+    );
     const keyIndex = findIndex(attributes, attr => t.isJSXIdentifier(attr.name, { name: 'key' }));
     if (keyIndex > -1) {
       node.__jsxlist.definedKey = attributes[keyIndex].value.__originalDefinedKey;
-
       attributes.splice(keyIndex, 1);
-      attributes.push(t.jsxAttribute(t.jSXIdentifier('key'), t.stringLiteral('_key')));
     }
 
     indexListKeyProps.originalKey = node.__jsxlist.definedKey ? parseExpression(node.__jsxlist.definedKey) : t.nullLiteral();
