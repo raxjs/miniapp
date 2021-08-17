@@ -45,23 +45,15 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
 
     if (!node.__slotChildEl) {
       tagId = '' + tagCount;
-      let keyIndex = 1;
 
       const parentsJSXList = findParentsJSXListEl(path);
       if (parentsJSXList.length > 0) {
         parentPath.node.__tagIdExpression = [];
         for (let l = parentsJSXList.length, i = l - 1; i >= 0; i--) {
-          const { args, definedKey, listKey } = parentsJSXList[i].node.__jsxlist;
-
+          const { args, listKey } = parentsJSXList[i].node.__jsxlist;
           const keyValue = args.length > 0 ? `${genExpression(args[0])}._key` : 'index';
-          tagId += `-{{${keyValue}}}`;
-
-          if (i === 0) {
-            parentPath.node.__listIndex = args.length > 1 ? args[1] : new Expression('index');
-            // new Expression(args.length > 1 ? genExpression(args[1]) : 'index');
-            parentPath.node.__listKey = definedKey ? parseExpression(definedKey) : t.nullLiteral();
-          }
           parentPath.node.__tagIdExpression.push(new Expression(genExpression(listKey)));
+          tagId += `-{{${keyValue}}}`;
         }
         parentPath.node.__tagIdExpression.unshift(tagCount);
       }
@@ -71,8 +63,6 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
       if (parentPath.node.__tagIdExpression) {
         componentDependentProps[tagId].tagIdExpression =
           parentPath.node.__tagIdExpression;
-        componentDependentProps[tagId].listKey = parentPath.node.__listKey;
-        componentDependentProps[tagId].listIndex = parentPath.node.__listIndex;
 
         if (renderFunctionPath) {
           const { loopFnBody } = parentsJSXList[0].node.__jsxlist;

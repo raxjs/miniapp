@@ -139,6 +139,61 @@ describe('Directives', () => {
     }}</View>
       </View>`);
     });
+
+    it('simple key', () => {
+      const code = `
+      <View>
+        <View x-for={val in array} key={val}>{format(val)}</View>
+      </View>
+      `;
+      const ast = parseExpression(code);
+      _transformList({
+        templateAST: ast
+      }, code, adapter);
+      const index = 'index' + count++;
+      const key = '_key' + count;
+      expect(genExpression(ast))
+        .toEqual(`<View>
+        <View a:for={array.map((val, ${index}) => {
+          return {
+            val: val,
+            ${index}: ${index},
+            _key: ${key},
+            _d0: format(val)
+          };
+        })} key="_key" a:for-item="val" a:for-index="${index}">{{
+            val._d0
+          }}</View>
+      </View>`);
+    });
+
+    it('member key', () => {
+      const code = `
+      <View>
+        <View x-for={item in list} key={item.id}>{format(item.val)}</View>
+      </View>
+      `;
+      const ast = parseExpression(code);
+      _transformList({
+        templateAST: ast
+      }, code, adapter);
+      const index = 'index' + count++;
+      const key = '_key' + count;
+      expect(genExpression(ast))
+        .toEqual(`<View>
+        <View a:for={list.map((item, ${index}) => {
+          return {
+            item: item,
+            ${index}: ${index},
+            _key: ${key},
+            _d0: item.id,
+            _d1: format(item.val)
+          };
+        })} key="_key" a:for-item="item" a:for-index="${index}">{{
+            item._d1
+          }}</View>
+      </View>`);
+    });
   });
 
   describe('condition', () => {

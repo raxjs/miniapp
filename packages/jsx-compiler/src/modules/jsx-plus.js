@@ -11,6 +11,7 @@ const handleListJSXExpressionContainer = require('../utils/handleListJSXExpressi
 const getParentListPath = require('../utils/getParentListPath');
 const findIndex = require('../utils/findIndex');
 const createListKey = require('../utils/createListKey');
+const { parseExpression } = require('../parser');
 
 const directiveIf = 'x-if';
 const directiveElseif = 'x-elseif';
@@ -167,6 +168,10 @@ function transformDirectiveClass(ast, parsed) {
 
 function transformDirectiveList(parsed, code, adapter) {
   const ast = parsed.templateAST;
+  if (!parsed.listKeyProps) {
+    parsed.listKeyProps = {};
+  }
+  const listKeyProps = parsed.listKeyProps;
   traverse(ast, {
     JSXAttribute(path) {
       const { node } = path;
@@ -184,7 +189,7 @@ function transformDirectiveList(parsed, code, adapter) {
         let originalIndex;
         // create new index identifier
         const forIndex = createListIndex();
-        const forKeyIndex = createListKey();
+        const renamedKey = createListKey();
         if (t.isBinaryExpression(expression, { operator: 'in' })) {
           // x-for={(item, index) in value}
           const { left, right } = expression;
@@ -212,7 +217,7 @@ function transformDirectiveList(parsed, code, adapter) {
         const properties = [
           t.objectProperty(params[0], params[0]),
           t.objectProperty(params[1], params[1]),
-          t.objectProperty(t.identifier('_key'), forKeyIndex),
+          t.objectProperty(t.identifier('_key'), renamedKey),
         ];
         const loopFnBody = t.blockStatement([
           t.returnStatement(
@@ -232,7 +237,7 @@ function transformDirectiveList(parsed, code, adapter) {
 
         // <Component x-for={(item in list)} /> => <Component a:for={list} a:for-item="item" />
         parentJSXEl.node.__jsxlist = {
-          listKey: forKeyIndex,
+          listKey: renamedKey,
           args: params,
           forNode,
           loopFnBody,
@@ -241,7 +246,13 @@ function transformDirectiveList(parsed, code, adapter) {
           jsxplus: true,
           definedKey: '' // 用户自定义的key
         };
-        transformListJSXElement(parsed, parentJSXEl, dynamicStyle, dynamicValue, code, adapter);
+
+        listKeyProps[forIndex.name] = {
+          renamedKey,
+          parentNode: loopFnBody.body,
+        };
+
+        transformListJSXElement(parsed, parentJSXEl, dynamicStyle, dynamicValue, code, adapter, listKeyProps[forIndex.name]);
         path.remove();
       }
     }
@@ -302,7 +313,7 @@ function transformSlotDirective(ast, adapter) {
   });
 }
 
-function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code, adapter) {
+function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code, adapter, indexListKeyProps) {
   const { node } = path;
   const { attributes } = node.openingElement;
 
@@ -359,12 +370,13 @@ function transformListJSXElement(parsed, path, dynamicStyle, dynamicValue, code,
 
     const keyIndex = findIndex(attributes, attr => t.isJSXIdentifier(attr.name, { name: 'key' }));
     if (keyIndex > -1) {
-      // todo
       node.__jsxlist.definedKey = attributes[keyIndex].value.__originalDefinedKey;
 
       attributes.splice(keyIndex, 1);
       attributes.push(t.jsxAttribute(t.jSXIdentifier('key'), t.stringLiteral('_key')));
     }
+
+    indexListKeyProps.originalKey = node.__jsxlist.definedKey ? parseExpression(node.__jsxlist.definedKey) : t.nullLiteral();
 
     args.forEach((arg, index) => {
       attributes.push(

@@ -69,7 +69,7 @@ module.exports = {
   parse(parsed, code, options) {
     const { ast, programPath, defaultExportedPath, exportComponentPath, renderFunctionPath,
       useCreateStyle, useClassnames, dynamicValue, dynamicRef, dynamicStyle, dynamicEvents, imported,
-      contextList, refs, componentDependentProps, renderItemFunctions, renderPropsFunctions, renderPropsEmitter, renderPropsListener, eventHandler, eventHandlers = [] } = parsed;
+      contextList, refs, componentDependentProps, listKeyProps, renderItemFunctions, renderPropsFunctions, renderPropsEmitter, renderPropsListener, eventHandler, eventHandlers = [] } = parsed;
     const { platform, type, cwd, outputPath, sourcePath, resourcePath, disableCopyNpm, virtualHost } = options;
     if (type !== 'app' && (!defaultExportedPath || !defaultExportedPath.node)) {
       // Can not found default export, otherwise app.js is excluded.
@@ -147,8 +147,26 @@ module.exports = {
       const componentsDependentProps = componentDependentProps || {};
       let isAddUpdateProps = false;
 
+      const listsKeyProps = listKeyProps || {};
+      Object.keys(listsKeyProps).forEach((renamedIndex) => {
+        const { originalKey, renamedKey, parentNode } = listsKeyProps[renamedIndex];
+        // const key2 = this._getTagId('index2', item.key, index2);
+        const getTagIdArgs = [
+          t.stringLiteral(renamedIndex + ''),
+          originalKey,
+          t.identifier(renamedIndex)
+        ];
+        const keyDeclaration = t.variableDeclaration('const', [
+          t.variableDeclarator(renamedKey, t.callExpression(getTagId, getTagIdArgs))
+        ]);
+
+        const targetNode = parentNode || fnBody;
+        isAddUpdateProps = true;
+        targetNode.unshift(keyDeclaration);
+      });
+
       Object.keys(componentsDependentProps).forEach((tagId) => {
-        const { props, tagIdExpression, parentNode, listKey, listIndex } = componentsDependentProps[tagId];
+        const { props, tagIdExpression, parentNode } = componentsDependentProps[tagId];
 
         // Setup propMaps.
         const propMaps = [];
@@ -171,24 +189,7 @@ module.exports = {
           ];
           const callUpdateProps = t.expressionStatement(t.callExpression(updateProps, updatePropsArgs));
 
-          // const key2 = this._getTagId(1 + '-' + key1, item.key, index2);
-          let keyDeclaration;
-          if (tagIdExpression && tagIdExpression.length > 0) {
-            const getTagIdArgs = [
-              genTagIdExp(tagIdExpression, true),
-              listKey,
-              listIndex
-            ];
-            keyDeclaration = t.variableDeclaration('const', [
-              t.variableDeclarator(t.identifier(tagIdExpression[tagIdExpression.length - 1] + ''), t.callExpression(getTagId, getTagIdArgs))
-            ]);
-          }
-
           const targetNode = parentNode || fnBody;
-          if (keyDeclaration) {
-            isAddUpdateProps = true;
-            targetNode.unshift(keyDeclaration);
-          }
 
           if (t.isReturnStatement(targetNode[targetNode.length - 1])) {
             targetNode.splice(targetNode.length - 1, 0, callUpdateProps);
@@ -640,6 +641,7 @@ function isImportAppJSON(mod, resourcePath, sourcePath, type) {
   const appConfigSourcePath = type === 'app' ? join(dirname(resourcePath), 'app.json') : join(sourcePath, 'app.json');
   return resolve(dirname(resourcePath), mod) === appConfigSourcePath;
 }
+
 
 function addClearTagCache(renderFunctionPath) {
   const fnBody = renderFunctionPath.node.body.body;

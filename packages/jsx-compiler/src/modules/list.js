@@ -13,6 +13,7 @@ const handleListProps = require('../utils/handleListProps');
 const handleListJSXExpressionContainer = require('../utils/handleListJSXExpressionContainer');
 const getParentListPath = require('../utils/getParentListPath');
 const createListKey = require('../utils/createListKey');
+const { parseExpression } = require('../parser');
 
 /**
  * Transfrom map method
@@ -26,6 +27,7 @@ function transformMapMethod(path, parsed, code, adapter) {
   const dynamicValue = new DynamicBinding('_d');
   const renderItemFunctions = parsed.renderItemFunctions;
   const renderPropsFunctions = parsed.renderPropsFunctions;
+  const listKeyProps = parsed.listKeyProps;
 
   // Avoid transfrom x-for result
   if (path.findParent(p => p.isJSXAttribute())) return;
@@ -53,7 +55,7 @@ function transformMapMethod(path, parsed, code, adapter) {
         }
         // Create increasing new index identifier
         const renamedIndex = createListIndex();
-        const forKeyIndex = createListKey();
+        const renamedKey = createListKey();
 
         // record original index identifier
         if (params[1]) {
@@ -68,7 +70,7 @@ function transformMapMethod(path, parsed, code, adapter) {
         const properties = [
           t.objectProperty(params[0], params[0]),
           t.objectProperty(renamedIndex, renamedIndex),
-          t.objectProperty(t.identifier('_key'), forKeyIndex),
+          t.objectProperty(t.identifier('_key'), renamedKey),
         ];
 
         const iterValue = callee.object;
@@ -87,7 +89,7 @@ function transformMapMethod(path, parsed, code, adapter) {
 
         // __jsxlist
         const jsxList = {
-          listKey: forKeyIndex,
+          listKey: renamedKey,
           args: [t.identifier(forItem.name), t.identifier(renamedIndex.name)],
           iterValue,
           jsxplus: false,
@@ -196,8 +198,6 @@ function transformMapMethod(path, parsed, code, adapter) {
           const attributes = returnElPath.node.openingElement.attributes;
           const keyIndex = findIndex(attributes, attr => t.isJSXIdentifier(attr.name, { name: 'key' }));
           if (keyIndex > -1) {
-            // listAttr.key = attributes[keyIndex].value;
-            // todo
             jsxList.definedKey = attributes[keyIndex].value.__originalDefinedKey;
             listAttr.key = t.stringLiteral('_key');
             attributes.splice(keyIndex, 1);
@@ -213,6 +213,11 @@ function transformMapMethod(path, parsed, code, adapter) {
           [/^JSX.*/g.test(returnEl.type) ? returnEl : t.jsxExpressionContainer(returnEl)]
         );
 
+        listKeyProps[renamedIndex.name] = {
+          originalKey: jsxList.definedKey ? parseExpression(jsxList.definedKey) : t.nullLiteral(),
+          renamedKey,
+          parentNode: jsxList.loopFnBody.body
+        };
 
         // Mark forItem __listItem
         forItem.__listItem = {
@@ -237,6 +242,9 @@ function transformMapMethod(path, parsed, code, adapter) {
 
 function transformList(parsed, code, adapter) {
   const ast = parsed.templateAST;
+  if (!parsed.listKeyProps) {
+    parsed.listKeyProps = {};
+  }
   traverse(ast, {
     ArrowFunctionExpression(path) {
       transformMapMethod(path, parsed, code, adapter);

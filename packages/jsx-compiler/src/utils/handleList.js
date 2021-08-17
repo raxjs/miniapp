@@ -88,9 +88,13 @@ module.exports = function(
     replaceNode.__originalExpression = originalExpression;
     replaceNode.__index = targetPath.node.__index;
     // record original key
-    if (isKey && t.isMemberExpression(originalExpression)) {
-      const propertyName = originalExpression.property.name;
-      replaceNode.__originalDefinedKey = genExpression(t.memberExpression(forItem, t.identifier(propertyName)));
+    if (isKey) {
+      if (t.isMemberExpression(originalExpression) && originalExpression.object.name === forItem.name) {
+        const propertyName = originalExpression.property.name;
+        replaceNode.__originalDefinedKey = genExpression(t.memberExpression(forItem, t.identifier(propertyName)));
+      } else if (t.isIdentifier(originalExpression) && originalExpression.name === forItem.name) {
+        replaceNode.__originalDefinedKey = genExpression(forItem);
+      }
     }
     node.value = replaceNode;
     // Record current properties
