@@ -107,16 +107,16 @@ export default class Component {
   /**
    * generate uniq tagId
    */
-  _getTagId(pre, key, index) {
+  _getTagId(namespace, key, index) {
     if (typeof key === 'number' || typeof key === 'string') {
-      const tagId = `${pre}-${key}`;
+      const tagId = `${namespace}-${key}`;
       if (!this._tagCache.has(tagId)) {
         this._tagCache.add(tagId);
         return tagId;
       }
     }
 
-    return `${pre}-idx_${index}`;
+    return `${namespace}-idx_${index}`;
   }
 
   /**
