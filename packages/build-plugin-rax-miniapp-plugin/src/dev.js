@@ -16,12 +16,12 @@ module.exports = (api, options = {}) => {
 
 
   targets.forEach((target) => {
-    const isCompileProject = userConfig[target] && userConfig[target].buildType === 'compile';
+    const isRuntimeProject = userConfig[target] && userConfig[target].buildType === 'runtime';
     // Get output dir
     const outputPath = getMiniAppOutput(context, { target });
     const mode = command === 'start' ? 'development' : 'production';
 
-    const webpackConfig = getWebpackConfig({ mode, target, api, outputPath, isCompileProject });
+    const webpackConfig = getWebpackConfig({ mode, target, api, outputPath, isRuntimeProject });
     registerTask(target, webpackConfig);
   });
 

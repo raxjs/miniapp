@@ -16,9 +16,9 @@ const ScrollView = {
       name: 'onScrollViewScroll',
       eventName: 'scroll',
       middleware(evt, domNode) {
-        domNode._setAttributeWithOutUpdate('scroll-into-view', '');
-        domNode._setAttributeWithOutUpdate('scroll-top', evt.detail.scrollTop);
-        domNode._setAttributeWithOutUpdate('scroll-left', evt.detail.scrollLeft);
+        domNode._setAttributeWithoutUpdate('scroll-into-view', '');
+        domNode._setAttributeWithoutUpdate('scroll-top', evt.detail.scrollTop);
+        domNode._setAttributeWithoutUpdate('scroll-left', evt.detail.scrollLeft);
       }
     }
   ]
