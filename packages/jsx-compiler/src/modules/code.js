@@ -143,14 +143,14 @@ module.exports = {
       }
 
       const updateProps = t.memberExpression(t.identifier('this'), t.identifier('_updateChildProps'));
-      const getTagId = t.memberExpression(t.identifier('this'), t.identifier('_getTagId'));
+      const getTagId = t.memberExpression(t.identifier('this'), t.identifier('_getUniqKey'));
       const componentsDependentProps = componentDependentProps || {};
       let isAddUpdateProps = false;
 
       const listsKeyProps = listKeyProps || {};
       Object.keys(listsKeyProps).forEach((renamedIndex) => {
         const { originalKey, renamedKey, parentNode } = listsKeyProps[renamedIndex];
-        // const key2 = this._getTagId('index2', item.key, index2);
+        // const key2 = this._getUniqKey('index2', item.key, index2);
         const getTagIdArgs = [
           t.stringLiteral(renamedIndex + ''),
           originalKey,
@@ -206,7 +206,7 @@ module.exports = {
       addUpdateData(dynamicValue, dynamicRef, dynamicStyle, renderItemFunctions, renderPropsFunctions, renderFunctionPath);
       addUpdateEvent(dynamicEvents, eventHandler, renderFunctionPath);
       if (isAddUpdateProps) {
-        addClearTagCache(renderFunctionPath);
+        addClearKeyCache(renderFunctionPath);
       }
       addProviderIniter(contextList, renderFunctionPath);
       addRegisterRefs(refs, renderFunctionPath);
@@ -643,8 +643,8 @@ function isImportAppJSON(mod, resourcePath, sourcePath, type) {
 }
 
 
-function addClearTagCache(renderFunctionPath) {
+function addClearKeyCache(renderFunctionPath) {
   const fnBody = renderFunctionPath.node.body.body;
-  // this._clearTagCache();
+  // this._clearKeyCache();
   fnBody.push(t.expressionStatement(t.callExpression(t.memberExpression(t.thisExpression(), t.identifier('_clearTagCache')), [])));
 }

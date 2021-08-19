@@ -52,7 +52,7 @@ export default class Component {
     this._hooks = {};
     this.hooks = [];
     this._hookID = 0;
-    this._tagCache = new Set();
+    this._keyCache = new Set();
 
     this._pendingStates = [];
     this._pendingCallbacks = [];
@@ -100,18 +100,18 @@ export default class Component {
     currentCycles.push(fn);
   }
 
-  _clearTagCache() {
-    this._tagCache = new Set();
+  _clearKeyCache() {
+    this._keyCache = new Set();
   }
 
   /**
-   * generate uniq tagId
+   * generate uniq Key
    */
-  _getTagId(namespace, key, index) {
+  _getUniqKey(namespace, key, index) {
     if (typeof key === 'number' || typeof key === 'string') {
       const tagId = `${namespace}-${key}`;
-      if (!this._tagCache.has(tagId)) {
-        this._tagCache.add(tagId);
+      if (!this._keyCache.has(tagId)) {
+        this._keyCache.add(tagId);
         return tagId;
       }
     }
