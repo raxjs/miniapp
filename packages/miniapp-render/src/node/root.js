@@ -78,7 +78,7 @@ class RootElement extends Element {
         });
       });
     } else {
-      const renderObject = {};
+      const renderObject = Object.create(null);
       const childrenValuePaths = [];
       this.__renderStacks.forEach(task => {
         const path = task.path;

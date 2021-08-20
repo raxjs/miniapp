@@ -38,10 +38,29 @@ function isFunction(variable) {
   return typeof variable === 'function';
 }
 
+/**
+ * Drop fields from obj
+ *
+ * @param {object} obj
+ * @param {array} fields
+ * @returns {object}
+ */
+function omit(obj, fields) {
+  const shallowCopy = Object.assign({}, obj);
+
+  for (let i = 0; i < fields.length; i++) {
+    const key = fields[i];
+    delete shallowCopy[key];
+  }
+
+  return shallowCopy;
+}
+
 export {
   toDash,
   toCamel,
   getId,
   isUndef,
-  isFunction
+  isFunction,
+  omit
 };

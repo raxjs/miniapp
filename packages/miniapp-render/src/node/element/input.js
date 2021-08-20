@@ -1,4 +1,6 @@
 import Element from '../element';
+import { omit } from '../../utils/tool';
+
 
 class HTMLInputElement extends Element {
   constructor(options) {
@@ -54,14 +56,19 @@ class HTMLInputElement extends Element {
   }
 
   get _renderInfo() {
-    return {
+    const renderInfo = {
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'input',
-      ...this.__attrs.__value,
-      style: this.style.cssText,
+      ...omit(this.__attrs.__value, ['style']),
       class: 'h5-input ' + this.className,
     };
+
+    let temp;
+    if (temp = this.style.cssText) {
+      renderInfo.style = temp;
+    }
+
+    return renderInfo;
   }
 
   // Attribute

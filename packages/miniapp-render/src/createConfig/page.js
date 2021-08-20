@@ -122,8 +122,6 @@ export default function(route, lifeCycles = [], init, packageName = '') {
       if (this.firstRender) {
         this.firstRender = false;
         const initData = {
-          pageId: this.pageId,
-          'root.pageId': this.pageId,
           'root.nodeId': `${BODY_NODE_ID}-${this.pageId}`
         };
         if (task) {

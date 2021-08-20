@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef } from '../../utils/tool';
+import { isUndef, omit } from '../../utils/tool';
 
 class HTMLVideoElement extends Element {
   constructor(options) {
@@ -18,19 +18,24 @@ class HTMLVideoElement extends Element {
     const width = parseInt(this.__attrs.get('width'), 10);
     const height = parseInt(this.__attrs.get('height'), 10);
 
-    if (typeof width === 'number' && width >= 0) this.$_style.width = `${width}px`;
-    if (typeof height === 'number' && height >= 0) this.$_style.height = `${height}px`;
+    if (typeof width === 'number' && width >= 0) this.style.width = `${width}px`;
+    if (typeof height === 'number' && height >= 0) this.style.height = `${height}px`;
   }
 
   get _renderInfo() {
-    return {
+    const renderInfo = {
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'video',
-      ...this.__attrs.__value,
-      style: this.style.cssText,
+      ...omit(this.__attrs.__value, ['style']),
       class: 'h5-video ' + this.className,
     };
+
+    let temp;
+    if (temp = this.style.cssText) {
+      renderInfo.style = temp;
+    }
+
+    return renderInfo;
   }
 
   get src() {
