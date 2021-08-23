@@ -11,6 +11,8 @@ export const NATIVE_EVENTS_LIST = [
   'onResize'
 ];
 
+export const NATIVE_EVENTS_WITH_RETURN_INFO = ['onShareAppMessage', 'onShareTimeline'];
+
 export const BUILTIN_COMPONENT_LIST = new Set([
   'movable-view', 'cover-image', 'cover-view', 'movable-area', 'scroll-view', 'swiper', 'swiper-item', 'view',
   'icon', 'progress', 'rich-text', 'text',

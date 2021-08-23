@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.1] - 2021-08-19
+
+### Fixed
+
+- Support onShareTimeline in wechat miniprogram
+
 ## [2.8.0] - 2021-08-11
 
 ### Added
