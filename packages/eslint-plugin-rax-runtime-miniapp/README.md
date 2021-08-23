@@ -41,6 +41,8 @@ Then configure the rules you want to use under the rules section.
 
 ## Supported Rules
 
-* Fill in provided rules here
+* no-inline-styles
+
+[no-inline-styles](https://github.com/raxjs/miniapp/tree/master/packages/eslint-plugin-rax-runtime-miniapp/docs/rules/no-inline-styles.md)
 
 

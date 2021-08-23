@@ -1,35 +1,34 @@
 # 不推荐使用内联样式 (no-inline-style)
 
-Please describe the origin of the rule here.
+在运行时小程序中，内联样式会导致 `setData` 传输的数据体积变大。本规则会检测元素的内联样式，当内联样式的每一项属性或属性值均为变量时，不会报错。
 
 ## Rule Details
 
-This rule aims to...
 
 Examples of **incorrect** code for this rule:
 
 ```js
+function Hello() {
+  return (
+    <Text style={{ backgroundColor: '#fff' }}>Hello</Text>
+  );
+}
+```
 
-// fill me in
-
+```js
+function Hello(props) {
+  return (
+    <Text style={{ height: props.height, backgroundColor: '#fff' }}>Hello</Text>
+  );
+}
 ```
 
 Examples of **correct** code for this rule:
 
 ```js
-
-// fill me in
-
+function Hello(props) {
+  return (
+    <Text style={{ height: props.height }}>Hello</Text>
+  );
+}
 ```
-
-### Options
-
-If there are any options, describe them here. Otherwise, delete this section.
-
-## When Not To Use It
-
-Give a short description of when it would be appropriate to turn off this rule.
-
-## Further Reading
-
-If there are other links that describe the issue this rule addresses, please include them here in a bulleted list.
