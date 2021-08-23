@@ -94,7 +94,7 @@ function transformMapMethod(path, parsed, code, adapter) {
           jsxplus: false,
           parentList,
           loopFnBody: body,
-          definedKey: '' // 用户自定义的key
+          definedKey: ''
         };
 
         mapCallbackFnBodyPath.get('body').filter(p => !p.isReturnStatement()).map(statementPath => {

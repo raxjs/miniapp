@@ -243,7 +243,7 @@ function transformDirectiveList(parsed, code, adapter) {
           parentList,
           originalIndex,
           jsxplus: true,
-          definedKey: '' // 用户自定义的key
+          definedKey: ''
         };
 
         listKeyProps[forIndex.name] = {
