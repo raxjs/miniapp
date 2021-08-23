@@ -1,13 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
-import { NATIVE_EVENTS_LIST } from '../constants';
+import { NATIVE_EVENTS_WITH_RETURN_INFO, NATIVE_EVENTS_LIST } from '../constants';
 
 function createLifeCycleCallback(lifeCycle) {
-  if (lifeCycle === 'onShareAppMessage') {
+  if (NATIVE_EVENTS_WITH_RETURN_INFO.includes(lifeCycle)) {
     return function(options) {
       if (this.document) {
         const shareInfo = {};
-        const returnedShareInfo = this.document._trigger('onShareAppMessage', {
+        const returnedShareInfo = this.document._trigger(lifeCycle, {
           event: { options, shareInfo }
         });
         return returnedShareInfo || shareInfo.content;
