@@ -160,7 +160,7 @@ module.exports = {
           getTagId,
           t.callExpression(getTagId, getTagIdArgs),
           t.identifier(renamedIndex)
-        )
+        );
         const keyDeclaration = t.variableDeclaration('const', [
           t.variableDeclarator(renamedKey, conditionExp)
         ]);
