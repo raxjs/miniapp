@@ -651,7 +651,7 @@ function isImportAppJSON(mod, resourcePath, sourcePath, type) {
 function addClearKeyCache(renderFunctionPath) {
   const fnBody = renderFunctionPath.node.body.body;
   // this._clearKeyCache && this._clearKeyCache();
-  const clearExp = t.memberExpression(t.thisExpression(), t.identifier('_clearTagCache'));
+  const clearExp = t.memberExpression(t.thisExpression(), t.identifier('_clearKeyCache'));
   fnBody.push(
     t.expressionStatement(
       t.logicalExpression('&&',
