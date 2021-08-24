@@ -150,14 +150,19 @@ module.exports = {
       const listsKeyProps = listKeyProps || {};
       Object.keys(listsKeyProps).forEach((renamedIndex) => {
         const { originalKey, renamedKey, parentNode } = listsKeyProps[renamedIndex];
-        // const key2 = this._getUniqKey('index2', item.key, index2);
+        // const key2 = this._getUniqKey ? this._getUniqKey('index2', item.key, index2) : index2;
         const getTagIdArgs = [
           t.stringLiteral(renamedIndex + ''),
           originalKey,
           t.identifier(renamedIndex)
         ];
+        const conditionExp = t.conditionalExpression(
+          getTagId,
+          t.callExpression(getTagId, getTagIdArgs),
+          t.identifier(renamedIndex)
+        );
         const keyDeclaration = t.variableDeclaration('const', [
-          t.variableDeclarator(renamedKey, t.callExpression(getTagId, getTagIdArgs))
+          t.variableDeclarator(renamedKey, conditionExp)
         ]);
 
         const targetNode = parentNode || fnBody;
@@ -645,6 +650,14 @@ function isImportAppJSON(mod, resourcePath, sourcePath, type) {
 
 function addClearKeyCache(renderFunctionPath) {
   const fnBody = renderFunctionPath.node.body.body;
-  // this._clearKeyCache();
-  fnBody.push(t.expressionStatement(t.callExpression(t.memberExpression(t.thisExpression(), t.identifier('_clearTagCache')), [])));
+  // this._clearKeyCache && this._clearKeyCache();
+  const clearExp = t.memberExpression(t.thisExpression(), t.identifier('_clearKeyCache'));
+  fnBody.push(
+    t.expressionStatement(
+      t.logicalExpression('&&',
+        clearExp,
+        t.callExpression(clearExp, [])
+      )
+    )
+  );
 }
