@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.23] - 2021-08-19
+
+- Support list key
+
 ## [0.4.22] - 2021-07-6
 
 ### Fixed

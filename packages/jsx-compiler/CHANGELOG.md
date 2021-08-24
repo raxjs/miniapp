@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.33] - 2021-08-19
+
+- Support key in list (x-for, map)
+
 ## [0.4.32] - 2021-06-30
 
 ### Fixed
