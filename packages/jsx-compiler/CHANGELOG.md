@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.34] - 2021-08-24
+
+- Compatible with old version of jsx2mp-runtime, which not support list key
+
 ## [0.4.33] - 2021-08-19
 
 - Support key in list (x-for, map)
