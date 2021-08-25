@@ -891,12 +891,12 @@ exports.shouldNotGenerateTemplateComponents = new Set([
 const flattenViewLevel = 8;
 function generateFlattenView(level, component) {
   if (level === 0) {
-    return '<template is="RAX_TMPL_CHILDREN_0" data="{{{r: item.children}}}" />'
+    return '<template is="RAX_TMPL_CHILDREN_0" data="{{{r: item.children}}}" />';
   }
   const child = generateFlattenView(level - 1);
-  let attributes = `animation="{{r['animation']}}" bindtap="onTap" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchcancel="onTouchCancel" bindtouchend="onTouchEnd" bindlongtap="onLongTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}"`;
+  let attributes = 'animation="{{r[\'animation\']}}" bindtap="onTap" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchcancel="onTouchCancel" bindtouchend="onTouchEnd" bindlongtap="onLongTap" style="{{r.style}}" class="{{r.class}}" id="{{r.id}}" data-private-node-id="{{r.nodeId}}"';
   if (component === 'view') {
-    attributes += ` hover-class="{{r['hover-class']||'none'}}" hover-start-time="{{tool.a(r['hover-start-time'],50)}}" hover-stay-time="{{tool.a(r['hover-stay-time'],400)}}" hover-stop-propagation="{{tool.a(r['hover-stop-propagation'],false)}}"`;
+    attributes += ' hover-class="{{r[\'hover-class\']||\'none\'}}" hover-start-time="{{tool.a(r[\'hover-start-time\'],50)}}" hover-stay-time="{{tool.a(r[\'hover-stay-time\'],400)}}" hover-stop-propagation="{{tool.a(r[\'hover-stop-propagation\'],false)}}"';
   }
   const template =
 `<block s-for="{{r.children}}" s-key="nodeId">
