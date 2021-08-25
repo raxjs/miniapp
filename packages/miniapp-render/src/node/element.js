@@ -116,6 +116,8 @@ class Element extends Node {
     if (hasCatchTouchMoveFlag) {
       CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
     }
+
+    // Fix scroll-view shake problem caused by scroll-left or scroll-top
     if (isWeChatMiniProgram && hasAnchorScrollFlag) {
       ANCHOR_COMPONENT === this.__tmplName && (nodeTypePrefix = 'anchor-');
     }
