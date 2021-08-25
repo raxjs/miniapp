@@ -35,11 +35,11 @@ export const INDEX_PAGE = 'index-page';
  * In Baidu SmartProgram and KuaiShou MiniProgram, view and h-element template are modified to support flex, so pure, static and catch elements are omitted
  */
 
-export const STATIC_COMPONENTS = new Set((isBaiduSmartProgram || isKuaiShouMiniProgram) ? ['text', 'image'] : ['view', 'text', 'image']); // With no events components
+export const STATIC_COMPONENTS = new Set(isBaiduSmartProgram || isKuaiShouMiniProgram ? ['text', 'image'] : ['view', 'text', 'image']); // With no events components
 
-export const PURE_COMPONENTS = new Set((isBaiduSmartProgram || isKuaiShouMiniProgram) ? [] : ['view', 'h-element']); // With no events or props && equal to TOUCH_COMPONENTS
+export const PURE_COMPONENTS = new Set(isBaiduSmartProgram || isKuaiShouMiniProgram ? [] : ['view', 'h-element']); // With no events or props && equal to TOUCH_COMPONENTS
 
-export const CATCH_COMPONENTS = new Set((isBaiduSmartProgram || isKuaiShouMiniProgram) ? [] : ['view', 'h-element']); // With catchTouchMove events
+export const CATCH_COMPONENTS = new Set(isBaiduSmartProgram || isKuaiShouMiniProgram ? [] : ['view', 'h-element']); // With catchTouchMove events
 
 export const APPEAR_COMPONENT = 'view'; // Without appear event components
 
