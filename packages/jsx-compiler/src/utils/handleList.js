@@ -29,6 +29,7 @@ module.exports = function(
   // Check attribute name wheather is ref
   const isRef = isAttr && node.name.name === 'ref';
   const targetPath = isAttr ? parentPath.get('value') : parentPath;
+  const isKey = isAttr && node.name.name === 'key';
   // Rename index node in expression
   const indexNodeVisitor = {
     Identifier(innerPath) {
@@ -86,6 +87,15 @@ module.exports = function(
     // Record original expression
     replaceNode.__originalExpression = originalExpression;
     replaceNode.__index = targetPath.node.__index;
+    // record original key
+    if (isKey) {
+      if (t.isMemberExpression(originalExpression) && originalExpression.object.name === forItem.name) {
+        const propertyName = originalExpression.property.name;
+        replaceNode.__originalDefinedKey = genExpression(t.memberExpression(forItem, t.identifier(propertyName)));
+      } else if (t.isIdentifier(originalExpression) && originalExpression.name === forItem.name) {
+        replaceNode.__originalDefinedKey = genExpression(forItem);
+      }
+    }
     node.value = replaceNode;
     // Record current properties
     replaceNode.__properties = properties;

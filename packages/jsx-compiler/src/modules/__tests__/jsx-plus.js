@@ -24,15 +24,16 @@ describe('Directives', () => {
       _transformList({
         templateAST: ast
       }, code, adapter);
+      const key = '_key' + count;
       const index = 'index' + count++;
       expect(genExpression(ast))
         .toEqual(`<View>
         <View a:for={array.map((val, ${index}) => {
     return {
       val: val,
-      ${index}: ${index}
+      _key: ${key}
     };
-  })} a:for-item="val" a:for-index="${index}">{{
+  })} a:key="_key" a:for-item="val" a:for-index="${index}">{{
       val.val
     }}</View>
       </View>`);
@@ -50,7 +51,9 @@ describe('Directives', () => {
       _transformList({
         templateAST: ast
       }, code, adapter);
+      const key1 = '_key' + count;
       const index1 = 'index' + count++;
+      const key2 = '_key' + count;
       const index2 = 'index' + count++;
       expect(genExpression(ast))
         .toEqual(`<View>
@@ -59,13 +62,13 @@ describe('Directives', () => {
       item: item.map((item2, ${index2}) => {
         return {
           item2: item2,
-          ${index2}: ${index2}
+          _key: ${key2}
         };
       }),
-      ${index1}: ${index1}
+      _key: ${key1}
     };
-  })} a:for-item="item" a:for-index="${index1}">
-          <View a:for={item} a:for-item="item2" a:for-index="${index2}">{{
+  })} a:key="_key" a:for-item="item" a:for-index="${index1}">
+          <View a:for={item} a:key="_key" a:for-item="item2" a:for-index="${index2}">{{
         item2.item2
       }}</View>
       </View>
@@ -90,25 +93,28 @@ describe('Directives', () => {
       _transformList({
         templateAST: ast
       }, code, adapter);
+      const key1 = '_key' + count;
       const index1 = 'index' + count++;
+      const key2 = '_key' + count;
       const index2 = 'index' + count++;
       expect(genExpression(ast))
         .toEqual(`<View className="rxpi-coupon">
-        <View className="rxpi-coupon-row" key="{{row._d0}}" a:for={testList.map((row, ${index1}) => {
+        <View className="rxpi-coupon-row" a:for={testList.map((row, ${index1}) => {
     return {
       row: row.map((col, ${index2}) => {
         return {
           col: col,
-          ${index2}: ${index2}
+          _key: ${key2},
+          _d0: ${index2}
         };
       }),
-      ${index1}: ${index1},
+      _key: ${key1},
       _d0: 'test_' + ${index1}
     };
-  })} a:for-item="row" a:for-index="${index1}">
-          <View a:for={row} a:for-item="col" a:for-index="${index2}">
-            <Text key="{{col.${index2}}}">{{
-          col.${index2}
+  })} a:key="_key" a:for-item="row" a:for-index="${index1}">
+          <View a:for={row} a:key="_key" a:for-item="col" a:for-index="${index2}">
+            <Text key="{{col._d0}}">{{
+          col._d0
         }}</Text>
           </View>
         </View>
@@ -125,17 +131,71 @@ describe('Directives', () => {
       _transformList({
         templateAST: ast
       }, code, adapter);
+      const key = '_key' + count;
       const index = 'index' + count++;
       expect(genExpression(ast))
         .toEqual(`<View>
         <View a:for={array.map((val, ${index}) => {
     return {
       val: val,
-      ${index}: ${index},
+      _key: ${key},
       _d0: format(val)
     };
-  })} a:for-item="val" a:for-index="${index}">{{
+  })} a:key="_key" a:for-item="val" a:for-index="${index}">{{
       val._d0
+    }}</View>
+      </View>`);
+    });
+
+    it('simple key', () => {
+      const code = `
+      <View>
+        <View x-for={val in array} key={val}>{format(val)}</View>
+      </View>
+    `;
+      const ast = parseExpression(code);
+      _transformList({
+        templateAST: ast
+      }, code, adapter);
+      const key = '_key' + count;
+      const index = 'index' + count++;
+      expect(genExpression(ast))
+        .toEqual(`<View>
+        <View a:for={array.map((val, ${index}) => {
+    return {
+      val: val,
+      _key: ${key},
+      _d0: format(val)
+    };
+  })} a:key="_key" a:for-item="val" a:for-index="${index}">{{
+      val._d0
+    }}</View>
+      </View>`);
+    });
+
+    it('member key', () => {
+      const code = `
+      <View>
+        <View x-for={item in list} key={item.id}>{format(item.val)}</View>
+      </View>
+      `;
+      const ast = parseExpression(code);
+      _transformList({
+        templateAST: ast
+      }, code, adapter);
+      const key = '_key' + count;
+      const index = 'index' + count++;
+      expect(genExpression(ast))
+        .toEqual(`<View>
+        <View a:for={list.map((item, ${index}) => {
+    return {
+      item: item,
+      _key: ${key},
+      _d0: item.id,
+      _d1: format(item.val)
+    };
+  })} a:key="_key" a:for-item="item" a:for-index="${index}">{{
+      item._d1
     }}</View>
       </View>`);
     });
@@ -204,6 +264,7 @@ describe('Directives', () => {
       _transformList({
         templateAST: ast
       }, code, adapter);
+      const key = '_key' + count;
       const index = 'index' + count++;
       expect(genExpression(ast)).toEqual(`<View>
         <View ref="{{item._d0}}" id="id_${id}{{${index}}}" a:for={data.map((item, ${index}) => {
@@ -216,10 +277,10 @@ describe('Directives', () => {
 
     return {
       item: item,
-      ${index}: ${index},
+      _key: ${key},
       _d0: "${id}" + ${index}
     };
-  })} a:for-item="item" a:for-index="${index}">test</View>
+  })} a:key="_key" a:for-item="item" a:for-index="${index}">test</View>
       </View>`);
       id++;
     });
@@ -235,7 +296,9 @@ describe('Directives', () => {
     _transformList({
       templateAST: ast
     }, code, adapter);
+    const key1 = '_key' + count;
     const index1 = 'index' + count++;
+    const key2 = '_key' + count;
     const index2 = 'index' + count++;
     expect(genExpression(ast)).toEqual(`<View>
         <View a:for={data.map((item, ${index1}) => {
@@ -251,15 +314,15 @@ describe('Directives', () => {
 
           return {
             item: item,
-            ${index2}: ${index2},
+            _key: ${key2},
             _d0: "${id}" + ${index2}
           };
         })
       },
-      ${index1}: ${index1}
+      _key: ${key1}
     };
-  })} a:for-item="item" a:for-index="${index1}">
-            <View ref="{{item._d0}}" id="id_${id}{{${index2}}}" a:for={item.list} a:for-item="item" a:for-index="${index2}">test</View>
+  })} a:key="_key" a:for-item="item" a:for-index="${index1}">
+            <View ref="{{item._d0}}" id="id_${id}{{${index2}}}" a:for={item.list} a:key="_key" a:for-item="item" a:for-index="${index2}">test</View>
         </View>
       </View>`);
     id++;
