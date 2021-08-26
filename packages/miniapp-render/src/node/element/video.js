@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef, omitUndefFields } from '../../utils/tool';
+import { isUndef, omitFalsyFields } from '../../utils/tool';
 
 class HTMLVideoElement extends Element {
   constructor(options) {
@@ -23,7 +23,7 @@ class HTMLVideoElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitUndefFields({
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'video',
       ...this.__attrs.__value,

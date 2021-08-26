@@ -1,6 +1,6 @@
 import Element from '../element';
 import cache from '../../utils/cache';
-import { getId, omitUndefFields } from '../../utils/tool';
+import { getId, omitFalsyFields } from '../../utils/tool';
 
 class CustomComponent extends Element {
   constructor(options) {
@@ -15,7 +15,7 @@ class CustomComponent extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitUndefFields({
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: this.__tagName,
       style: this.style.cssText,

@@ -1,5 +1,5 @@
 import Element from '../element';
-import { omitUndefFields } from '../../utils/tool';
+import { omitFalsyFields } from '../../utils/tool';
 
 
 class HTMLInputElement extends Element {
@@ -56,7 +56,7 @@ class HTMLInputElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitUndefFields({
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'input',
       ...this.__attrs.__value,

@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef, omitUndefFields } from '../../utils/tool';
+import { isUndef, omitFalsyFields } from '../../utils/tool';
 
 class HTMLTextAreaElement extends Element {
   constructor(options) {
@@ -55,7 +55,7 @@ class HTMLTextAreaElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitUndefFields({
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'textarea',
       ...this.__attrs.__value,

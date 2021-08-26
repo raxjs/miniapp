@@ -6,7 +6,7 @@ import ClassList from './class-list';
 import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
-import { toDash, omitUndefFields } from '../utils/tool';
+import { toDash, omitFalsyFields } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
 import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, ANCHOR_COMPONENT } from '../constants';
 
@@ -125,7 +125,7 @@ class Element extends Node {
   get _renderInfo() {
     const nodeType = this._processNodeType();
 
-    const renderInfo = omitUndefFields({
+    const renderInfo = omitFalsyFields({
       nodeType,
       nodeId: this.__nodeId,
       ...this.__attrs.__value,

@@ -1,7 +1,7 @@
 /* global CONTAINER */
 import Element from '../element';
 import Event from '../../event/event';
-import { omitUndefFields } from '../../utils/tool';
+import { omitFalsyFields } from '../../utils/tool';
 
 
 class Image extends Element {
@@ -46,7 +46,7 @@ class Image extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitUndefFields({
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'image',
       ...this.__attrs.__value,
