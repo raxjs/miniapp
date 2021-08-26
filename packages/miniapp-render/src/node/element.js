@@ -130,8 +130,9 @@ class Element extends Node {
       nodeId: this.__nodeId,
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`
+      class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
     }, ['class', 'style']);
+
     return renderInfo;
   }
 
