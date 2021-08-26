@@ -1,5 +1,5 @@
 import Element from '../element';
-import { omit } from '../../utils/tool';
+import { omitUndefFields } from '../../utils/tool';
 
 
 class HTMLInputElement extends Element {
@@ -56,17 +56,13 @@ class HTMLInputElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = {
+    const renderInfo = omitUndefFields({
       nodeId: this.__nodeId,
       nodeType: 'input',
-      ...omit(this.__attrs.__value, ['style']),
+      ...this.__attrs.__value,
+      style: this.style.cssText,
       class: 'h5-input ' + this.className,
-    };
-
-    let temp;
-    if (temp = this.style.cssText) {
-      renderInfo.style = temp;
-    }
+    }, ['style']);
 
     return renderInfo;
   }

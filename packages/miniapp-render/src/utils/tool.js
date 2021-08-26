@@ -39,18 +39,20 @@ function isFunction(variable) {
 }
 
 /**
- * Drop fields from obj
+ * Drop fields which value is undefined from obj
  *
  * @param {object} obj
  * @param {array} fields
  * @returns {object}
  */
-function omit(obj, fields) {
+function omitUndefFields(obj, fields) {
   const shallowCopy = Object.assign({}, obj);
 
   for (let i = 0; i < fields.length; i++) {
     const key = fields[i];
-    delete shallowCopy[key];
+    if (shallowCopy.hasOwnProperty(key) && shallowCopy[key] === undefined) {
+      delete shallowCopy[key];
+    }
   }
 
   return shallowCopy;
@@ -62,5 +64,5 @@ export {
   getId,
   isUndef,
   isFunction,
-  omit
+  omitUndefFields
 };

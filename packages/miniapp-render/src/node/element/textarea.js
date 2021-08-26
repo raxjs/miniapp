@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef, omit } from '../../utils/tool';
+import { isUndef, omitUndefFields } from '../../utils/tool';
 
 class HTMLTextAreaElement extends Element {
   constructor(options) {
@@ -55,17 +55,13 @@ class HTMLTextAreaElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = {
+    const renderInfo = omitUndefFields({
       nodeId: this.__nodeId,
       nodeType: 'textarea',
-      ...omit(this.__attrs.__value, ['style']),
+      ...this.__attrs.__value,
+      style: this.style.cssText,
       class: 'h5-textarea ' + this.className,
-    };
-
-    let temp;
-    if (temp = this.style.cssText) {
-      renderInfo.style = temp;
-    }
+    }, ['style']);
 
     return renderInfo;
   }

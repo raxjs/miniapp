@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef, omit } from '../../utils/tool';
+import { isUndef, omitUndefFields } from '../../utils/tool';
 
 class HTMLVideoElement extends Element {
   constructor(options) {
@@ -23,17 +23,13 @@ class HTMLVideoElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = {
+    const renderInfo = omitUndefFields({
       nodeId: this.__nodeId,
       nodeType: 'video',
-      ...omit(this.__attrs.__value, ['style']),
+      ...this.__attrs.__value,
+      style: this.style.cssText,
       class: 'h5-video ' + this.className,
-    };
-
-    let temp;
-    if (temp = this.style.cssText) {
-      renderInfo.style = temp;
-    }
+    }, ['style']);
 
     return renderInfo;
   }
