@@ -2,7 +2,7 @@
 
 ## [0.4.35] - 2021-08-27
 
-- Return renamed index props in list
+- Return renamed index in list
 
 ## [0.4.34] - 2021-08-24
 
