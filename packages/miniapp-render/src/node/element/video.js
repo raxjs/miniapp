@@ -23,15 +23,13 @@ class HTMLVideoElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitFalsyFields({
+    return omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'video',
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: 'h5-video ' + this.className,
     }, ['style']);
-
-    return renderInfo;
   }
 
   get src() {

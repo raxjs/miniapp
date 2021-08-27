@@ -125,15 +125,13 @@ class Element extends Node {
   get _renderInfo() {
     const nodeType = this._processNodeType();
 
-    const renderInfo = omitFalsyFields({
+    return omitFalsyFields({
       nodeType,
       nodeId: this.__nodeId,
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
     }, ['class', 'style']);
-
-    return renderInfo;
   }
 
   get _internal() {

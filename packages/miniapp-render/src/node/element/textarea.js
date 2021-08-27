@@ -55,15 +55,13 @@ class HTMLTextAreaElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitFalsyFields({
+    return omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'textarea',
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: 'h5-textarea ' + this.className,
     }, ['style']);
-
-    return renderInfo;
   }
 
   // Attribute

@@ -46,15 +46,13 @@ class Image extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitFalsyFields({
+    return omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'image',
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: 'h5-img ' + this.className,
     }, ['style']);
-
-    return renderInfo;
   }
 
   get src() {

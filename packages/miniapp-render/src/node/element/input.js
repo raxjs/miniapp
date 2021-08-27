@@ -56,15 +56,13 @@ class HTMLInputElement extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = omitFalsyFields({
+    return omitFalsyFields({
       nodeId: this.__nodeId,
       nodeType: 'input',
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: 'h5-input ' + this.className,
     }, ['style']);
-
-    return renderInfo;
   }
 
   // Attribute
