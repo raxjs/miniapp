@@ -69,6 +69,7 @@ function transformMapMethod(path, parsed, code, adapter) {
         const forIndex = params[1];
         const properties = [
           t.objectProperty(params[0], params[0]),
+          t.objectProperty(renamedIndex, renamedIndex),
           t.objectProperty(t.identifier('_key'), renamedKey),
         ];
 

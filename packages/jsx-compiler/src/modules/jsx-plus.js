@@ -216,6 +216,7 @@ function transformDirectiveList(parsed, code, adapter) {
         // Transform x-for forNode to map function
         const properties = [
           t.objectProperty(params[0], params[0]),
+          t.objectProperty(params[1], params[1]),
           t.objectProperty(t.identifier('_key'), renamedKey),
         ];
         const loopFnBody = t.blockStatement([
