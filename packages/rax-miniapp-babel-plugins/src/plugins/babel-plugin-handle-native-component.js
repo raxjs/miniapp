@@ -143,7 +143,7 @@ module.exports = function visitor(
             const filePath = getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies) || getCompiledComponentsPath(dirName, source.value);
             // TODO:
             // Temporarily ignore import { a, b } from 'xxx';
-            if (filePath && hasDefaultSpecifier(specifiers, t)) {
+            if ((filePath || source.value === 'rax-componentwrapper') && hasDefaultSpecifier(specifiers, t)) {
               if (!scanedPageMap[filename]) {
                 scanedPageMap[filename] = true;
                 path.parentPath.traverse({

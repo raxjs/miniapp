@@ -53,6 +53,7 @@ class Element extends Node {
   }
 
   _triggerUpdate(payload, immediate = true) {
+    payload.nodeId = this.__nodeId;
     if (immediate) {
       this._enqueueRender(payload);
     } else {

@@ -39,7 +39,7 @@ function collectUsings(
   filePath,
   t
 ) {
-  const { specifiers } = path.node;
+  const { specifiers, source } = path.node;
   specifiers.some((specifier, index) => {
     if (!t.isImportDefaultSpecifier(specifier)) return;
 
@@ -57,7 +57,7 @@ function collectUsings(
       });
 
       // Generate a random tag name
-      const replacedTagName = getTagName(tagName);
+      const replacedTagName = source.type === 'StringLiteral' && source.value === 'rax-componentwrapper' ? 'component-wrapper' : getTagName(tagName);
       if (!usings[replacedTagName]) {
         usings[replacedTagName] = { props: [], events: [] };
       }

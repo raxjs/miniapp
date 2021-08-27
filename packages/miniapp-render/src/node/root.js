@@ -80,12 +80,31 @@ class RootElement extends Element {
     } else {
       const renderObject = {};
       const childrenValuePaths = [];
+      // let hasCustomWrapper = false;
+      // const customWrapperUpdate = [];
+
       this.__renderStacks.forEach(task => {
         const path = task.path;
-        if (task.type === 'children') {
-          childrenValuePaths.push(path);
+        const node = cache.getNode(task.nodeId);
+        if (node && node.__nativeType === 'customComponent') {
+          // hasCustomWrapper = true;
+          // customWrapperUpdate.push({
+          //   node: node._internal,
+          //   data: {
+          //     [path.replace(node._path, '')]: task.value
+          //   }
+          // });
+          node._internal.setData({
+            [path.replace(node._path, '')]: task.value()
+          }, () => {
+            console.log('component update');
+          });
+        } else {
+          if (task.type === 'children') {
+            childrenValuePaths.push(path);
+          }
+          renderObject[path] = task.value;
         }
-        renderObject[path] = task.value;
       });
       for (const path in renderObject) {
         // If the whole father children path is set, then its children path can be deleted

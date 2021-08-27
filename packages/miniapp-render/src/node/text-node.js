@@ -16,6 +16,7 @@ class TextNode extends Node {
   }
 
   _triggerUpdate(payload) {
+    payload.nodeId = this.__nodeId;
     this._root._enqueueRender(payload);
   }
 
