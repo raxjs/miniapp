@@ -1,7 +1,8 @@
 const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
-  Tap: ''
+  Tap: '',
+  LongTap: ''
 };
 
 
