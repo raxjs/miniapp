@@ -6,7 +6,7 @@ import ClassList from './class-list';
 import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
-import { toDash } from '../utils/tool';
+import { toDash, omitFalsyFields } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
 import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, ANCHOR_COMPONENT } from '../constants';
 
@@ -116,6 +116,8 @@ class Element extends Node {
     if (hasCatchTouchMoveFlag) {
       CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
     }
+
+    // Fix scroll-view shake problem caused by scroll-left or scroll-top
     if (isWeChatMiniProgram && hasAnchorScrollFlag) {
       ANCHOR_COMPONENT === this.__tmplName && (nodeTypePrefix = 'anchor-');
     }
@@ -125,14 +127,13 @@ class Element extends Node {
   get _renderInfo() {
     const nodeType = this._processNodeType();
 
-    return {
+    return omitFalsyFields({
       nodeType,
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
-    };
+    }, ['class', 'style']);
   }
 
   get _internal() {

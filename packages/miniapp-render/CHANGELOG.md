@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.2] - 2021-08-31
+
+### Changed
+
+- Remove view and h-element type optimization in baidu and kuaishou miniapp (for flex display)
+- Remove useless data in setData
+
 ## [2.8.1] - 2021-08-19
 
 ### Fixed

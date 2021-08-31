@@ -50,10 +50,9 @@ module.exports = async function componentLoader(content) {
     virtualHost
   });
 
-  const rawContentAfterDCE = eliminateDeadCode(content);
-
   let transformed;
   try {
+    const rawContentAfterDCE = eliminateDeadCode(content);
     transformed = compiler(rawContentAfterDCE, compilerOptions);
   } catch (e) {
     console.log(chalk.red(`\n[${platform.name}] Error occured when handling Component ${this.resourcePath}`));

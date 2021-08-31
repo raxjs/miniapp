@@ -19,10 +19,10 @@ describe('Transform list', () => {
     expect(genCode(ast).code).toEqual(`<View><block a:for={arr.map((val, ${index}) => {
     return {
       val: val,
-      _key: ${key},
-      _d0: ${index}
+      ${index}: ${index},
+      _key: ${key}
     };
-  })} a:for-item="val" a:for-index="${index}" a:key="_key"><item data-value="{{val.val}}" data-key="{{val._d0}}" /></block></View>`);
+  })} a:for-item="val" a:for-index="${index}" a:key="_key"><item data-value="{{val.val}}" data-key="{{val.${index}}}" /></block></View>`);
   });
 
   it('transform array.map in JSXContainer', () => {
@@ -40,10 +40,10 @@ describe('Transform list', () => {
     expect(genCode(ast).code).toEqual(`<View><block a:for={arr.map((val, ${index}) => {
     return {
       val: val,
-      _key: ${key},
-      _d0: ${index}
+      ${index}: ${index},
+      _key: ${key}
     };
-  })} a:for-item="val" a:for-index="${index}" a:key="_key"><item data-value="{{val.val}}" data-key="{{val._d0}}" /></block></View>`);
+  })} a:for-item="val" a:for-index="${index}" a:key="_key"><item data-value="{{val.val}}" data-key="{{val.${index}}}" /></block></View>`);
   });
 
   it('bind list variable', () => {
@@ -59,6 +59,7 @@ describe('Transform list', () => {
     expect(genCode(ast).code).toEqual(`<View><block a:for={arr.map((item, ${index}) => {
     return {
       item: item,
+      ${index}: ${index},
       _key: ${key},
       _d0: item.title,
       _d1: {
@@ -80,7 +81,7 @@ describe('Transform list', () => {
     }, code, adapter);
     const key = '_key' + count;
     const index = 'index' + count++;
-    expect(genCode(ast, { concise: true }).code).toEqual(`<View><block a:for={[1, 2, 3].map((val, ${index}) => { return { val: val, _key: ${key}, _d0: ${index} }; })} a:for-item="val" a:for-index="${index}" a:key="_key"><Text>{{ val._d0 }}</Text></block></View>`);
+    expect(genCode(ast, { concise: true }).code).toEqual(`<View><block a:for={[1, 2, 3].map((val, ${index}) => { return { val: val, ${index}: ${index}, _key: ${key} }; })} a:for-item="val" a:for-index="${index}" a:key="_key"><Text>{{ val.${index} }}</Text></block></View>`);
   });
 
   it('nested list', () => {
@@ -127,9 +128,11 @@ describe('Transform list', () => {
       l1: l1.map((l2, ${index2}) => {
         return {
           l2: l2,
+          ${index2}: ${index2},
           _key: ${key2}
         };
       }),
+      ${index1}: ${index1},
       _key: ${key1}
     };
   })} a:for-item="l1" a:for-index="${index1}" a:key="_key"><View>
@@ -184,10 +187,12 @@ describe('Transform list', () => {
   <block a:for={arr.map((l1, ${index1}) => {
     return {
       l1: l1,
+      ${index1}: ${index1},
       _key: ${key1},
       _d0: list[l1].map((l2, ${index2}) => {
         return {
           l2: l2,
+          ${index2}: ${index2},
           _key: ${key2}
         };
       })
@@ -247,10 +252,12 @@ describe('Transform list', () => {
         list: l1.list.map((l2, ${index2}) => {
           return {
             l2: l2,
+            ${index2}: ${index2},
             _key: ${key2}
           };
         })
       },
+      ${index1}: ${index1},
       _key: ${key1}
     };
   })} a:for-item="l1" a:for-index="${index1}" a:key="_key"><View>
@@ -307,10 +314,12 @@ describe('Transform list', () => {
     const a = l1 || [];
     return {
       l1: l1,
+      ${index1}: ${index1},
       _key: ${key1},
       a: a.map((l2, ${index2}) => {
         return {
           l2: l2,
+          ${index2}: ${index2},
           _key: ${key2}
         };
       })
@@ -335,7 +344,7 @@ describe('Transform list', () => {
     }, code, adapter);
     const key = '_key' + count;
     const index = 'index' + count++;
-    expect(genCode(ast, { concise: true }).code).toEqual(`<View><block a:for={[1, 2, 3].map((item, ${index}) => { return { item: item, _key: ${key} }; })} a:for-item="item" a:for-index="${index}" a:key="_key"><Text>test</Text></block></View>`);
+    expect(genCode(ast, { concise: true }).code).toEqual(`<View><block a:for={[1, 2, 3].map((item, ${index}) => { return { item: item, ${index}: ${index}, _key: ${key} }; })} a:for-item="item" a:for-index="${index}" a:key="_key"><Text>test</Text></block></View>`);
   });
 
   it('list style', () => {
@@ -357,6 +366,7 @@ describe('Transform list', () => {
     };
     return {
       item: item,
+      ${index}: ${index},
       _key: ${key},
       _s0: __create_style__(style)
     };
@@ -398,10 +408,12 @@ describe('Transform list', () => {
         };
         return {
           it: it,
+          ${index2}: ${index2},
           _key: ${key2},
           _s0: __create_style__(style)
         };
       }),
+      ${index1}: ${index1},
       _key: ${key1}
     };
   })} a:for-item="item" a:for-index="${index1}" a:key="_key"><View>
@@ -423,6 +435,7 @@ describe('Transform list', () => {
     expect(genCode(ast).code).toEqual(`<View><block a:for={[1, 2, 3].map((item, ${index}) => {
     return {
       item: item,
+      ${index}: ${index},
       _key: ${key}
     };
   })} a:for-item="item" a:for-index="${index}" a:key="_key"><Text>test</Text></block></View>`);
@@ -443,6 +456,7 @@ describe('Transform list', () => {
     const a = ${index} * 2 + 10;
     return {
       item: item,
+      ${index}: ${index},
       _key: ${key},
       _d0: a
     };
@@ -466,12 +480,12 @@ describe('Transform list', () => {
     expect(genCode(ast).code).toEqual(`<View><block a:for={arr.map((val, ${index}) => {
     return {
       val: val,
+      ${index}: ${index},
       _key: ${key},
-      _d0: ${index},
-      _d1: format(${index})
+      _d0: format(${index})
     };
-  })} a:for-item="val" a:for-index="${index}" a:key="_key"><View data-value="{{val.val}}" data-key="{{val._d0}}">{{
-        val._d1
+  })} a:for-item="val" a:for-index="${index}" a:key="_key"><View data-value="{{val.val}}" data-key="{{val.${index}}}">{{
+        val._d0
       }}</View></block></View>`);
   });
 });
