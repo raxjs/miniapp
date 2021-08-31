@@ -70,7 +70,6 @@ class Style {
       }
     });
   }
-
   setProperty(name, value) {
     if (name[0] === '-') {
       this.setCssVariables(name);

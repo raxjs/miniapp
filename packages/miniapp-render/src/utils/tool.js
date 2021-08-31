@@ -38,10 +38,31 @@ function isFunction(variable) {
   return typeof variable === 'function';
 }
 
+/**
+ * Drop fields which value is falsy from obj
+ *
+ * @param {object} obj
+ * @param {array} fields
+ * @returns {object}
+ */
+function omitFalsyFields(obj, fields) {
+  const shallowCopy = Object.assign({}, obj);
+
+  for (let i = 0; i < fields.length; i++) {
+    const key = fields[i];
+    if (shallowCopy.hasOwnProperty(key) && !shallowCopy[key]) {
+      delete shallowCopy[key];
+    }
+  }
+
+  return shallowCopy;
+}
+
 export {
   toDash,
   toCamel,
   getId,
   isUndef,
-  isFunction
+  isFunction,
+  omitFalsyFields
 };

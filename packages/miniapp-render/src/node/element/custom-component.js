@@ -1,6 +1,6 @@
 import Element from '../element';
 import cache from '../../utils/cache';
-import { getId } from '../../utils/tool';
+import { getId, omitFalsyFields } from '../../utils/tool';
 
 class CustomComponent extends Element {
   constructor(options) {
@@ -15,14 +15,13 @@ class CustomComponent extends Element {
   }
 
   get _renderInfo() {
-    const renderInfo = {
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: this.__tagName,
       style: this.style.cssText,
-      className: this.className,
+      class: this.className,
       ...this.__attrs.__value
-    };
+    }, ['class', 'style']);
 
     const config = cache.getConfig();
     let nativeInfo = null;

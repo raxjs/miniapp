@@ -1,4 +1,6 @@
 import Element from '../element';
+import { omitFalsyFields } from '../../utils/tool';
+
 
 class HTMLInputElement extends Element {
   constructor(options) {
@@ -54,14 +56,13 @@ class HTMLInputElement extends Element {
   }
 
   get _renderInfo() {
-    return {
+    return omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'input',
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: 'h5-input ' + this.className,
-    };
+    }, ['style']);
   }
 
   // Attribute
