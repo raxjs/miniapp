@@ -10,8 +10,7 @@ const touchEvents = {
   TouchStart: '',
   TouchMove: '',
   TouchCancel: '',
-  TouchEnd: '',
-  LongTap: ''
+  TouchEnd: ''
 };
 
 const animationEvents = {
