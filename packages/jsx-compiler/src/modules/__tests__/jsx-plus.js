@@ -31,6 +31,7 @@ describe('Directives', () => {
         <View a:for={array.map((val, ${index}) => {
     return {
       val: val,
+      ${index}: ${index},
       _key: ${key}
     };
   })} a:key="_key" a:for-item="val" a:for-index="${index}">{{
@@ -62,9 +63,11 @@ describe('Directives', () => {
       item: item.map((item2, ${index2}) => {
         return {
           item2: item2,
+          ${index2}: ${index2},
           _key: ${key2}
         };
       }),
+      ${index1}: ${index1},
       _key: ${key1}
     };
   })} a:key="_key" a:for-item="item" a:for-index="${index1}">
@@ -104,17 +107,18 @@ describe('Directives', () => {
       row: row.map((col, ${index2}) => {
         return {
           col: col,
-          _key: ${key2},
-          _d0: ${index2}
+          ${index2}: ${index2},
+          _key: ${key2}
         };
       }),
+      ${index1}: ${index1},
       _key: ${key1},
       _d0: 'test_' + ${index1}
     };
   })} a:key="_key" a:for-item="row" a:for-index="${index1}">
           <View a:for={row} a:key="_key" a:for-item="col" a:for-index="${index2}">
-            <Text key="{{col._d0}}">{{
-          col._d0
+            <Text key="{{col.${index2}}}">{{
+          col.${index2}
         }}</Text>
           </View>
         </View>
@@ -138,6 +142,7 @@ describe('Directives', () => {
         <View a:for={array.map((val, ${index}) => {
     return {
       val: val,
+      ${index}: ${index},
       _key: ${key},
       _d0: format(val)
     };
@@ -164,6 +169,7 @@ describe('Directives', () => {
         <View a:for={array.map((val, ${index}) => {
     return {
       val: val,
+      ${index}: ${index},
       _key: ${key},
       _d0: format(val)
     };
@@ -190,6 +196,7 @@ describe('Directives', () => {
         <View a:for={list.map((item, ${index}) => {
     return {
       item: item,
+      ${index}: ${index},
       _key: ${key},
       _d0: item.id,
       _d1: format(item.val)
@@ -277,6 +284,7 @@ describe('Directives', () => {
 
     return {
       item: item,
+      ${index}: ${index},
       _key: ${key},
       _d0: "${id}" + ${index}
     };
@@ -314,11 +322,13 @@ describe('Directives', () => {
 
           return {
             item: item,
+            ${index2}: ${index2},
             _key: ${key2},
             _d0: "${id}" + ${index2}
           };
         })
       },
+      ${index1}: ${index1},
       _key: ${key1}
     };
   })} a:key="_key" a:for-item="item" a:for-index="${index1}">
