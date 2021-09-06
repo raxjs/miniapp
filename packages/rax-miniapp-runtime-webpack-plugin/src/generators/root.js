@@ -1,6 +1,7 @@
 const { platformMap } = require('miniapp-builder-shared');
 
 const addFileToCompilation = require('../utils/addFileToCompilation');
+const { buildComponentWrapperTemplate } = require('./componentWrapper');
 const { buildTemplate, buildSjs, buildNativeComponentTemplate } = require('./templates');
 
 function generateRootTmpl(
@@ -9,7 +10,9 @@ function generateRootTmpl(
 ) {
   const template = buildTemplate(target, modifyTemplate);
   const sjs = buildSjs(target);
-  const nativeComponentTemplate = buildNativeComponentTemplate(usingPlugins, target) + buildNativeComponentTemplate(usingComponents, target);
+  const nativeComponentTemplate =
+    buildNativeComponentTemplate(usingPlugins, target) +
+    buildNativeComponentTemplate(usingComponents, target);
 
   addFileToCompilation(compilation, {
     filename: `${subAppRoot}/root${platformMap[target].extension.xml}`,

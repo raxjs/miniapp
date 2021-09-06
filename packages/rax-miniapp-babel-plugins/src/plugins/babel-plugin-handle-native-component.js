@@ -2,7 +2,10 @@ const { resolve, dirname, join } = require('path');
 const { existsSync, readJSONSync } = require('fs-extra');
 const {
   pathHelper: { absoluteModuleResolve, removeExt },
-  platformMap
+  platformMap,
+  componentWrapper: {
+    WrapperPackage
+  }
 } = require('miniapp-builder-shared');
 const extMap = require('../utils/extMap');
 const { collectComponentAttr, collectUsings } = require('../utils/handleComponentAST');
@@ -23,7 +26,8 @@ const baseComponents = [
   'rax-slider',
   'rax-textinput',
   'rax-video',
-  'rax-embed'
+  'rax-embed',
+  WrapperPackage
 ];
 
 /**
@@ -121,7 +125,7 @@ function hasDefaultSpecifier(specifiers, t) {
 
 module.exports = function visitor(
   { types: t },
-  { usingComponents, target, rootDir, runtimeDependencies }
+  { usingComponents, target, rootDir, runtimeDependencies, hasComponentWrapper }
 ) {
   // Collect imported dependencies
   let nativeComponents = {};
@@ -143,7 +147,16 @@ module.exports = function visitor(
             const filePath = getTmplPath(source.value, rootDir, dirName, target, runtimeDependencies) || getCompiledComponentsPath(dirName, source.value);
             // TODO:
             // Temporarily ignore import { a, b } from 'xxx';
-            if ((filePath || source.value === 'rax-componentwrapper') && hasDefaultSpecifier(specifiers, t)) {
+            if (filePath && hasDefaultSpecifier(specifiers, t)) {
+              if (!scanedPageMap[filename]) {
+                scanedPageMap[filename] = true;
+                path.parentPath.traverse({
+                  JSXOpeningElement: collectComponentAttr(nativeComponents, t)
+                });
+              }
+              collectUsings(path, nativeComponents, usingComponents, filePath, t);
+            } else if (source.value === WrapperPackage) {
+              hasComponentWrapper.hasing = true;
               if (!scanedPageMap[filename]) {
                 scanedPageMap[filename] = true;
                 path.parentPath.traverse({

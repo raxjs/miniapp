@@ -1,4 +1,4 @@
-module.exports = function({ usingComponents, nativeLifeCycleMap, target, rootDir, usingPlugins, runtimeDependencies }) {
+module.exports = function({ usingComponents, nativeLifeCycleMap, target, rootDir, usingPlugins, runtimeDependencies, hasComponentWrapper }) {
   return [
     require.resolve('./plugins/babel-plugin-remove-Function'),
     require.resolve('./plugins/babel-plugin-external-module'),
@@ -14,7 +14,8 @@ module.exports = function({ usingComponents, nativeLifeCycleMap, target, rootDir
         usingComponents,
         target,
         rootDir,
-        runtimeDependencies
+        runtimeDependencies,
+        hasComponentWrapper
       }
     ],
     [

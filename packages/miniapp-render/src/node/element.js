@@ -32,6 +32,7 @@ class Element extends Node {
     if (this.id && !this.ownerDocument.__idMap.has(this.id)) {
       this.ownerDocument.__idMap.set(this.id, this);
     }
+    this.__componentWrapperId = null; // ComponentWrapper NodeId which this belongs to
   }
 
   // Override the _destroy method of the parent class

@@ -2,6 +2,7 @@ import Element from './element';
 import cache from '../utils/cache';
 import perf from '../utils/perf';
 import { isFunction } from '../utils/tool';
+import { COMPONENT_WRAPPER } from '../constants';
 
 class RootElement extends Element {
   constructor(options) {
@@ -86,7 +87,7 @@ class RootElement extends Element {
       this.__renderStacks.forEach(task => {
         const path = task.path;
         const node = cache.getNode(task.nodeId);
-        if (node && node.__nativeType === 'customComponent') {
+        if (node && node.__nativeType === COMPONENT_WRAPPER) {
           // hasCustomWrapper = true;
           // customWrapperUpdate.push({
           //   node: node._internal,

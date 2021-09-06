@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.11]
+
+### Added
+
+- Add ComponentWrapper
+
 ## [0.2.10] - 2021-08-05
 
 ### Changed
