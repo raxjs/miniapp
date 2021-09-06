@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef } from '../../utils/tool';
+import { isUndef, omitFalsyFields } from '../../utils/tool';
 
 class HTMLTextAreaElement extends Element {
   constructor(options) {
@@ -55,14 +55,13 @@ class HTMLTextAreaElement extends Element {
   }
 
   get _renderInfo() {
-    return {
+    return omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'textarea',
       ...this.__attrs.__value,
       style: this.style.cssText,
       class: 'h5-textarea ' + this.className,
-    };
+    }, ['style']);
   }
 
   // Attribute

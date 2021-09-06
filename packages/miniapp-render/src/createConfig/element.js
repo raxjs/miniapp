@@ -3,17 +3,29 @@ import { isMiniApp } from 'universal-env';
 import createEventProxy from '../bridge/createEventProxy';
 import cache from '../utils/cache';
 import { getComponentLifeCycle } from '../bridge/lifeCycleAdapter';
+import { COMPONENT_WRAPPER } from '../constants';
 
 export default function() {
   if (isMiniApp) {
     return {
       props: {
-        r: {}
+        r: {
+          type: Object,
+          value: {}
+        }
       },
       methods: createEventProxy(),
       ...getComponentLifeCycle({
         mount() {
           cache.setElementInstance(this);
+          const node = cache.getNode(this.props.r.nodeId);
+          if (node) {
+            node._internal = this;
+            node.__isCustomComponentRoot = true; // add __isCustomComponentRoot tag to mark the custom component when getting native component instance
+          }
+          if (this.props.__tag === COMPONENT_WRAPPER) {
+            this.data = this.props; // init set data
+          }
         }
       })
     };

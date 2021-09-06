@@ -1,7 +1,8 @@
 const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
-  Tap: ''
+  Tap: '',
+  LongTap: ''
 };
 
 
@@ -9,8 +10,7 @@ const touchEvents = {
   TouchStart: '',
   TouchMove: '',
   TouchCancel: '',
-  TouchEnd: '',
-  LongTap: ''
+  TouchEnd: ''
 };
 
 const animationEvents = {

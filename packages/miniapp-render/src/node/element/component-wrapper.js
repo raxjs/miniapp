@@ -1,30 +1,27 @@
+import { omitFalsyFields } from '../../utils/tool';
 import Element from '../element';
-import cache from '../../utils/cache';
-import { getId } from '../../utils/tool';
 
 class ComponentWrapper extends Element {
   constructor(options) {
     super(options);
     this.__nativeType = options.nativeType;
-    cache.setComponentWrapperNode(this._path, this);
+    this.__componentWrapperId = this.__nodeId;
   }
 
   _destroy() {
     super._destroy();
-
     this.__nativeType = null;
-    cache.setComponentWrapperNode(this._path, null);
+    this.__componentWrapperId = null;
   }
 
   get _renderInfo() {
-    const renderInfo = {
+    const renderInfo = omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: this.__tagName,
       style: this.style.cssText,
-      className: this.className,
+      class: this.className,
       ...this.__attrs.__value
-    };
+    }, ['class', 'style']);
     return renderInfo;
   }
 }

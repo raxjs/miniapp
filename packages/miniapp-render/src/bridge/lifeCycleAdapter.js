@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
 
-export function getComponentLifeCycle({ mount, unmount, update }) {
+export function getComponentLifeCycle({ mount, unmount, update, deriveDataFromProps }) {
   if (isMiniApp) {
     return {
       didMount(...args) {
@@ -12,6 +12,9 @@ export function getComponentLifeCycle({ mount, unmount, update }) {
       },
       didUnmount(...args) {
         unmount && unmount.apply(this, args);
+      },
+      deriveDataFromProps(...args) {
+        deriveDataFromProps && deriveDataFromProps.apply(this, args);
       }
     };
   } else {

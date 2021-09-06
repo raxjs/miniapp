@@ -17,12 +17,13 @@ class TextNode extends Node {
 
   _triggerUpdate(payload) {
     payload.nodeId = this.__nodeId;
+    payload.componentWrapperId = this.componentWrapperId;
     this._root._enqueueRender(payload);
   }
 
   get _renderInfo() {
     return {
-      nodeType: `h-${this.__type}`,
+      nodeType: 'h-text',
       content: this.__content,
     };
   }

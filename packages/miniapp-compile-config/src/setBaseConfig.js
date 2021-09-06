@@ -134,6 +134,10 @@ module.exports = (
         if (/\.(css|sass|scss|styl|less)$/.test(request)) {
           return callback(null, `commonjs2 ${request}`);
         }
+        // compatible with plugin with miniapp plugin
+        if (/^plugin\:\/\//.test(request)) {
+          return callback(null, `commonjs ${request}`);
+        }
         callback();
       },
     ].concat(chainConfig.get('externals') || [])

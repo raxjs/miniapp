@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.10.0] - 2021-08-31
+
+### Added
+
+- Support flex display for view and h-element in baidu and kuaishou miniapp
+
+### Fixed
+
+- Can't use longtap event
+
 ## [4.9.0] - 2021-08-05
 
 ### Added

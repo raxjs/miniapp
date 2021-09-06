@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.5] - 2021-08-23
+
+### Added
+
+- Support using miniapp plugin components in miniapp plugin project
+
 ## [0.2.4] - 2021-08-05
 
 ### Added

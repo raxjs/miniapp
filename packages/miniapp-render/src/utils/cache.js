@@ -57,15 +57,6 @@ function getNode(nodeId) {
   return nodeIdMap.get(nodeId);
 }
 
-// save componentWrapper node
-function setComponentWrapperNode(path, domNode = null) {
-  componentWrapperCache.set(path, domNode);
-}
-
-function getComponentWrapperNodeByPath(path) {
-  return componentWrapperCache.get(path);
-}
-
 /**
  * Get all nodes
  */
@@ -135,7 +126,5 @@ export default {
   getRouteId,
   setElementInstance,
   setCustomComponentMethods,
-  setPageInstance,
-  setComponentWrapperNode,
-  getComponentWrapperNodeByPath
+  setPageInstance
 };
