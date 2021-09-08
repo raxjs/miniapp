@@ -1,6 +1,7 @@
 const terser = require('terser');
 const csso = require('csso');
 const prettyData = require('pretty-data').pd;
+const { platformMap } = require('miniapp-builder-shared');
 
 function minifyJS(source) {
   return terser.minify(source).code;
@@ -20,11 +21,11 @@ function minifyJSON(source) {
   return prettyData.json(source);
 }
 
-function minify(source, type = '.js') {
+function minify(source, type = '.js', target) {
   if (type === '.js') {
     return minifyJS(source);
   }
-  if (type === '.css') {
+  if (type === '.css' || type === platformMap[target].extension.css) {
     return minifyCSS(source);
   }
   if (type === '.json') {
