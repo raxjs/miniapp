@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef, omitFalsyFields } from '../../utils/tool';
+import { isUndef, omitFalsyFields, joinClassNames } from '../../utils/tool';
 
 class HTMLVideoElement extends Element {
   constructor(options) {
@@ -28,7 +28,7 @@ class HTMLVideoElement extends Element {
       nodeType: 'video',
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: 'h5-video ' + this.className,
+      class: joinClassNames('h5-video', this.className),
     }, ['style']);
   }
 
