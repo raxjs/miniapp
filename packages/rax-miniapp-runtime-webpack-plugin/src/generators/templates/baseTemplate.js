@@ -178,7 +178,9 @@ function createMiniComponents(components, derivedComponents, adapter) {
  * @param {Object} customComponentsConfig - Configured by developer using build script plugin
  */
 function modifyInternalComponents(internalComponents, customComponentsConfig) {
+  const { 'delete': deletedComponents = [] } = customComponentsConfig;
   const result = Object.assign({}, internalComponents);
+  deletedComponents.forEach(deletedComponent => delete result[toCamel(deletedComponent)]);
   Object.keys(customComponentsConfig).forEach(comp => {
     const componentConfig = customComponentsConfig[comp];
     const { add: added = {}, 'delete': deleted = {}} = componentConfig;
