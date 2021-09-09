@@ -79,8 +79,8 @@ for (let prop in props) {
         handler: value
       });
     } else {
-      if (prop === 'className') {
-        prop = 'class';
+      if (prop === CLASS_NAME) {
+        prop = CLASS;
       }
       attrs[prop] = value;
     }
