@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.11.0] - 2021-09-09
+
+### Added
+
+- Support deleting components in template
+
 ## [4.10.0] - 2021-08-31
 
 ### Added

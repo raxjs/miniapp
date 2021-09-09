@@ -1,6 +1,6 @@
 {
   "name": "driver-miniapp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "MiniApp (runtime) driver for Rax",
   "license": "BSD-3-Clause",
   "main": "lib/index.js",

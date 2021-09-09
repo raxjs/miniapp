@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.3] - 2021-09-09
+
+### Changed
+
+- Normalize classNames in setData
+
 ## [2.8.2] - 2021-08-31
 
 ### Changed
