@@ -1,7 +1,7 @@
 /* global CONTAINER */
 import Element from '../element';
 import Event from '../../event/event';
-import { omitFalsyFields } from '../../utils/tool';
+import { omitFalsyFields, joinClassNames } from '../../utils/tool';
 
 
 class Image extends Element {
@@ -51,7 +51,7 @@ class Image extends Element {
       nodeType: 'image',
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: 'h5-img ' + this.className,
+      class: joinClassNames('h5-img', this.className),
     }, ['style']);
   }
 

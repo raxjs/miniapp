@@ -1,5 +1,5 @@
 import Element from '../element';
-import { omitFalsyFields } from '../../utils/tool';
+import { omitFalsyFields, joinClassNames } from '../../utils/tool';
 
 
 class HTMLInputElement extends Element {
@@ -61,7 +61,7 @@ class HTMLInputElement extends Element {
       nodeType: 'input',
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: 'h5-input ' + this.className,
+      class: joinClassNames('h5-input', this.className),
     }, ['style']);
   }
 
