@@ -35,8 +35,8 @@ module.exports = (
 
   // hasing rax-componentwrapper
   // pass variable by reference
-  const hasComponentWrapper = {
-    hasing: false
+  const usingComponentWrapper = {
+    using: false
   };
 
   config.output.filename('[name].js');
@@ -66,7 +66,7 @@ module.exports = (
               rootDir,
               usingPlugins,
               runtimeDependencies: userConfig.runtimeDependencies,
-              hasComponentWrapper
+              usingComponentWrapper
             }),
           },
         ];
@@ -87,7 +87,7 @@ module.exports = (
       usingPlugins,
       needCopyList,
       isPluginProject,
-      hasComponentWrapper
+      usingComponentWrapper
     },
   ]);
 

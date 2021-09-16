@@ -26,8 +26,7 @@ const baseComponents = [
   'rax-slider',
   'rax-textinput',
   'rax-video',
-  'rax-embed',
-  WrapperPackage
+  'rax-embed'
 ];
 
 /**
@@ -125,7 +124,7 @@ function hasDefaultSpecifier(specifiers, t) {
 
 module.exports = function visitor(
   { types: t },
-  { usingComponents, target, rootDir, runtimeDependencies, hasComponentWrapper }
+  { usingComponents, target, rootDir, runtimeDependencies, usingComponentWrapper }
 ) {
   // Collect imported dependencies
   let nativeComponents = {};
@@ -156,7 +155,7 @@ module.exports = function visitor(
               }
               collectUsings(path, nativeComponents, usingComponents, filePath, t);
             } else if (source.value === WrapperPackage) {
-              hasComponentWrapper.hasing = true;
+              usingComponentWrapper.using = true;
               if (!scanedPageMap[filename]) {
                 scanedPageMap[filename] = true;
                 path.parentPath.traverse({

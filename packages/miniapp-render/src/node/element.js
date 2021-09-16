@@ -424,7 +424,7 @@ class Element extends Node {
 
   replaceChild(node, old) {
     if (!(node instanceof Node) || !(old instanceof Node)) return;
-
+    if (node instanceof Comment && old instanceof Comment) return;
     const replaceIndex = this.childNodes.indexOf(old);
     if (replaceIndex !== -1) this.childNodes.splice(replaceIndex, 1);
 

@@ -51,7 +51,7 @@ class MiniAppRuntimePlugin {
       appConfig,
       subAppConfigList = [],
       isPluginProject = false,
-      hasComponentWrapper
+      usingComponentWrapper: _usingComponentWrapper
     } = options;
     const {
       context: { command, userConfig: rootUserConfig, rootDir },
@@ -79,7 +79,7 @@ class MiniAppRuntimePlugin {
     });
 
     compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
-      const usingComponentWrapper = hasComponentWrapper.hasing;
+      const usingComponentWrapper = _usingComponentWrapper.using;
       const outputPath = compilation.outputOptions.path;
       const sourcePath = join(rootDir, 'src');
       const pages = [];

@@ -4,7 +4,7 @@
 
 ### Added
 
-- Support WrapperComponent
+- Support componentWrapper
 
 ## [0.3.9] - 2021-07-21
 
