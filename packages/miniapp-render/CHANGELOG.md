@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.4] - 2021-09-16
+
+### Changed
+
+- Avoid the update in `replaceChild` if both nodes are Comment node
+
 ## [2.8.3] - 2021-09-09
 
 ### Changed
