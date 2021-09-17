@@ -246,6 +246,7 @@ export function useReducer(reducer, initialArg, init) {
       }
       queue.actions.push(action);
       queue.eagerState = eagerState;
+      currentInstance.__forceUpdate = true;
       enqueueRender(currentInstance);
     };
 
