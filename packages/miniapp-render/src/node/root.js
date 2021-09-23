@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { isMiniApp } from 'universal-env';
 
 import Element from './element';
