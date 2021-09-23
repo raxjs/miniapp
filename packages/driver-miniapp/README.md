@@ -11,7 +11,7 @@ $ npm install --save driver-miniapp
 ## Use
 
 ```jsx
-import {createElement, render} from 'rax';
+import { createElement, render } from 'rax';
 import DriverMiniApp from 'driver-miniapp';
 import View from 'rax-view';
 import Image from 'rax-view';

@@ -58,11 +58,20 @@ function omitFalsyFields(obj, fields) {
   return shallowCopy;
 }
 
+/**
+ * join classNames together
+ * @returns {string}
+ */
+function joinClassNames(...args) {
+  return args.filter(v => !!v).join(' ');
+}
+
 export {
   toDash,
   toCamel,
   getId,
   isUndef,
   isFunction,
-  omitFalsyFields
+  omitFalsyFields,
+  joinClassNames
 };
