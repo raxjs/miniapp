@@ -1,8 +1,9 @@
+import { isMiniApp } from 'universal-env';
+
 import Element from './element';
 import cache from '../utils/cache';
 import perf from '../utils/perf';
 import { isFunction } from '../utils/tool';
-import { NATIVE_TYPES } from '../constants';
 
 class RootElement extends Element {
   constructor(options) {
@@ -48,7 +49,7 @@ class RootElement extends Element {
     const { mainPackageName } = cache.getConfig();
     const window = cache.getWindow(mainPackageName);
 
-    const { rootStacks, componentWrapperObject } = this._filterRenderStacks();
+    const { rootStacks, componentWrapperObject } = this._filterRenderStacks(internal.$spliceData);
     const componentWrapperCount = Object.keys(componentWrapperObject).length;
     let count = rootStacks.length + componentWrapperCount;
 
@@ -69,7 +70,7 @@ class RootElement extends Element {
     if (rootStacks.length > 0) {
       if (internal.$batchedUpdates) {
         internal.firstRenderCallback();
-        this._batchedUpdated(internal, rootStacks, callback);
+        this._batchedUpdated(internal, internal, rootStacks, callback);
       } else {
         const renderObject = Object.create(null);
         rootStacks.forEach((task) => {
@@ -82,9 +83,9 @@ class RootElement extends Element {
 
     if (componentWrapperCount > 0) {
       Object.values(componentWrapperObject).forEach(({ node, data }) => {
-        if (node._internal.$batchedUpdates) {
+        if (internal.$batchedUpdates) {
           internal.firstRenderCallback();
-          this._batchedUpdated(node._internal, data, callback);
+          this._batchedUpdated(internal, node._internal, data, callback);
         } else {
           const renderObject = Object.create(null);
           data.forEach((task) => {
@@ -103,27 +104,9 @@ class RootElement extends Element {
     const rootStacks = [];
     const componentWrapperObject = Object.create(null);
 
-    const renderObject = Object.create(null);
-    const childrenValuePaths = [];
-    this.__renderStacks.forEach(task => {
-      const path = task.path;
-      if (task.type === 'children') {
-        childrenValuePaths.push(path);
-      }
-      renderObject[path] = task;
-    });
-
-    for (const path in renderObject) {
-      // If the whole father children path is set, then its children path can be deleted
-      childrenValuePaths.forEach(cp => {
-        if (path.includes(cp) && cp !== path) {
-          delete renderObject[path];
-        }
-      });
-
-      const task = renderObject[path];
-      if (task) {
-        const value = isFunction(task.value) ? task.value() : task.value;
+    if (isMiniApp) {
+      this.__renderStacks.forEach(task => {
+        const path = task.path;
         let componentWrapperNode = null;
         if (task.componentWrapperId) {
           componentWrapperNode = cache.getNode(task.componentWrapperId);
@@ -142,6 +125,47 @@ class RootElement extends Element {
         } else {
           rootStacks.push(task);
         }
+      });
+    } else {
+      const renderObject = Object.create(null);
+      const childrenValuePaths = [];
+      this.__renderStacks.forEach(task => {
+        const path = task.path;
+        if (task.type === 'children') {
+          childrenValuePaths.push(path);
+        }
+        renderObject[path] = task;
+      });
+
+      for (const path in renderObject) {
+        // If the whole father children path is set, then its children path can be deleted
+        childrenValuePaths.forEach(cp => {
+          if (path.includes(cp) && cp !== path) {
+            delete renderObject[path];
+          }
+        });
+
+        const task = renderObject[path];
+        if (task) {
+          let componentWrapperNode = null;
+          if (task.componentWrapperId) {
+            componentWrapperNode = cache.getNode(task.componentWrapperId);
+          }
+          if (componentWrapperNode) {
+            if (!componentWrapperObject[task.componentWrapperId]) {
+              componentWrapperObject[task.componentWrapperId] = {
+                node: componentWrapperNode,
+                data: []
+              };
+            }
+            componentWrapperObject[task.componentWrapperId].data.push({
+              ...task,
+              path: 'r' + path.replace(componentWrapperNode._path, '')
+            });
+          } else {
+            rootStacks.push(task);
+          }
+        }
       }
     }
 
@@ -151,9 +175,9 @@ class RootElement extends Element {
     };
   }
 
-  _batchedUpdated(internal, stacks, callback) {
-    internal.$batchedUpdates(() => {
-      stacks.forEach((task, index) => {
+  _batchedUpdated(pageInternal, internal, stacks, callback) {
+    pageInternal.$batchedUpdates(() => {
+      stacks.forEach(task => {
         if (task.type === 'children') {
           const spliceArgs = [task.start, task.deleteCount];
           internal.$spliceData({

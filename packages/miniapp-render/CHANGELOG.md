@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.0] - 2021-09-23
+
+### Added
+
+- Use Component.setData in `rax-componentwrapper`
+
 ## [2.8.3] - 2021-09-09
 
 ### Changed

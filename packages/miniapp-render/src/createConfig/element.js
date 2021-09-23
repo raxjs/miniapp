@@ -9,10 +9,7 @@ export default function() {
   if (isMiniApp) {
     return {
       props: {
-        r: {
-          type: Object,
-          value: {}
-        }
+        r: {}
       },
       methods: createEventProxy(),
       ...getComponentLifeCycle({
