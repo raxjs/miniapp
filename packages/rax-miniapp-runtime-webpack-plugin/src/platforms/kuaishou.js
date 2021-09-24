@@ -2,7 +2,7 @@ const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
   Tap: '',
-  LongTap: ''
+  LongPress: ''
 };
 
 
@@ -894,7 +894,7 @@ function generateFlattenView(level, component) {
     return '<template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />';
   }
   const child = generateFlattenView(level - 1, component);
-  let attributes = 'animation="{{item[\'animation\']}}" bindtap="onTap" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchcancel="onTouchCancel" bindtouchend="onTouchEnd" bindlongtap="onLongTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}"';
+  let attributes = 'animation="{{item[\'animation\']}}" bindtap="onTap" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchcancel="onTouchCancel" bindtouchend="onTouchEnd" bindlongpress="onLongPress" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}"';
   if (component === 'view') {
     attributes += ' hover-class="{{item[\'hover-class\']||\'none\'}}" hover-start-time="{{tool.a(item[\'hover-start-time\'],50)}}" hover-stay-time="{{tool.a(item[\'hover-stay-time\'],400)}}" hover-stop-propagation="{{tool.a(item[\'hover-stop-propagation\'],false)}}"';
   }
@@ -922,7 +922,7 @@ exports.needModifyChildrenComponents = {
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </swiper-item>`,
   MovableArea: children => `
-    <movable-view ks:for="{{r.children}}" ks:key="nodeId" ks:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
+    <movable-view ks:for="{{r.children}}" ks:key="nodeId" ks:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongpress="onLongPress" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
   ScrollView: children => `
