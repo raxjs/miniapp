@@ -53,6 +53,9 @@ class Element extends Node {
   }
 
   _triggerUpdate(payload, immediate = true) {
+    payload.nodeId = this.__nodeId;
+    payload.componentWrapperId = this.componentWrapperId;
+
     if (immediate) {
       this._enqueueRender(payload);
     } else {
@@ -421,7 +424,6 @@ class Element extends Node {
 
   replaceChild(node, old) {
     if (!(node instanceof Node) || !(old instanceof Node)) return;
-
     const replaceIndex = this.childNodes.indexOf(old);
     if (replaceIndex !== -1) this.childNodes.splice(replaceIndex, 1);
 

@@ -44,3 +44,11 @@ export const CATCH_COMPONENTS = new Set(isBaiduSmartProgram || isKuaiShouMiniPro
 export const APPEAR_COMPONENT = 'view'; // Without appear event components
 
 export const ANCHOR_COMPONENT = 'scroll-view'; // Components which only use scrollIntoView to scroll
+
+export const COMPONENT_WRAPPER = 'component-wrapper'; // rax-componentwrapper tag
+
+export const NATIVE_TYPES = {
+  customComponent: 'customComponent',
+  miniappPlugin: 'miniappPlugin',
+  componentWrapper: 'componentWrapper'
+};

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.16]
+
+### Added
+
+- Support ComponentWrapper
+
 ## [0.1.15] - 2021-05-11
 
 ### Changed

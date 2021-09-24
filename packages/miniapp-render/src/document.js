@@ -10,7 +10,8 @@ import Textarea from './node/element/textarea';
 import Video from './node/element/video';
 import CustomComponent from './node/element/custom-component';
 import RootElement from './node/root';
-import { BODY_NODE_ID } from './constants';
+import { BODY_NODE_ID, COMPONENT_WRAPPER, NATIVE_TYPES } from './constants';
+import ComponentWrapper from './node/element/component-wrapper';
 
 const CONSTRUCTOR_MAP = new Map([['img', Image], ['input', Input], ['textarea', Textarea], ['video', Video]]);
 
@@ -61,11 +62,15 @@ class Document extends EventTarget {
 
     if (options.attrs.__native) {
       if (this.usingComponents[options.tagName]) {
+        if (options.tagName === COMPONENT_WRAPPER) {
+          options.nativeType = NATIVE_TYPES.componentWrapper;
+          return new ComponentWrapper(options);
+        }
         // Transform to custom-component
-        options.nativeType = 'customComponent';
+        options.nativeType = NATIVE_TYPES.customComponent;
         return new CustomComponent(options);
       } else if (this.usingPlugins[options.tagName]) {
-        options.nativeType = 'miniappPlugin';
+        options.nativeType = NATIVE_TYPES.miniappPlugin;
         return new CustomComponent(options);
       }
     } else {

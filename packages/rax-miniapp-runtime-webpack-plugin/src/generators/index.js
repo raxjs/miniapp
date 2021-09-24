@@ -14,6 +14,13 @@ const {
 } = require('./element');
 const generateRender = require('./render');
 const generatePkg = require('./pkg');
+const {
+  ensureWrapperFolder,
+  generateWrapperJS,
+  generateWrapperTemplate,
+  generateWrapperJSON,
+  buildComponentWrapperTemplate
+} = require('./componentWrapper');
 
 module.exports = {
   generateAppCSS,
@@ -28,5 +35,10 @@ module.exports = {
   generateElementJSON,
   generateElementTemplate,
   generateRender,
-  generatePkg
+  generatePkg,
+  ensureWrapperFolder,
+  generateWrapperJS,
+  generateWrapperTemplate,
+  generateWrapperJSON,
+  buildComponentWrapperTemplate
 };

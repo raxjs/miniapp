@@ -22,7 +22,10 @@ const {
   generateElementJSON,
   generateElementTemplate,
   generateRender,
-  generatePkg
+  generatePkg,
+  generateWrapperJS,
+  generateWrapperTemplate,
+  generateWrapperJSON
 } = require('./generators');
 const getFinalRouteMap = require('./utils/getFinalRouteMap');
 
@@ -47,7 +50,8 @@ class MiniAppRuntimePlugin {
       mainPackageRoot,
       appConfig,
       subAppConfigList = [],
-      isPluginProject = false
+      isPluginProject = false,
+      usingComponentWrapper: _usingComponentWrapper
     } = options;
     const {
       context: { command, userConfig: rootUserConfig, rootDir },
@@ -58,6 +62,7 @@ class MiniAppRuntimePlugin {
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
+    let lastImportComponentWrapper = false;
     let needAutoInstallDependency = false;
     const packageJsonFilePath = [];
 
@@ -74,6 +79,7 @@ class MiniAppRuntimePlugin {
     });
 
     compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
+      const usingComponentWrapper = _usingComponentWrapper.using;
       const outputPath = compilation.outputOptions.path;
       const sourcePath = join(rootDir, 'src');
       const pages = [];
@@ -93,14 +99,17 @@ class MiniAppRuntimePlugin {
       if (!isFirstRender) {
         useComponentChanged =
           !isEqual(usingComponents, lastUsingComponents) ||
-          !isEqual(usingPlugins, lastUsingPlugins);
+          !isEqual(usingPlugins, lastUsingPlugins) ||
+          lastImportComponentWrapper !== usingComponentWrapper;
       }
       lastUsingComponents = Object.assign({}, usingComponents);
       lastUsingPlugins = Object.assign({}, usingPlugins);
+      lastImportComponentWrapper = usingComponentWrapper;
+
       const useComponent =
         Object.keys(lastUsingPlugins).length +
           Object.keys(lastUsingComponents).length >
-        0;
+        0 || usingComponentWrapper;
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
@@ -144,7 +153,8 @@ class MiniAppRuntimePlugin {
           pages,
           target,
           command,
-          subPackages
+          subPackages,
+          usingComponentWrapper
         });
 
         // Only when developer may use native component, it will generate package.json in output
@@ -188,7 +198,8 @@ class MiniAppRuntimePlugin {
             usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
             target,
-            command
+            command,
+            usingComponentWrapper
           });
           generateElementTemplate(compilation, {
             usingComponents: mainPackageUsingComponents,
@@ -197,6 +208,25 @@ class MiniAppRuntimePlugin {
             command,
             modifyTemplate
           });
+          if (usingComponentWrapper) {
+            generateWrapperJS(compilation, {
+              target,
+              command
+            });
+            generateWrapperJSON(compilation, {
+              usingComponents: mainPackageUsingComponents,
+              usingPlugins: mainPackageUsingPlugins,
+              target,
+              command
+            });
+            generateWrapperTemplate(compilation, {
+              usingComponents: mainPackageUsingComponents,
+              usingPlugins: mainPackageUsingPlugins,
+              target,
+              command,
+              modifyTemplate
+            });
+          }
         } else {
           // Only when there isn't native component, it need generate root template file
           // Generate root template xml
@@ -267,7 +297,7 @@ class MiniAppRuntimePlugin {
               usingPlugins: subPackageUsingPlugins,
               target,
               command,
-              subAppRoot
+              subAppRoot,
             });
             generateElementTemplate(compilation, {
               usingComponents: subPackageUsingComponents,
@@ -304,6 +334,7 @@ class MiniAppRuntimePlugin {
             isSubPackagePage ? subPackageUsingComponents : mainPackageUsingComponents,
             isSubPackagePage ? subPackageUsingPlugins : mainPackageUsingPlugins,
             entryName,
+            usingComponentWrapper,
             {
               target,
               command,

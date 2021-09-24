@@ -1,4 +1,5 @@
 const getTagName = require('./getTagName');
+const {componentWrapper: { WrapperElement, WrapperPackage }} = require('miniapp-builder-shared');
 
 function collectComponentAttr(components, t) {
   return (innerPath) => {
@@ -39,7 +40,7 @@ function collectUsings(
   filePath,
   t
 ) {
-  const { specifiers } = path.node;
+  const { specifiers, source } = path.node;
   specifiers.some((specifier, index) => {
     if (!t.isImportDefaultSpecifier(specifier)) return;
 
@@ -57,12 +58,13 @@ function collectUsings(
       });
 
       // Generate a random tag name
-      const replacedTagName = getTagName(tagName);
+      const isComponentWrapper = source.type === 'StringLiteral' && source.value === WrapperPackage;
+      const replacedTagName = isComponentWrapper ? WrapperElement : getTagName(tagName);
       if (!usings[replacedTagName]) {
         usings[replacedTagName] = { props: [], events: [] };
       }
       usings[replacedTagName] = {
-        path: filePath,
+        path: isComponentWrapper ? './wrapper' : filePath,
         props: [
           ...new Set(componentInfo.props.concat(usings[replacedTagName].props)),
         ],

@@ -1,5 +1,5 @@
 const { join } = require('path');
-const { platformMap, pathHelper: { getBundlePath }} = require('miniapp-builder-shared');
+const { platformMap, pathHelper: { getBundlePath }, componentWrapper: { WrapperElement }} = require('miniapp-builder-shared');
 
 const platformConfig = require('../platforms');
 const getAssetPath = require('../utils/getAssetPath');
@@ -96,6 +96,7 @@ function generatePageJSON(
   useComponent,
   usingComponents, usingPlugins,
   pageRoute,
+  usingComponentWrapper,
   { target, command, subAppRoot = '' }
 ) {
   if (!pageConfig.usingComponents) {
@@ -110,6 +111,10 @@ function generatePageJSON(
     const componentPath = usingComponents[component].path;
     pageConfig.usingComponents[component] = isNpmModule(componentPath) ? componentPath : getAssetPath(rmCurDirPathSymbol(componentPath), pageRoute);
   });
+
+  if (usingComponentWrapper) {
+    pageConfig.usingComponents[WrapperElement] = getAssetPath(join(subAppRoot, 'wrapper'), pageRoute);
+  }
   Object.keys(usingPlugins).forEach(plugin => {
     pageConfig.usingComponents[plugin] = usingPlugins[plugin].path;
   });

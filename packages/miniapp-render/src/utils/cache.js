@@ -10,6 +10,7 @@ const windowMap = new Map();
 const elementsCache = [];
 const pagesCache = [];
 const elementMethodsCache = new Map();
+const componentWrapperCache = new Map();
 
 // Init
 function init(pageId, document) {
@@ -55,7 +56,6 @@ function setNode(nodeId, domNode = null) {
 function getNode(nodeId) {
   return nodeIdMap.get(nodeId);
 }
-
 
 /**
  * Get all nodes

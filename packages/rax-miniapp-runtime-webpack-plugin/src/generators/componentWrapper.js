@@ -1,5 +1,8 @@
+/**
+ * generate ComponentWrapper
+*/
 const { join } = require('path');
-const { platformMap } = require('miniapp-builder-shared');
+const { platformMap, componentWrapper: { WrapperElement } } = require('miniapp-builder-shared');
 
 const platformConfig = require('../platforms');
 const { RECURSIVE_TEMPLATE_TYPE, UNRECURSIVE_TEMPLATE_TYPE } = require('../constants');
@@ -10,11 +13,13 @@ const isNpmModule = require('../utils/isNpmModule');
 const rmCurDirPathSymbol = require('../utils/rmCurDirPathSymbol');
 const { generateRootTmpl } = require('./root');
 const { buildTemplate, buildNativeComponentTemplate, buildSjs } = require('./templates');
-const { buildComponentWrapperTemplate } = require('./componentWrapper');
 
+function ensureWrapperFolder() {
 
-function generateElementJS(compilation, { target, command, subAppRoot = '' }) {
-  const filename = join(subAppRoot, 'comp.js');
+}
+
+function generateWrapperJS(compilation, { target, command, subAppRoot = '' }) {
+  const filename = join(subAppRoot, 'wrapper.js');
   addFileToCompilation(compilation, {
     filename,
     content:
@@ -26,50 +31,42 @@ Component(render.createElementConfig());`,
   });
 }
 
-function generateElementTemplate(compilation,
-  { usingPlugins, usingComponents, target, command, subAppRoot = '', modifyTemplate }) {
-  const { adapter: { formatBindedData } } = platformConfig[target];
+function generateWrapperTemplate(compilation,
+  { target, command, subAppRoot = '' }) {
+  const { adapter: { formatBindedData, for: targetFor, key } } = platformConfig[target];
+
   let content = `
-<template is="RAX_TMPL_ROOT_CONTAINER" data="{{${formatBindedData('r: r')}}}" />`;
+<block ${targetFor}="{{r.children}}" ${key}="nodeId">
+  <template is="RAX_TMPL_ROOT_CONTAINER" data="{{${formatBindedData('r: item')}}}"></template>
+</block>`;
 
   const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   if (!isRecursiveTemplate) {
-    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, modifyTemplate, subAppRoot });
     content = `<import src="./root${platformMap[target].extension.xml}"/>` + content;
   } else {
-    const sjs = buildSjs(target);
-    addFileToCompilation(compilation, {
-      filename: join(subAppRoot, `tool${platformMap[target].extension.script}`),
-      content: sjs,
-      target,
-      command,
-    });
-
-    const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
-    const nativeComponentTemplate =
-      buildNativeComponentTemplate(usingPlugins, target, isRecursiveTemplate) +
-      buildNativeComponentTemplate(usingComponents, target, isRecursiveTemplate);
-
-    // In recursiveTemplate, root.axml need be written into comp.axml
-    content = template + nativeComponentTemplate + content;
+    content = `<import src="./comp${platformMap[target].extension.xml}"/>` + content;
   }
+
   addFileToCompilation(compilation, {
-    filename: join(subAppRoot, `comp${platformMap[target].extension.xml}`),
+    filename: join(subAppRoot, `wrapper${platformMap[target].extension.xml}`),
     content,
     target,
-    command,
+    command
   });
 }
 
-function generateElementJSON(compilation, { usingComponents, usingPlugins, target, command, subAppRoot = '' }) {
+function generateWrapperJSON(compilation, { usingComponents, usingPlugins, target, command, subAppRoot = '' }) {
   const content = {
     component: true,
-    usingComponents: {}
+    usingComponents: {
+      [WrapperElement]: './wrapper'
+    }
   };
 
   if (UNRECURSIVE_TEMPLATE_TYPE.has(target)) {
     content.usingComponents.element = './comp';
   }
+
   Object.keys(usingComponents).forEach(component => {
     const componentPath = usingComponents[component].path;
     content.usingComponents[component] = isNpmModule(componentPath) ? componentPath : getAssetPath(rmCurDirPathSymbol(componentPath), join(subAppRoot, 'comp'));
@@ -79,15 +76,17 @@ function generateElementJSON(compilation, { usingComponents, usingPlugins, targe
   });
 
   addFileToCompilation(compilation, {
-    filename: join(subAppRoot, 'comp.json'),
+    filename: join(subAppRoot, 'wrapper.json'),
     content: JSON.stringify(content, null, 2),
     target,
     command,
   });
 }
 
+
 module.exports = {
-  generateElementTemplate,
-  generateElementJS,
-  generateElementJSON
+  ensureWrapperFolder,
+  generateWrapperJS,
+  generateWrapperTemplate,
+  generateWrapperJSON,
 };

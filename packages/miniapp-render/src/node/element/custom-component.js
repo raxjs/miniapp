@@ -1,6 +1,7 @@
 import Element from '../element';
 import cache from '../../utils/cache';
 import { getId, omitFalsyFields } from '../../utils/tool';
+import { NATIVE_TYPES } from '../../constants';
 
 class CustomComponent extends Element {
   constructor(options) {
@@ -25,9 +26,9 @@ class CustomComponent extends Element {
 
     const config = cache.getConfig();
     let nativeInfo = null;
-    if (this.__nativeType === 'customComponent') {
+    if (this.__nativeType === NATIVE_TYPES.customComponent) {
       nativeInfo = config.usingComponents[this.__tagName];
-    } else if (this.__nativeType === 'miniappPlugin') {
+    } else if (this.__nativeType === NATIVE_TYPES.miniappPlugin) {
       nativeInfo = config.usingPlugins[this.__tagName];
     }
     if (nativeInfo) {

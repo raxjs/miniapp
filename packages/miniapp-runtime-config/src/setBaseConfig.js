@@ -33,6 +33,12 @@ module.exports = (
   // Using plugins
   const usingPlugins = {};
 
+  // hasing rax-componentwrapper
+  // pass variable by reference
+  const usingComponentWrapper = {
+    using: false
+  };
+
   config.output.filename('[name].js');
   // publicPath should not work in miniapp, just keep default value
   config.output.publicPath('/');
@@ -60,6 +66,7 @@ module.exports = (
               rootDir,
               usingPlugins,
               runtimeDependencies: userConfig.runtimeDependencies,
+              usingComponentWrapper
             }),
           },
         ];
@@ -79,7 +86,8 @@ module.exports = (
       nativeLifeCycleMap,
       usingPlugins,
       needCopyList,
-      isPluginProject
+      isPluginProject,
+      usingComponentWrapper
     },
   ]);
 

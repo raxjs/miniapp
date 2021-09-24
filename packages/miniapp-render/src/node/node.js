@@ -15,6 +15,7 @@ class Node extends EventTarget {
     this.parentNode = null;
     this.__rendered = false;
     this.__ownerDocument = options.document;
+    this.__componentWrapperId = null; // ComponentWrapper Id which this belongs to
   }
 
   get __pageId() {
@@ -58,6 +59,16 @@ class Node extends EventTarget {
       this.__rendered = this.parentNode._isRendered();
     }
     return this.__rendered;
+  }
+
+  get componentWrapperId() {
+    if (this.__componentWrapperId) {
+      return this.__componentWrapperId;
+    }
+    if (this.parentNode) {
+      this.__componentWrapperId = this.parentNode.componentWrapperId;
+    }
+    return this.__componentWrapperId;
   }
 
   get nodeValue() {

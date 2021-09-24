@@ -1,3 +1,5 @@
+const { componentWrapper: {WrapperElement} } = require('miniapp-builder-shared');
+
 const platformConfig = require('../../platforms');
 const { buildRecursiveTemplate, buildRecursiveTemplateSjs } = require('./recursiveTemplate');
 const { buildUnrecursiveTemplate, buildUnrecursiveTemplateSjs } = require('./unrecursiveTemplate');
@@ -31,6 +33,14 @@ function buildNativeComponentTemplate(usings, target) {
   const { formatBindedData, supportSjs } = adapter;
 
   return Object.keys(usings).reduce((current, componentTag) => {
+    if (componentTag === WrapperElement) {
+      return `
+<template name="RAX_TMPL_0_component-wrapper">
+  <${WrapperElement}
+    data-private-node-id="{{r.nodeId}}" data-private-page-id="{{r.pageId}}"  r="{{r}}"
+  />
+</template>`;
+    }
     const props = usings[componentTag].props.reduce((cur, prop) => {
       const tmpl = ` ${prop}="{{r['${prop}']}}"`;
       return cur + tmpl;
