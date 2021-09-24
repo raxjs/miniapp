@@ -78,9 +78,14 @@ class MiniAppRuntimePlugin {
       const sourcePath = join(rootDir, 'src');
       const pages = [];
       const finalRouteMap = getFinalRouteMap(getValue('staticConfig'));
-      const changedFiles = Object.keys(
-        compiler.watchFileSystem.watcher.mtimes
-      ).map((filePath) => {
+      let changedFileList = [];
+      // Compat webpack5
+      if (compiler.modifiedFiles) {
+        changedFileList = [...compiler.modifiedFiles];
+      } else if (compiler.watchFileSystem.watcher.mtimes) {
+        changedFileList = Object.keys(compiler.watchFileSystem.watcher.mtimes);
+      }
+      const changedFiles = changedFileList.map((filePath) => {
         return filePath.replace(sourcePath, '');
       });
       const useNativeComponentCount = Object.keys(usingComponents).length;

@@ -22,6 +22,7 @@ module.exports = function(compilation, chunks, { command, target }) {
         const headerContent =
 `${FunctionPolyfill}
 module.exports = function(window, document, app) {
+  const self = window;
   const HTMLElement = window["HTMLElement"];
   if (typeof getApp === 'function') {
     const documentModifyCallbacks = (getApp() || app).__documentModifyCallbacks;
