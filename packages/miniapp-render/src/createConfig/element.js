@@ -20,6 +20,8 @@ export default function() {
             node._internal = this;
             node.__isCustomComponentRoot = true; // add __isCustomComponentRoot tag to mark the custom component when getting native component instance
           }
+        },
+        onInit() {
           if (this.props.__tag === COMPONENT_WRAPPER) {
             this.data = this.props; // init set data
           }
