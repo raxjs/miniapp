@@ -819,6 +819,21 @@ const OfficialAccount = {
   }
 };
 
+const Ad = {
+  props: {
+    'unit-id': '',
+    'ad-intervals': '',
+    fixed: '',
+    type: addSingleQuote('banner'),
+    scale: '100',
+  },
+  events: {
+    Load: '',
+    Error: '',
+    Close: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -864,6 +879,7 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   OfficialAccount,
+  Ad,
   HElement,
   CatchHElement,
   PureHElement,
@@ -925,7 +941,8 @@ exports.voidChildrenElements = new Set([
   'WebView',
   'LivePlayer',
   'LivePusher',
-  'OfficialAccount'
+  'OfficialAccount',
+  'Ad'
 ]);
 
 exports.nestElements = new Map([
