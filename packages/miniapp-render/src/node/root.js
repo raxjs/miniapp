@@ -53,13 +53,13 @@ function getFilterRenderStacks() {
     };
   }
 
-  return () => {
+  return (renderStacks) => {
     const rootStacks = [];
     const componentWrapperObject = Object.create(null);
     const renderObject = Object.create(null);
     const childrenValuePaths = [];
 
-    this.__renderStacks.forEach(task => {
+    renderStacks.forEach(task => {
       const path = task.path;
       if (task.type === 'children') {
         childrenValuePaths.push(path);
@@ -97,6 +97,11 @@ function getFilterRenderStacks() {
         }
       }
     }
+
+    return {
+      rootStacks,
+      componentWrapperObject
+    };
   };
 }
 
