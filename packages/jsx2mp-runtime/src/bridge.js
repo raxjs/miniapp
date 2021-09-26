@@ -317,13 +317,14 @@ export function runApp(...args) {
   if (args.length === 1) {
     // runApp(staticConfig)
     staticConfig = args[0];
+    setModernMode(false);
   } else if (Array.isArray(args[0].routes)) {
     // runApp(staticConfig, pageProps)
     staticConfig = args[0];
     _pageProps = args[1];
+    setModernMode(false);
   } else {
     // rax-app3.x - runApp(dynamicConfig, staticConfig)
-    setModernMode(true);
     staticConfig = args[1];
     if (args[0].app) {
       appProps = args[0].app;
