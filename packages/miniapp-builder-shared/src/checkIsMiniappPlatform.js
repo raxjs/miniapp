@@ -7,8 +7,8 @@ const { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, BAIDU_SMARTPROGRAM, KUA
  * @param {string} target
  * @returns boolean
  */
-function isMiniappPlatform(target) {
+function checkIsMiniappPlatform(target) {
   return [MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, BAIDU_SMARTPROGRAM, KUAISHOU_MINIPROGRAM].includes(target);
 }
 
-module.exports = isMiniappPlatform;
+module.exports = checkIsMiniappPlatform;
