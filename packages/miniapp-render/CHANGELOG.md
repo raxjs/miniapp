@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.8.4] - 2021-09-26
+
+### Changed
+
+- Avoid the update in `replaceChild` if both nodes are Comment node
+- Use longpress to replace longtap in wechat/baidu/bytedance/kuaishou
+
+### Added
+
+- Support ad component
+
 ## [2.8.3] - 2021-09-09
 
 ### Changed

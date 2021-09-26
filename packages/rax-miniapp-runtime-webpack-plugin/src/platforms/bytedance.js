@@ -2,7 +2,7 @@ const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
   Tap: '',
-  LongTap: ''
+  LongPress: ''
 };
 
 
@@ -819,6 +819,21 @@ const OfficialAccount = {
   }
 };
 
+const Ad = {
+  props: {
+    'unit-id': '',
+    'ad-intervals': '',
+    fixed: '',
+    type: addSingleQuote('banner'),
+    scale: '100',
+  },
+  events: {
+    Load: '',
+    Error: '',
+    Close: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -864,6 +879,7 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   OfficialAccount,
+  Ad,
   HElement,
   CatchHElement,
   PureHElement,
@@ -925,7 +941,8 @@ exports.voidChildrenElements = new Set([
   'WebView',
   'LivePlayer',
   'LivePusher',
-  'OfficialAccount'
+  'OfficialAccount',
+  'Ad'
 ]);
 
 exports.nestElements = new Map([
@@ -951,7 +968,7 @@ exports.needModifyChildrenComponents = {
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </swiper-item>`,
   MovableArea: children => `
-    <movable-view tt:for="{{r.children}}" tt:key="nodeId" tt:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{item['inertia'] === undefined ? false : item['inertia']}}" out-of-bounds="{{item['out-of-bounds'] ? false : item['out-of-bounds']}}" x="{{item['x'] === undefined ? 0 : item['x']}}" y="{{item['y'] === undefined ? 0 : item['x']}}" damping="{{item['damping'] === undefined ? 20 : item['damping']}}" friction="{{item['friction'] === undefined ? 20 : item['friction']}}" disabled="{{item['disabled'] === undefined ? false : item['disabled']}}" scale="{{item['scale'] === undefined ? false : item['scale']}}" scale-min="{{item['scale-min'] === undefined ? 0.5 : item['scale-min']}}" scale-max="{{item['scale-max'] === undefined ? 10 : item['scale-min']}}" scale-value="{{item['scale-value'] === undefined ? 1 : item['scale-value']}}" animation="{{item['animation'] === undefined ? true : item['animation']}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
+    <movable-view tt:for="{{r.children}}" tt:key="nodeId" tt:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{item['inertia'] === undefined ? false : item['inertia']}}" out-of-bounds="{{item['out-of-bounds'] ? false : item['out-of-bounds']}}" x="{{item['x'] === undefined ? 0 : item['x']}}" y="{{item['y'] === undefined ? 0 : item['x']}}" damping="{{item['damping'] === undefined ? 20 : item['damping']}}" friction="{{item['friction'] === undefined ? 20 : item['friction']}}" disabled="{{item['disabled'] === undefined ? false : item['disabled']}}" scale="{{item['scale'] === undefined ? false : item['scale']}}" scale-min="{{item['scale-min'] === undefined ? 0.5 : item['scale-min']}}" scale-max="{{item['scale-max'] === undefined ? 10 : item['scale-min']}}" scale-value="{{item['scale-value'] === undefined ? 1 : item['scale-value']}}" animation="{{item['animation'] === undefined ? true : item['animation']}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongpress="onLongPress" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
   ScrollView: children => `

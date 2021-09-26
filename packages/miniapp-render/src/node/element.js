@@ -9,6 +9,7 @@ import cache from '../utils/cache';
 import { toDash, omitFalsyFields, joinClassNames } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
 import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, ANCHOR_COMPONENT } from '../constants';
+import Comment from './comment';
 
 class Element extends Node {
   constructor(options) {
@@ -439,6 +440,10 @@ class Element extends Node {
     node.parentNode = this;
     if (this._isRendered()) {
       node.__rendered = true;
+
+      // avoid the update if both are Comment node
+      if (node instanceof Comment && old instanceof Comment) return old;
+
       // Trigger update
       let payload;
       if (isMiniApp) {
