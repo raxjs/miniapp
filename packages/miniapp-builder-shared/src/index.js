@@ -5,6 +5,7 @@ const pathHelper = require('./pathHelper');
 const platformMap = require('./platformMap');
 const constants = require('./constants');
 const autoInstallNpm = require('./autoInstallNpm');
+const isMiniappPlatform = require('./isMiniappPlatform');
 
 module.exports = {
   filterNativePages,
@@ -13,5 +14,6 @@ module.exports = {
   pathHelper,
   platformMap,
   constants,
-  autoInstallNpm
+  autoInstallNpm,
+  isMiniappPlatform
 };
