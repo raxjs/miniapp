@@ -1,10 +1,15 @@
 # Changelog
 
-## [0.4.24] - 2021-07-12
+## [0.4.24] - 2021-09-26
 
 ### Changed
 
 - Set modern mode default value to true to satisfy plugin project
+
+### Fixed
+
+- forceUpdate can't work if shouldComponent is configured
+- useReducer can't rerender component if memo exists
 
 ## [0.4.23] - 2021-08-19
 
