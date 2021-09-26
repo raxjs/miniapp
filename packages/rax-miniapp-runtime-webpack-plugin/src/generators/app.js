@@ -10,7 +10,7 @@ function generateAppJS(
   compilation,
   commonAppJSFilePaths,
   mainPackageRoot = 'main',
-  { target, command, withNativeAppConfig }
+  { target, withNativeAppConfig }
 ) {
   const init =
 `function init(window, document, app) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document, app)`).join(';')}}`;
@@ -26,11 +26,10 @@ App(render.createAppConfig(init, config, '${mainPackageRoot}', nativeAppConfig))
     filename: 'app.js',
     content: appJsContent,
     target,
-    command,
   });
 }
 
-function generateAppCSS(compilation, { target, command, pluginDir, subPackages }) {
+function generateAppCSS(compilation, { target, pluginDir, subPackages }) {
   // Add default css file to compilation
   const defaultCSSTmpl = adjustCSS(readFileSync(
     resolve(pluginDir, 'static', 'default.css'),
@@ -46,7 +45,6 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     filename: `default${platformMap[target].extension.css}`,
     content: defaultCSSContent,
     target,
-    command,
   });
 
   let content = `@import "./default${platformMap[target].extension.css}";`;
@@ -68,7 +66,6 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     filename: `app${platformMap[target].extension.css}`,
     content,
     target,
-    command,
   });
 }
 

@@ -2,9 +2,10 @@ const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
 const isEqual = require('lodash.isequal');
 const { constants: { MINIAPP } } = require('miniapp-builder-shared');
+const { processAssets: webpackProcessAssets } = require('@builder/compat-webpack4');
 const { UNRECURSIVE_TEMPLATE_TYPE } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
-const wrapChunks = require('./utils/wrapChunks');
+const processAssets = require('./utils/processAssets');
 const getSepProcessedPath = require('./utils/getSepProcessedPath');
 const { filterPlugin, filterComponent } = require('./utils/filterNativeComponentConfig');
 const { pathHelper: { getBundlePath }, autoInstallNpm } = require('miniapp-builder-shared');
@@ -50,7 +51,7 @@ class MiniAppRuntimePlugin {
       isPluginProject = false
     } = options;
     const {
-      context: { command, userConfig: rootUserConfig, rootDir },
+      context: { webpack, userConfig: rootUserConfig, rootDir },
       getValue
     } = api;
     const userConfig = rootUserConfig[target] || {};
@@ -60,20 +61,14 @@ class MiniAppRuntimePlugin {
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
     const packageJsonFilePath = [];
+    webpackProcessAssets({
+      pluginName: PluginName,
+      compiler,
+    }, ({ compilation, assets, callback }) => {
+      // handle js and css file
+      processAssets(compilation, assets, { webpack, target });
 
-    // Execute when compilation created
-    compiler.hooks.compilation.tap(PluginName, (compilation) => {
-      // Optimize chunk assets
-      compilation.hooks.optimizeChunkAssets.tapAsync(
-        PluginName,
-        (chunks, callback) => {
-          wrapChunks(compilation, chunks, { command, target });
-          callback();
-        }
-      );
-    });
-
-    compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
+      // generate miniapp files
       const outputPath = compilation.outputOptions.path;
       const sourcePath = join(rootDir, 'src');
       const pages = [];
@@ -109,7 +104,7 @@ class MiniAppRuntimePlugin {
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
-        generateRender(compilation, { target, command, rootDir });
+        generateRender(compilation, { target, webpack, rootDir });
         // Collect app.js
         if (!isPluginProject) {
           const commonAppJSFilePaths = compilation.entrypoints
@@ -121,7 +116,7 @@ class MiniAppRuntimePlugin {
           const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
           generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
             target,
-            command,
+            webpack,
             withNativeAppConfig
           });
         }
@@ -135,7 +130,7 @@ class MiniAppRuntimePlugin {
         generateAppCSS(compilation, {
           subPackages,
           target,
-          command,
+          webpack,
           pluginDir
         });
       }
@@ -148,7 +143,7 @@ class MiniAppRuntimePlugin {
           usingPlugins,
           pages,
           target,
-          command,
+          webpack,
           subPackages
         });
 
@@ -160,7 +155,7 @@ class MiniAppRuntimePlugin {
         ) {
           generatePkg(compilation, {
             target,
-            command,
+            webpack,
             declaredDep: nativePackage.dependencies
           });
           packageJsonFilePath.push('');
@@ -170,7 +165,7 @@ class MiniAppRuntimePlugin {
           nativePackage.subPackages.forEach(({ dependencies = {}, source = '' }) => {
             generatePkg(compilation, {
               target,
-              command,
+              webpack,
               declaredDep: dependencies,
               source
             });
@@ -187,19 +182,19 @@ class MiniAppRuntimePlugin {
           // Generate self loop element
           generateElementJS(compilation, {
             target,
-            command
+            webpack
           });
           generateElementJSON(compilation, {
             usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
             target,
-            command
+            webpack
           });
           generateElementTemplate(compilation, {
             usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
             target,
-            command,
+            webpack,
             modifyTemplate
           });
         } else {
@@ -207,7 +202,7 @@ class MiniAppRuntimePlugin {
           // Generate root template xml
           generateRootTmpl(compilation, {
             target,
-            command,
+            webpack,
             usingPlugins,
             usingComponents,
             modifyTemplate
@@ -264,21 +259,21 @@ class MiniAppRuntimePlugin {
           if (isSubPackageContainsNativeComponent || isSubPackageContainsPlugin) {
             generateElementJS(compilation, {
               target,
-              command,
+              webpack,
               subAppRoot
             });
             generateElementJSON(compilation, {
               usingComponents: subPackageUsingComponents,
               usingPlugins: subPackageUsingPlugins,
               target,
-              command,
+              webpack,
               subAppRoot
             });
             generateElementTemplate(compilation, {
               usingComponents: subPackageUsingComponents,
               usingPlugins: subPackageUsingPlugins,
               target,
-              command,
+              webpack,
               modifyTemplate,
               subAppRoot
             });
@@ -290,14 +285,14 @@ class MiniAppRuntimePlugin {
           // Page xml
           generatePageXML(compilation, entryName, useComponent, {
             target,
-            command,
+            webpack,
             subAppRoot: isSubPackageContainsPlugin || isSubPackageContainsNativeComponent ? subAppRoot : ''
           });
 
           // Page css
           generatePageCSS(compilation, entryName, subAppRoot, {
             target,
-            command,
+            webpack,
           });
 
           const isSubPackagePage = subPackages && mainPackageRoot !== subAppRoot;
@@ -311,7 +306,7 @@ class MiniAppRuntimePlugin {
             entryName,
             {
               target,
-              command,
+              webpack,
               outputPath,
               subAppRoot: isSubPackageContainsPlugin || isSubPackageContainsNativeComponent ? subAppRoot : ''
             }
@@ -334,13 +329,14 @@ class MiniAppRuntimePlugin {
           nativeLifeCycles,
           commonPageJSFilePaths,
           subAppRoot,
-          { target, command }
+          { target, webpack }
         );
       });
 
       isFirstRender = false;
       callback();
     });
+
     compiler.hooks.done.tapAsync(PluginName, async(stats, callback) => {
       if (nativePackage.autoInstall === false || !needAutoInstallDependency) {
         return callback();

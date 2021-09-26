@@ -13,7 +13,7 @@ function generatePageCSS(
   compilation,
   pageRoute,
   subAppRoot = '',
-  { target, command }
+  { target }
 ) {
   let pageCssContent = '/* required by usingComponents */\n';
   const pageCssPath = `${pageRoute}${platformMap[target].extension.css}`;
@@ -23,12 +23,10 @@ function generatePageCSS(
     pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
   }
 
-
   addFileToCompilation(compilation, {
     filename: pageCssPath,
     content: pageCssContent,
     target,
-    command,
   });
 }
 
@@ -39,7 +37,7 @@ function generatePageJS(
   nativeLifeCyclesMap = {},
   commonPageJSFilePaths = [],
   subAppRoot = '',
-  { target, command }
+  { target }
 ) {
   const renderPath = getAssetPath('render', pageRoute);
   const route = getSepProcessedPath(pagePath);
@@ -60,7 +58,6 @@ Page(render.createPageConfig('${route}', ${nativeLifeCycles}, init, '${subAppRoo
     filename: `${pageRoute}.js`,
     content: pageJsContent,
     target,
-    command,
   });
 }
 
@@ -68,7 +65,7 @@ function generatePageXML(
   compilation,
   pageRoute,
   useComponent,
-  { target, command, subAppRoot = '' }
+  { target, subAppRoot = '' }
 ) {
   const { adapter: { formatBindedData } } = platformConfig[target];
 
@@ -86,7 +83,6 @@ function generatePageXML(
     filename: `${pageRoute}${platformMap[target].extension.xml}`,
     content: pageXmlContent,
     target,
-    command,
   });
 }
 
@@ -96,7 +92,7 @@ function generatePageJSON(
   useComponent,
   usingComponents, usingPlugins,
   pageRoute,
-  { target, command, subAppRoot = '' }
+  { target, subAppRoot = '' }
 ) {
   if (!pageConfig.usingComponents) {
     pageConfig.usingComponents = {};
@@ -118,7 +114,6 @@ function generatePageJSON(
     filename: `${pageRoute}.json`,
     content: JSON.stringify(pageConfig, null, 2),
     target,
-    command,
   });
 }
 

@@ -12,7 +12,7 @@ const { generateRootTmpl } = require('./root');
 const { buildTemplate, buildNativeComponentTemplate, buildSjs } = require('./templates');
 
 
-function generateElementJS(compilation, { target, command, subAppRoot = '' }) {
+function generateElementJS(compilation, { target, subAppRoot = '' }) {
   const filename = join(subAppRoot, 'comp.js');
   addFileToCompilation(compilation, {
     filename,
@@ -21,19 +21,18 @@ function generateElementJS(compilation, { target, command, subAppRoot = '' }) {
 
 Component(render.createElementConfig());`,
     target,
-    command,
   });
 }
 
 function generateElementTemplate(compilation,
-  { usingPlugins, usingComponents, target, command, subAppRoot = '', modifyTemplate }) {
+  { usingPlugins, usingComponents, target, subAppRoot = '', modifyTemplate }) {
   const { adapter: { formatBindedData } } = platformConfig[target];
   let content = `
 <template is="RAX_TMPL_ROOT_CONTAINER" data="{{${formatBindedData('r: r')}}}" />`;
 
   const isRecursiveTemplate = RECURSIVE_TEMPLATE_TYPE.has(target);
   if (!isRecursiveTemplate) {
-    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, command, modifyTemplate, subAppRoot });
+    generateRootTmpl(compilation, { usingPlugins, usingComponents, target, modifyTemplate, subAppRoot });
     content = `<import src="./root${platformMap[target].extension.xml}"/>` + content;
   } else {
     const sjs = buildSjs(target);
@@ -41,7 +40,6 @@ function generateElementTemplate(compilation,
       filename: join(subAppRoot, `tool${platformMap[target].extension.script}`),
       content: sjs,
       target,
-      command,
     });
 
     const template = buildTemplate(target, modifyTemplate, { isRecursiveTemplate });
@@ -54,11 +52,10 @@ function generateElementTemplate(compilation,
     filename: join(subAppRoot, `comp${platformMap[target].extension.xml}`),
     content,
     target,
-    command,
   });
 }
 
-function generateElementJSON(compilation, { usingComponents, usingPlugins, target, command, subAppRoot = '' }) {
+function generateElementJSON(compilation, { usingComponents, usingPlugins, target, subAppRoot = '' }) {
   const content = {
     component: true,
     usingComponents: {}
@@ -79,7 +76,6 @@ function generateElementJSON(compilation, { usingComponents, usingPlugins, targe
     filename: join(subAppRoot, 'comp.json'),
     content: JSON.stringify(content, null, 2),
     target,
-    command,
   });
 }
 
