@@ -1,9 +1,15 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isBaiduSmartProgram } from 'universal-env';
 import { toCamel } from '../utils/tool';
 
 class Attribute {
   constructor(element) {
     this.__element = element;
     this.__value = {};
+  }
+
+  setWithoutUpdate(name, value) {
+    this.__value[name] = value;
   }
 
   set(name, value, immediate = true) {
@@ -22,7 +28,9 @@ class Attribute {
       }
       if (element._isRendered()) {
         const payload = {
-          path: `${element._path}.${name}`,
+          // In baidu smartprogram, setData path supports like: root.children.0['scroll-into-view']
+          // While in wechat miniprogram, the same setData path muse be: root.children.[0].scroll-into-view
+          path: isBaiduSmartProgram ? `${element._path}['${name}']` : `${element._path}.${name}`,
           value: value
         };
         element._triggerUpdate(payload, immediate);
@@ -76,7 +84,7 @@ class Attribute {
         delete element.dataset[datasetName];
       }
       const payload = {
-        path: `${element._path}.${name}`,
+        path: isBaiduSmartProgram ? `${element._path}['${name}']` : `${element._path}.${name}`,
         value: ''
       };
       element._triggerUpdate(payload);

@@ -1,4 +1,4 @@
-const { resolve, join } = require('path');
+const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
 const isEqual = require('lodash.isequal');
 const { constants: { MINIAPP } } = require('miniapp-builder-shared');
@@ -47,6 +47,7 @@ class MiniAppRuntimePlugin {
       mainPackageRoot,
       appConfig,
       subAppConfigList = [],
+      isPluginProject = false
     } = options;
     const {
       context: { command, userConfig: rootUserConfig, rootDir },
@@ -58,6 +59,7 @@ class MiniAppRuntimePlugin {
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
+    const packageJsonFilePath = [];
 
     // Execute when compilation created
     compiler.hooks.compilation.tap(PluginName, (compilation) => {
@@ -65,7 +67,7 @@ class MiniAppRuntimePlugin {
       compilation.hooks.optimizeChunkAssets.tapAsync(
         PluginName,
         (chunks, callback) => {
-          wrapChunks(compilation, chunks, target);
+          wrapChunks(compilation, chunks, { command, target });
           callback();
         }
       );
@@ -104,23 +106,26 @@ class MiniAppRuntimePlugin {
         // render.js
         generateRender(compilation, { target, command, rootDir });
         // Collect app.js
-        const commonAppJSFilePaths = compilation.entrypoints
-          .get(getBundlePath(subPackages ? mainPackageRoot : ''))
-          .getFiles()
-          .filter((filePath) => !isCSSFile(filePath));
-        // App js
-        const nativeAppConfigPath = join(sourcePath, 'miniapp-native', 'app.js');
-        const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
-        generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
-          target,
-          command,
-          withNativeAppConfig
-        });
+        if (!isPluginProject) {
+          const commonAppJSFilePaths = compilation.entrypoints
+            .get(getBundlePath(subPackages ? mainPackageRoot : ''))
+            .getFiles()
+            .filter((filePath) => !isCSSFile(filePath));
+          // App js
+          const nativeAppConfigPath = join(sourcePath, 'miniapp-native', 'app.js');
+          const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
+          generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
+            target,
+            command,
+            withNativeAppConfig
+          });
+        }
       }
 
       if (
-        isFirstRender ||
-        changedFiles.some((filePath) => isCSSFile(filePath))
+        (isFirstRender ||
+        changedFiles.some((filePath) => isCSSFile(filePath))) &&
+        !isPluginProject
       ) {
         generateAppCSS(compilation, {
           subPackages,
@@ -152,6 +157,19 @@ class MiniAppRuntimePlugin {
             target,
             command,
             declaredDep: nativePackage.dependencies
+          });
+          packageJsonFilePath.push('');
+          needAutoInstallDependency = true;
+        }
+        if (nativePackage.subPackages) {
+          nativePackage.subPackages.forEach(({ dependencies = {}, source = '' }) => {
+            generatePkg(compilation, {
+              target,
+              command,
+              declaredDep: dependencies,
+              source
+            });
+            packageJsonFilePath.push(dirname(source));
           });
           needAutoInstallDependency = true;
         }
@@ -294,13 +312,11 @@ class MiniAppRuntimePlugin {
             }
           );
         }
-        let commonPageJSFilePaths = [];
-        if (subPackages && mainPackageRoot !== subAppRoot) {
-          commonPageJSFilePaths = compilation.entrypoints
-            .get(getBundlePath(subAppRoot))
-            .getFiles()
-            .filter((filePath) => !isCSSFile(filePath));
-        }
+
+        const commonPageJSFilePaths = compilation.entrypoints
+          .get(getBundlePath(subAppRoot))
+          .getFiles()
+          .filter((filePath) => !isCSSFile(filePath));
         let pagePath = entryName;
         if (!subPackages) {
           pagePath = finalRouteMap[getSepProcessedPath(source)];
@@ -325,7 +341,7 @@ class MiniAppRuntimePlugin {
         return callback();
       }
       const distDir = stats.compilation.outputOptions.path;
-      await autoInstallNpm(distDir, callback);
+      await autoInstallNpm(callback, { distDir, packageJsonFilePath });
     });
   }
 }

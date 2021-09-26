@@ -31,10 +31,12 @@ module.exports = (rootDir, target, nativeLifeCycleMap, subAppRoot = '') => {
   }
 
   appConfig.routes.map(route => {
-    route.source = join(subAppRoot, route.source);
+    if (subAppRoot) {
+      route.source = normalizeOutputFilePath(join(subAppRoot, route.source));
+      route.subAppRoot = subAppRoot;
+    }
     route.name = route.source;
     route.entryName = getRouteName(route, rootDir);
-    if (subAppRoot) route.subAppRoot = subAppRoot;
 
     if (!Array.isArray(route.targets)) {
       addPage(route);

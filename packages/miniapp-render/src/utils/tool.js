@@ -29,9 +29,49 @@ function isUndef(variable) {
   return variable === undefined;
 }
 
+/**
+ * Check whether the variable is a function
+ * @param {*} variable
+ * @returns boolean
+ */
+function isFunction(variable) {
+  return typeof variable === 'function';
+}
+
+/**
+ * Drop fields which value is falsy from obj
+ *
+ * @param {object} obj
+ * @param {array} fields
+ * @returns {object}
+ */
+function omitFalsyFields(obj, fields) {
+  const shallowCopy = Object.assign({}, obj);
+
+  for (let i = 0; i < fields.length; i++) {
+    const key = fields[i];
+    if (shallowCopy.hasOwnProperty(key) && !shallowCopy[key]) {
+      delete shallowCopy[key];
+    }
+  }
+
+  return shallowCopy;
+}
+
+/**
+ * join classNames together
+ * @returns {string}
+ */
+function joinClassNames(...args) {
+  return args.filter(v => !!v).join(' ');
+}
+
 export {
   toDash,
   toCamel,
   getId,
-  isUndef
+  isUndef,
+  isFunction,
+  omitFalsyFields,
+  joinClassNames
 };

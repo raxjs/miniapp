@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.2.10] - 2021-08-05
+
+### Changed
+
+- Update autoInstallNpm method to support multiple install action
+
+## [0.2.9] - 2021-07-27
+
+### Fixed
+
+- route error in windows
+
+## [0.2.8] - 2021-07-20
+
+### Added
+
+- Support get miniapp plugin config
+
+## [0.2.7] - 2021-06-10
+
+### Fixed
+
+- windows tabBar item `pagePath`
+
 ## [0.2.6] - 2021-06-01
 
 ### Changed

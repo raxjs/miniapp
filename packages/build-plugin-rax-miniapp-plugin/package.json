@@ -1,0 +1,40 @@
+{
+  "name": "build-plugin-rax-miniapp-plugin",
+  "version": "1.0.1",
+  "description": "rax miniapp-plugin base plugins",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "plugin",
+    "rax",
+    "miniapp plugin"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@alib/build-scripts": "^0.1.0",
+    "rax": "^1.0.0"
+  },
+  "dependencies": {
+    "babel-loader": "8.0.4",
+    "chalk": "^2.4.2",
+    "console-clear": "^1.1.1",
+    "copy-webpack-plugin": "^5.0.0",
+    "fs-extra": "^8.1.0",
+    "miniapp-builder-shared": "^0.2.6",
+    "miniapp-compile-config": "^0.2.2",
+    "miniapp-runtime-config": "^0.3.6",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^6.1.0",
+    "rax-babel-config": "^1.0.4",
+    "rax-compile-config": "^0.2.0",
+    "rax-platform-loader": "^1.1.0",
+    "rax-webpack-config": "^2.0.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.27.1",
+    "webpack-chain": "^6.0.0",
+    "webpackbar": "^5.0.0-3"
+  }
+}

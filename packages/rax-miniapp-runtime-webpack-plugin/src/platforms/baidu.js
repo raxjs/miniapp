@@ -1,7 +1,8 @@
 const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
-  Tap: ''
+  Tap: '',
+  LongTap: ''
 };
 
 
@@ -10,7 +11,6 @@ const touchEvents = {
   TouchMove: '',
   TouchCancel: '',
   TouchEnd: '',
-  LongTap: ''
 };
 
 const animationEvents = {
@@ -37,36 +37,6 @@ const View = {
   }
 };
 
-const CatchView = Object.assign({}, View);
-
-const StaticView = {
-  props: {
-    'hover-class': addSingleQuote('none'),
-    'hover-start-time': '50',
-    'hover-stay-time': '400',
-    'hover-stop-propagation': 'false',
-    animation: ''
-  }
-};
-
-const PureView = {};
-
-const NoTouchView = {
-  props: {
-    'hover-class': addSingleQuote('none'),
-    'hover-start-time': '50',
-    'hover-stay-time': '400',
-    'hover-stop-propagation': 'false',
-    animation: ''
-  },
-  events: {
-    ...animationEvents
-  },
-  basicEvents: {
-    ...tapEvents
-  }
-};
-
 const HElement = {
   props: {
     animation: ''
@@ -74,19 +44,6 @@ const HElement = {
   basicEvents: {
     ...tapEvents,
     ...touchEvents
-  }
-};
-
-const CatchHElement = Object.assign({}, HElement);
-
-const PureHElement = {};
-
-const NoTouchHElement = {
-  props: {
-    animation: ''
-  },
-  basicEvents: {
-    ...tapEvents
   }
 };
 
@@ -622,7 +579,7 @@ const Video = {
     Pause: '',
     Ended: '',
     TimeUpdate: '',
-    ScreenChange: '',
+    FullScreenChange: '',
     Waiting: '',
     Error: '',
     Progress: '',
@@ -821,10 +778,6 @@ const OfficialAccount = {
 
 exports.internalComponents = {
   View,
-  CatchView,
-  StaticView,
-  PureView,
-  NoTouchView,
   Swiper,
   SwiperItem,
   ScrollView,
@@ -865,20 +818,10 @@ exports.internalComponents = {
   LivePusher,
   OfficialAccount,
   HElement,
-  CatchHElement,
-  PureHElement,
-  NoTouchHElement,
   HComment
 };
 
 exports.derivedComponents = new Map([
-  ['CatchView', 'View'],
-  ['StaticView', 'View'],
-  ['PureView', 'View'],
-  ['NoTouchView', 'View'],
-  ['CatchHElement', 'View'],
-  ['PureHElement', 'View'],
-  ['NoTouchHElement', 'View'],
   ['HElement', 'View'],
   ['StaticText', 'Text'],
   ['StaticImage', 'Image'],
@@ -945,7 +888,35 @@ exports.shouldNotGenerateTemplateComponents = new Set([
   'MovableView'
 ]);
 
+const flattenViewLevel = 8;
+function generateFlattenView(level, component) {
+  if (level === 0) {
+    return '<template is="RAX_TMPL_CHILDREN_0" data="{{{r: item.children}}}" />';
+  }
+  const child = generateFlattenView(level - 1, component);
+  let attributes = 'animation="{{item[\'animation\']}}" bindtap="onTap" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchcancel="onTouchCancel" bindtouchend="onTouchEnd" bindlongtap="onLongTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}"';
+  if (component === 'view') {
+    attributes += ' hover-class="{{item[\'hover-class\']||\'none\'}}" hover-start-time="{{tool.a(item[\'hover-start-time\'],50)}}" hover-stay-time="{{tool.a(item[\'hover-stay-time\'],400)}}" hover-stop-propagation="{{tool.a(item[\'hover-stop-propagation\'],false)}}"';
+  }
+  const template =
+`<block s-for="{{${level === flattenViewLevel ? 'r' : 'item'}.children}}" s-key="nodeId">
+  <view s-if="item.nodeType==='${component}'&&(item.class||item.style)" ${attributes}>
+    ${child}
+  </view>
+  <block s-elif="{{item.nodeId}}">
+    <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{{r: item}}}" />
+  </block>
+  <block s-else>
+    <block>{{item.content}}</block>
+  </block>
+</block>
+`;
+  return template;
+}
+
 exports.needModifyChildrenComponents = {
+  HElement: (children) => `${generateFlattenView(flattenViewLevel, 'h-element')}`,
+  View: (children) => `${generateFlattenView(flattenViewLevel, 'view')}`,
   Swiper: (children, level) => `
     <swiper-item s-for="{{r.children}}" s-if="{{item.nodeType !== 'h-comment'}}" s-key="nodeId">
       <template is="RAX_TMPL_CHILDREN_0" data="{{{r: item.children}}}" />
@@ -957,7 +928,7 @@ exports.needModifyChildrenComponents = {
   ScrollView: children => `
     <block s-for="{{r.children}}" s-key="nodeId">
       <block s-if="{{item.nodeId}}">
-        <template is="RAX_TMPL_0_scroll-view" data="{{{r: item}}}" />
+        <template is="{{'RAX_TMPL_0_' + item.nodeType}}" data="{{{r: item}}}" />
       </block>
       <block s-else>
         <block>{{item.content}}</block>
@@ -977,6 +948,16 @@ exports.needModifyChildrenComponents = {
       <block s-else>
         <block>{{item.content}}</block>
       </block>
+    </block>
+  `,
+  Text: children => `
+    <block s-for="{{r.children}}">
+      <block>{{item.content}}</block>
+    </block>
+  `,
+  StaticText: children => `
+    <block s-for="{{r.children}}">
+      <block>{{item.content}}</block>
     </block>
   `
 };

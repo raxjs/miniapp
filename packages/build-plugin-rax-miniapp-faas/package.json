@@ -1,0 +1,32 @@
+{
+  "name": "build-plugin-rax-miniapp-faas",
+  "version": "1.0.0",
+  "description": "rax miniapp-faas base plugins",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "plugin",
+    "rax",
+    "miniapp",
+    "faas"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@alib/build-scripts": "^0.1.0",
+    "rax": "^1.0.0"
+  },
+  "dependencies": {
+    "@midwayjs/command-core": "^1.2.76",
+    "@midwayjs/fcli-plugin-package": "^1.2.78",
+    "@midwayjs/fcli-plugin-wechat": "^1.2.78",
+    "@midwayjs/serverless-spec-builder": "^1.2.78",
+    "fs-extra": "^10.0.0",
+    "miniapp-builder-shared": "^0.2.9"
+  }
+}

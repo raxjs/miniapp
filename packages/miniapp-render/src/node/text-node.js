@@ -21,7 +21,7 @@ class TextNode extends Node {
 
   get _renderInfo() {
     return {
-      nodeType: `h-${this.__type}`,
+      nodeType: 'h-text',
       content: this.__content,
     };
   }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.30] - 2021-08-31
+
+### Fixed
+
+- Error can't be catch in eliminateDeadCode
+
 ## [0.4.29] - 2021-07-12
 
 ### Fixed

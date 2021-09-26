@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.35] - 2021-08-27
+
+- Return renamed index in list
+
+## [0.4.34] - 2021-08-24
+
+- Compatible with old version of jsx2mp-runtime, which not support list key
+
+## [0.4.33] - 2021-08-19
+
+- Support key in list (x-for, map)
+
 ## [0.4.32] - 2021-06-30
 
 ### Fixed

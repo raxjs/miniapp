@@ -1,5 +1,50 @@
 # Changelog
 
+## [4.11.0] - 2021-09-09
+
+### Added
+
+- Support deleting components in template
+
+## [4.10.0] - 2021-08-31
+
+### Added
+
+- Support flex display for view and h-element in baidu and kuaishou miniapp
+
+### Fixed
+
+- Can't use longtap event
+
+## [4.9.0] - 2021-08-05
+
+### Added
+
+- Support generating multiple package.json file in subpackages mode
+
+### Fixed
+
+- Data binding error in scroll-view template in baidu smartprogram
+- Text can't be nested in baidu smartprogram
+- Can't generate native components template in windows system
+
+## [4.8.0] - 2021-07-20
+
+### Added
+
+- Support configuring miniapp plugin project
+- Replace :root to page in bytedance/baidu/kuaishou miniapp
+
+### Fixed
+
+- Template generation error
+
+## [4.7.0] - 2021-07-13
+
+### Changed
+
+- Pass app instance to js bundle in cases that getApp() can't get app instance
+
 ## [4.6.1] - 2021-06-09
 
 ### Fixed

@@ -1,5 +1,59 @@
 # Changelog
 
+## [2.8.3] - 2021-09-09
+
+### Changed
+
+- Normalize classNames in setData
+
+## [2.8.2] - 2021-08-31
+
+### Changed
+
+- Remove view and h-element type optimization in baidu and kuaishou miniapp (for flex display)
+- Remove useless data in setData
+
+## [2.8.1] - 2021-08-19
+
+### Fixed
+
+- Support onShareTimeline in wechat miniprogram
+
+## [2.8.0] - 2021-08-11
+
+### Added
+
+- Support passing css variables in style
+
+### Changed
+
+- Refactor DOM API in non-ali miniapp to improve performance and fix render error bug
+- Do not update scroll info from jscore to renderview to fix scroll-view shake
+
+## [2.7.2] - 2021-07-27
+
+### Added
+
+- Support onChangeEnd event of movable-view in ali miniapp
+
+### Fixed
+
+- Return event target object in js memory instead of native event target
+
+
+## [2.7.1] - 2021-07-20
+
+### Fixed
+
+- Can't get correct event target in some circumstance
+
+## [2.7.0] - 2021-07-13
+
+### Changed
+
+- Move js bundle execution time to app onLaunch licecycle in wechat
+- Support return result in trigger function of event-target
+
 ## [2.6.1] - 2021-06-09
 
 ### Fixed
