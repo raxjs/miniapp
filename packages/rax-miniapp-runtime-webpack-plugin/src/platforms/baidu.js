@@ -776,6 +776,21 @@ const OfficialAccount = {
   }
 };
 
+const Ad = {
+  props: {
+    appid: '',
+    apid: '',
+    type: addSingleQuote('feed'),
+    updatetime: '',
+  },
+  events: {
+    Load: '',
+    Error: '',
+    Close: '',
+    Status: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   Swiper,
@@ -817,6 +832,7 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   OfficialAccount,
+  Ad,
   HElement,
   HComment
 };
@@ -868,7 +884,8 @@ exports.voidChildrenElements = new Set([
   'WebView',
   'LivePlayer',
   'LivePusher',
-  'OfficialAccount'
+  'OfficialAccount',
+  'Ad'
 ]);
 
 exports.nestElements = new Map([
