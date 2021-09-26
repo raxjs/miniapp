@@ -1,16 +1,15 @@
-// Events which should bubble
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isMiniApp } from 'universal-env';
 
-export default [
+
+// Events which should bubble
+const baseEvents = [
   {
     name: 'onTap',
     eventName: 'click',
     extra: {
       button: 0
     }
-  },
-  {
-    name: 'onLongTap',
-    eventName: 'longtap'
   },
   {
     name: 'onTouchStart',
@@ -29,3 +28,17 @@ export default [
     eventName: 'touchcancel'
   }
 ];
+
+if (isMiniApp) {
+  baseEvents.push({
+    name: 'onLongTap',
+    eventName: 'longtap'
+  });
+} else {
+  baseEvents.push({
+    name: 'onLongPress',
+    eventName: 'longpress'
+  });
+}
+
+export default baseEvents;

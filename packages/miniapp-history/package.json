@@ -50,8 +50,6 @@
     "jest": "^24.9.0",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.0",
-    "semver": "^7.1.1",
-    "semver-regex": "^2.0.0",
     "shelljs": "0.8.3"
   },
   "config": {
