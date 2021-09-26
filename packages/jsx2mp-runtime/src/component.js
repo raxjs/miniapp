@@ -276,9 +276,8 @@ export default class Component {
 
     // Step5: judge shouldComponentUpdate
     this.__shouldUpdate =
-      this.__forceUpdate || this.shouldComponentUpdate
-        ? this.shouldComponentUpdate(nextProps, nextState)
-        : true;
+      this.__forceUpdate ||
+      (this.shouldComponentUpdate ? this.shouldComponentUpdate(nextProps, nextState) : true);
 
     // Step8: trigger render
     if (this.__shouldUpdate) {
