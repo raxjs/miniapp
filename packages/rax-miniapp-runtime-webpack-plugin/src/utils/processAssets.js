@@ -2,6 +2,7 @@
 const ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
 const webpackSources = require('webpack-sources');
 const { platformMap } = require('miniapp-builder-shared');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const webpack = require('webpack');
 const { emitAsset } = require('@builder/compat-webpack4');
 const adjustCSS = require('./adjustCSS');
