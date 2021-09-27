@@ -240,4 +240,34 @@ describe('Transiform condition render function', () => {
   return <View>{a}</View>;
 }`);
   });
+
+  it('statement without square bracket in alternate', () => {
+    const ast = parseExpression(`(function render(props) {
+        const [loggined, setLoggined] = useState(false);
+        useEffect(() => {
+          const { isLogin } = app;
+          if (isLogin) {
+            setLoggined(true);
+          } else setLoggined(false);
+        }, [])
+        return <View>{loggined}</View>;
+      })
+    `);
+
+    const tmpVars = _transformRenderFunction(ast, adapter);
+    expect(genExpression(tmpVars.vdom)).toEqual('');
+    expect(genExpression(ast)).toEqual(`function render(props) {
+  const [loggined, setLoggined] = useState(false);
+  useEffect(() => {
+    const {
+      isLogin
+    } = app;
+
+    if (isLogin) {
+      setLoggined(true);
+    } else setLoggined(false);
+  }, []);
+  return <View>{loggined}</View>;
+}`);
+  });
 });
