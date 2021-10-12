@@ -12,7 +12,6 @@ import { isFunction } from '../utils/tool';
 export function getBaseLifeCycles(route, init, packageName = '') {
   return {
     onLoad(query) {
-      // TODO: rename
       // old: init is a function that contains all the logic code
       // now: init is a object that contains page code and bundle code (app.js)
       const isBundled = isFunction(init);
