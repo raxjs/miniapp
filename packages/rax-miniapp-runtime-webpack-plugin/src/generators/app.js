@@ -51,14 +51,16 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
 
   let content = `@import "./default${platformMap[target].extension.css}";`;
 
-  const isCssExtension = platformMap[target].extension.css === '.css';
   Object.keys(compilation.assets).forEach(asset => {
-    if (extname(asset) === '.css' && !isCssExtension) {
-      delete compilation.assets[asset];
-    }
+    /* past:
+      non-subPackage: app.css would import bundle.css and native page css (which is a bug)
+      subpackage: app.css would only import vendor.css
+    */
+     /* now:
+      app.acss only import vendor.css. page css will be loaded in each page
+    */
     if (extname(asset) === platformMap[target].extension.css && asset !== `default${platformMap[target].extension.css}`) {
-      if (!subPackages || asset.includes('vendors.css')) {
-        // In sub packages mode, only vendors.css should be imported in app.css
+      if (asset.includes('vendors.css')) {
         content += `@import "./${asset}";`;
       }
     }

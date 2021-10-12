@@ -18,9 +18,17 @@ function generatePageCSS(
   let pageCssContent = '/* required by usingComponents */\n';
   const pageCssPath = `${pageRoute}${platformMap[target].extension.css}`;
   const isCssExtension = platformMap[target].extension.css === '.css';
-  const subAppCssPath = `${getBundlePath(subAppRoot)}.css${isCssExtension ? '' : platformMap[target].extension.css}`;
+  const cssFileExtname = `.css${isCssExtension ? '' : platformMap[target].extension.css}`;
+  const subAppCssPath = `${getBundlePath(subAppRoot)}${cssFileExtname}`;
   if (compilation.assets[subAppCssPath]) {
     pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
+  }
+
+  /* page css will be outputed to ${pageRouts}.bundle.css
+     so page css should import ${pageRouts}.bundle.css
+  */
+  if (compilation.assets[`${pageRoute}.bundle${cssFileExtname}`]) {
+    pageCssContent += `@import "./${getAssetPath(pageRoute + '.bundle', pageRoute)}${cssFileExtname}";`;
   }
 
 
@@ -44,12 +52,18 @@ function generatePageJS(
   const renderPath = getAssetPath('render', pageRoute);
   const route = getSepProcessedPath(pagePath);
   const nativeLifeCycles = `[${Object.keys(nativeLifeCyclesMap).reduce((total, current, index) => index === 0 ? `${total}'${current}'` : `${total},'${current}'`, '')}]`;
-  const requirePageBundle = commonPageJSFilePaths.reduce((prev, filePath) => {
+  const requireAppBundle = commonPageJSFilePaths.reduce((prev, filePath) => {
     if (filePath === 'webpack-runtime.js') return prev;
     return `${prev}require('${getAssetPath(filePath, pageRoute)}')(window, document);`;
   }, '');
+  const requirePageBundle = `require('${getAssetPath(pageRoute + '.bundle', pageRoute)}')(window, document);`
+  // init will change into a object which contains page entry code and app.js entry code
   const init = `
-function init(window, document) {${requirePageBundle}}`;
+const init = {
+  bundle: function(window, document) {${requireAppBundle}},
+  page: function(window, document) {${requirePageBundle}}
+}
+`
 
   const pageJsContent = `
 const render = require('${renderPath}');
