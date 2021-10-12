@@ -56,14 +56,14 @@ function generatePageJS(
     if (filePath === 'webpack-runtime.js') return prev;
     return `${prev}require('${getAssetPath(filePath, pageRoute)}')(window, document);`;
   }, '');
-  const requirePageBundle = `require('${getAssetPath(pageRoute + '.bundle', pageRoute)}')(window, document);`
+  const requirePageBundle = `require('${getAssetPath(pageRoute + '.bundle', pageRoute)}')(window, document);`;
   // init will change into a object which contains page entry code and app.js entry code
   const init = `
 const init = {
   bundle: function(window, document) {${requireAppBundle}},
   page: function(window, document) {${requirePageBundle}}
 }
-`
+`;
 
   const pageJsContent = `
 const render = require('${renderPath}');

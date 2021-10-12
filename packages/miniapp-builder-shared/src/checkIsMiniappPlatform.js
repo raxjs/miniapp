@@ -1,4 +1,5 @@
 const constants = require('./constants');
+
 const { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, BAIDU_SMARTPROGRAM, KUAISHOU_MINIPROGRAM } = constants;
 
 /**
