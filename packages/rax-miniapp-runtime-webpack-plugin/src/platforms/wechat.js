@@ -2,7 +2,7 @@ const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
   Tap: '',
-  LongTap: ''
+  LongPress: ''
 };
 
 
@@ -858,6 +858,20 @@ const OfficialAccount = {
   }
 };
 
+const Ad = {
+  props: {
+    'unit-id': '',
+    'ad-intervals': '',
+    'ad-type': addSingleQuote('banner'),
+    'ad-theme': addSingleQuote('white'),
+  },
+  events: {
+    Load: '',
+    Error: '',
+    Close: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -904,6 +918,7 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   OfficialAccount,
+  Ad,
   HElement,
   CatchHElement,
   PureHElement,
@@ -966,7 +981,8 @@ exports.voidChildrenElements = new Set([
   'WebView',
   'LivePlayer',
   'LivePusher',
-  'OfficialAccount'
+  'OfficialAccount',
+  'Ad'
 ]);
 
 exports.nestElements = new Map([
@@ -992,7 +1008,7 @@ exports.needModifyChildrenComponents = {
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'swiper')}}" />
     </swiper-item>`,
   MovableArea: children => `
-    <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
+    <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongpress="onLongPress" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'movable-area')}}" />
     </movable-view>`,
   ScrollView: children => `
