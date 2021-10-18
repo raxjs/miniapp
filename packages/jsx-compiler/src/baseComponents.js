@@ -9,5 +9,6 @@ module.exports = [
   'rax-video',
   'rax-image',
   'rax-modal',
-  'rax-countdown'
+  'rax-countdown',
+  'rax-swiper'
 ];

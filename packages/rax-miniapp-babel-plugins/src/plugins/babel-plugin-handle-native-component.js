@@ -23,7 +23,8 @@ const baseComponents = [
   'rax-slider',
   'rax-textinput',
   'rax-video',
-  'rax-embed'
+  'rax-embed',
+  'rax-swiper'
 ];
 
 /**
