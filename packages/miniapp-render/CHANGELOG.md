@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.5] - 2021-10-18
+
+### Added
+
+- Add `Set` and `Map` in `window`
+
 ## [2.8.4] - 2021-09-26
 
 ### Changed
