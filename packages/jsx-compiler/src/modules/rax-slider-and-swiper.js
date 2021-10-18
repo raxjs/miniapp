@@ -4,10 +4,10 @@ const genExpression = require('../codegen/genExpression');
 const createBinding = require('../utils/createBinding');
 const { BINDING_REG } = require('../utils/checkAttr');
 
-function transformRaxSlider(ast, adapter) {
+function transformRaxSliderAndSwiper(ast, adapter) {
   traverse(ast, {
     JSXOpeningElement(path) {
-      if (path.get('name').isJSXIdentifier({ name: 'rax-slider' })) {
+      if (path.get('name').isJSXIdentifier({ name: 'rax-slider' }) || path.get('name').isJSXIdentifier({ name: 'rax-swiper' })) {
         const children = path.parent.children.filter(
           (child) => {
             if (child.openingElement && t.isJSXIdentifier(child.openingElement.name)) {
@@ -94,10 +94,10 @@ function getSwiperItemAttributes(currentEl) {
 module.exports = {
   parse(parsed, code, options) {
     if (options.adapter.processSlider) {
-      transformRaxSlider(parsed.templateAST, options.adapter);
+      transformRaxSliderAndSwiper(parsed.templateAST, options.adapter);
     }
   },
 
   // For test cases.
-  _transformRaxSlider: transformRaxSlider,
+  _transformRaxSliderAndSwiper: transformRaxSliderAndSwiper,
 };
