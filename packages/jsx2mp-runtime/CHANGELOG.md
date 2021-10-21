@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.25] - 2021-10-21
+
+### Fixed
+
+- Bind native events on page instance other than page component
+
 ## [0.4.24] - 2021-09-26
 
 ### Changed
