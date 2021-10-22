@@ -24,7 +24,7 @@ module.exports = (
   { api, target, babelRuleName = 'babel-loader', appConfig, completeRoutes, subAppConfigList, nativeLifeCycleMap, needCopyList, mainPackageRoot = '', isPluginProject = false }
 ) => {
   const { context } = api;
-  const { rootDir, userConfig: rootUserConfig, webpack } = context;
+  const { rootDir, userConfig: rootUserConfig, webpack, command } = context;
   const isWebpack4 = /^4\./.test(webpack.version);
   const userConfig = rootUserConfig[target] || {};
 
@@ -36,6 +36,10 @@ module.exports = (
     });
   } else {
     config.devServer.inline(false);
+  }
+
+  if (command === 'start' && config.get('devtool')) {
+    config.devtool('inline-source-map');
   }
 
   // Using components

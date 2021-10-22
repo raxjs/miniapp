@@ -38,7 +38,7 @@ if (typeof getApp === 'function') {
 }
 `;
 
-      const footerContent = '}';
+      const footerContent = '\n}';
       const content = compilation.assets[fileName].source();
       // Delete original asset
       delete compilation.assets[fileName];
