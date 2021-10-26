@@ -49,15 +49,11 @@ function generateAppCSS(compilation, { target, pluginDir, subPackages }) {
 
   let content = `@import "./default${platformMap[target].extension.css}";`;
 
-  const isCssExtension = platformMap[target].extension.css === '.css';
   Object.keys(compilation.assets).forEach(asset => {
-    if (extname(asset) === '.css' && !isCssExtension) {
-      delete compilation.assets[asset];
-    }
-    if (extname(asset) === platformMap[target].extension.css && asset !== `default${platformMap[target].extension.css}`) {
+    if (asset !== `default${platformMap[target].extension.css}`) {
       if (!subPackages || asset.includes('vendors.css')) {
         // In sub packages mode, only vendors.css should be imported in app.css
-        content += `@import "./${asset}";`;
+        content += `@import "./${asset}${platformMap[target].extension.css}";`;
       }
     }
   });
