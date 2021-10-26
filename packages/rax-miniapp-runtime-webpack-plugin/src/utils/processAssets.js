@@ -39,7 +39,7 @@ if (typeof getApp === 'function') {
 `;
 
       const footerContent = '\n}';
-      const content = compilation.assets[fileName].source();
+      const content = compilation.assets[fileName];
       // Delete original asset
       delete compilation.assets[fileName];
       // Add wrapped asset
