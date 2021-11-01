@@ -5,7 +5,7 @@ function isUrl(src) {
   return /^(https?:)?\/\//.test(src);
 }
 
-module.exports = function processIconFile(appConfig, outputPath)  {
+module.exports = function processIconFile(appConfig, outputPath) {
   const iconFiles = [];
   if (appConfig.tabBar) {
     const items = appConfig.tabBar.items;
@@ -18,7 +18,7 @@ module.exports = function processIconFile(appConfig, outputPath)  {
         if (activeIcon) {
           iconFiles.push(activeIcon);
         }
-      })
+      });
     }
   }
   iconFiles.forEach(iconFile => {
@@ -34,4 +34,4 @@ module.exports = function processIconFile(appConfig, outputPath)  {
       }
     }
   });
-}
+};

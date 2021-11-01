@@ -2,7 +2,7 @@ const { relative } = require('path');
 const adaptConfig = require('./adaptConfig');
 const { normalizeOutputFilePath } = require('../pathHelper');
 
-function transformAppConfig (originalAppConfig, target, subPackages) {
+function transformAppConfig(originalAppConfig, target, { subPackages = false, projectType = 'spa' }) {
   const appConfig = {};
   for (let configKey in originalAppConfig) {
     const config = originalAppConfig[configKey];
@@ -24,9 +24,15 @@ function transformAppConfig (originalAppConfig, target, subPackages) {
               activeIcon
             };
             if (!itemConfig.pagePath) {
-              const targetRoute = originalAppConfig.routes.find(({ path }) =>
-                path === itemPath || path === pageName
-              );
+              const targetRoute = originalAppConfig.routes.find(({ path, name }) => {
+                if (projectType === 'spa') { // For miniapp
+                  return path === itemPath || path === pageName;
+                } else if (projectType === 'mpa') { // For FRM
+                  return name === pageName;
+                } else {
+                  return false;
+                }
+              });
               if (targetRoute) {
                 newItemConfig.pagePath = targetRoute.source;
               }
@@ -53,11 +59,11 @@ function transformAppConfig (originalAppConfig, target, subPackages) {
   return appConfig;
 }
 
-function transformPageConfig (route = {}, target) {
+function transformPageConfig(route = {}, target) {
   return adaptConfig(route.window, 'window', target);
 }
 
 module.exports = {
   transformAppConfig,
   transformPageConfig
-}
+};

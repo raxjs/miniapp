@@ -25,13 +25,13 @@ module.exports = class MiniAppConfigPlugin {
     });
 
     function transformConfig(compilation, callback) {
-      const config = transformAppConfig(outputPath, appConfig, target);
+      const config = transformAppConfig(appConfig, target);
       processIconFile(config, outputPath);
       if (subPackages) {
         // Transform subpackages
         config.subPackages = subAppConfigList
           .filter(subAppConfig => !subAppConfig.miniappMain)
-          .map(subAppConfig => transformAppConfig(outputPath, subAppConfig, target, subPackages));
+          .map(subAppConfig => transformAppConfig(subAppConfig, target, { subPackages }));
 
         if (subPackages.shareMemory) {
           config.subPackageBuildType = 'shared';
