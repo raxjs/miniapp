@@ -53,6 +53,7 @@ export default class Component {
     this.hooks = [];
     this._hookID = 0;
     this._keyCache = new Set();
+    this.__nativeEventMap = {};
 
     this._pendingStates = [];
     this._pendingCallbacks = [];
@@ -308,7 +309,7 @@ export default class Component {
       if (isFunction(hook.destory)) hook.destory();
     });
     // Clean up page cycle callbacks
-    this.__proto__.__nativeEventMap = {};
+    this.__nativeEventMap = {};
     this._internal.instance = null;
     this._internal = null;
     this.__mounted = false;
