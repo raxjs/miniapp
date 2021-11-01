@@ -14,4 +14,4 @@ module.exports = async function checkAliInternal() {
   } catch (error) {
     return false;
   }
-}
+};
