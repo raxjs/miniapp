@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isMiniApp } from 'universal-env';
+
 const canvas = {
   name: 'canvas',
   singleEvents: [{
@@ -25,5 +28,12 @@ const canvas = {
     eventName: 'error'
   }]
 };
+
+if (isMiniApp) {
+  canvas.singleEvents = canvas.singleEvents.concat([{
+    name: 'onCanvasReady',
+    eventName: 'ready'
+  }]);
+}
 
 export default canvas;
