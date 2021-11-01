@@ -128,7 +128,8 @@ class MiniAppRuntimePlugin {
         generateAppCSS(compilation, {
           subPackages,
           target,
-          pluginDir
+          pluginDir,
+          assets,
         });
       }
 

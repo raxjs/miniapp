@@ -11,7 +11,7 @@ const { getDepPath, isNativePage } = require('./pathHelper');
 module.exports = (routes, { rootDir, target }) => {
   const nativeRoutes = [];
   const normalRoutes = [];
-  routes.filter((route) => {
+  routes.forEach((route) => {
     const pageEntry = getDepPath(rootDir, route.source);
     if (isNativePage(pageEntry, target)) {
       nativeRoutes.push(route);

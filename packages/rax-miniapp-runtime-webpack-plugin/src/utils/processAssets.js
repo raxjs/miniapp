@@ -1,5 +1,4 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const ModuleFilenameHelpers = require('webpack/lib/ModuleFilenameHelpers');
 const webpackSources = require('webpack-sources');
 const { platformMap } = require('miniapp-builder-shared');
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -8,12 +7,6 @@ const { emitAsset } = require('@builder/compat-webpack4');
 const adjustCSS = require('./adjustCSS');
 const addFileToCompilation = require('./addFileToCompilation');
 const { NEED_REPLACE_ROOT_TARGET } = require('../constants');
-
-const matchFile = (fileName, ext) =>
-  ModuleFilenameHelpers.matchObject(
-    { test: new RegExp(`\\.${ext}$`) },
-    fileName
-  );
 
 const FunctionPolyfill = 'Function||(Function=function(){return function(){return Symbol}}),void 0===Function.prototype.call&&(Function.prototype.call=function(n){(n=n||window).fn=this;const t=[...arguments].slice(1),o=n.fn(...t);return delete n.fn,o}),void 0===Function.prototype.apply&&(Function.prototype.apply=function(n){let t;return(n=n||window).fn=this,t=arguments[1]?n.fn(...arguments[1]):n.fn(),delete n.fn,t})';
 
@@ -48,13 +41,13 @@ if (typeof getApp === 'function') {
         content,
         footerContent
       ));
-    } else if (matchFile(fileName, 'css') && platformMap[target].extension.css !== '.css') {
+    } else if (/\.css/.test(fileName)) {
       const content = compilation.assets[fileName].source();
       // Delete original asset
       delete compilation.assets[fileName];
       // Add new css file
       addFileToCompilation(compilation, {
-        filename: `${fileName}${platformMap[target].extension.css}`,
+        filename: fileName.replace(/\.css/, platformMap[target].extension.css),
         content: adjustCSS(content, NEED_REPLACE_ROOT_TARGET.has(target)),
         command,
         target,

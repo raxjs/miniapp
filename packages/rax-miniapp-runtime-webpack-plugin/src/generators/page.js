@@ -15,11 +15,12 @@ function generatePageCSS(
   subAppRoot = '',
   { target, assets }
 ) {
+  const cssExt = platformMap[target].extension.css;
   let pageCssContent = '/* required by usingComponents */\n';
-  const pageCssPath = `${pageRoute}${platformMap[target].extension.css}`;
-  const subAppCssPath = `${getBundlePath(subAppRoot)}.css`;
-  if (assets[subAppCssPath]) {
-    pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
+  const pageCssPath = `${pageRoute}${cssExt}`;
+  const bundlePath = getBundlePath(subAppRoot);
+  if (assets[`${bundlePath}.css`]) {
+    pageCssContent += `@import "${getAssetPath(`${bundlePath}${cssExt}`, pageCssPath)}";`;
   }
 
   addFileToCompilation(compilation, {
