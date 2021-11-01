@@ -13,14 +13,14 @@ function generatePageCSS(
   compilation,
   pageRoute,
   subAppRoot = '',
-  { target }
+  { target, assets }
 ) {
+  const cssExt = platformMap[target].extension.css;
   let pageCssContent = '/* required by usingComponents */\n';
-  const pageCssPath = `${pageRoute}${platformMap[target].extension.css}`;
-  const isCssExtension = platformMap[target].extension.css === '.css';
-  const subAppCssPath = `${getBundlePath(subAppRoot)}.css${isCssExtension ? '' : platformMap[target].extension.css}`;
-  if (compilation.assets[subAppCssPath]) {
-    pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
+  const pageCssPath = `${pageRoute}${cssExt}`;
+  const bundlePath = getBundlePath(subAppRoot);
+  if (assets[`${bundlePath}.css`]) {
+    pageCssContent += `@import "${getAssetPath(`${bundlePath}${cssExt}`, pageCssPath)}";`;
   }
 
   addFileToCompilation(compilation, {

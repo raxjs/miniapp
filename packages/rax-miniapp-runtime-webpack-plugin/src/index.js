@@ -61,13 +61,11 @@ class MiniAppRuntimePlugin {
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
     const packageJsonFilePath = [];
+    const needWrappedJSChunks = subPackages ? ['vendors.js'] : ['bundle.js', 'vendors.js'];
     webpackProcessAssets({
       pluginName: PluginName,
       compiler,
     }, ({ compilation, assets, callback }) => {
-      // handle js and css file
-      processAssets(compilation, assets, { target });
-
       // generate miniapp files
       const outputPath = compilation.outputOptions.path;
       const sourcePath = join(rootDir, 'src');
@@ -130,7 +128,8 @@ class MiniAppRuntimePlugin {
         generateAppCSS(compilation, {
           subPackages,
           target,
-          pluginDir
+          pluginDir,
+          assets,
         });
       }
 
@@ -229,6 +228,8 @@ class MiniAppRuntimePlugin {
         let isSubPackageContainsPlugin = false;
 
         if (subPackages) {
+          // Add target page bundle.js to needWrappedJSChunks
+          needWrappedJSChunks.push(join(subAppRoot, 'bundle.js'));
           // Check if miniapp-native dir exist in sub package root
           const subPackageNativeComponentPath = join(sourcePath, subAppRoot, 'miniapp-native');
           isSubPackageContainsNativeComponent = existsSync(subPackageNativeComponentPath);
@@ -283,6 +284,7 @@ class MiniAppRuntimePlugin {
           // Page css
           generatePageCSS(compilation, entryName, subAppRoot, {
             target,
+            assets,
           });
 
           const isSubPackagePage = subPackages && mainPackageRoot !== subAppRoot;
@@ -321,6 +323,9 @@ class MiniAppRuntimePlugin {
           { target }
         );
       });
+
+      // handle js and css file
+      processAssets(compilation, assets, { target, needWrappedJSChunks });
 
       isFirstRender = false;
       callback();
