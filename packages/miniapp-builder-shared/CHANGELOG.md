@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.11] - 2021-11-01
+
+### Changed
+
+- Use self-built method to check ali internal network
+
 ## [0.2.10] - 2021-08-05
 
 ### Changed

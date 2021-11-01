@@ -1,6 +1,6 @@
 const execa = require('execa');
 const { join } = require('path');
-const { checkAliInternal } = require('ice-npm-utils');
+const checkAliInternal = require('./utils/checkAliInternal');
 
 let isAliInternal;
 let npmRegistry;
