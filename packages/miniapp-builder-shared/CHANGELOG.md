@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.12] - 2021-11-02
+
+### Fixed
+
+- Use CommonJS to export checkAliInternal method
+
 ## [0.2.11] - 2021-11-01
 
 ### Changed
