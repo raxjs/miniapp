@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.8] - 2021-11-02
+
+### Added
+
+- Add `Object` in `window`
+
 ## [2.8.7] - 2021-11-01
 
 ### Fixed

@@ -145,6 +145,10 @@ class Window extends EventTarget {
     return Set;
   }
 
+  get Object() {
+    return Object;
+  }
+
   getComputedStyle() {
     // Only for compatible use
     console.warn('window.getComputedStyle is not supported.');
