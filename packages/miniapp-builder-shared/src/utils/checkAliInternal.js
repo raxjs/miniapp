@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-export default async function checkAliInternal() {
+module.exports = async function checkAliInternal() {
   try {
     const checkResult = await axios.get(
       'https://alilang-intranet.alibaba-inc.com/is_white_list.json',
@@ -14,4 +14,4 @@ export default async function checkAliInternal() {
   } catch (error) {
     return false;
   }
-}
+};
