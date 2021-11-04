@@ -1,6 +1,6 @@
-const { join, dirname, parse } = require('path');
-const { ensureDirSync } = require('fs-extra');
-const { getAppConfig, constants: { MINIAPP, WECHAT_MINIPROGRAM, BAIDU_SMARTPROGRAM, QUICKAPP, BYTEDANCE_MICROAPP, KUAISHOU_MINIPROGRAM } } = require('miniapp-builder-shared');
+import { dirname, parse } from 'path';
+import { getAppConfig } from 'miniapp-builder-shared';
+import { DEV_URL_PREFIX } from './utils/constants';
 
 const {
   generatePageJS,
@@ -12,6 +12,9 @@ const { STATIC_CONFIG } = require('./utils/constants');
 const PluginName = 'WebViewPlugin';
 
 class WebViewPlugin {
+  options: any;
+  target: string;
+
   constructor(options) {
     this.options = options;
     this.target = options.target;
@@ -28,7 +31,6 @@ class WebViewPlugin {
         },
         getValue
       },
-      getWebviewUrl
     } = this.options;
 
     const appConfig = getAppConfig(rootDir);
@@ -36,7 +38,8 @@ class WebViewPlugin {
     const routes = appConfig.routes.map(route => {
       const { source } = route;
       const staticRoute = staticRoutes.find(s => s.source === source);
-      if (staticRoute && staticRoute.name) {
+      // todo, 等待修复
+      if (staticRoute && staticRoute.name && staticRoute.name !== source) {
         return {
           ...route,
           webEntryName: staticRoute.name
@@ -50,7 +53,6 @@ class WebViewPlugin {
         };
       }
     }).filter(r => !!r);
-    const { outputDir = 'build' } = rootUserConfig;
     // todo subPackages
     let isFirstRender = true;
     compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
@@ -77,7 +79,23 @@ class WebViewPlugin {
       }
       callback();
     });
+
+    function getWebviewUrl(name) {
+      if (command === 'build') {
+        let urlPrefix = process.env.webview_prefix_path;
+        if (!urlPrefix) {
+          urlPrefix = rootUserConfig.webview.defaultPrefixPath;
+        }
+        if (!urlPrefix) {
+          throw new Error('路径前缀不存在');
+        }
+        return `${urlPrefix}/${name}.html`;
+      } else if (command === 'start') {
+        const urlPrefix = getValue(DEV_URL_PREFIX);
+        return `${urlPrefix}/${name}.html`;
+      }
+    }    
   }
 }
 
-module.exports = WebViewPlugin;
+export default WebViewPlugin;

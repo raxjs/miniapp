@@ -1,27 +1,27 @@
-const terser = require('terser');
-const csso = require('csso');
-const prettyData = require('pretty-data').pd;
-const { platformMap } = require('miniapp-builder-shared');
+import * as terser from 'terser';
+import * as csso from 'csso';
+import { pd as prettyData } from 'pretty-data';
+import { platformMap } from 'miniapp-builder-shared';
 
-function minifyJS(source) {
+export function minifyJS(source) {
   return terser.minify(source).code;
 }
 
-function minifyCSS(source) {
+export function minifyCSS(source) {
   return csso.minify(source, {
     restructure: false
   }).css;
 }
 
-function minifyXML(source) {
+export function minifyXML(source) {
   return prettyData.xmlmin(source);
 }
 
-function minifyJSON(source) {
+export function minifyJSON(source) {
   return prettyData.json(source);
 }
 
-function minify(source, type = '.js', target) {
+export function minify(source, type = '.js', target) {
   if (type === '.js') {
     return minifyJS(source);
   }
@@ -37,11 +37,3 @@ function minify(source, type = '.js', target) {
 
   return source;
 }
-
-module.exports = {
-  minify,
-  minifyJS,
-  minifyCSS,
-  minifyXML,
-  minifyJSON
-};

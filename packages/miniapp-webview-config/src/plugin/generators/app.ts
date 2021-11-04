@@ -1,6 +1,6 @@
-const addFileToCompilation = require('../utils/addFileToCompilation');
+import addFileToCompilation from '../utils/addFileToCompilation';
 
-function generateAppJS(
+export function generateAppJS(
   compilation,
   {
     target,
@@ -15,7 +15,3 @@ function generateAppJS(
     command
   });
 }
-
-module.exports = {
-  generateAppJS
-};
