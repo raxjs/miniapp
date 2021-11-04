@@ -1,7 +1,7 @@
 export default {
   name: 'checkbox-group',
   singleEvents: [{
-    name: 'onCheckboxChange',
+    name: 'onCheckboxGroupChange',
     eventName: 'change'
   }]
 };
