@@ -120,6 +120,7 @@ function getPlatformExtensions(platform, extensions = []) {
  * @param {string} target
  */
 function isNativePage(filePath, target) {
+  if (!targetPlatformMap[target]) return false;
   if (existsSync(filePath + targetPlatformMap[target].extension.xml)) {
     try {
       const jsonContent = readJSONSync(`${filePath}.json`);
