@@ -1,9 +1,8 @@
 import { resolve, join } from 'path';
-const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
+import * as MiniAppConfigPlugin from 'rax-miniapp-config-webpack-plugin';
 import { getAppConfig } from 'miniapp-builder-shared';
 
 import MiniappWebviewPlugin from './plugin';
-
 
 import setEntry from './setEntry';
 
@@ -23,27 +22,20 @@ export function setWebviewConfig(config, options) {
   const appConfig = getAppConfig(rootDir, target, {});
   const outputPath = options.outputPath || resolve(rootDir, 'build', target);
 
+  setEntry(config, {
+    rootDir,
+    appConfig
+  });
+
   config.plugin('MiniappWebviewPlugin')
     .use(MiniappWebviewPlugin, [{
       api,
       target
     }]);
 
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
-  if (!config.get('devtool')) {
-    config.devtool(false);
-  } else if (command === 'start') {
-    config.devtool('inline-source-map');
-  }
-
-  setEntry(config, {
-    rootDir,
-    appConfig
-  });
-
   config.plugin('MiniAppConfigPlugin').use(MiniAppConfigPlugin, [
     {
-      type: 'runtime',
+      type: 'webview',
       subPackages: userConfig.subPackages,
       appConfig,
       subAppConfigList: [],
@@ -52,6 +44,18 @@ export function setWebviewConfig(config, options) {
       nativeConfig: userConfig.nativeConfig,
     },
   ]);
+
+  config
+    .output
+    .library(['page', '[name]'])
+    .libraryTarget('umd');
+
+  config.devServer.writeToDisk(true).noInfo(true).inline(false);
+    if (!config.get('devtool')) {
+      config.devtool(false);
+    } else if (command === 'start') {
+      config.devtool('inline-source-map');
+    }
   
   applyMethod('addPluginTemplate', join(__dirname, './runtime/page.js'));
   const importDeclarations = getValue('importDeclarations');
@@ -59,9 +63,4 @@ export function setWebviewConfig(config, options) {
     value: '$$framework/plugins/rax-miniapp/page'
   };
   api.setValue('importDeclarations', importDeclarations);
-
-  config
-    .output
-    .library(['page', '[name]'])
-    .libraryTarget('umd');
 };

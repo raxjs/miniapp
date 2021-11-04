@@ -2,12 +2,12 @@ import { dirname, parse } from 'path';
 import { getAppConfig } from 'miniapp-builder-shared';
 import { DEV_URL_PREFIX } from './utils/constants';
 
-const {
+import {
   generatePageJS,
   generatePageXML
-} = require('./generators/page');
-const { generateAppJS } = require('./generators/app');
-const { STATIC_CONFIG } = require('./utils/constants');
+} from './generators/page';
+import { generateAppJS } from './generators/app';
+import { STATIC_CONFIG } from './utils/constants';
 
 const PluginName = 'WebViewPlugin';
 
@@ -66,7 +66,6 @@ class WebViewPlugin {
           generatePageXML(compilation, entryName, {
             target,
             command,
-            url
           });
 
           generatePageJS(compilation, entryName, {
@@ -87,7 +86,7 @@ class WebViewPlugin {
           urlPrefix = rootUserConfig.webview.defaultPrefixPath;
         }
         if (!urlPrefix) {
-          throw new Error('路径前缀不存在');
+          throw new Error('Neither environment variable "webview_prefix_path" nor defaultPrefixPath in build.json exists');
         }
         return `${urlPrefix}/${name}.html`;
       } else if (command === 'start') {

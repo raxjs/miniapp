@@ -1,7 +1,7 @@
 {
   "name": "miniapp-webview-config",
-  "version": "0.0.1-2",
-  "description": "A webpack plugin for miniapp webview build",
+  "version": "0.0.1-alpha.0",
+  "description": "miniapp webview project config",
   "main": "lib/index.js",
   "files": [
     "src"

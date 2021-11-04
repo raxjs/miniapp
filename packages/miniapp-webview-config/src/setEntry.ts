@@ -1,6 +1,8 @@
-const path = require('path');
-const fs = require('fs-extra');
-const { pathHelper: { getBundlePath } } = require('miniapp-builder-shared');
+import * as path from 'path';
+import * as fs from 'fs-extra';
+import  { pathHelper } from 'miniapp-builder-shared';
+
+const { getBundlePath } = pathHelper;
 
 function setEntry(config, { rootDir, appConfig }) {
   appConfig.routes.forEach(({entryName}) => {
@@ -15,9 +17,9 @@ function setEntry(config, { rootDir, appConfig }) {
 function moduleResolve(filePath) {
   const ext = ['.ts', '.js'].find((extension) => fs.existsSync(`${filePath}${extension}`));
   if (!ext) {
-    // create page.ts
     fs.writeFileSync(filePath + '.ts', `
-console.log('page');    
+import { createWebviewPage } from 'rax-app';
+export default createWebviewPage({});
 `);
     return require.resolve(`${filePath}.ts`);
   }

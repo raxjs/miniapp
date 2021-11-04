@@ -14,11 +14,12 @@ export function createWebviewPage({
   },
   webview: {
     onMessage?: (e: { detail: any }) => void;
+    onLoad?: (e: { detail: any }) => void;
+    onError?: (e: { detail: any }) => void;
   }
 }) {
   const { onLoad, ...rest } = page;
-  // const webviewMethods = {};
-  // todo
+  const { onMessage: onWebviewMessage, onLoad: onWebviewLoad, onError: onWebviewError} = webview;
   return function (url) {
     return {
       data: {
@@ -29,9 +30,12 @@ export function createWebviewPage({
         this.setData({
           params: parseParams(query)
         });
-        onLoad && onLoad(query);
+        onLoad && onLoad.call(this, query);
       },
       ...rest,
+      onWebviewMessage,
+      onWebviewLoad,
+      onWebviewError,
     }
   }
 }
