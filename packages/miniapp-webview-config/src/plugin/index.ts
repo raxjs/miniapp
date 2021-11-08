@@ -61,8 +61,8 @@ class WebViewPlugin {
           target,
           command
         });
-        routes.forEach(({ entryName, webEntryName }) => {
-          const url = getWebviewUrl(webEntryName);
+        routes.forEach(({ entryName, webEntryName, url: originalUrl }) => {
+          const url = originalUrl ? originalUrl : getWebviewUrl(webEntryName);
           generatePageXML(compilation, entryName, {
             target,
             command,
