@@ -4,3 +4,7 @@ export interface AppItemType {
   source: string;
   name?: string
 }
+
+export interface AppConfigType {
+  routes: AppItemType[]
+}

@@ -1,5 +1,4 @@
 import { dirname, parse } from 'path';
-import { getAppConfig } from 'miniapp-builder-shared';
 import { DEV_URL_PREFIX } from './utils/constants';
 
 import {
@@ -7,13 +6,13 @@ import {
   generatePageXML
 } from './generators/page';
 import { generateAppJS } from './generators/app';
-import { AppItemType } from 'src/types';
+import { AppConfigType } from 'src/types';
 
 const PluginName = 'WebViewPlugin';
 class WebViewPlugin {
   options: any;
   target: string;
-  appConfig: AppItemType[];
+  appConfig: AppConfigType;
 
   constructor(options) {
     this.options = options;
@@ -34,16 +33,13 @@ class WebViewPlugin {
       },
     } = this.options;
 
-    const appConfig = getAppConfig(rootDir);
-    const staticRoutes = this.appConfig;
-    const routes = appConfig.routes.map(route => {
-      const { source } = route;
-      const staticRoute = staticRoutes.find(s => s.source === source);
+    const routes = this.appConfig.routes.map(route => {
+      const { source, name, } = route;
 
-      if (staticRoute && staticRoute.name) {
+      if (name) {
         return {
           ...route,
-          webEntryName: staticRoute.name
+          webEntryName: name
         };
       }
       if (source) {
