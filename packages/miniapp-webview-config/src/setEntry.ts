@@ -17,7 +17,7 @@ function setEntry(config, { rootDir, appConfig }) {
 function moduleResolve(filePath) {
   const ext = ['.ts', '.js'].find((extension) => fs.existsSync(`${filePath}${extension}`));
   if (!ext) {
-    fs.writeFileSync(filePath + '.ts', `
+    fs.outputFileSync(filePath + '.ts', `
 import { createWebviewPage } from 'rax-app';
 export default createWebviewPage({});
 `);
