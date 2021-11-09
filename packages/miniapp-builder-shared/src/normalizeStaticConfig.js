@@ -18,7 +18,7 @@ module.exports = (staticConfig, { rootDir, subAppRoot = '' }) => {
     }
     route.entryName = route.source;
     pages.push(normalizeOutputFilePath(
-      relativeModuleResolve(entryPath, getRelativePath(route.source))
+      relativeModuleResolve(entryPath, getRelativePath(route.source), !route.url)
     ));
   });
 
