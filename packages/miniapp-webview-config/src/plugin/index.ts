@@ -7,17 +7,18 @@ import {
   generatePageXML
 } from './generators/page';
 import { generateAppJS } from './generators/app';
-import { STATIC_CONFIG } from './utils/constants';
+import { AppItemType } from 'src/types';
 
 const PluginName = 'WebViewPlugin';
-
 class WebViewPlugin {
   options: any;
   target: string;
+  appConfig: AppItemType[];
 
   constructor(options) {
     this.options = options;
     this.target = options.target;
+    this.appConfig = options.appConfig;
   }
 
   apply(compiler) {
@@ -34,12 +35,12 @@ class WebViewPlugin {
     } = this.options;
 
     const appConfig = getAppConfig(rootDir);
-    const staticRoutes = (getValue(STATIC_CONFIG) || {}).routes;
+    const staticRoutes = this.appConfig;
     const routes = appConfig.routes.map(route => {
       const { source } = route;
       const staticRoute = staticRoutes.find(s => s.source === source);
-      // todo, 等待修复
-      if (staticRoute && staticRoute.name && staticRoute.name !== source) {
+
+      if (staticRoute && staticRoute.name) {
         return {
           ...route,
           webEntryName: staticRoute.name

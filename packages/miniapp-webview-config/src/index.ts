@@ -1,6 +1,6 @@
 import { resolve, join } from 'path';
 import * as MiniAppConfigPlugin from 'rax-miniapp-config-webpack-plugin';
-import { getAppConfig } from 'miniapp-builder-shared';
+import { normalizeStaticConfig } from 'miniapp-builder-shared';
 
 import MiniappWebviewPlugin from './plugin';
 
@@ -19,7 +19,7 @@ export function setWebviewConfig(config, options) {
   } = api;
 
   const userConfig = rootUserConfig[target] || {};
-  const appConfig = getAppConfig(rootDir, target, {});
+  const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir });
   const outputPath = options.outputPath || resolve(rootDir, 'build', target);
 
   setEntry(config, {
@@ -30,7 +30,8 @@ export function setWebviewConfig(config, options) {
   config.plugin('MiniappWebviewPlugin')
     .use(MiniappWebviewPlugin, [{
       api,
-      target
+      target,
+      appConfig
     }]);
 
   config.plugin('MiniAppConfigPlugin').use(MiniAppConfigPlugin, [
