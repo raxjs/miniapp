@@ -1,6 +1,6 @@
 {
   "name": "miniapp-webview-config",
-  "version": "0.0.1-alpha.5",
+  "version": "0.0.1-alpha.7",
   "description": "miniapp webview project config",
   "main": "lib/index.js",
   "files": [
@@ -19,7 +19,7 @@
     "fs-extra": "^10.0.0",
     "miniapp-builder-shared": "alpha",
     "pretty-data": "^0.40.0",
-    "rax-miniapp-config-webpack-plugin": "^2.1.2",
+    "rax-miniapp-config-webpack-plugin": "alpha",
     "terser": "^4.6.10"
   },
   "scripts": {
