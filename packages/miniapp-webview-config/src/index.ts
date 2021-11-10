@@ -61,7 +61,7 @@ export function setWebviewConfig(config, options) {
   applyMethod('addPluginTemplate', join(__dirname, './runtime/page.js'));
   const importDeclarations = getValue('importDeclarations');
   importDeclarations.createWebviewPage = {
-    value: '$$framework/plugins/rax-miniapp/page'
+    value: '$$framework/plugins/miniapp/page'
   };
   api.setValue('importDeclarations', importDeclarations);
 };
