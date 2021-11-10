@@ -25,13 +25,14 @@ module.exports = class MiniAppConfigPlugin {
     });
 
     function transformConfig(compilation, callback) {
-      const config = transformAppConfig(appConfig, target);
+      const isWebview = type === 'webview';
+      const config = transformAppConfig(appConfig, target, { isWebview });
       processIconFile(config, outputPath);
       if (subPackages) {
         // Transform subpackages
         config.subPackages = subAppConfigList
           .filter(subAppConfig => !subAppConfig.miniappMain)
-          .map(subAppConfig => transformAppConfig(subAppConfig, target, { subPackages }));
+          .map(subAppConfig => transformAppConfig(subAppConfig, target, { isWebview, subPackages }));
 
         if (subPackages.shareMemory) {
           config.subPackageBuildType = 'shared';
