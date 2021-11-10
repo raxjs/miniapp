@@ -1,5 +1,5 @@
 const t = require('@babel/types');
-const { _transformRaxSlider } = require('../rax-slider-and-swiper');
+const { _transformRaxSliderAndSwiper } = require('../rax-slider-and-swiper');
 const genExpression = require('../../codegen/genExpression');
 const { parseExpression } = require('../../parser');
 const adapter = require('../../adapter').wechat;
@@ -15,7 +15,7 @@ describe('Transform rax-slider', () => {
           </rax-slider>
         </View>
       `);
-    _transformRaxSlider(ast);
+    _transformRaxSliderAndSwiper(ast);
     expect(genExpression(ast)).toEqual(`<View>
           <rax-slider __length="{{3}}">
             <swiper-item slot="slider-item-{{0}}">1</swiper-item>
@@ -35,7 +35,7 @@ describe('Transform rax-slider', () => {
           </rax-slider>
         </View>
       `);
-    _transformRaxSlider(ast, adapter);
+    _transformRaxSliderAndSwiper(ast, adapter);
     expect(genExpression(ast)).toEqual(`<View>
           <rax-slider __length="{{1+data.length+data1.length}}">
             <swiper-item slot="slider-item-{{0}}">1</swiper-item>
@@ -57,7 +57,7 @@ describe('Transform rax-swiper', () => {
           </rax-swiper>
         </View>
       `);
-    _transformRaxSlider(ast);
+    _transformRaxSliderAndSwiper(ast);
     expect(genExpression(ast)).toEqual(`<View>
           <rax-swiper __length="{{3}}">
             <swiper-item slot="slider-item-{{0}}">1</swiper-item>
@@ -77,7 +77,7 @@ describe('Transform rax-swiper', () => {
           </rax-swiper>
         </View>
       `);
-    _transformRaxSlider(ast, adapter);
+    _transformRaxSliderAndSwiper(ast, adapter);
     expect(genExpression(ast)).toEqual(`<View>
           <rax-swiper __length="{{1+data.length+data1.length}}">
             <swiper-item slot="slider-item-{{0}}">1</swiper-item>

@@ -10,7 +10,7 @@ module.exports = [
   // Handle js code.
   require('./code'),
   // Handle rax-slider and rax-swiper
-  require('./rax-slider_swiper'),
+  require('./rax-slider-and-swiper'),
   // Handle template attrs
   require('./element'),
   // Handle jsx attribute
