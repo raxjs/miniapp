@@ -58,7 +58,7 @@ function loadAsDirectory(module) {
 function relativeModuleResolve(script, dependency, checkSourceExistence = true) {
   if (startsWithArr(dependency, ['./', '../', '/', '.\\', '..\\', '\\'])) {
     const dependencyPath = join(script, dependency);
-    const processedPath = loadAsDirectory(join(script, dependency));
+    const processedPath = loadAsFile(dependencyPath) || loadAsDirectory(dependencyPath);
     if (checkSourceExistence && !processedPath) {
       throw new Error(`The page source ${dependencyPath} doesn't exist`);
     }

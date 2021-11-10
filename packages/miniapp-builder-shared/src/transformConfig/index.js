@@ -15,9 +15,10 @@ function transformAppConfig(originalAppConfig, target, { subPackages = false, pr
         appConfig[configKey] = adaptConfig(config, 'window', target);
         break;
       case 'tabBar':
+        const newConfig = Object.assign({}, config);
         // Handle tab item
         if (config.items) {
-          config.items = config.items.map(itemConfig => {
+          newConfig.items = config.items.map(itemConfig => {
             const { icon, activeIcon, path: itemPath, pageName, ...others } = itemConfig;
             const newItemConfig = {
               icon,
@@ -40,7 +41,7 @@ function transformAppConfig(originalAppConfig, target, { subPackages = false, pr
             return adaptConfig(Object.assign(newItemConfig, others), 'items', target);
           });
         }
-        appConfig[configKey] = adaptConfig(config, 'tabBar', target);
+        appConfig[configKey] = adaptConfig(newConfig, 'tabBar', target);
         break;
       case 'subAppRoot':
         appConfig.root = config;
