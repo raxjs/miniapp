@@ -2,7 +2,8 @@ const { relative } = require('path');
 const adaptConfig = require('./adaptConfig');
 const { normalizeOutputFilePath } = require('../pathHelper');
 
-function transformAppConfig(originalAppConfig, target, { subPackages = false, projectType = 'spa' }) {
+function transformAppConfig(originalAppConfig, target, options = {}) {
+  const { subPackages = false, isWebview = false } = options;
   const appConfig = {};
   for (let configKey in originalAppConfig) {
     const config = originalAppConfig[configKey];
@@ -26,12 +27,10 @@ function transformAppConfig(originalAppConfig, target, { subPackages = false, pr
             };
             if (!itemConfig.pagePath) {
               const targetRoute = originalAppConfig.routes.find(({ path, name }) => {
-                if (projectType === 'spa') { // For miniapp
-                  return path === itemPath || path === pageName;
-                } else if (projectType === 'mpa') { // For FRM
-                  return name === pageName;
+                if (isWebview) {
+                  return name === pageName; // For webview (MPA)
                 } else {
-                  return false;
+                  return path === itemPath || path === pageName; // For miniapp
                 }
               });
               if (targetRoute) {
