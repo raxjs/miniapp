@@ -16,13 +16,7 @@ export function setWebviewConfig(config, options) {
       rootDir
     },
     applyMethod,
-    registerUserConfig,
   } = api;
-
-  registerUserConfig({
-    name: 'webview',
-    validation: 'object'
-  });
 
   const userConfig = rootUserConfig[target] || {};
   const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir });

@@ -90,9 +90,11 @@ class WebViewPlugin {
         if (!urlPrefix) {
           console.warn('Neither environment variable "webview_prefix_path" nor defaultPrefixPath in build.json exists');
         }
-      } else if (command === 'start') {
-        urlPrefix = getValue(DEV_URL_PREFIX);
+        return (name: string) => {
+          return `${urlPrefix}/${name}`;
+        }
       }
+      urlPrefix = getValue(DEV_URL_PREFIX);
       return (name: string) => {
         return `${urlPrefix}/${name}.html`;
       }
