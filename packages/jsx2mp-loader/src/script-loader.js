@@ -91,6 +91,7 @@ module.exports = function scriptLoader(content) {
       platform,
       isTypescriptFile: isTypescriptFile(this.resourcePath),
       rootDir,
+      resourcePath: this.resourcePath
     };
 
     output(outputContent, null, outputOption);

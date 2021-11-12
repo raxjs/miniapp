@@ -4,6 +4,7 @@ const { transformSync } = require('@babel/core');
 const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { minify, minifyJS, minifyCSS, minifyXML } = require('./utils/minifyCode');
 const addSourceMap = require('./utils/addSourceMap');
+const saveCache = require('./utils/useCache');
 
 function transformCode(rawContent, mode, externalPlugins = [], externalPreset = []) {
   const presets = [].concat(externalPreset);
@@ -54,9 +55,10 @@ function transformCode(rawContent, mode, externalPlugins = [], externalPreset = 
  * @param {object} options
  */
 function output(content, raw, options) {
-  const { mode, outputPath, externalPlugins = [], isTypescriptFile, platform, type, rootDir } = options;
+  const { mode, outputPath, externalPlugins = [], isTypescriptFile, platform, type, rootDir, resourcePath } = options;
   let { code, config, json, css, map, template, assets, importComponents = [], iconfontMap } = content;
   const isQuickApp = platform.type === QUICKAPP;
+  const collection = {};
 
   if (isTypescriptFile) {
     externalPlugins.unshift(require('@babel/plugin-transform-typescript'));
@@ -119,10 +121,12 @@ function output(content, raw, options) {
       }
     }
     writeFileWithDirCheck(outputPath.code, code, { rootDir });
+    collection.code = code;
   }
 
   if (json) {
     writeFileWithDirCheck(outputPath.json, json, { rootDir, type: 'json' });
+    collection.json = json;
   }
   if (template) {
     if (isQuickApp) {
@@ -147,6 +151,7 @@ function output(content, raw, options) {
       }
     }
     writeFileWithDirCheck(outputPath.template, template, { rootDir });
+    collection.template = template;
   }
   if (css) {
     if (isQuickApp) {
@@ -165,9 +170,11 @@ function output(content, raw, options) {
       css = css.replace(/rpx/g, 'px');
     }
     writeFileWithDirCheck(outputPath.css, css, { rootDir });
+    collection.css = css;
   }
   if (config) {
     writeFileWithDirCheck(outputPath.config, config, { rootDir });
+    collection.config = config;
   }
 
   // Write extra assets
@@ -183,8 +190,11 @@ function output(content, raw, options) {
       }
       const assetsOutputPath = join(outputPath.assets, asset);
       writeFileWithDirCheck(assetsOutputPath, content, { rootDir });
+      collection[`assets_${asset}`] = content;
     });
   }
+
+  saveCache(collection, { filePath: resourcePath, cacheDirectory: join(rootDir, 'node_modules/.miniCache') });
 }
 
 /**

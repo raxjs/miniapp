@@ -124,6 +124,7 @@ module.exports = async function componentLoader(content) {
     platform,
     isTypescriptFile: isTypescriptFile(this.resourcePath),
     rootDir,
+    resourcePath: this.resourcePath
   };
 
   output(outputContent, content, outputOption);
