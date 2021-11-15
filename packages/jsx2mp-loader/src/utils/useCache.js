@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const BJSON = require('buffer-json');
 const path = require('path');
 const mkdirp = require('mkdirp');
+const crypto = require('crypto');
 
 const saveCache = (content, { filePath, cacheDirectory }) => {
   const stats = fs.statSync(filePath);
@@ -33,21 +34,20 @@ const directories = new Set();
 function write(key, data, callback) {
   const dirname = path.dirname(key);
   const content = BJSON.stringify(data);
+  // console.log('key', key, dirname);
 
   if (directories.has(dirname)) {
     // for performance skip creating directory
     fs.writeFile(key, content, 'utf-8', callback);
   } else {
-    mkdirp(dirname, (mkdirErr) => {
-      if (mkdirErr) {
+    mkdirp(dirname)
+      .catch((mkdirErr) => {
         callback(mkdirErr);
-        return;
-      }
-
-      directories.add(dirname);
-
-      fs.writeFile(key, content, 'utf-8', callback);
-    });
+      })
+      .then(() => {
+        directories.add(dirname);
+        fs.writeFile(key, content, 'utf-8', callback);
+      });
   }
 }
 

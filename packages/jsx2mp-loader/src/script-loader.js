@@ -9,7 +9,8 @@ const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPref
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
-const { output, transformCode } = require('./output');
+const { getCache } = require('./utils/useCache');
+const { output, transformCode, writeFileWithDirCheck } = require('./output');
 
 const ScriptLoader = __filename;
 
@@ -21,6 +22,7 @@ const MINIAPP_CONFIG_FIELD = 'miniappConfig';
 // 2. .d.ts file in rax base components are useless
 const OMIT_FILE_EXTENSION_IN_OUTPUT = ['.json', '.ts'];
 
+console.log('scriptLoader');
 module.exports = function scriptLoader(content) {
   const query = parse(this.request);
   if (query.role) {
@@ -70,9 +72,10 @@ module.exports = function scriptLoader(content) {
     let outputOption = {};
 
     outputContent = { code: rawContent };
+    const outputPathCode = removeExt(distSourcePath) + '.js';
     outputOption = {
       outputPath: {
-        code: removeExt(distSourcePath) + '.js'
+        code: outputPathCode
       },
       mode,
       externalPlugins: [
@@ -94,7 +97,15 @@ module.exports = function scriptLoader(content) {
       resourcePath: this.resourcePath
     };
 
-    output(outputContent, null, outputOption);
+
+    const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, 'node_modules/.miniCache') });
+    // console.log('cacheContentCode', cacheContent);
+    if (cacheContent && cacheContent.code) {
+      // console.log('writeFileWithDirCheck');
+      writeFileWithDirCheck( outputPathCode, cacheContent.code, { rootDir } );
+    } else {
+      output(outputContent, null, outputOption);
+    }
   };
 
   const outputDir = (source, target, { isThirdMiniappComponent = false, resourcePath } = {}) => {
@@ -236,6 +247,7 @@ module.exports = function scriptLoader(content) {
         content
       ].join('\n');
     } else {
+      // console.log('isFromNodeModule', isFromNodeModule);
       outputFile(rawContent);
     }
   } else if (isFromConstantDir(this.resourcePath) && isThirdMiniappComponent) {

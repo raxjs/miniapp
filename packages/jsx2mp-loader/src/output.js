@@ -4,7 +4,7 @@ const { transformSync } = require('@babel/core');
 const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { minify, minifyJS, minifyCSS, minifyXML } = require('./utils/minifyCode');
 const addSourceMap = require('./utils/addSourceMap');
-const saveCache = require('./utils/useCache');
+const { saveCache } = require('./utils/useCache');
 
 function transformCode(rawContent, mode, externalPlugins = [], externalPreset = []) {
   const presets = [].concat(externalPreset);
@@ -56,7 +56,7 @@ function transformCode(rawContent, mode, externalPlugins = [], externalPreset = 
  */
 function output(content, raw, options) {
   const { mode, outputPath, externalPlugins = [], isTypescriptFile, platform, type, rootDir, resourcePath } = options;
-  let { code, config, json, css, map, template, assets, importComponents = [], iconfontMap } = content;
+  let { code, config, json, css, map, template, assets, imported, usingComponents, importComponents = [], iconfontMap } = content;
   const isQuickApp = platform.type === QUICKAPP;
   const collection = {};
 
@@ -179,6 +179,7 @@ function output(content, raw, options) {
 
   // Write extra assets
   if (assets) {
+    collection.assets = assets;
     Object.keys(assets).forEach((asset) => {
       const ext = extname(asset);
       let content = assets[asset];
@@ -190,8 +191,15 @@ function output(content, raw, options) {
       }
       const assetsOutputPath = join(outputPath.assets, asset);
       writeFileWithDirCheck(assetsOutputPath, content, { rootDir });
-      collection[`assets_${asset}`] = content;
     });
+  }
+
+  if (imported) {
+    collection.imported = imported;
+  }
+
+  if (usingComponents) {
+    collection.usingComponents = usingComponents;
   }
 
   saveCache(collection, { filePath: resourcePath, cacheDirectory: join(rootDir, 'node_modules/.miniCache') });
@@ -256,5 +264,6 @@ function writeFileWithDirCheck(filePath, content, { type = 'file', rootDir }) {
 
 module.exports = {
   output,
-  transformCode
+  transformCode,
+  writeFileWithDirCheck
 };
