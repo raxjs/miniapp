@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.31] - 2021-11-01
+
+### Changed
+
+- Use @babel/preset-env for js/ts files in dev mode
+
 ## [0.4.30] - 2021-08-31
 
 ### Fixed
