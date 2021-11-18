@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.32] - 2021-11-03
+
+### Fixed
+
+- Can't find app_css custom component when the file and app_css are in the same directory
+
 ## [0.4.31] - 2021-11-01
 
 ### Changed
