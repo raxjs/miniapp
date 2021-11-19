@@ -1,10 +1,12 @@
 import { resolve, join } from 'path';
 import * as MiniAppConfigPlugin from 'rax-miniapp-config-webpack-plugin';
-import { normalizeStaticConfig } from 'miniapp-builder-shared';
+import { normalizeStaticConfig, constants } from 'miniapp-builder-shared';
 
 import MiniappWebviewPlugin from './plugin';
 
 import setEntry from './setEntry';
+
+const { MINIAPP, WECHAT_MINIPROGRAM } = constants;
 
 export function setWebviewConfig(config, options) {
   const { api, target } = options;
@@ -57,7 +59,7 @@ export function setWebviewConfig(config, options) {
     } else if (command === 'start') {
       config.devtool('inline-source-map');
     }
-  
+  injectJSSDK(applyMethod, target);
   applyMethod('addPluginTemplate', join(__dirname, './runtime/page.js'));
   const importDeclarations = getValue('importDeclarations');
   importDeclarations.createWebviewPage = {
@@ -65,3 +67,20 @@ export function setWebviewConfig(config, options) {
   };
   api.setValue('importDeclarations', importDeclarations);
 };
+
+function injectJSSDK(applyMethod, target) {
+  const UAMap = {
+    [MINIAPP]: 'AliApp',
+    [WECHAT_MINIPROGRAM]: 'miniProgram'
+  };
+  const JSSDKMap = {
+    [MINIAPP]: 'https://appx/web-view.min.js',
+    [WECHAT_MINIPROGRAM]: 'https://res.wx.qq.com/open/js/jweixin-1.3.2.js'
+  }
+  const injectedScript = `<script>
+  if (navigator.userAgent.indexOf('${UAMap[target]}') > -1) {
+    document.write('\\x3Cscript src="${JSSDKMap[target]}" type="text/javascript">\\x3C/script>');
+  }
+  </script>`;
+  applyMethod('rax.injectHTML', 'script', [injectedScript]);
+}
