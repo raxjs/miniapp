@@ -17,6 +17,8 @@ const saveCache = (content, { filePath, cacheDirectory }) => {
 };
 
 const getCache = ({ filePath, cacheDirectory }) => {
+  if (!fs.pathExistsSync(cacheDirectory)) return null;
+
   const stats = fs.statSync(filePath);
   const mtime = stats.mtime.getTime();
 

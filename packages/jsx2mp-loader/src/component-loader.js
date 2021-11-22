@@ -1,4 +1,4 @@
-const { existsSync, mkdirpSync } = require('fs-extra');
+const { existsSync, mkdirpSync, pathExistsSync } = require('fs-extra');
 const { relative, join, dirname, resolve, extname } = require('path');
 const { getOptions } = require('loader-utils');
 const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
@@ -19,10 +19,16 @@ const MINIAPP_PLUGIN_COMPONENTS_REG = /^plugin\:\/\//;
 
 module.exports = async function componentLoader(content) {
   const query = parse(this.request);
+
+  if (this.resourcePath.includes('mods')) {
+    console.log('component', this.request, query);
+  }
   // Only handle component role file
   if (query.role !== 'component') {
     return content;
   }
+
+  // console.log('componentLoader123', content);
 
   const loaderOptions = getOptions(this);
   const { rootDir, platform, entryPath, outputPath, constantDir, mode, disableCopyNpm, turnOffSourceMap, aliasEntries, injectAppCssComponent, virtualHost } = loaderOptions;
@@ -41,8 +47,8 @@ module.exports = async function componentLoader(content) {
   const outputPathJson = distFileWithoutExt + '.json';
   const outputPathCss = distFileWithoutExt + platform.extension.css;
   const outputPathTemplate = distFileWithoutExt + platform.extension.xml;
-
-  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, 'node_modules/.miniCache') });
+  console.log('component', resourcePath);
+  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `node_modules/.miniCache/${mode}`) });
 
   function isCustomComponent(name, usingComponents = {}) {
     const matchingPath = join(dirname(resourcePath), name);
@@ -61,6 +67,7 @@ module.exports = async function componentLoader(content) {
   if (cacheContent) {
     // console.log('writeFileWithDirCheck');
     if (cacheContent.code) {
+      console.log('outputPathCode', outputPathCode);
       writeFileWithDirCheck( outputPathCode, cacheContent.code, { rootDir });
     }
 
