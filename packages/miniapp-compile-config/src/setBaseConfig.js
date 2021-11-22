@@ -76,7 +76,8 @@ module.exports = (
     .options({
       ...loaderParams,
       entryPath,
-      virtualHost
+      virtualHost,
+      rootDir
     })
     .end()
     .use('platform')
@@ -85,7 +86,10 @@ module.exports = (
     .end()
     .use('script')
     .loader(ScriptLoader)
-    .options(loaderParams)
+    .options({
+      ...loaderParams,
+      rootDir
+    })
     .end();
 
   chainConfig.module
@@ -95,7 +99,10 @@ module.exports = (
     .end()
     .use('script')
     .loader(ScriptLoader)
-    .options(loaderParams)
+    .options({
+      ...loaderParams,
+      rootDir
+    })
     .end();
 
   chainConfig.module
@@ -114,7 +121,10 @@ module.exports = (
     .test(/\.json$/)
     .use('script-loader')
     .loader(ScriptLoader)
-    .options(loaderParams)
+    .options({
+      ...loaderParams,
+      rootDir
+    })
     .end()
     .use('json-loader')
     .loader(require.resolve('json-loader'));
