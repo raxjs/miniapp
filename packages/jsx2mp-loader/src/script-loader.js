@@ -97,7 +97,7 @@ module.exports = function scriptLoader(content) {
       resourcePath: this.resourcePath
     };
 
-    const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `node_modules/.miniCache/${mode}`) });
+    const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
     // console.log('cacheContentCode', cacheContent);
     if (cacheContent && cacheContent.code) {
       // console.log('writeFileWithDirCheck');

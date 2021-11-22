@@ -19,16 +19,10 @@ const MINIAPP_PLUGIN_COMPONENTS_REG = /^plugin\:\/\//;
 
 module.exports = async function componentLoader(content) {
   const query = parse(this.request);
-
-  if (this.resourcePath.includes('mods')) {
-    console.log('component', this.request, query);
-  }
   // Only handle component role file
   if (query.role !== 'component') {
     return content;
   }
-
-  // console.log('componentLoader123', content);
 
   const loaderOptions = getOptions(this);
   const { rootDir, platform, entryPath, outputPath, constantDir, mode, disableCopyNpm, turnOffSourceMap, aliasEntries, injectAppCssComponent, virtualHost } = loaderOptions;
@@ -47,8 +41,7 @@ module.exports = async function componentLoader(content) {
   const outputPathJson = distFileWithoutExt + '.json';
   const outputPathCss = distFileWithoutExt + platform.extension.css;
   const outputPathTemplate = distFileWithoutExt + platform.extension.xml;
-  console.log('component', resourcePath);
-  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `node_modules/.miniCache/${mode}`) });
+  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
 
   function isCustomComponent(name, usingComponents = {}) {
     const matchingPath = join(dirname(resourcePath), name);
@@ -67,7 +60,6 @@ module.exports = async function componentLoader(content) {
   if (cacheContent) {
     // console.log('writeFileWithDirCheck');
     if (cacheContent.code) {
-      console.log('outputPathCode', outputPathCode);
       writeFileWithDirCheck( outputPathCode, cacheContent.code, { rootDir });
     }
 

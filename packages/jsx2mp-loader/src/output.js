@@ -202,7 +202,7 @@ function output(content, raw, options) {
     collection.usingComponents = usingComponents;
   }
 
-  saveCache(collection, { filePath: resourcePath, cacheDirectory: join(rootDir, `node_modules/.miniCache/${mode}`) });
+  saveCache(collection, { filePath: resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
 }
 
 /**

@@ -23,8 +23,6 @@ function generateDependencies(dependencies) {
 }
 
 module.exports = async function appLoader(content) {
-  console.log('app-loader resourcePath', this.resourcePath);
-
   const query = parse(this.request);
   // Only handle app role file
   if (query.role !== 'app') {

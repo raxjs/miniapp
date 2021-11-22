@@ -17,7 +17,6 @@ const ScriptLoader = require.resolve('./script-loader');
 
 const MINIAPP_PLUGIN_COMPONENTS_REG = /^plugin\:\/\//;
 
-console.log('pageLoader');
 module.exports = async function pageLoader(content) {
   const query = parse(this.request);
   // Only handle page role file
@@ -46,7 +45,7 @@ module.exports = async function pageLoader(content) {
 
   // console.log('query', resourcePath);
 
-  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `node_modules/.miniCache/${mode}`) });
+  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
 
   function isCustomComponent(name, usingComponents = {}) {
     const matchingPath = join(dirname(resourcePath), name);
@@ -222,6 +221,9 @@ module.exports = async function pageLoader(content) {
       assets: transformed.assets,
       importComponents: transformed.importComponents,
       iconfontMap: transformed.iconfontMap,
+      imported: transformed.imported,
+      usingComponents: transformed.usingComponents
+
     };
     const outputOption = {
       outputPath: {
