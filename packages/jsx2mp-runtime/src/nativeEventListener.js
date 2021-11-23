@@ -4,9 +4,6 @@ import getNativeEventBindTarget from './adapter/getNativeEventBindTarget';
 import { EVENTS_LIST } from './cycles';
 
 export function registerEventsInConfig(Klass, events = []) {
-  if (!Klass.prototype.__nativeEventMap) {
-    Klass.prototype.__nativeEventMap = {};
-  }
   events.forEach(eventName => {
     const shouldReturnConfig = EVENTS_LIST.indexOf(eventName) < 0; // shouldReturnConfig controls the events injected into Page obj or Page.events obj
     const eventBindTarget = getNativeEventBindTarget(Klass, shouldReturnConfig);
@@ -15,8 +12,9 @@ export function registerEventsInConfig(Klass, events = []) {
       // onShareAppMessage need receive callback execute return
       defaultLifeCycleEvent && defaultLifeCycleEvent.apply(this, args); // Execute default lifecycle events like onShow
       let ret;
-      if (Klass.prototype.__nativeEventMap[eventName]) {
-        Klass.prototype.__nativeEventMap[eventName].forEach(callback => ret = callback(...args));
+      const pageInstance = getPageInstance();
+      if (pageInstance.__nativeEventMap[eventName]) {
+        pageInstance.__nativeEventMap[eventName].forEach(callback => ret = callback(...args));
       }
       return ret;
     };
@@ -30,16 +28,16 @@ export function registerNativeEventListeners(component, events) {
 
 export function addNativeEventListener(eventName, callback) {
   const pageInstance = getPageInstance();
-  if (!pageInstance.__proto__.__nativeEventMap[eventName]) {
-    pageInstance.__proto__.__nativeEventMap[eventName] = [];
+  if (!pageInstance.__nativeEventMap[eventName]) {
+    pageInstance.__nativeEventMap[eventName] = [];
   }
-  pageInstance.__proto__.__nativeEventMap[eventName].push(callback);
+  pageInstance.__nativeEventMap[eventName].push(callback);
 }
 
 export function removeNativeEventListener(eventName, callback) {
   const pageInstance = getPageInstance();
-  if (pageInstance.__proto__.__nativeEventMap[eventName]) {
-    pageInstance.__proto__.__nativeEventMap[eventName] = pageInstance.__proto__.__nativeEventMap[eventName].filter(fn => fn !== callback);
+  if (pageInstance.__nativeEventMap[eventName]) {
+    pageInstance.__nativeEventMap[eventName] = pageInstance.__nativeEventMap[eventName].filter(fn => fn !== callback);
   }
 }
 
