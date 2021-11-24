@@ -16,7 +16,7 @@ const AutoInstallNpmPlugin = require('./plugins/AutoInstallNpm');
 module.exports = (
   chainConfig,
   userConfig,
-  { context, entryPath, outputPath, loaderParams, target }
+  { context, entryPath, outputPath, loaderParams, target, originalConstantDir }
 ) => {
   const platformInfo = platformMap[target];
   const { rootDir, command } = context;
@@ -155,13 +155,13 @@ module.exports = (
     .plugin('watchIgnore')
     .use(webpack.WatchIgnorePlugin, [[/node_modules/]]);
 
-  if (loaderParams.constantDir.length > 0) {
+  if (originalConstantDir.length > 0) {
     chainConfig.plugin('copyPublicFile').use(CopyPublicFilePlugin, [
       {
         mode,
         outputPath,
         rootDir,
-        constantDir: loaderParams.constantDir,
+        constantDir: originalConstantDir,
         target,
       },
     ]);
