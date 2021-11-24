@@ -334,6 +334,7 @@ describe('Transform JSXElement', () => {
         />
       `);
       ast.openingElement.name.isCustom = true;
+      ast.openingElement.name.isNative = true;
       _transform({
         templateAST: ast
       }, wxAdapter);

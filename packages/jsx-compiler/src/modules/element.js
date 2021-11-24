@@ -6,14 +6,12 @@ const createJSXBinding = require('../utils/createJSXBinding');
 const CodeError = require('../utils/CodeError');
 const DynamicBinding = require('../utils/DynamicBinding');
 const getCompiledComponents = require('../getCompiledComponents');
-const baseComponents = require('../baseComponents');
 const replaceComponentTagName = require('../utils/replaceComponentTagName');
 const { parseExpression } = require('../parser/index');
 const isSlotScopeNode = require('../utils/isSlotScopeNode');
 const { isDirectiveAttr, isEventHandlerAttr, isRenderPropsAttr, BINDING_REG } = require('../utils/checkAttr');
 const handleValidIdentifier = require('../utils/handleValidIdentifier');
 const isNativeComponent = require('../utils/isNativeComponent');
-const isBaseComponent = require('../utils/isBaseComponent');
 const isDerivedFromProps = require('../utils/isDerivedFromProps');
 const { componentCommonProps } = require('../adapter');
 
@@ -542,7 +540,7 @@ function transformTemplate(
                 attr.name.name = attr.name.name.replace('on', 'bind').toLowerCase();
               }
             });
-          } else if (adapter.needTransformEvent && isBaseComponent(componentTagNode)) {
+          } else if (adapter.needTransformEvent && componentTagNode.isNative) {
             // Rax base component should add bind before onXXX
             // While events in custom component should not be changed
             node.attributes.forEach(attr => {
