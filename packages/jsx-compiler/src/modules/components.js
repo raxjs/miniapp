@@ -38,7 +38,8 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
   node.isCustomEl = alias.isCustomEl;
   node.name.isCustom = true;
 
-  if (!getCompiledComponents(options.adapter.platform)[componentTag]) {
+  const platform = options.adapter.platform;
+  if (!getCompiledComponents(platform)[componentTag]) {
     // <tag __tagId="tagId" />
 
     let tagId;
@@ -149,6 +150,12 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
               importedComponent.isFromComponentLibrary = true;
             });
           }
+
+          /**
+           * Judge whether the component has native compiled component
+           */
+          if (pkg && pkg.miniappConfig && pkg.miniappConfig[`main:${platform}`]) node.name.isNative = true;
+          else node.isNative = false;
         }
       }
     }
