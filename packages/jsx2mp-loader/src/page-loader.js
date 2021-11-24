@@ -43,8 +43,6 @@ module.exports = async function pageLoader(content) {
   const outputPathCss = distFileWithoutExt + platform.extension.css;
   const outputPathTemplate = distFileWithoutExt + platform.extension.xml;
 
-  // console.log('query', resourcePath);
-
   const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
 
   function isCustomComponent(name, usingComponents = {}) {
@@ -205,7 +203,7 @@ module.exports = async function pageLoader(content) {
     // Only works when developing miniapp plugin, to declare the use of __app_css component
     if (injectAppCssComponent) {
       const appCssComponentPath = resolve(outputPath, '__app_css', 'index');
-      const relativeAppCssComponentPath = relative(pageDistDir, appCssComponentPath);
+      const relativeAppCssComponentPath = addRelativePathPrefix(relative(pageDistDir, appCssComponentPath));
       config.usingComponents = {
         '__app_css': relativeAppCssComponentPath,
         ...config.usingComponents
