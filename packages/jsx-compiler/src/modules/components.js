@@ -160,7 +160,7 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
            * Judge whether the component has native compiled component
            * If it has, the property isNative should true, otherwise it would be false.
            */
-          node.name.isNative = !!getCustomComponentPath(pkg, platform) ? true : false;
+          node.name.isNative = !!getCustomComponentPath(pkg, platform);
         }
       }
     }
