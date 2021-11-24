@@ -44,8 +44,8 @@ function transformRenderFunction(renderPath, adapter) {
         }
 
         if (!alternatePath.isIfStatement() && alternatePath.node) {
-          if (alternatePath.isBlockStatement()) {
-            const alternateBodyPath = alternatePath.get('body');
+          const alternateBodyPath = alternatePath.get('body');
+          if (alternateBodyPath) {
             alternateBodyPath.map((statementPath) => {
               handleAlternate(
                 statementPath.get('expression'),
@@ -322,7 +322,7 @@ function handleConsequent(path, expressionPath, templateMap, renderScope, adapte
         // Remove only if the expression contains JSX
         expressionPath.remove();
       }
-    } else handleAlternate(expressionPath, templateMap, adapter)
+    }
   }
 }
 
