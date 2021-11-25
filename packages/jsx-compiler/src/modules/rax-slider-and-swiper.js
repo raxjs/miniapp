@@ -7,7 +7,8 @@ const { BINDING_REG } = require('../utils/checkAttr');
 function transformRaxSliderAndSwiper(ast, adapter) {
   traverse(ast, {
     JSXOpeningElement(path) {
-      if (path.get('name').isJSXIdentifier({ name: 'rax-slider' }) || path.get('name').isJSXIdentifier({ name: 'rax-swiper' })) {
+      const name = path.node.name;
+      if (t.isJSXIdentifier(name) && ( name.name === 'rax-slider' || name.name.indexOf('rax-swiper-') > -1)) {
         const children = path.parent.children.filter(
           (child) => {
             if (child.openingElement && t.isJSXIdentifier(child.openingElement.name)) {
