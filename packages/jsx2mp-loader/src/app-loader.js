@@ -87,6 +87,7 @@ module.exports = async function appLoader(content) {
     type: 'app',
     platform,
     rootDir,
+    resourcePath: this.resourcePath
   };
 
   output(outputContent, rawContent, outputOption);

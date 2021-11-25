@@ -30,6 +30,7 @@ module.exports = (
     disableCopyNpm,
     turnOffSourceMap,
     platform: platformInfo,
+    rootDir
   };
 
   config.entryPoints.clear();
