@@ -16,7 +16,7 @@ const AutoInstallNpmPlugin = require('./plugins/AutoInstallNpm');
 module.exports = (
   chainConfig,
   userConfig,
-  { context, entryPath, outputPath, loaderParams, target, originalConstantDir }
+  { context, entryPath, outputPath, loaderParams, target, originalConstantDir = [] }
 ) => {
   const platformInfo = platformMap[target];
   const { rootDir, command } = context;

@@ -73,6 +73,10 @@ module.exports = (
 
   config.cache(true).mode('production').target('node');
 
+  config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
+    return [copyList.concat(needCopyList)];
+  });
+
   // Set base jsx2mp config
   setBaseConfig(config, userConfig, {
     entryPath,
