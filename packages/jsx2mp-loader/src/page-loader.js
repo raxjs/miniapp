@@ -1,4 +1,4 @@
-const { readFileSync, existsSync, mkdirpSync, readJSONSync, extname } = require('fs-extra');
+const { existsSync, mkdirpSync, readJSONSync, extname } = require('fs-extra');
 const { relative, join, dirname, resolve } = require('path');
 const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { getOptions } = require('loader-utils');
