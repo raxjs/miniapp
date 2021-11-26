@@ -97,6 +97,15 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
       if (packageName === alias.from) {
         const pkg = getComponentConfig(alias.default ? alias.from : alias.name, options.resourcePath);
         if (pkg && pkg.miniappConfig) {
+          const tagNameMap = pkg.miniappConfig.subPackages && pkg.miniappConfig.subPackages[alias.importFrom] && pkg.miniappConfig.subPackages[alias.importFrom].tagNameMap;
+          if (tagNameMap) {
+            replaceComponentTagName(
+              path,
+              t.jsxIdentifier(tagNameMap)
+            );
+            return;
+          }
+
           if (Array.isArray(pkg.miniappConfig.renderSlotProps)) {
             path.traverse({
               JSXAttribute(attrPath) {
@@ -172,20 +181,10 @@ function transformComponents(parsed, options) {
           const alias = getComponentAlias(componentTag, imported);
           if (alias) {
             removeImport(ast, alias);
-
-            const pkg = getComponentConfig(alias.from, options.resourcePath);
-            const tagNameMap = pkg.miniappConfig && pkg.miniappConfig.subPackages && pkg.miniappConfig.subPackages[alias.importFrom] && pkg.miniappConfig.subPackages[alias.importFrom].tagNameMap;
-            if (tagNameMap) {
-              replaceComponentTagName(
-                path,
-                t.jsxIdentifier(tagNameMap)
-              );
-            } else {
-              const componentTag = transformIdentifierComponentName(path, alias, dynamicValue, parsed, options);
-              if (componentTag) {
-                // Collect renamed component tag & path info
-                componentsAlias[componentTag] = alias;
-              }
+            const componentTag = transformIdentifierComponentName(path, alias, dynamicValue, parsed, options);
+            if (componentTag) {
+              // Collect renamed component tag & path info
+              componentsAlias[componentTag] = alias;
             }
           } else if (componentTag === 'slot') {
             transformIdentifierComponentName(
