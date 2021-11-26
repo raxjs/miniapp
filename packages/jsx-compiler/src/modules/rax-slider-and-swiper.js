@@ -33,7 +33,8 @@ function transformRaxSliderAndSwiper(ast, adapter) {
             insertSlotName(
               child,
               // 1 + arr1.length + index
-              index - childList.length + getChildListLengthExpression(childList) + '+' + forIndex.value.value
+              index - childList.length + getChildListLengthExpression(childList) + '+' + forIndex.value.value,
+              adapter.insertSwiperSlot
             );
             childList.push(
               forAttriute.value.value.replace(BINDING_REG, '') + '.length'
@@ -41,7 +42,8 @@ function transformRaxSliderAndSwiper(ast, adapter) {
           } else {
             insertSlotName(
               child,
-              index - childList.length + getChildListLengthExpression(childList)
+              index - childList.length + getChildListLengthExpression(childList),
+              adapter.insertSwiperSlot
             );
             swiperItemLength++;
           }
@@ -73,13 +75,15 @@ function getChildListLengthExpression(childList) {
   );
 }
 
-function insertSlotName(currentEl, name) {
-  getSwiperItemAttributes(currentEl).push(
-    t.jsxAttribute(
-      t.jsxIdentifier('slot'),
-      t.stringLiteral('slider-item-' + createBinding(name))
-    )
-  );
+function insertSlotName(currentEl, name, insertSwiperSlot) {
+  if (insertSwiperSlot) {
+    getSwiperItemAttributes(currentEl).push(
+      t.jsxAttribute(
+        t.jsxIdentifier('slot'),
+        t.stringLiteral('slider-item-' + createBinding(name))
+      )
+    );
+  }
 }
 
 function getSwiperItemAttributes(currentEl) {
@@ -94,9 +98,7 @@ function getSwiperItemAttributes(currentEl) {
 
 module.exports = {
   parse(parsed, code, options) {
-    if (options.adapter.processSlider) {
-      transformRaxSliderAndSwiper(parsed.templateAST, options.adapter);
-    }
+    transformRaxSliderAndSwiper(parsed.templateAST, options.adapter);
   },
 
   // For test cases.

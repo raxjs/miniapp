@@ -3,7 +3,7 @@
 ## [0.4.36]
 
 - Support `tagNameMap` in `miniappConfig.subPackages`
-- Support `rax-swiper`
+- Make `rax-swiper` compatible with wechat
 
 ## [0.4.35] - 2021-08-27
 

@@ -97,7 +97,7 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
       if (packageName === alias.from) {
         const pkg = getComponentConfig(alias.default ? alias.from : alias.name, options.resourcePath);
         if (pkg && pkg.miniappConfig) {
-          const tagNameMap = pkg.miniappConfig.subPackages && pkg.miniappConfig.subPackages[alias.importFrom] && pkg.miniappConfig.subPackages[alias.importFrom].tagNameMap;
+          const tagNameMap = pkg.miniappConfig.subPackages && pkg.miniappConfig.subPackages[alias.local] && pkg.miniappConfig.subPackages[alias.local].tagNameMap;
           if (tagNameMap) {
             replaceComponentTagName(
               path,
