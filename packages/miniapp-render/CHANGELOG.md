@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.8.7] - 2021-11-01
+
+### Fixed
+
+- Can't use canvas ready event
+
+## [2.8.6] - 2021-10-19
+
+### Added
+
+- Add `Set` and `Map` in `window`
+
+## [2.8.5] - 2021-10-18
+
+### Fixed
+
+- checkbox group change event is invalid
+
 ## [2.8.4] - 2021-09-26
 
 ### Changed

@@ -626,6 +626,7 @@ const Canvas = {
     'disable-scroll': 'false',
   },
   events: {
+    Ready: '',
     ...touchEvents,
   },
   basicEvents: {
