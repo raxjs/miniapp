@@ -1,11 +1,5 @@
 # Changelog
 
-## [0.1.16]
-
-### Changed
-
-- Add rax-swiper in base components
-
 ## [0.1.15] - 2021-05-11
 
 ### Changed
