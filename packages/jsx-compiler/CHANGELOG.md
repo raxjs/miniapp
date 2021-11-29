@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.36]
+
+- Support `tagNameMap` in `miniappConfig.subPackages`
+- Make `rax-swiper` compatible with wechat
+
 ## [0.4.35] - 2021-08-27
 
 - Return renamed index in list

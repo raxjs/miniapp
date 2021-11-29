@@ -97,6 +97,15 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
       if (packageName === alias.from) {
         const pkg = getComponentConfig(alias.default ? alias.from : alias.name, options.resourcePath);
         if (pkg && pkg.miniappConfig) {
+          const tagNameMap = pkg.miniappConfig.subPackages && pkg.miniappConfig.subPackages[alias.local] && pkg.miniappConfig.subPackages[alias.local].tagNameMap;
+          if (tagNameMap) {
+            replaceComponentTagName(
+              path,
+              t.jsxIdentifier(tagNameMap)
+            );
+            return;
+          }
+
           if (Array.isArray(pkg.miniappConfig.renderSlotProps)) {
             path.traverse({
               JSXAttribute(attrPath) {
@@ -144,14 +153,14 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
             });
           }
 
-          if (pkg.miniappConfig.subPackages) {
-            parsed.imported[alias.from].forEach(importedComponent => {
-              importedComponent.isFromComponentLibrary = true;
-            });
+          const importedComponent = parsed.imported[alias.from].find(importItem => importItem.local === alias.local);
+          if (importedComponent) {
+            importedComponent.isFromComponentLibrary = true;
           }
         }
       }
     }
+
     return componentTag;
   }
 }
