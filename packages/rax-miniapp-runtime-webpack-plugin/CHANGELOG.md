@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.11.2] - 2021-11-01
+
+### Fixed
+
+- Can't use canvas ready event
+
 ## [4.11.1] - 2021-09-26
 
 ### Added

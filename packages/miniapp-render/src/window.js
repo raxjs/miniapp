@@ -137,6 +137,14 @@ class Window extends EventTarget {
     return Symbol;
   }
 
+  get Map() {
+    return Map;
+  }
+
+  get Set() {
+    return Set;
+  }
+
   getComputedStyle() {
     // Only for compatible use
     console.warn('window.getComputedStyle is not supported.');
