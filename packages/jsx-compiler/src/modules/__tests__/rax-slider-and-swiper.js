@@ -15,7 +15,7 @@ describe('Transform rax-slider', () => {
           </rax-slider>
         </View>
       `);
-    _transformRaxSliderAndSwiper(ast);
+    _transformRaxSliderAndSwiper(ast, adapter);
     expect(genExpression(ast)).toEqual(`<View>
           <rax-slider __length="{{3}}">
             <swiper-item slot="slider-item-{{0}}">1</swiper-item>
@@ -57,7 +57,7 @@ describe('Transform rax-swiper', () => {
           </rax-swiper-container>
         </View>
       `);
-    _transformRaxSliderAndSwiper(ast);
+    _transformRaxSliderAndSwiper(ast, adapter);
     expect(genExpression(ast)).toEqual(`<View>
           <rax-swiper-container __length="{{3}}">
             <swiper-item slot="slider-item-{{0}}">1</swiper-item>
