@@ -6,7 +6,7 @@ import MiniappWebviewPlugin from './plugin';
 
 import setEntry from './setEntry';
 
-const { MINIAPP, WECHAT_MINIPROGRAM } = constants;
+const { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, BAIDU_SMARTPROGRAM } = constants;
 
 export function setWebviewConfig(config, options) {
   const { api, target } = options;
@@ -71,11 +71,15 @@ export function setWebviewConfig(config, options) {
 function injectJSSDK(applyMethod, target) {
   const UAMap = {
     [MINIAPP]: 'AliApp',
-    [WECHAT_MINIPROGRAM]: 'miniProgram'
+    [WECHAT_MINIPROGRAM]: 'miniProgram',
+    [BYTEDANCE_MICROAPP]: 'ToutiaoMicroApp',
+    [BAIDU_SMARTPROGRAM]: 'swan'
   };
   const JSSDKMap = {
     [MINIAPP]: 'https://appx/web-view.min.js',
-    [WECHAT_MINIPROGRAM]: 'https://res.wx.qq.com/open/js/jweixin-1.3.2.js'
+    [WECHAT_MINIPROGRAM]: 'https://res.wx.qq.com/open/js/jweixin-1.3.2.js',
+    [BYTEDANCE_MICROAPP]: 'https://lf1-cdn-tos.bytegoofy.com/goofy/developer/jssdk/jssdk-1.0.3.js',
+    [BAIDU_SMARTPROGRAM]: 'https://b.bdstatic.com/searchbox/icms/searchbox/js/swan-2.0.22.js'
   }
   const injectedScript = `<script>
   if (navigator.userAgent.indexOf('${UAMap[target]}') > -1) {
