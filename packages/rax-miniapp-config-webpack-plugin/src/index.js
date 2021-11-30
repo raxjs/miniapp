@@ -1,9 +1,9 @@
-const transformAppConfig = require('./transformAppConfig');
 const { join } = require('path');
 const { ensureDirSync } = require('fs-extra');
 const safeWriteFile = require('./safeWriteFile');
-const adaptConfig = require('./adaptConfig');
 const transformNativeConfig = require('./transformNativeConfig');
+const processIconFile = require('./processIconFile');
+const { transformAppConfig, transformPageConfig } = require('miniapp-builder-shared');
 
 const PluginName = 'MiniAppConfigPlugin';
 
@@ -25,12 +25,13 @@ module.exports = class MiniAppConfigPlugin {
     });
 
     function transformConfig(compilation, callback) {
-      const config = transformAppConfig(outputPath, appConfig, target);
+      const config = transformAppConfig(appConfig, target);
+      processIconFile(config, outputPath);
       if (subPackages) {
         // Transform subpackages
         config.subPackages = subAppConfigList
           .filter(subAppConfig => !subAppConfig.miniappMain)
-          .map(subAppConfig => transformAppConfig(outputPath, subAppConfig, target, subPackages));
+          .map(subAppConfig => transformAppConfig(subAppConfig, target, { subPackages }));
 
         if (subPackages.shareMemory) {
           config.subPackageBuildType = 'shared';
@@ -46,7 +47,8 @@ module.exports = class MiniAppConfigPlugin {
           subAppConfig.routes.map((route) => {
             if (route && route.window) {
               ensureDirSync(outputPath);
-              safeWriteFile(join(outputPath, route.source + '.json'), adaptConfig(route.window, 'window', target), true);
+              const pageConfig = transformPageConfig(route.window, 'window', target);
+              safeWriteFile(join(outputPath, route.source + '.json'), pageConfig, true);
             }
             if (route && route.miniappPreloadRule) {
               config.preloadRule[route.source] = route.miniappPreloadRule;
@@ -58,7 +60,8 @@ module.exports = class MiniAppConfigPlugin {
         appConfig.routes.map((route) => {
           if (route && route.window) {
             ensureDirSync(outputPath);
-            safeWriteFile(join(outputPath, route.source + '.json'), adaptConfig(route.window, 'window', target), true);
+            const pageConfig = transformPageConfig(route.window, 'window', target);
+            safeWriteFile(join(outputPath, route.source + '.json'), pageConfig, true);
           }
         });
       }
