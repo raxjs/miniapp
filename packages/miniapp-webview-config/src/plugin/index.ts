@@ -29,10 +29,13 @@ class WebViewPlugin {
           userConfig: rootUserConfig
         },
         getValue,
+        log
       },
     } = this.options;
 
-    const getWebviewUrl = this.generateWebviewUrl({ command, rootUserConfig, getValue });
+    const userConfig = rootUserConfig[target];
+
+    const getWebviewUrl = this.generateWebviewUrl({ command, userConfig, getValue, target, log });
 
     const routes = this.appConfig.routes.map(route => {
       const { source, name, } = route;
@@ -78,17 +81,17 @@ class WebViewPlugin {
     });  
   }
 
-  generateWebviewUrl({command, rootUserConfig, getValue}) {
+  generateWebviewUrl({command, userConfig, target, getValue, log}) {
     let urlPrefix;
       if (command === 'build') {
         urlPrefix = process.env.webview_prefix_path || '';
         if (!urlPrefix) {
-          if (rootUserConfig.webview && rootUserConfig.webview.defaultPrefixPath) {
-            urlPrefix = rootUserConfig.webview.defaultPrefixPath;
+          if (userConfig.webview && userConfig.webview.defaultPrefixPath) {
+            urlPrefix = userConfig.webview.defaultPrefixPath;
           }
         }
         if (!urlPrefix) {
-          console.warn('Neither environment variable "webview_prefix_path" nor defaultPrefixPath in build.json exists');
+          log.warn(`[${target}]: Neither environment variable "webview_prefix_path" nor defaultPrefixPath in build.json exists`);
         }
         return (name: string) => {
           return `${urlPrefix}/${name}`;
