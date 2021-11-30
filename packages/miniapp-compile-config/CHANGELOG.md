@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0] - 2021-12-01
+
+### Added
+
+- Adapt webpack5
+
+### Changed
+
+- Remove css rules
+- webpack mode is determined by command
+
 ## [0.2.5] - 2021-08-23
 
 ### Added

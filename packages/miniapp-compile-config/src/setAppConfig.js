@@ -70,8 +70,6 @@ module.exports = (
     loaderParams.constantDir.push(dirPatterns.from)
   );
 
-  config.cache(true).mode('production').target('node');
-
   // Set base jsx2mp config
   setBaseConfig(config, userConfig, {
     entryPath,
