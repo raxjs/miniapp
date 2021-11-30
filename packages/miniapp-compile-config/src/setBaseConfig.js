@@ -82,7 +82,6 @@ module.exports = (
 
   chainConfig
     .cache(true)
-    .mode('production')
     .target('node');
 
   chainConfig.module
