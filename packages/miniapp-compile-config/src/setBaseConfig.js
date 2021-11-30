@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-
 const ComponentLoader = require.resolve('jsx2mp-loader/src/component-loader');
 const ScriptLoader = require.resolve('jsx2mp-loader/src/script-loader');
 const FileLoader = require.resolve('jsx2mp-loader/src/file-loader');
@@ -28,9 +27,6 @@ module.exports = (
 
   const mode = command;
 
-  // Write to Disk
-  chainConfig.devServer.writeToDisk(true);
-
   // Remove useless alias
   ['babel-runtime-jsx-plus', '@babel/runtime', 'rax-app', 'rax-app$', 'rax'].forEach(packageName => {
     chainConfig.resolve.alias.delete(packageName);
@@ -46,6 +42,24 @@ module.exports = (
   ['jsx', 'tsx'].forEach(name => {
     chainConfig.module.rule(name).uses.clear();
   });
+
+  ['css', 'less', 'scss'].forEach(name => {
+    chainConfig.module.rule(name).uses.clear();
+    chainConfig.module.rule(`${name}-module`).uses.clear();
+    chainConfig.module.rule(`${name}-global`).uses.clear();
+  });
+
+  // Clear conditionNames
+  if (/^4\./.test(webpack.version)) {
+    chainConfig.plugins.delete('ExportsFieldWebpackPlugin');
+  } else {
+    chainConfig.resolve.merge({
+      conditionNames: [],
+    });
+
+    // In compile mode, resolve.mainFields must be main
+    chainConfig.resolve.mainFields(['main']);
+  }
 
   // Compile ts file
   chainConfig.module
@@ -80,12 +94,8 @@ module.exports = (
     })
     .end()
     .use('platform')
-    .loader(require.resolve('rax-compile-config/src/platformLoader'))
+    .loader(require.resolve('rax-platform-oader'))
     .options({ platform: target })
-    .end()
-    .use('script')
-    .loader(ScriptLoader)
-    .options(loaderParams)
     .end();
 
   chainConfig.module
@@ -131,29 +141,16 @@ module.exports = (
   chainConfig.externals(
     [
       function(ctx, request, callback) {
-        if (/\.(css|sass|scss|styl|less)$/.test(request)) {
-          return callback(null, `commonjs2 ${request}`);
+        if (/^rax-app/.test(request)) {
+          return callback(null, `commonjs ${request}`);
         }
-        // compatible with plugin with miniapp plugin
-        if (/^plugin\:\/\//.test(request)) {
+        if (/\.(c|le|sc)ss$/.test(request)) {
           return callback(null, `commonjs ${request}`);
         }
         callback();
       },
     ].concat(chainConfig.get('externals') || [])
   );
-
-  chainConfig.plugin('define').use(webpack.DefinePlugin, [
-    {
-      'process.env': {
-        NODE_ENV: mode === 'build' ? '"production"' : '"development"',
-      },
-    },
-  ]);
-
-  chainConfig
-    .plugin('watchIgnore')
-    .use(webpack.WatchIgnorePlugin, [[/node_modules/]]);
 
   if (loaderParams.constantDir.length > 0) {
     chainConfig.plugin('copyPublicFile').use(CopyPublicFilePlugin, [
