@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+
 const ComponentLoader = require.resolve('jsx2mp-loader/src/component-loader');
 const ScriptLoader = require.resolve('jsx2mp-loader/src/script-loader');
 const FileLoader = require.resolve('jsx2mp-loader/src/file-loader');
