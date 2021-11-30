@@ -168,7 +168,9 @@ module.exports = function scriptLoader(content) {
     const pkg = readJSONSync(sourcePackageJSONPath);
     const npmName = pkg.name; // Update to real npm name, for that tnpm will create like `_rax-view@1.0.2@rax-view` folders.
     const npmMainPath = join(sourcePackagePath, pkg.main || '');
-
+    if (npmName === 'rax-text') {
+      console.log(this.resourcePath);
+    }
     const isUsingMainMiniappComponent = pkg.hasOwnProperty(MINIAPP_CONFIG_FIELD) && this.resourcePath === npmMainPath;
     // Is miniapp compatible component.
     if (isUsingMainMiniappComponent || isRelativeMiniappComponent || isThirdMiniappComponent) {

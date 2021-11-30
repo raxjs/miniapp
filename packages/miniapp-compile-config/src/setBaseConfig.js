@@ -49,17 +49,22 @@ module.exports = (
     chainConfig.module.rule(`${name}-global`).uses.clear();
   });
 
-  // Clear conditionNames
+  // In compile mode, resolve.mainFields must be main
+  chainConfig.resolve.mainFields.add('main').add('module');
+
   if (/^4\./.test(webpack.version)) {
+    // Clear conditionNames
     chainConfig.plugins.delete('ExportsFieldWebpackPlugin');
   } else {
+    // Clear conditionNames
+    chainConfig.resolve.delete('conditionNames');
+    // If there is no conditionNames field, it will use `exports` field default value
+    // Redirect export field, https://webpack.js.org/configuration/resolve/#resolveexportsfields
     chainConfig.resolve.merge({
-      conditionNames: [],
+      exportsFields: ['miniapp_compile-exports'],
     });
-
-    // In compile mode, resolve.mainFields must be main
-    chainConfig.resolve.mainFields(['main']);
   }
+
 
   // Compile ts file
   chainConfig.module
@@ -94,8 +99,12 @@ module.exports = (
     })
     .end()
     .use('platform')
-    .loader(require.resolve('rax-platform-oader'))
+    .loader(require.resolve('rax-platform-loader'))
     .options({ platform: target })
+    .end()
+    .use('script')
+    .loader(ScriptLoader)
+    .options(loaderParams)
     .end();
 
   chainConfig.module
@@ -136,11 +145,20 @@ module.exports = (
       getPlatformExtensions(platform, ['.js', '.jsx', '.ts', '.tsx', '.json'])
     );
 
-  chainConfig.resolve.mainFields.add('main').add('module');
-
   chainConfig.externals(
     [
-      function(ctx, request, callback) {
+      function(...args) {
+        let request;
+        let callback;
+
+        if (args[0].request) {
+          // webpack5
+          request = args[0].request;
+          callback = args[1];
+        } else {
+          // webpack4
+          [, request, callback] = args;
+        }
         if (/^rax-app/.test(request)) {
           return callback(null, `commonjs ${request}`);
         }
