@@ -18,6 +18,7 @@ export function setWebviewConfig(config, options) {
       rootDir
     },
     applyMethod,
+    hasMethod
   } = api;
 
   const userConfig = rootUserConfig[target] || {};
@@ -59,7 +60,7 @@ export function setWebviewConfig(config, options) {
     } else if (command === 'start') {
       config.devtool('inline-source-map');
     }
-  injectJSSDK(applyMethod, target);
+  injectJSSDK(hasMethod, applyMethod, target);
   applyMethod('addPluginTemplate', join(__dirname, './runtime/page.js'));
   const importDeclarations = getValue('importDeclarations');
   importDeclarations.createWebviewPage = {
@@ -68,7 +69,10 @@ export function setWebviewConfig(config, options) {
   api.setValue('importDeclarations', importDeclarations);
 };
 
-function injectJSSDK(applyMethod, target) {
+function injectJSSDK(hasMethod, applyMethod, target) {
+  if (!hasMethod('rax.injectHTML')) {
+    return;
+  }
   const UAMap = {
     [MINIAPP]: 'AliApp',
     [WECHAT_MINIPROGRAM]: 'miniProgram',
@@ -84,6 +88,7 @@ function injectJSSDK(applyMethod, target) {
   const injectedScript = `<script>
   if (navigator.userAgent.indexOf('${UAMap[target]}') > -1) {
     document.write('\\x3Cscript src="${JSSDKMap[target]}" type="text/javascript">\\x3C/script>');
+    window.__RAX_WEBVIEW = true;
   }
   </script>`;
   applyMethod('rax.injectHTML', 'script', [injectedScript]);
