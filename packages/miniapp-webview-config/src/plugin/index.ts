@@ -86,12 +86,12 @@ class WebViewPlugin {
       if (command === 'build') {
         urlPrefix = process.env.webview_prefix_path || '';
         if (!urlPrefix) {
-          if (userConfig.webview && userConfig.webview.defaultPrefixPath) {
-            urlPrefix = userConfig.webview.defaultPrefixPath;
+          if (userConfig.webview && userConfig.webviewDefaultPrefixUrl) {
+            urlPrefix = userConfig.webviewDefaultPrefixUrl;
           }
         }
         if (!urlPrefix) {
-          log.warn(`[${target}]: Neither environment variable "webview_prefix_path" nor defaultPrefixPath in build.json exists`);
+          log.warn(`[${target}]: Neither environment variable "webview_prefix_path" nor webviewDefaultPrefixUrl in build.json exists`);
         }
         return (name: string) => {
           return `${urlPrefix}/${name}`;
