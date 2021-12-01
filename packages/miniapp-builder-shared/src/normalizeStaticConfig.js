@@ -1,5 +1,4 @@
-const { join, resolve } = require('path');
-const getRouteName = require('./utils/getRouteName');
+const { join } = require('path');
 
 const {
   relativeModuleResolve,
@@ -17,10 +16,9 @@ module.exports = (staticConfig, { rootDir, subAppRoot = '' }) => {
       route.source = normalizeOutputFilePath(join(subAppRoot, route.source));
       route.subAppRoot = subAppRoot;
     }
-    route.name = route.source;
-    route.entryName = getRouteName(route);
+    route.entryName = route.source;
     pages.push(normalizeOutputFilePath(
-      relativeModuleResolve(entryPath, getRelativePath(route.source))
+      relativeModuleResolve(entryPath, getRelativePath(route.source), !route.url)
     ));
   });
 

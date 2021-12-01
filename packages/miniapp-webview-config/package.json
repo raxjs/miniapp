@@ -1,0 +1,28 @@
+{
+  "name": "miniapp-webview-config",
+  "version": "0.0.1-alpha.16",
+  "description": "miniapp webview project config",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "homepage": "https://github.com/raxjs/miniapp#readme",
+  "keywords": [
+    "rax",
+    "plugin",
+    "webpack",
+    "miniapp"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "csso": "^4.2.0",
+    "fs-extra": "^10.0.0",
+    "miniapp-builder-shared": "alpha",
+    "pretty-data": "^0.40.0",
+    "rax-miniapp-config-webpack-plugin": "alpha",
+    "terser": "^4.6.10"
+  },
+  "scripts": {
+    "build": "npx tsc --build ./tsconfig.json"
+  }
+}
