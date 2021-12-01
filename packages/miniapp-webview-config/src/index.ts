@@ -18,10 +18,17 @@ export function setWebviewConfig(config, options) {
       rootDir
     },
     applyMethod,
-    hasMethod
+    hasMethod,
+    cancelTask
   } = api;
 
   const userConfig = rootUserConfig[target] || {};
+
+  // If using frm then do not generate miniapp webview code temporarily
+  if (target === MINIAPP && userConfig.frm === true ) {
+    cancelTask(MINIAPP);
+  }
+
   const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir });
   const outputPath = options.outputPath || resolve(rootDir, 'build', target);
 
