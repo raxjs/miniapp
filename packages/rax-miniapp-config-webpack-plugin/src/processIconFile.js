@@ -5,7 +5,7 @@ function isUrl(src) {
   return /^(https?:)?\/\//.test(src);
 }
 
-module.exports = function processIconFile(appConfig, outputPath) {
+module.exports = function processIconFile(appConfig, { outputPath, rootDir }) {
   const iconFiles = [];
   if (appConfig.tabBar) {
     const items = appConfig.tabBar.items;
@@ -23,7 +23,7 @@ module.exports = function processIconFile(appConfig, outputPath) {
   }
   iconFiles.forEach(iconFile => {
     if (!isUrl(iconFile)) {
-      const sourcePath = join(process.cwd(), 'src', iconFile);
+      const sourcePath = join(rootDir, 'src', iconFile);
       if (existsSync(sourcePath)) {
         const distPath = join(outputPath, iconFile);
         ensureDirSync(dirname(distPath));
