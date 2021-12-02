@@ -61,7 +61,7 @@ class MiniAppRuntimePlugin {
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
     const packageJsonFilePath = [];
-    const needWrappedJSChunks = subPackages ? ['vendors.js'] : ['bundle.js', 'vendors.js'];
+    const needWrappedJSChunks = subPackages ? ['vendors.js', 'webpack-runtime.js'] : ['bundle.js', 'vendors.js'];
     webpackProcessAssets({
       pluginName: PluginName,
       compiler,
