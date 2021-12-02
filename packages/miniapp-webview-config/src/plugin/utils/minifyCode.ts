@@ -1,10 +1,21 @@
-import * as terser from 'terser';
+import { transformSync } from '@builder/swc';
 import * as csso from 'csso';
 import { pd as prettyData } from 'pretty-data';
 import { platformMap } from 'miniapp-builder-shared';
 
 export function minifyJS(source) {
-  return terser.minify(source).code;
+  return transformSync(source, {
+    jsc: {
+      minify: Object.assign({
+        compress: {
+          unused: false,
+        },
+        mangle: true,
+      }),
+      target: 'es2021',
+    },
+    minify: true,
+  }).code;
 }
 
 export function minifyCSS(source) {
