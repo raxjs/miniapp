@@ -35,6 +35,7 @@
     "rax-miniapp-config-webpack-plugin": "^2.0.0",
     "terser": "^4.8.0",
     "jsx2mp-runtime": "^0.4.18",
-    "@builder/pack": "^0.4.5"
+    "@builder/pack": "^0.4.5",
+    "ts-loader": "^8.0.0"
   }
 }
