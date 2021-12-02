@@ -88,7 +88,7 @@ function injectJSSDK(hasMethod, applyMethod, target) {
   const injectedScript = `<script>
   if (navigator.userAgent.indexOf('${UAMap[target]}') > -1) {
     document.write('\\x3Cscript src="${JSSDKMap[target]}" type="text/javascript">\\x3C/script>');
-    window.__RAX_WEBVIEW = true;
+    window.__RAX_WEBVIEW__ = true;
   }
   </script>`;
   applyMethod('rax.injectHTML', 'script', [injectedScript]);

@@ -20,7 +20,12 @@
     "miniapp-builder-shared": "alpha",
     "pretty-data": "^0.40.0",
     "rax-miniapp-config-webpack-plugin": "alpha",
-    "terser": "^4.6.10"
+    "webpack-sources": "^1.3.0",
+    "@builder/compat-webpack4": "^1.0.0",
+    "@builder/swc": "^0.1.1"
+  },
+  "devDependencies": {
+    "webpack": ">=4.0.0"
   },
   "scripts": {
     "build": "npx tsc --build ./tsconfig.json"
