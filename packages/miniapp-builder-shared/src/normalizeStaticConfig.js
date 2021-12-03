@@ -22,9 +22,14 @@ module.exports = (staticConfig, { rootDir, subAppRoot = '' }) => {
     ));
   });
 
-  return {
+  const normalized = {
     ...staticConfig,
     pages,
-    subAppRoot,
   };
+
+  if (subAppRoot) {
+    normalized.subAppRoot = subAppRoot;
+  }
+
+  return normalized;
 };
