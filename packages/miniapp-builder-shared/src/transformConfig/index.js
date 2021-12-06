@@ -59,8 +59,8 @@ function transformAppConfig(originalAppConfig, target, options = {}) {
   return appConfig;
 }
 
-function transformPageConfig(route = {}, target) {
-  return adaptConfig(route.window, 'window', target);
+function transformPageConfig(route = {}, property, target) {
+  return adaptConfig(route.window, property, target);
 }
 
 module.exports = {
