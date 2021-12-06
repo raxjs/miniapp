@@ -60,7 +60,7 @@ function transformAppConfig(originalAppConfig, target, options = {}) {
 }
 
 function transformPageConfig(route = {}, property, target) {
-  return adaptConfig(route.window, property, target);
+  return adaptConfig(route, property, target);
 }
 
 module.exports = {
