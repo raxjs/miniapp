@@ -1,6 +1,6 @@
 {
   "name": "miniapp-webview-config",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0",
   "description": "miniapp webview project config",
   "main": "lib/index.js",
   "files": [
@@ -17,9 +17,9 @@
   "dependencies": {
     "csso": "^4.2.0",
     "fs-extra": "^10.0.0",
-    "miniapp-builder-shared": "^0.3.0-rc.1",
+    "miniapp-builder-shared": "^0.3.0",
     "pretty-data": "^0.40.0",
-    "rax-miniapp-config-webpack-plugin": "^2.2.0-rc.1",
+    "rax-miniapp-config-webpack-plugin": "^2.2.0",
     "webpack-sources": "^1.3.0",
     "@builder/compat-webpack4": "^1.0.0",
     "@builder/swc": "^0.1.1"

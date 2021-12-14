@@ -1,6 +1,6 @@
 {
   "name": "miniapp-runtime-config",
-  "version": "0.4.0-rc.1",
+  "version": "0.4.0",
   "description": "miniapp runtime project config",
   "author": "Rax Team",
   "homepage": "https://github.com/raxjs/miniapp#readme",
@@ -24,10 +24,10 @@
     "webpack": "^4.0.0"
   },
   "dependencies": {
-    "miniapp-builder-shared": "^0.3.0-rc.1",
-    "rax-miniapp-babel-plugins": "^0.1.16-rc.1",
-    "rax-miniapp-config-webpack-plugin": "^2.2.0-rc.1",
-    "rax-miniapp-runtime-webpack-plugin": "^5.0.0-rc.1",
+    "miniapp-builder-shared": "^0.3.0",
+    "rax-miniapp-babel-plugins": "^0.1.16",
+    "rax-miniapp-config-webpack-plugin": "^2.2.0",
+    "rax-miniapp-runtime-webpack-plugin": "^5.0.0",
     "miniapp-render": "^2.0.0"
   }
 }
