@@ -4,8 +4,8 @@ import  { pathHelper } from 'miniapp-builder-shared';
 
 const { getBundlePath } = pathHelper;
 
-function setEntry(config, { rootDir, appConfig }) {
-  appConfig.routes.forEach(({ entryName }) => {
+function setEntry(config, { rootDir, routes }) {
+  routes.forEach(({ entryName }) => {
     const dirname = path.dirname(entryName);
     const pageEntry = moduleResolve(formatPath(path.join(rootDir, 'src', dirname, 'page')));
     config

@@ -8,3 +8,11 @@ export interface AppItemType {
 export interface AppConfigType {
   routes: AppItemType[]
 }
+
+export interface RouteType {
+  name?: string;
+  source: string;
+  url?: string;
+  webEntryName?: string;
+  entryName: string;
+}

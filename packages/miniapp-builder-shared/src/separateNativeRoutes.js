@@ -11,7 +11,12 @@ const { getDepPath, isNativePage } = require('./pathHelper');
 module.exports = (routes, { rootDir, target }) => {
   const nativeRoutes = [];
   const normalRoutes = [];
+  const remoteRoutes = [];
   routes.forEach((route) => {
+    if (route.url) {
+      remoteRoutes.push(route);
+      return;
+    }
     const pageEntry = getDepPath(rootDir, route.source);
     if (isNativePage(pageEntry, target)) {
       nativeRoutes.push(route);
@@ -23,5 +28,6 @@ module.exports = (routes, { rootDir, target }) => {
   return {
     nativeRoutes,
     normalRoutes,
+    remoteRoutes
   };
 };
