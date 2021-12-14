@@ -1,9 +1,8 @@
 {
   "name": "miniapp-history",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Miniapp implementation of history.",
   "main": "lib/index.js",
-  "module": "es/index.js",
   "author": "Rax Team",
   "scripts": {
     "lint": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx ./",
