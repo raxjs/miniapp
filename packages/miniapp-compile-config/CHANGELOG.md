@@ -10,6 +10,7 @@
 
 - Remove css rules
 - webpack mode is determined by command
+- update miniapp-builder-shared to v3.0.0
 
 ## [0.2.5] - 2021-08-23
 
