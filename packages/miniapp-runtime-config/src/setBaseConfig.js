@@ -24,8 +24,23 @@ module.exports = (
   { api, target, babelRuleName = 'babel-loader', appConfig, completeRoutes, subAppConfigList, nativeLifeCycleMap, needCopyList, mainPackageRoot = '', isPluginProject = false }
 ) => {
   const { context } = api;
-  const { rootDir, command, userConfig: rootUserConfig } = context;
+  const { rootDir, userConfig: rootUserConfig, webpack, command } = context;
+  const isWebpack4 = /^4\./.test(webpack.version);
   const userConfig = rootUserConfig[target] || {};
+
+  if (!isWebpack4) {
+    config.merge({
+      devServer: {
+        client: false,
+      },
+    });
+  } else {
+    config.devServer.inline(false);
+  }
+
+  if (command === 'start' && config.get('devtool')) {
+    config.devtool('inline-source-map');
+  }
 
   // Using components
   const usingComponents = {};
@@ -87,12 +102,5 @@ module.exports = (
     config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
       return [copyList.concat(needCopyList)];
     });
-  }
-
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
-  if (!config.get('devtool')) {
-    config.devtool(false);
-  } else if (command === 'start') {
-    config.devtool('inline-source-map');
   }
 };

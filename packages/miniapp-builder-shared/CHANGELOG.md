@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2021-12-14
+
+### Changed
+
+- `normalizeStaticConfig` instead of `getAppConfig`
+- `separateNativeRoutes` instead of `filterNativePages`
+
 ## [0.2.12] - 2021-11-02
 
 ### Fixed

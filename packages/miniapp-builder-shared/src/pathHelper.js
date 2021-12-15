@@ -24,11 +24,12 @@ function loadAsFile(module) {
       return module;
     }
   }
+  return null;
 }
 
 function loadAsDirectory(module) {
   if (!existsSync(module)) {
-    return;
+    return null;
   }
   let stat = statSync(module);
   if (stat.isDirectory()) {
@@ -39,22 +40,32 @@ function loadAsDirectory(module) {
       }
     }
   } else if (stat.isFile()) {
-    return loadAsFile(module);
+    const result = loadAsFile(module);
+    if (result) {
+      return result;
+    }
   }
+  return null;
 }
 
 /**
  * Resolve relative path.
  * @param {string} script
  * @param {string} dependency
+ * @param {boolean} checkSourceExistence
  * @return {string}
  */
-function relativeModuleResolve(script, dependency) {
+function relativeModuleResolve(script, dependency, checkSourceExistence = true) {
   if (startsWithArr(dependency, ['./', '../', '/', '.\\', '..\\', '\\'])) {
-    let dependencyPath = join(script, dependency);
+    const dependencyPath = join(script, dependency);
+    const processedPath = loadAsFile(dependencyPath) || loadAsDirectory(dependencyPath);
+    if (checkSourceExistence && !processedPath) {
+      throw new Error(`The page source ${dependencyPath} doesn't exist`);
+    }
+
     return relative(
       script,
-      loadAsFile(dependencyPath) || loadAsDirectory(dependencyPath)
+      processedPath || ''
     );
   } else throw new Error('The page source path does not meet the requirements');
 };
@@ -120,6 +131,7 @@ function getPlatformExtensions(platform, extensions = []) {
  * @param {string} target
  */
 function isNativePage(filePath, target) {
+  if (!targetPlatformMap[target]) return false;
   if (existsSync(filePath + targetPlatformMap[target].extension.xml)) {
     try {
       const jsonContent = readJSONSync(`${filePath}.json`);
