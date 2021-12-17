@@ -61,7 +61,7 @@ export function setWebviewConfig(config, options) {
     .library(['page', '[name]'])
     .libraryTarget('umd');
 
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
+    config.devServer.hot(false);
     if (!config.get('devtool')) {
       config.devtool(false);
     } else if (command === 'start') {
