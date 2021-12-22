@@ -1,5 +1,5 @@
 const { dirname, join, resolve } = require('path');
-const { readJSONSync } = require('fs');
+const { readJSONSync } = require('fs-extra');
 const {
   pathHelper: { absoluteModuleResolve, getDepPath, removeExt },
   normalizeStaticConfig,
