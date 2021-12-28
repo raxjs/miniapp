@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.1] - 2021-12-22
+
+- Fix: `readJSONSync` error
+
 ## [0.3.0] - 2021-12-01
 
 ### Added
