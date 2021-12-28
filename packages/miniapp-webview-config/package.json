@@ -1,6 +1,6 @@
 {
   "name": "miniapp-webview-config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "miniapp webview project config",
   "main": "lib/index.js",
   "files": [
