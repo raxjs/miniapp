@@ -2,9 +2,10 @@ const { resolve, join, dirname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
 const isEqual = require('lodash.isequal');
 const { constants: { MINIAPP } } = require('miniapp-builder-shared');
+const { processAssets: webpackProcessAssets } = require('@builder/compat-webpack4');
 const { UNRECURSIVE_TEMPLATE_TYPE } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
-const wrapChunks = require('./utils/wrapChunks');
+const processAssets = require('./utils/processAssets');
 const getSepProcessedPath = require('./utils/getSepProcessedPath');
 const { filterPlugin, filterComponent } = require('./utils/filterNativeComponentConfig');
 const { pathHelper: { getBundlePath }, autoInstallNpm } = require('miniapp-builder-shared');
@@ -50,7 +51,7 @@ class MiniAppRuntimePlugin {
       isPluginProject = false
     } = options;
     const {
-      context: { command, userConfig: rootUserConfig, rootDir },
+      context: { userConfig: rootUserConfig, rootDir },
       getValue
     } = api;
     const userConfig = rootUserConfig[target] || {};
@@ -60,27 +61,24 @@ class MiniAppRuntimePlugin {
     let lastUsingPlugins = {};
     let needAutoInstallDependency = false;
     const packageJsonFilePath = [];
-
-    // Execute when compilation created
-    compiler.hooks.compilation.tap(PluginName, (compilation) => {
-      // Optimize chunk assets
-      compilation.hooks.optimizeChunkAssets.tapAsync(
-        PluginName,
-        (chunks, callback) => {
-          wrapChunks(compilation, chunks, { command, target });
-          callback();
-        }
-      );
-    });
-
-    compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
+    const needWrappedJSChunks = subPackages ? ['vendors.js', 'webpack-runtime.js'] : ['bundle.js', 'vendors.js'];
+    webpackProcessAssets({
+      pluginName: PluginName,
+      compiler,
+    }, ({ compilation, assets, callback }) => {
+      // generate miniapp files
       const outputPath = compilation.outputOptions.path;
       const sourcePath = join(rootDir, 'src');
       const pages = [];
       const finalRouteMap = getFinalRouteMap(getValue('staticConfig'));
-      const changedFiles = Object.keys(
-        compiler.watchFileSystem.watcher.mtimes
-      ).map((filePath) => {
+      let changedFileList = [];
+      // Compat webpack5
+      if (compiler.modifiedFiles) {
+        changedFileList = [...compiler.modifiedFiles];
+      } else if (compiler.watchFileSystem.watcher.mtimes) {
+        changedFileList = Object.keys(compiler.watchFileSystem.watcher.mtimes);
+      }
+      const changedFiles = changedFileList.map((filePath) => {
         return filePath.replace(sourcePath, '');
       });
       const useNativeComponentCount = Object.keys(usingComponents).length;
@@ -104,7 +102,7 @@ class MiniAppRuntimePlugin {
       // These files need be written in first render
       if (isFirstRender) {
         // render.js
-        generateRender(compilation, { target, command, rootDir });
+        generateRender(compilation, { target, rootDir });
         // Collect app.js
         if (!isPluginProject) {
           const commonAppJSFilePaths = compilation.entrypoints
@@ -116,7 +114,7 @@ class MiniAppRuntimePlugin {
           const withNativeAppConfig = existsSync(nativeAppConfigPath); // Check whether the developer has his own native app config
           generateAppJS(compilation, commonAppJSFilePaths, mainPackageRoot, {
             target,
-            command,
+
             withNativeAppConfig
           });
         }
@@ -130,8 +128,8 @@ class MiniAppRuntimePlugin {
         generateAppCSS(compilation, {
           subPackages,
           target,
-          command,
-          pluginDir
+          pluginDir,
+          assets,
         });
       }
 
@@ -143,7 +141,6 @@ class MiniAppRuntimePlugin {
           usingPlugins,
           pages,
           target,
-          command,
           subPackages
         });
 
@@ -155,7 +152,6 @@ class MiniAppRuntimePlugin {
         ) {
           generatePkg(compilation, {
             target,
-            command,
             declaredDep: nativePackage.dependencies
           });
           packageJsonFilePath.push('');
@@ -165,7 +161,6 @@ class MiniAppRuntimePlugin {
           nativePackage.subPackages.forEach(({ dependencies = {}, source = '' }) => {
             generatePkg(compilation, {
               target,
-              command,
               declaredDep: dependencies,
               source
             });
@@ -182,19 +177,16 @@ class MiniAppRuntimePlugin {
           // Generate self loop element
           generateElementJS(compilation, {
             target,
-            command
           });
           generateElementJSON(compilation, {
             usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
             target,
-            command
           });
           generateElementTemplate(compilation, {
             usingComponents: mainPackageUsingComponents,
             usingPlugins: mainPackageUsingPlugins,
             target,
-            command,
             modifyTemplate
           });
         } else {
@@ -202,7 +194,7 @@ class MiniAppRuntimePlugin {
           // Generate root template xml
           generateRootTmpl(compilation, {
             target,
-            command,
+
             usingPlugins,
             usingComponents,
             modifyTemplate
@@ -236,6 +228,8 @@ class MiniAppRuntimePlugin {
         let isSubPackageContainsPlugin = false;
 
         if (subPackages) {
+          // Add target page bundle.js to needWrappedJSChunks
+          needWrappedJSChunks.push(join(subAppRoot, 'bundle.js'));
           // Check if miniapp-native dir exist in sub package root
           const subPackageNativeComponentPath = join(sourcePath, subAppRoot, 'miniapp-native');
           isSubPackageContainsNativeComponent = existsSync(subPackageNativeComponentPath);
@@ -259,21 +253,19 @@ class MiniAppRuntimePlugin {
           if (isSubPackageContainsNativeComponent || isSubPackageContainsPlugin) {
             generateElementJS(compilation, {
               target,
-              command,
               subAppRoot
             });
             generateElementJSON(compilation, {
               usingComponents: subPackageUsingComponents,
               usingPlugins: subPackageUsingPlugins,
               target,
-              command,
               subAppRoot
             });
             generateElementTemplate(compilation, {
               usingComponents: subPackageUsingComponents,
               usingPlugins: subPackageUsingPlugins,
               target,
-              command,
+
               modifyTemplate,
               subAppRoot
             });
@@ -285,14 +277,14 @@ class MiniAppRuntimePlugin {
           // Page xml
           generatePageXML(compilation, entryName, useComponent, {
             target,
-            command,
+
             subAppRoot: isSubPackageContainsPlugin || isSubPackageContainsNativeComponent ? subAppRoot : ''
           });
 
           // Page css
           generatePageCSS(compilation, entryName, subAppRoot, {
             target,
-            command,
+            assets,
           });
 
           const isSubPackagePage = subPackages && mainPackageRoot !== subAppRoot;
@@ -306,7 +298,6 @@ class MiniAppRuntimePlugin {
             entryName,
             {
               target,
-              command,
               outputPath,
               subAppRoot: isSubPackageContainsPlugin || isSubPackageContainsNativeComponent ? subAppRoot : ''
             }
@@ -329,13 +320,17 @@ class MiniAppRuntimePlugin {
           nativeLifeCycles,
           commonPageJSFilePaths,
           subAppRoot,
-          { target, command }
+          { target }
         );
       });
+
+      // handle js and css file
+      processAssets(compilation, assets, { target, needWrappedJSChunks });
 
       isFirstRender = false;
       callback();
     });
+
     compiler.hooks.done.tapAsync(PluginName, async(stats, callback) => {
       if (nativePackage.autoInstall === false || !needAutoInstallDependency) {
         return callback();

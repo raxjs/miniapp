@@ -1,4 +1,4 @@
-const { constants: { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP } } = require('miniapp-builder-shared');
+const { MINIAPP, WECHAT_MINIPROGRAM, BYTEDANCE_MICROAPP, QUICKAPP } = require('../constants');
 
 const configKeyMap = {
   [MINIAPP]: {
@@ -85,7 +85,7 @@ const configValueMap = {
   }
 };
 
-module.exports = function adaptConfig(originalConfig, property, target) {
+module.exports = function adaptConfig(originalConfig = {}, property, target) {
   const config = {};
   const configKeyAdapter =
     configKeyMap[target] && configKeyMap[target][property];

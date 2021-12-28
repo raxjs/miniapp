@@ -1,5 +1,3 @@
-const { compilation } = require('webpack');
-
 module.exports = class RemoveDefaultResultPlugin {
   apply(compiler) {
     compiler.hooks.compilation.tap('RemoveDefaultResultPlugin', (compilation) => {

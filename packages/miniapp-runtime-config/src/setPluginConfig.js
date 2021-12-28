@@ -1,7 +1,8 @@
 const {
   getPluginConfig,
-  filterNativePages
+  separateNativeRoutes,
 } = require('miniapp-builder-shared');
+const { dirname, join } = require('path');
 
 const setBaseConfig = require('./setBaseConfig');
 
@@ -14,9 +15,17 @@ const setBaseConfig = require('./setBaseConfig');
  * @param {string} options.babelRuleName - babel loader name in webpack chain
  */
 module.exports = (config, options) => {
-  const { api, target, outputPath } = options;
-  const { context, setValue } = api;
-  const { rootDir } = context;
+  const {
+    api,
+    target
+  } = options;
+  const {
+    context,
+    setValue
+  } = api;
+  const {
+    rootDir
+  } = context;
 
   // Native lifecycle map
   const nativeLifeCycleMap = {};
@@ -24,18 +33,30 @@ module.exports = (config, options) => {
   // Sub packages config
   const subAppConfigList = [];
 
-  // Need copy files or dir
-  const needCopyList = [];
-
   const pluginConfig = getPluginConfig(rootDir, nativeLifeCycleMap);
 
   setValue('staticConfig', pluginConfig);
 
-  const completeRoutes = filterNativePages(pluginConfig.routes, needCopyList, {
+  const {
+    normalRoutes,
+    nativeRoutes
+  } = separateNativeRoutes(pluginConfig.routes, {
     rootDir,
     target,
-    outputPath,
   });
 
-  setBaseConfig(config, { isPluginProject: true, completeRoutes, subAppConfigList, nativeLifeCycleMap, appConfig: pluginConfig, needCopyList, ...options });
+  setBaseConfig(config, {
+    isPluginProject: true,
+    completeRoutes: normalRoutes,
+    subAppConfigList,
+    nativeLifeCycleMap,
+    appConfig: pluginConfig,
+    needCopyList: nativeRoutes.map(({
+      source
+    }) => ({
+      from: dirname(join('src', source)),
+      to: dirname(source),
+    })),
+    ...options
+  });
 };

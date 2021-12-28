@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.0] - 2021-12-14
+### Added
+
+- Adapt webpack5
+
+### Changed
+
+- update miniapp-builder-shared to v3.0.0
+
 ## [0.3.9] - 2021-07-21
 
 ### Fixed
