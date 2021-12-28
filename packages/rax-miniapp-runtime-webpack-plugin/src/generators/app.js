@@ -10,7 +10,7 @@ function generateAppJS(
   compilation,
   commonAppJSFilePaths,
   mainPackageRoot = 'main',
-  { target, command, withNativeAppConfig }
+  { target, withNativeAppConfig }
 ) {
   const init =
 `function init(window, document, app) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document, app)`).join(';')}}`;
@@ -26,11 +26,11 @@ App(render.createAppConfig(init, config, '${mainPackageRoot}', nativeAppConfig))
     filename: 'app.js',
     content: appJsContent,
     target,
-    command,
   });
 }
 
-function generateAppCSS(compilation, { target, command, pluginDir, subPackages }) {
+function generateAppCSS(compilation, { target, pluginDir, subPackages, assets }) {
+  const cssExt = platformMap[target].extension.css;
   // Add default css file to compilation
   const defaultCSSTmpl = adjustCSS(readFileSync(
     resolve(pluginDir, 'static', 'default.css'),
@@ -42,24 +42,21 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     'utf-8'
   );
   const defaultCSSContent = target === BAIDU_SMARTPROGRAM ? raxDefaultCSSTmpl : defaultCSSTmpl + raxDefaultCSSTmpl; // default CSS in baidu will cause render error
+  const defaultCSSFileName = `default${cssExt}`;
   addFileToCompilation(compilation, {
-    filename: `default${platformMap[target].extension.css}`,
+    filename: `default${cssExt}`,
     content: defaultCSSContent,
     target,
-    command,
   });
 
-  let content = `@import "./default${platformMap[target].extension.css}";`;
+  let content = `@import "./${defaultCSSFileName}";`;
 
-  const isCssExtension = platformMap[target].extension.css === '.css';
-  Object.keys(compilation.assets).forEach(asset => {
-    if (extname(asset) === '.css' && !isCssExtension) {
-      delete compilation.assets[asset];
-    }
-    if (extname(asset) === platformMap[target].extension.css && asset !== `default${platformMap[target].extension.css}`) {
-      if (!subPackages || asset.includes('vendors.css')) {
+  Object.keys(assets).forEach(asset => {
+    if (/\.css/.test(asset) && asset !== defaultCSSFileName) {
+      if (!subPackages || asset === 'vendors.css') {
+        const newCssFileName = asset.replace(/\.css/, cssExt);
         // In sub packages mode, only vendors.css should be imported in app.css
-        content += `@import "./${asset}";`;
+        content += `@import "./${newCssFileName}";`;
       }
     }
   });
@@ -68,7 +65,6 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     filename: `app${platformMap[target].extension.css}`,
     content,
     target,
-    command,
   });
 }
 

@@ -752,7 +752,8 @@ const Lifestyle = {
   events: {
     Follow: ''
   }
-}
+};
+
 
 const LifeFollow = {
   props: {
@@ -763,7 +764,7 @@ const LifeFollow = {
     CheckFollow: '',
     Close: ''
   }
-}
+};
 
 exports.internalComponents = {
   View,

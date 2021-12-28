@@ -1,6 +1,6 @@
 {
   "name": "rax-miniapp-config-webpack-plugin",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "miniapp config webpack plugin",
   "main": "src/index.js",
   "scripts": {
@@ -10,6 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "miniapp-builder-shared": "^0.2.0"
+    "miniapp-builder-shared": "^0.3.0"
   }
 }
