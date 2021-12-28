@@ -11,18 +11,18 @@ function isObjectValueEqual(a, b) {
   }
 
   for (var i = 0; i < aProps.length; i++) {
-      var propName = aProps[i];
-      var propA = a[propName];
-      var propB = b[propName];
-      if ( propA !== propB) {
-        return false;
-      }
+    var propName = aProps[i];
+    var propA = a[propName];
+    var propB = b[propName];
+    if ( propA !== propB) {
+      return false;
+    }
   }
   return true;
 }
 
-function shouldWritePackageJson (packageJsonPath, currentDependencies) {
-  if(!currentDependencies) {
+function shouldWritePackageJson(packageJsonPath, currentDependencies) {
+  if (!currentDependencies) {
     return false;
   }
   if (!existsSync(packageJsonPath)) {
@@ -51,7 +51,7 @@ module.exports = class AutoInstallNpmPlugin {
 
       // Generate package.json
       const writePath = join(distDir, 'package.json');
-      if(shouldWritePackageJson(writePath, this.dependencies)) {
+      if (shouldWritePackageJson(writePath, this.dependencies)) {
         writeJSONSync(writePath, { dependencies: this.dependencies });
         packageJsonFilePath.push('');
       }
