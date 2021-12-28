@@ -25,12 +25,12 @@ export function setWebviewConfig(config, options) {
   } = api;
 
   const isWebpack4 = /^4\./.test(webpack.version);
-  log.info('isWebpack4',isWebpack4);
   const userConfig = rootUserConfig[target] || {};
 
   // If using frm then do not generate miniapp webview code temporarily
   if (target === MINIAPP && userConfig.frm === true ) {
     cancelTask(MINIAPP);
+    return;
   }
 
   const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir });
