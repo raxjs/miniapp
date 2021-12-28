@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.1] - 2021-12-22
+
+- Fix: `readJSONSync` error
+
+## [0.3.0] - 2021-12-01
+
+### Added
+
+- Adapt webpack5
+
+### Changed
+
+- update miniapp-builder-shared to v3.0.0
+
+### Changed
+
+- Remove css rules
+- webpack mode is determined by command
+- update miniapp-builder-shared to v3.0.0
+
 ## [0.2.5] - 2021-08-23
 
 ### Added

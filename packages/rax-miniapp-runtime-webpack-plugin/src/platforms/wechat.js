@@ -872,6 +872,17 @@ const Ad = {
   }
 };
 
+const AdCustom = {
+  props: {
+    'unit-id': '',
+    'ad-intervals': '',
+  },
+  events: {
+    Load: '',
+    Error: '',
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -919,6 +930,7 @@ exports.internalComponents = {
   LivePusher,
   OfficialAccount,
   Ad,
+  AdCustom,
   HElement,
   CatchHElement,
   PureHElement,
@@ -982,7 +994,8 @@ exports.voidChildrenElements = new Set([
   'LivePlayer',
   'LivePusher',
   'OfficialAccount',
-  'Ad'
+  'Ad',
+  'AdCustom'
 ]);
 
 exports.nestElements = new Map([
