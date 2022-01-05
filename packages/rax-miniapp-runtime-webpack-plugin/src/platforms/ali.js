@@ -571,6 +571,7 @@ const Video = {
     'enable-progress-gesture': 'false',
     'mobilenet-hint-type': '1',
     'floating-mode': addSingleQuote('none'),
+    enableNative: 'false'
   },
   events: {
     Play: '',
