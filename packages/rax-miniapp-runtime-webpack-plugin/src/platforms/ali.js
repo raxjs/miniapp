@@ -623,6 +623,7 @@ const Canvas = {
   props: {
     width: addSingleQuote('300px'),
     height: addSingleQuote('225px'),
+    type: '',
     'disable-scroll': 'false',
   },
   events: {
