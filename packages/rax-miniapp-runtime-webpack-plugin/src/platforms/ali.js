@@ -756,6 +756,7 @@ const Lifestyle = {
   }
 };
 
+
 const LifeFollow = {
   props: {
     sceneId: '',
