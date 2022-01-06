@@ -2,19 +2,19 @@ const { autoInstallNpm } = require('miniapp-builder-shared');
 const { writeJSONSync, existsSync, readJSONSync } = require('fs-extra');
 const { join, dirname } = require('path');
 
-function isObjectValueEqual(a, b) {
-  var aProps = Object.getOwnPropertyNames(a);
-  var bProps = Object.getOwnPropertyNames(b);
+function isObjectValueEqual(left, right) {
+  var leftProps = Object.getOwnPropertyNames(left);
+  var rightProps = Object.getOwnPropertyNames(right);
 
-  if (aProps.length != bProps.length) {
+  if (leftProps.length !== rightProps.length) {
     return false;
   }
 
-  for (var i = 0; i < aProps.length; i++) {
-    var propName = aProps[i];
-    var propA = a[propName];
-    var propB = b[propName];
-    if ( propA !== propB) {
+  for (var i = 0; i < leftProps.length; i++) {
+    var propName = leftProps[i];
+    var propLeft = left[propName];
+    var propRight = right[propName];
+    if (propLeft !== propRight) {
       return false;
     }
   }
@@ -29,10 +29,7 @@ function shouldWritePackageJson(packageJsonPath, currentDependencies) {
     return true;
   }
   const oldDependencies = readJSONSync(packageJsonPath).dependencies;
-  if (isObjectValueEqual(currentDependencies, oldDependencies)) {
-    return false;
-  }
-  return true;
+  return !isObjectValueEqual(currentDependencies, oldDependencies);
 }
 
 /**
