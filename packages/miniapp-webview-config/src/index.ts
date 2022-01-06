@@ -15,18 +15,22 @@ export function setWebviewConfig(config, options) {
     context: {
       command,
       userConfig: rootUserConfig,
-      rootDir
+      rootDir,
+      webpack
     },
     applyMethod,
     hasMethod,
-    cancelTask
+    cancelTask,
+    log
   } = api;
 
+  const isWebpack4 = /^4\./.test(webpack.version);
   const userConfig = rootUserConfig[target] || {};
 
   // If using frm then do not generate miniapp webview code temporarily
   if (target === MINIAPP && userConfig.frm === true ) {
     cancelTask(MINIAPP);
+    return;
   }
 
   const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir });
@@ -59,14 +63,25 @@ export function setWebviewConfig(config, options) {
   config
     .output
     .library(['page', '[name]'])
-    .libraryTarget('umd');
+    .libraryTarget('umd')
+    .globalObject('self={}');;
 
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
-    if (!config.get('devtool')) {
-      config.devtool(false);
-    } else if (command === 'start') {
-      config.devtool('inline-source-map');
-    }
+  if (!isWebpack4) {
+    config.merge({
+      devServer: {
+        client: false,
+      }
+    })
+  } else {
+    config.devServer.inline(false);
+  }
+
+  if (command === 'start' && config.get('devtool')) {
+    config.devtool('inline-source-map');
+  }
+
+  config.devServer.hot(false);
+  
   injectJSSDK(hasMethod, applyMethod, target);
   applyMethod('addPluginTemplate', join(__dirname, './runtime/page.js'));
   const importDeclarations = getValue('importDeclarations');
