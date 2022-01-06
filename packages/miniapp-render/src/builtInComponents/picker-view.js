@@ -1,11 +1,11 @@
 export default {
   name: 'picker-view',
   singleEvents: [{
-    name: 'onPickerViewPickstart',
+    name: 'onPickerViewPickStart',
     eventName: 'pickstart'
   },
   {
-    name: 'onPickerViewPickend',
+    name: 'onPickerViewPickEnd',
     eventName: 'pickend'
   }],
   functionalSingleEvents: [
