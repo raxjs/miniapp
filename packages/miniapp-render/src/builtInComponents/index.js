@@ -29,6 +29,7 @@ import navigator from './navigator';
 import camera from './camera';
 import image from './image';
 import video from './video';
+import lottie from './lottie';
 import map from './map';
 import canvas from './canvas';
 import webView from './web-view';
@@ -93,7 +94,7 @@ let components = [
 if (isWeChatMiniProgram) {
   components = components.concat([ adCustom ]);
 } else if (isMiniApp) {
-  components = components.concat([ lifestyle, lifeFollow ]);
+  components = components.concat([ lifestyle, lifeFollow, lottie ]);
 }
 
 const handlesMap = {
