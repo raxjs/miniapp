@@ -28,5 +28,5 @@ export default {
     name: 'onLottieDataLoadReady',
     eventName: 'dataloadready'
   },
-]
+  ]
 };
