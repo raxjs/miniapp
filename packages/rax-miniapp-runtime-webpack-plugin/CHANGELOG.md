@@ -1,5 +1,21 @@
 # Changelog
 
+## [5.0.0] - 2021-12-14
+
+### Added
+
+- Support webpack5
+
+### Changed
+
+- Only wrapper `document`/`window` mock func in necessary file
+
+## [4.11.2] - 2021-11-01
+
+### Fixed
+
+- Can't use canvas ready event
+
 ## [4.11.1] - 2021-09-26
 
 ### Added

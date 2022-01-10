@@ -79,6 +79,16 @@ export default ({ context, onGetWebpackConfig, onHook }) => {
           return options;
         });
       }
+      if (config.plugins.has('CopyWebpackPlugin')) {
+        config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
+          copyList.every(pattern => {
+            if (pattern.from && pattern.from.indexOf('miniapp-native') > -1) {
+              pattern.to = join(pattern.to, CLIENT_DIR);
+            }
+          })
+          return [copyList];
+        });
+      }
     });
     onHook('after.start.compile', async() => await handleBuildFiles(outputPath));
     onHook('after.build.compile', async() => await handleBuildFiles(outputPath));

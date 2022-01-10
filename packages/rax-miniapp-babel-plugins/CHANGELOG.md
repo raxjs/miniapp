@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0] - 2021-12-14
+
+### Changed
+
+- update miniapp-builder-shared to v3.0.0
+
 ## [0.1.15] - 2021-05-11
 
 ### Changed

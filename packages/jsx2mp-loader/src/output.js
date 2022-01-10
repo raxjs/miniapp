@@ -62,32 +62,26 @@ function output(content, raw, options) {
     externalPlugins.unshift(require('@babel/plugin-transform-typescript'));
   }
 
+  const transformCodeWithPreset = (code, mode) => transformCode(code, mode,
+    externalPlugins.concat([require('@babel/plugin-proposal-class-properties')]),
+    [[require('@babel/preset-env'), {
+      exclude: ['@babel/plugin-transform-regenerator']
+    }]]
+  ).code;
+
   if (mode === 'build') {
     // Compile ES6 => ES5 and minify code
     code && (
-      code = minifyJS(transformCode(code,
-        mode,
-        externalPlugins.concat([require('@babel/plugin-proposal-class-properties')]),
-        [[require('@babel/preset-env'), {
-          exclude: ['@babel/plugin-transform-regenerator']
-        }]]
-      ).code)
+      code = minifyJS(transformCodeWithPreset(code, mode))
     );
     config && (
-      config = minifyJS(transformCode(config,
-        mode,
-        externalPlugins.concat([require('@babel/plugin-proposal-class-properties')]),
-        [require('@babel/preset-env')]
-      ).code)
+      config = minifyJS(transformCodeWithPreset(config, mode))
     );
     css && (css = minifyCSS(css));
     template && (template = minifyXML(template));
   } else {
     if (code) {
-      code = transformCode(code,
-        mode,
-        externalPlugins.concat([require('@babel/plugin-proposal-class-properties')]),
-      ).code;
+      code = transformCodeWithPreset(code, mode);
       // Add source map
       if (map) {
         code = addSourceMap(code, raw, map);

@@ -1,9 +1,10 @@
 const {
-  getAppConfig,
-  filterNativePages
+  separateNativeRoutes,
+  normalizeStaticConfig,
 } = require('miniapp-builder-shared');
 const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
-const { dirname, resolve } = require('path');
+const { readFileSync } = require('fs');
+const { dirname, resolve, join } = require('path');
 
 const setBaseConfig = require('./setBaseConfig');
 
@@ -13,57 +14,67 @@ const setBaseConfig = require('./setBaseConfig');
  * @param {object} options
  * @param {object} options.api - build scripts api
  * @param {string} options.target - miniapp platform
- * @param {string} options.babelRuleName - babel loader name in webpack chain
+ * @param {string} options.normalRoutes - the routes which need be bundled by webpack
+ * @param {string} options.nativeRoutes - this miniapp native routes which need copy to build dir
  * @param {string} options.outputPath - outputPath
  */
 module.exports = (config, options) => {
-  const { api, target } = options;
+  const { api, target, staticConfig, outputPath } = options;
+  let { nativeRoutes } = options;
   const { context } = api;
   const { rootDir, userConfig: rootUserConfig } = context;
   const userConfig = rootUserConfig[target] || {};
 
-  const outputPath = options.outputPath || resolve(rootDir, 'build', target);
-
   // Native lifecycle map
   const nativeLifeCycleMap = {};
-
-  // Need copy files or dir
-  const needCopyList = [];
 
   // Sub packages config
   const subAppConfigList = [];
 
   let mainPackageRoot = '';
 
-  const appConfig = getAppConfig(rootDir, target, nativeLifeCycleMap);
-
   let completeRoutes = [];
 
   if (userConfig.subPackages) {
-    appConfig.routes.forEach(app => {
+    staticConfig.routes.forEach(app => {
       const subAppRoot = dirname(app.source);
-      const subAppConfig = getAppConfig(rootDir, target, nativeLifeCycleMap, subAppRoot);
+      // Deprecated: Read app.json as subpackages appConfig, it will get by global API
+      const subStaticConfig = JSON.parse(readFileSync(resolve(rootDir, 'src', subAppRoot, 'app.json')));
+      // Deprecated: filter routes which includes current build target
+      const validStaticConfig = getValidStaticConfig(subStaticConfig, {
+        target,
+      });
+      const normalizedSubStaticConfig = normalizeStaticConfig(validStaticConfig, {
+        rootDir,
+        subAppRoot,
+      });
       if (app.miniappMain) mainPackageRoot = subAppRoot;
-      subAppConfig.miniappMain = app.miniappMain;
-      subAppConfigList.push(subAppConfig);
-      completeRoutes = completeRoutes.concat(subAppConfig.routes);
+      subAppConfigList.push({
+        ...normalizedSubStaticConfig,
+        miniappMain: app.miniappMain,
+      });
+      const { normalRoutes, nativeRoutes: subNativeRoutes } = separateNativeRoutes(normalizedSubStaticConfig.routes, { rootDir, target });
+      completeRoutes = completeRoutes.concat(normalRoutes);
+      nativeRoutes = nativeRoutes.concat(subNativeRoutes);
     });
   } else {
-    completeRoutes = appConfig.routes;
+    completeRoutes = staticConfig.routes;
   }
 
-  completeRoutes = filterNativePages(completeRoutes, needCopyList, {
-    rootDir,
-    target,
-    outputPath,
+  completeRoutes.forEach(({ source }) => {
+    // initial native lifecycle
+    nativeLifeCycleMap[resolve(rootDir, 'src', source)] = {};
   });
 
   setBaseConfig(config, {
-    appConfig,
+    appConfig: staticConfig,
     completeRoutes,
     subAppConfigList,
     nativeLifeCycleMap,
-    needCopyList,
+    needCopyList: nativeRoutes.map(({ source }) => ({
+      from: dirname(join('src', source)),
+      to: dirname(source),
+    })),
     mainPackageRoot,
     ...options
   });
@@ -72,7 +83,7 @@ module.exports = (config, options) => {
     {
       type: 'runtime',
       subPackages: userConfig.subPackages,
-      appConfig,
+      appConfig: staticConfig,
       subAppConfigList,
       outputPath,
       target,
@@ -80,3 +91,18 @@ module.exports = (config, options) => {
     },
   ]);
 };
+
+// Deprecated: Get valid static config
+function getValidStaticConfig(staticConfig, { target }) {
+  if (!staticConfig.routes) {
+    throw new Error('routes in app.json must be array');
+  }
+
+  return {
+    ...staticConfig,
+    routes: staticConfig.routes.filter(({ targets }) => {
+      if (!targets) return true;
+      return targets.includes(target);
+    }),
+  };
+}

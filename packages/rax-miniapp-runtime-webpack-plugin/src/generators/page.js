@@ -13,30 +13,30 @@ function generatePageCSS(
   compilation,
   pageRoute,
   subAppRoot = '',
-  { target, command }
+  { target, assets }
 ) {
+  const cssExt = platformMap[target].extension.css;
   let pageCssContent = '/* required by usingComponents */\n';
-  const pageCssPath = `${pageRoute}${platformMap[target].extension.css}`;
+  const pageCssPath = `${pageRoute}${cssExt}`;
+  const bundlePath = getBundlePath(subAppRoot);
   const isCssExtension = platformMap[target].extension.css === '.css';
   const cssFileExtname = `.css${isCssExtension ? '' : platformMap[target].extension.css}`;
-  const subAppCssPath = `${getBundlePath(subAppRoot)}${cssFileExtname}`;
-  if (compilation.assets[subAppCssPath]) {
+  const subAppCssPath = `${bundlePath}${cssFileExtname}`;
+  if (assets[subAppCssPath]) {
     pageCssContent += `@import "${getAssetPath(subAppCssPath, pageCssPath)}";`;
   }
 
   /* page css will be outputed to ${pageRouts}.bundle.css
      so page css should import ${pageRouts}.bundle.css
   */
-  if (compilation.assets[`${pageRoute}.bundle${cssFileExtname}`]) {
+  if (assets[`${pageRoute}.bundle${cssFileExtname}`]) {
     pageCssContent += `@import "./${getAssetPath(pageRoute + '.bundle', pageRoute)}${cssFileExtname}";`;
   }
-
 
   addFileToCompilation(compilation, {
     filename: pageCssPath,
     content: pageCssContent,
     target,
-    command,
   });
 }
 
@@ -47,7 +47,7 @@ function generatePageJS(
   nativeLifeCyclesMap = {},
   commonPageJSFilePaths = [],
   subAppRoot = '',
-  { target, command }
+  { target }
 ) {
   const renderPath = getAssetPath('render', pageRoute);
   const route = getSepProcessedPath(pagePath);
@@ -74,7 +74,6 @@ Page(render.createPageConfig('${route}', ${nativeLifeCycles}, init, '${subAppRoo
     filename: `${pageRoute}.js`,
     content: pageJsContent,
     target,
-    command,
   });
 }
 
@@ -82,7 +81,7 @@ function generatePageXML(
   compilation,
   pageRoute,
   useComponent,
-  { target, command, subAppRoot = '' }
+  { target, subAppRoot = '' }
 ) {
   const { adapter: { formatBindedData } } = platformConfig[target];
 
@@ -100,7 +99,6 @@ function generatePageXML(
     filename: `${pageRoute}${platformMap[target].extension.xml}`,
     content: pageXmlContent,
     target,
-    command,
   });
 }
 
@@ -110,7 +108,7 @@ function generatePageJSON(
   useComponent,
   usingComponents, usingPlugins,
   pageRoute,
-  { target, command, subAppRoot = '' }
+  { target, subAppRoot = '' }
 ) {
   if (!pageConfig.usingComponents) {
     pageConfig.usingComponents = {};
@@ -132,7 +130,6 @@ function generatePageJSON(
     filename: `${pageRoute}.json`,
     content: JSON.stringify(pageConfig, null, 2),
     target,
-    command,
   });
 }
 

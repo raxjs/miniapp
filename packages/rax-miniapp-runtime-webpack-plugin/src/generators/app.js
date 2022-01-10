@@ -10,7 +10,7 @@ function generateAppJS(
   compilation,
   commonAppJSFilePaths,
   mainPackageRoot = 'main',
-  { target, command, withNativeAppConfig }
+  { target, withNativeAppConfig }
 ) {
   const init =
 `function init(window, document, app) {${commonAppJSFilePaths.map(filePath => `require('${getAssetPath(filePath, 'app.js')}')(window, document, app)`).join(';')}}`;
@@ -26,11 +26,11 @@ App(render.createAppConfig(init, config, '${mainPackageRoot}', nativeAppConfig))
     filename: 'app.js',
     content: appJsContent,
     target,
-    command,
   });
 }
 
-function generateAppCSS(compilation, { target, command, pluginDir, subPackages }) {
+function generateAppCSS(compilation, { target, pluginDir, subPackages, assets }) {
+  const cssExt = platformMap[target].extension.css;
   // Add default css file to compilation
   const defaultCSSTmpl = adjustCSS(readFileSync(
     resolve(pluginDir, 'static', 'default.css'),
@@ -42,16 +42,16 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     'utf-8'
   );
   const defaultCSSContent = target === BAIDU_SMARTPROGRAM ? raxDefaultCSSTmpl : defaultCSSTmpl + raxDefaultCSSTmpl; // default CSS in baidu will cause render error
+  const defaultCSSFileName = `default${cssExt}`;
   addFileToCompilation(compilation, {
-    filename: `default${platformMap[target].extension.css}`,
+    filename: `default${cssExt}`,
     content: defaultCSSContent,
     target,
-    command,
   });
 
-  let content = `@import "./default${platformMap[target].extension.css}";`;
+  let content = `@import "./${defaultCSSFileName}";`;
 
-  Object.keys(compilation.assets).forEach(asset => {
+  Object.keys(assets).forEach(asset => {
     /* past:
       non-subPackage: app.css would import bundle.css and native page css (which is a bug)
       subpackage: app.css would only import vendor.css
@@ -59,9 +59,10 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     /* now:
       app.acss only import vendor.css. page css will be loaded in each page
     */
-    if (extname(asset) === platformMap[target].extension.css && asset !== `default${platformMap[target].extension.css}`) {
-      if (asset.includes('vendors.css')) {
-        content += `@import "./${asset}";`;
+    if (/\.css/.test(asset) && asset !== defaultCSSFileName) {
+      if (asset === 'vendors.css') {
+        const newCssFileName = asset.replace(/\.css/, cssExt);
+        content += `@import "./${newCssFileName}";`;
       }
     }
   });
@@ -70,7 +71,6 @@ function generateAppCSS(compilation, { target, command, pluginDir, subPackages }
     filename: `app${platformMap[target].extension.css}`,
     content,
     target,
-    command,
   });
 }
 

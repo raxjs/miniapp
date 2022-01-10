@@ -1,6 +1,6 @@
 {
   "name": "build-plugin-rax-miniapp-faas",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "rax miniapp-faas base plugins",
   "main": "lib/index.js",
   "scripts": {
@@ -27,6 +27,6 @@
     "@midwayjs/fcli-plugin-wechat": "^1.2.78",
     "@midwayjs/serverless-spec-builder": "^1.2.78",
     "fs-extra": "^10.0.0",
-    "miniapp-builder-shared": "^0.2.9"
+    "miniapp-builder-shared": "^0.3.0"
   }
 }

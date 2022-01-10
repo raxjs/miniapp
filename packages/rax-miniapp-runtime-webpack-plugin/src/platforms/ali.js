@@ -626,6 +626,7 @@ const Canvas = {
     'disable-scroll': 'false',
   },
   events: {
+    Ready: '',
     ...touchEvents,
   },
   basicEvents: {
@@ -743,6 +744,27 @@ const ContactButton = {
   }
 };
 
+const Lifestyle = {
+  props: {
+    publicId: '',
+    memo: ''
+  },
+  events: {
+    Follow: ''
+  }
+};
+
+const LifeFollow = {
+  props: {
+    sceneId: '',
+    checkFollow: ''
+  },
+  events: {
+    CheckFollow: '',
+    Close: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -790,6 +812,8 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   ContactButton,
+  Lifestyle,
+  LifeFollow,
   HElement,
   NoTouchHElement,
   CatchHElement,
@@ -854,7 +878,9 @@ exports.voidChildrenElements = new Set([
   'LivePlayer',
   'LivePusher',
   'ContactButton',
-  'OpenAvatar'
+  'OpenAvatar',
+  'Lifestyle',
+  'LifeFollow'
 ]);
 
 
