@@ -12,20 +12,14 @@ export default function setBaseConfig(config, options, routes) {
     getValue,
     context: {
       command,
-      userConfig: rootUserConfig,
-      rootDir
+      rootDir,
+      webpack
     },
     applyMethod,
     hasMethod,
-    cancelTask
   } = api;
 
-  const userConfig = rootUserConfig[target] || {};
-
-  // If using frm then do not generate miniapp webview code temporarily
-  if (target === MINIAPP && userConfig.frm === true ) {
-    cancelTask(MINIAPP);
-  }
+  const isWebpack4 = /^4\./.test(webpack.version);
 
   setEntry(config, {
     rootDir,
@@ -43,14 +37,24 @@ export default function setBaseConfig(config, options, routes) {
     .output
     .library(['page', '[name]'])
     .libraryTarget('umd')
-    .path(outputPath);
+    .globalObject('self={}');
 
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
-    if (!config.get('devtool')) {
-      config.devtool(false);
-    } else if (command === 'start') {
-      config.devtool('inline-source-map');
-    }
+  if (!isWebpack4) {
+    config.merge({
+      devServer: {
+        client: false,
+      }
+    })
+  } else {
+    config.devServer.inline(false);
+  }
+
+  if (command === 'start' && config.get('devtool')) {
+    config.devtool('inline-source-map');
+  }
+
+  config.devServer.hot(false);
+
   injectJSSDK(hasMethod, applyMethod, target);
   applyMethod('addPluginTemplate', join(__dirname, './runtime/page.js'));
   const importDeclarations = getValue('importDeclarations');

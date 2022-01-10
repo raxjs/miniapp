@@ -58,15 +58,21 @@ function loadAsDirectory(module) {
 function relativeModuleResolve(script, dependency, checkSourceExistence = true) {
   if (startsWithArr(dependency, ['./', '../', '/', '.\\', '..\\', '\\'])) {
     const dependencyPath = join(script, dependency);
-    const processedPath = loadAsFile(dependencyPath) || loadAsDirectory(dependencyPath);
-    if (checkSourceExistence && !processedPath) {
-      throw new Error(`The page source ${dependencyPath} doesn't exist`);
+    if (checkSourceExistence) {
+      const processedPath = loadAsFile(dependencyPath) || loadAsDirectory(dependencyPath);
+      if (!processedPath) {
+        throw new Error(`The page source ${dependencyPath} doesn't exist`);
+      }
+      return relative(
+        script,
+        processedPath || ''
+      );
+    } else {
+      return relative(
+        script,
+        dependencyPath
+      );
     }
-
-    return relative(
-      script,
-      processedPath || ''
-    );
   } else throw new Error('The page source path does not meet the requirements');
 };
 
