@@ -617,6 +617,15 @@ const Lottie = {
     djangoId: '',
     md5: '',
     optimize: 'false'
+  },
+  events: {
+    DataReady: '',
+    DataFailed: '',
+    AnimationStart: '',
+    AnimationEnd: '',
+    AnimationRepeat: '',
+    AnimationCancel: '',
+    DataLoadReady: ''
   }
 };
 
