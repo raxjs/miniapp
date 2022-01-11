@@ -23,7 +23,8 @@ module.exports = (
     disableCopyNpm = false,
     turnOffSourceMap = false,
     constantDir = [],
-    subPackages = false
+    subPackages = false,
+    cache,
   } = userConfig;
   const { rootDir, command } = context;
   const mode = command;
@@ -47,6 +48,7 @@ module.exports = (
 
   const loaderParams = {
     mode,
+    cache,
     entryPath,
     outputPath,
     disableCopyNpm,
