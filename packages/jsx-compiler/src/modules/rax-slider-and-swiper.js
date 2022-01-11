@@ -4,10 +4,11 @@ const genExpression = require('../codegen/genExpression');
 const createBinding = require('../utils/createBinding');
 const { BINDING_REG } = require('../utils/checkAttr');
 
-function transformRaxSlider(ast, adapter) {
+function transformRaxSliderAndSwiper(ast, adapter) {
   traverse(ast, {
     JSXOpeningElement(path) {
-      if (path.get('name').isJSXIdentifier({ name: 'rax-slider' })) {
+      const name = path.node.name;
+      if (t.isJSXIdentifier(name) && ( name.name === 'rax-slider' || name.name.indexOf('rax-swiper-') > -1)) {
         const children = path.parent.children.filter(
           (child) => {
             if (child.openingElement && t.isJSXIdentifier(child.openingElement.name)) {
@@ -32,7 +33,8 @@ function transformRaxSlider(ast, adapter) {
             insertSlotName(
               child,
               // 1 + arr1.length + index
-              index - childList.length + getChildListLengthExpression(childList) + '+' + forIndex.value.value
+              index - childList.length + getChildListLengthExpression(childList) + '+' + forIndex.value.value,
+              adapter.insertSwiperSlot
             );
             childList.push(
               forAttriute.value.value.replace(BINDING_REG, '') + '.length'
@@ -40,7 +42,8 @@ function transformRaxSlider(ast, adapter) {
           } else {
             insertSlotName(
               child,
-              index - childList.length + getChildListLengthExpression(childList)
+              index - childList.length + getChildListLengthExpression(childList),
+              adapter.insertSwiperSlot
             );
             swiperItemLength++;
           }
@@ -72,13 +75,15 @@ function getChildListLengthExpression(childList) {
   );
 }
 
-function insertSlotName(currentEl, name) {
-  getSwiperItemAttributes(currentEl).push(
-    t.jsxAttribute(
-      t.jsxIdentifier('slot'),
-      t.stringLiteral('slider-item-' + createBinding(name))
-    )
-  );
+function insertSlotName(currentEl, name, insertSwiperSlot) {
+  if (insertSwiperSlot) {
+    getSwiperItemAttributes(currentEl).push(
+      t.jsxAttribute(
+        t.jsxIdentifier('slot'),
+        t.stringLiteral('slider-item-' + createBinding(name))
+      )
+    );
+  }
 }
 
 function getSwiperItemAttributes(currentEl) {
@@ -93,11 +98,9 @@ function getSwiperItemAttributes(currentEl) {
 
 module.exports = {
   parse(parsed, code, options) {
-    if (options.adapter.processSlider) {
-      transformRaxSlider(parsed.templateAST, options.adapter);
-    }
+    transformRaxSliderAndSwiper(parsed.templateAST, options.adapter);
   },
 
   // For test cases.
-  _transformRaxSlider: transformRaxSlider,
+  _transformRaxSliderAndSwiper: transformRaxSliderAndSwiper,
 };

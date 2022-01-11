@@ -50,8 +50,8 @@ const parserAdapters = {
     slotScope: true,
     // Need transform key
     needTransformKey: false,
-    // Handle rax-slider
-    processSlider: false,
+    // Handle rax-slider and rax-swiper
+    insertSwiperSlot: false,
     // Need register props before program run
     needRegisterProps: false,
   },
@@ -80,7 +80,8 @@ const parserAdapters = {
     needTransformEvent: true,
     needTransformKey: true,
     triggerRef: true,
-    processSlider: true,
+    // Handle rax-slider and rax-swiper
+    insertSwiperSlot: true,
     needRegisterProps: true,
   },
   'bytedance': {
@@ -108,6 +109,8 @@ const parserAdapters = {
     needTransformEvent: true,
     needTransformKey: true,
     triggerRef: true,
+    // Handle rax-slider and rax-swiper
+    insertSwiperSlot: true,
     needRegisterProps: true,
   },
   componentCommonProps

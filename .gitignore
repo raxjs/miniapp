@@ -13,3 +13,4 @@ node_modules/
 examples/test
 yarn.lock
 package-lock.json
+.vscode/
