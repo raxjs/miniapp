@@ -9,7 +9,7 @@ const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPref
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
-const { getCache } = require('./utils/useCache');
+const { getCache, getCacheDirName } = require('./utils/useCache');
 const { output, transformCode, writeFileWithDirCheck } = require('./output');
 
 const ScriptLoader = __filename;
@@ -22,7 +22,6 @@ const MINIAPP_CONFIG_FIELD = 'miniappConfig';
 // 2. .d.ts file in rax base components are useless
 const OMIT_FILE_EXTENSION_IN_OUTPUT = ['.json', '.ts'];
 
-console.log('scriptLoader');
 module.exports = function scriptLoader(content) {
   const query = parse(this.request);
   if (query.role) {
@@ -30,7 +29,7 @@ module.exports = function scriptLoader(content) {
   }
 
   const loaderOptions = getOptions(this);
-  const { rootDir, disableCopyNpm, outputPath, mode, entryPath, platform, importedComponent = '', isRelativeMiniappComponent = false, aliasEntries, constantDir } = loaderOptions;
+  const { rootDir, disableCopyNpm, outputPath, mode, entryPath, platform, importedComponent = '', isRelativeMiniappComponent = false, aliasEntries, constantDir, cache } = loaderOptions;
   const rootContext = this.rootContext;
   const isJSON = isJSONFile(this.resourcePath);
   const isAppJSon = this.resourcePath === join(rootContext, 'src', 'app.json');
@@ -45,6 +44,7 @@ module.exports = function scriptLoader(content) {
     return path.indexOf(rootNodeModulePath) === 0;
   });
 
+  // console.log('script cache', this.resourcePath);
   const isFromConstantDir = cached(isFromTargetDirs(constantDir));
 
   const getNpmFolderName = cached(function getNpmName(relativeNpmPath) {
@@ -77,6 +77,7 @@ module.exports = function scriptLoader(content) {
       outputPath: {
         code: outputPathCode
       },
+      cache,
       mode,
       externalPlugins: [
         [
@@ -97,10 +98,10 @@ module.exports = function scriptLoader(content) {
       resourcePath: this.resourcePath
     };
 
-    const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
-    // console.log('cacheContentCode', cacheContent);
-    if (cacheContent && cacheContent.code) {
-      // console.log('writeFileWithDirCheck');
+    const cacheDirectory = getCacheDirName({ config: cache, mode });
+    const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, cacheDirectory) });
+
+    if (cache && cacheContent && cacheContent.code) {
       writeFileWithDirCheck( outputPathCode, cacheContent.code, { rootDir } );
     } else {
       output(outputContent, null, outputOption);

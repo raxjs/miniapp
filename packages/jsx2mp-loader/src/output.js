@@ -4,7 +4,7 @@ const { transformSync } = require('@babel/core');
 const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { minify, minifyJS, minifyCSS, minifyXML } = require('./utils/minifyCode');
 const addSourceMap = require('./utils/addSourceMap');
-const { saveCache } = require('./utils/useCache');
+const { saveCache, getCacheDirName } = require('./utils/useCache');
 
 function transformCode(rawContent, mode, externalPlugins = [], externalPreset = []) {
   const presets = [].concat(externalPreset);
@@ -55,7 +55,7 @@ function transformCode(rawContent, mode, externalPlugins = [], externalPreset = 
  * @param {object} options
  */
 function output(content, raw, options) {
-  const { mode, outputPath, externalPlugins = [], isTypescriptFile, platform, type, rootDir, resourcePath } = options;
+  const { mode, outputPath, externalPlugins = [], isTypescriptFile, platform, type, rootDir, cache, resourcePath } = options;
   let { code, config, json, css, map, template, assets, imported, usingComponents, importComponents = [], iconfontMap } = content;
   const isQuickApp = platform.type === QUICKAPP;
   const collection = {};
@@ -202,7 +202,11 @@ function output(content, raw, options) {
     collection.usingComponents = usingComponents;
   }
 
-  saveCache(collection, { filePath: resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
+  // save cache
+  if (cache) {
+    const cacheDirectory = getCacheDirName({ config: cache, mode});
+    saveCache(collection, { filePath: resourcePath, cacheDirectory: join(rootDir, cacheDirectory) });
+  }
 }
 
 /**

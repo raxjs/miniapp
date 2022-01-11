@@ -11,7 +11,7 @@ const processCSS = require('./styleProcessor');
 const { isTypescriptFile } = require('./utils/judgeModule');
 const parse = require('./utils/parseRequest');
 const { output, writeFileWithDirCheck } = require('./output');
-const { getCache } = require('./utils/useCache');
+const { getCache, getCacheDirName } = require('./utils/useCache');
 
 const ScriptLoader = require.resolve('./script-loader');
 
@@ -25,7 +25,7 @@ module.exports = async function pageLoader(content) {
   }
 
   const loaderOptions = getOptions(this);
-  const { rootDir, platform, entryPath, mode, disableCopyNpm, constantDir, turnOffSourceMap, outputPath, aliasEntries, injectAppCssComponent } = loaderOptions;
+  const { rootDir, platform, entryPath, mode, disableCopyNpm, constantDir, turnOffSourceMap, outputPath, aliasEntries, injectAppCssComponent, cache } = loaderOptions;
   const resourcePath = this.resourcePath;
   const rootContext = this.rootContext;
   const isQuickApp = platform.type === QUICKAPP;
@@ -43,7 +43,8 @@ module.exports = async function pageLoader(content) {
   const outputPathCss = distFileWithoutExt + platform.extension.css;
   const outputPathTemplate = distFileWithoutExt + platform.extension.xml;
 
-  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, `.miniCache/${mode}`) });
+  const cacheDirectory = getCacheDirName({ config: cache, mode });
+  const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, cacheDirectory) });
 
   function isCustomComponent(name, usingComponents = {}) {
     const matchingPath = join(dirname(resourcePath), name);
@@ -59,8 +60,8 @@ module.exports = async function pageLoader(content) {
     return false;
   }
 
-  if (cacheContent) {
-    // console.log('writeFileWithDirCheck');
+  // cache and cacheContent exsit
+  if (cache && cacheContent) {
     if (cacheContent.code) {
       writeFileWithDirCheck( outputPathCode, cacheContent.code, { rootDir });
     }
@@ -231,6 +232,7 @@ module.exports = async function pageLoader(content) {
         template: distFileWithoutExt + platform.extension.xml,
         assets: outputPath
       },
+      cache,
       mode,
       platform,
       isTypescriptFile: isTypescriptFile(this.resourcePath),

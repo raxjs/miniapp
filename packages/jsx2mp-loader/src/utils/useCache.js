@@ -31,12 +31,15 @@ const getCache = ({ filePath, cacheDirectory }) => {
   return read(cacheKey);
 };
 
+const getCacheDirName = ({ config, mode }) => {
+  return `${typeof config === 'object' && config.cacheDirectory || '.miniCache'}/${mode}`;
+};
+
 const directories = new Set();
 
 function write(key, data, callback) {
   const dirname = path.dirname(key);
   const content = BJSON.stringify(data);
-  // console.log('key', key, dirname);
 
   if (directories.has(dirname)) {
     // for performance skip creating directory
@@ -81,4 +84,5 @@ function compare(stats, dep) {
 module.exports = {
   saveCache,
   getCache,
+  getCacheDirName
 };
