@@ -11,6 +11,7 @@
 - support ad-custom/lisestyle/life-follow component
 - support enableNative props in video component
 - support type props in canvas
+- support lottie events
 
 ## [2.8.7] - 2021-11-01
 
