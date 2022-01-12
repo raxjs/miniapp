@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.7] - 2022-01-12
+
+### Changed
+
+- output es5 code in `lib` dir
+
 ## [0.1.6] - 2021-12-14
 
 ### Changed

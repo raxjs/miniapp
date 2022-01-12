@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/build-plugin-rax-miniapp-faas" },
     { "path": "packages/driver-miniapp" },
-    { "path": "packages/miniapp-webview-config" }
+    { "path": "packages/miniapp-webview-config" },
+    { "path": "packages/miniapp-history" }
   ]
 }
