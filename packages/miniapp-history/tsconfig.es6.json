@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.settings.json",
+  "compilerOptions": {
+    "target": "ES2015",
+    "baseUrl": "./",
+    "rootDir": "src",
+    "outDir": "es",
+    "moduleResolution": "Node"
+  },
+}

@@ -3,8 +3,10 @@
   "version": "0.1.7",
   "description": "Miniapp implementation of history.",
   "main": "lib/index.js",
+  "module": "es/index.js",
   "files": [
-    "lib"
+    "lib",
+    "es"
   ],
   "author": "Rax Team",
   "scripts": {

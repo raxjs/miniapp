@@ -1,0 +1,6 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/miniapp-history/tsconfig.es6.json" }
+  ]
+}
