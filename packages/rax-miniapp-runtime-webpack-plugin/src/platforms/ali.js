@@ -571,6 +571,7 @@ const Video = {
     'enable-progress-gesture': 'false',
     'mobilenet-hint-type': '1',
     'floating-mode': addSingleQuote('none'),
+    enableNative: 'false'
   },
   events: {
     Play: '',
@@ -616,6 +617,15 @@ const Lottie = {
     djangoId: '',
     md5: '',
     optimize: 'false'
+  },
+  events: {
+    DataReady: '',
+    DataFailed: '',
+    AnimationStart: '',
+    AnimationEnd: '',
+    AnimationRepeat: '',
+    AnimationCancel: '',
+    DataLoadReady: ''
   }
 };
 
@@ -623,6 +633,7 @@ const Canvas = {
   props: {
     width: addSingleQuote('300px'),
     height: addSingleQuote('225px'),
+    type: '',
     'disable-scroll': 'false',
   },
   events: {
@@ -753,6 +764,7 @@ const Lifestyle = {
     Follow: ''
   }
 };
+
 
 const LifeFollow = {
   props: {

@@ -36,7 +36,9 @@ async function compileCSS(cssType, content, filename) {
   return processedContent;
 }
 
-function convertCSSUnit(raw, originExt = 'rem', targetExt = 'rpx') {
+function convertCSSUnit(raw, originExt = '', targetExt = '') {
+  if (!(originExt && targetExt)) return raw;
+
   const regexp = new RegExp(originExt, 'g');
   return raw.replace(regexp, targetExt); // Maybe could use postcss plugin instead.
 }
@@ -56,7 +58,9 @@ async function processCSS(cssFiles, sourcePath) {
       const relativePath = relative(sourcePath, cssFile.filename);
       assets[relativePath + '.js'] = createCSSModule(cssFile.content);
     } else if (cssFile.type === 'cssFile') {
-      style += convertCSSUnit(cssFile.content);
+      // just replace 'rem' in css value of specific pattern, to prevent break css name or css key
+      // pattern eg. ": 1rem;", ": .5rem;", ":1rem ;", ":1rem \n"
+      style += convertCSSUnit(cssFile.content, '(:\s*(?:\d|\.)+)rem(\s*(?:;|\n))', '$1rpx$2');
     }
   }
   return { style, assets };
