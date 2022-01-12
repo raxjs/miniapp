@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isBaiduSmartProgram, isKuaiShouMiniProgram } from 'universal-env';
+import { isBaiduSmartProgram, isKuaiShouMiniProgram, isMiniApp, isWeChatMiniProgram } from 'universal-env';
 
 export const NATIVE_EVENTS_LIST = [
   'onBack',
@@ -16,7 +16,7 @@ export const NATIVE_EVENTS_LIST = [
 
 export const NATIVE_EVENTS_WITH_RETURN_INFO = ['onShareAppMessage', 'onShareTimeline'];
 
-export const BUILTIN_COMPONENT_LIST = new Set([
+const BUILTIN_COMPONENT_LIST = new Set([
   'movable-view', 'cover-image', 'cover-view', 'movable-area', 'scroll-view', 'swiper', 'swiper-item', 'view',
   'icon', 'progress', 'rich-text', 'text',
   'button', 'checkbox', 'checkbox-group', 'editor', 'form', 'input', 'label', 'picker', 'picker-view', 'picker-view-column', 'radio', 'radio-group', 'slider', 'switch', 'textarea',
@@ -24,8 +24,16 @@ export const BUILTIN_COMPONENT_LIST = new Set([
   'audio', 'camera', 'image', 'live-player', 'live-pusher', 'video',
   'map',
   'canvas',
-  'ad', 'official-account', 'open-data', 'web-view', 'open-avatar', 'lottie', 'contact-button'
+  'ad', 'official-account', 'open-data', 'web-view', 'open-avatar', 'lottie', 'contact-button',
 ]);
+
+if (isMiniApp) {
+  BUILTIN_COMPONENT_LIST.add('lifestyle').add('life-follow');
+} else if (isWeChatMiniProgram) {
+  BUILTIN_COMPONENT_LIST.add('ad-custom');
+}
+
+export { BUILTIN_COMPONENT_LIST };
 
 export const BODY_NODE_ID = 'e-body';
 

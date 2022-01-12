@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.8.8] - 2022-01-06
+
+### Fixed
+
+- spell error in picker-view events
+
+### Added
+
+- support ad-custom/lisestyle/life-follow component
+- support enableNative props in video component
+- support type props in canvas
+- support lottie events
+
 ## [2.8.7] - 2021-11-01
 
 ### Fixed

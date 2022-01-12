@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.2] - 2022-01-06
+
+- Fix: generate duplicate package.json in dev mode
+- Fix: copy files repeatedly in dev mode
+
 ## [0.3.1] - 2021-12-22
 
 - Fix: `readJSONSync` error
