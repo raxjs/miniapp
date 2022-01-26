@@ -11,7 +11,8 @@ module.exports = (
   const platformInfo = platformMap[target];
   const {
     turnOffSourceMap = false,
-    constantDir = []
+    constantDir = [],
+    cache
   } = userConfig;
   const { rootDir, command } = context;
 
@@ -25,11 +26,13 @@ module.exports = (
 
   const loaderParams = {
     mode: command,
+    cache,
     entryPath,
     outputPath,
     disableCopyNpm,
     turnOffSourceMap,
     platform: platformInfo,
+    rootDir
   };
 
   config.entryPoints.clear();

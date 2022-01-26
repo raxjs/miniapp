@@ -9,7 +9,8 @@ const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPref
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
-const { output, transformCode } = require('./output');
+const { getCache, getCacheDirName } = require('./utils/useCache');
+const { output, transformCode, writeFileWithDirCheck } = require('./output');
 
 const ScriptLoader = __filename;
 
@@ -28,7 +29,7 @@ module.exports = function scriptLoader(content) {
   }
 
   const loaderOptions = getOptions(this);
-  const { rootDir, disableCopyNpm, outputPath, mode, entryPath, platform, importedComponent = '', isRelativeMiniappComponent = false, aliasEntries, constantDir } = loaderOptions;
+  const { rootDir, disableCopyNpm, outputPath, mode, entryPath, platform, importedComponent = '', isRelativeMiniappComponent = false, aliasEntries, constantDir, cache } = loaderOptions;
   const rootContext = this.rootContext;
   const isJSON = isJSONFile(this.resourcePath);
   const isAppJSon = this.resourcePath === join(rootContext, 'src', 'app.json');
@@ -43,6 +44,7 @@ module.exports = function scriptLoader(content) {
     return path.indexOf(rootNodeModulePath) === 0;
   });
 
+  // console.log('script cache', this.resourcePath);
   const isFromConstantDir = cached(isFromTargetDirs(constantDir));
 
   const getNpmFolderName = cached(function getNpmName(relativeNpmPath) {
@@ -70,10 +72,12 @@ module.exports = function scriptLoader(content) {
     let outputOption = {};
 
     outputContent = { code: rawContent };
+    const outputPathCode = removeExt(distSourcePath) + '.js';
     outputOption = {
       outputPath: {
-        code: removeExt(distSourcePath) + '.js'
+        code: outputPathCode
       },
+      cache,
       mode,
       externalPlugins: [
         [
@@ -91,9 +95,17 @@ module.exports = function scriptLoader(content) {
       platform,
       isTypescriptFile: isTypescriptFile(this.resourcePath),
       rootDir,
+      resourcePath: this.resourcePath
     };
 
-    output(outputContent, null, outputOption);
+    const cacheDirectory = getCacheDirName({ config: cache, mode });
+    const cacheContent = getCache({ filePath: this.resourcePath, cacheDirectory: join(rootDir, cacheDirectory) });
+
+    if (cache && cacheContent && cacheContent.code) {
+      writeFileWithDirCheck( outputPathCode, cacheContent.code, { rootDir } );
+    } else {
+      output(outputContent, null, outputOption);
+    }
   };
 
   const outputDir = (source, target, { isThirdMiniappComponent = false, resourcePath } = {}) => {
@@ -235,6 +247,7 @@ module.exports = function scriptLoader(content) {
         content
       ].join('\n');
     } else {
+      // console.log('isFromNodeModule', isFromNodeModule);
       outputFile(rawContent);
     }
   } else if (isFromConstantDir(this.resourcePath) && isThirdMiniappComponent) {
