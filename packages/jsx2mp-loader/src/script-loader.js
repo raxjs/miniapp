@@ -72,7 +72,7 @@ module.exports = function scriptLoader(content) {
     outputContent = { code: rawContent };
     outputOption = {
       outputPath: {
-        code: removeExt(distSourcePath) + '.js'
+        code: removeExt(distSourcePath, platform.type) + '.js'
       },
       mode,
       externalPlugins: [

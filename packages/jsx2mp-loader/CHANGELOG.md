@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.35] - 2022-02-10
+
+### Fixed
+
+- component of pure js support shaking by filename postfix
+
 ## [0.4.34] - 2022-01-06
 
 ### Fixed
