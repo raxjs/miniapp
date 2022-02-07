@@ -1,4 +1,4 @@
-import createStyle from '../createStyle';
+const createStyle = require('../createStyle');
 
 describe('Create style', () => {
   describe('Types', () => {

@@ -35,6 +35,7 @@ import {
 import apiCore from './adapter/getNativeAPI';
 import attachRef from './adapter/attachRef';
 import Event from './events';
+import { diffData } from './diff';
 
 const event = new Event();
 
@@ -401,7 +402,10 @@ export default class Component {
           );
         } else if (isDifferentData(currentData[key], data[key])) {
           if (isPlainObject(data[key])) {
-            normalData[key] = Object.assign({}, currentData[key], data[key]);
+            // normalData[key] = Object.assign({}, currentData[key], data[key]);
+            // find the different path from data and currentData
+            const patch = diffData({ [key]: data[key] }, { [key]: currentData[key] });
+            Object.assign(normalData, patch);
           } else {
             normalData[key] = data[key] === undefined ? null : data[key]; // Make undefined value compatible with Alibaba MiniApp incase that data is not sync in render and worker thread
           }
