@@ -404,8 +404,12 @@ export default class Component {
           if (isPlainObject(data[key])) {
             // normalData[key] = Object.assign({}, currentData[key], data[key]);
             // find the different path from data and currentData
-            const patch = diffData({ [key]: data[key] }, { [key]: currentData[key] });
-            Object.assign(normalData, patch);
+            try {
+              const patch = diffData({ [key]: data[key] }, { [key]: currentData[key] });
+              Object.assign(normalData, patch);
+            } catch (err) { 
+              normalData[key] = Object.assign({}, currentData[key], data[key]);
+            }
           } else {
             normalData[key] = data[key] === undefined ? null : data[key]; // Make undefined value compatible with Alibaba MiniApp incase that data is not sync in render and worker thread
           }
