@@ -5,31 +5,8 @@ const FUNCTIONTYPE = "[object Function]";
 export function diffData(current, previous) {
   const result = {};
   if (!previous) return current;
-  syncKeys(current, previous);
   _diff(current, previous, "", result);
   return result;
-}
-
-function syncKeys(current, previous) {
-  if (current === previous) return;
-  const rootCurrentType = getType(current);
-  const rootPreType = getType(previous);
-  if (rootCurrentType == OBJECTTYPE && rootPreType == OBJECTTYPE) {
-    for (let key in previous) {
-      const currentValue = current[key];
-      if (currentValue === undefined) {
-        current[key] = null;
-      } else {
-        syncKeys(currentValue, previous[key]);
-      }
-    }
-  } else if (rootCurrentType == ARRAYTYPE && rootPreType == ARRAYTYPE) {
-    if (current.length >= previous.length) {
-      previous.forEach((item, index) => {
-        syncKeys(current[index], item);
-      });
-    }
-  }
 }
 
 function _diff(current, previous, path, result) {
@@ -37,15 +14,24 @@ function _diff(current, previous, path, result) {
   const rootCurrentType = getType(current);
   const rootPreType = getType(previous);
   if (rootCurrentType == OBJECTTYPE) {
+    const $current = { ...current };
+    if (rootPreType === OBJECTTYPE) {
+      for (let key in previous) {
+        const currentValue = $current[key];
+        if (currentValue === undefined) {
+          $current[key] = null;
+        }
+      }
+    }
     if (
       rootPreType != OBJECTTYPE ||
-      (Object.keys(current).length < Object.keys(previous).length &&
+      (Object.keys($current).length < Object.keys(previous).length &&
         path !== "")
     ) {
-      setResult(result, path, current);
+      setResult(result, path, $current);
     } else {
-      for (let key in current) {
-        const currentValue = current[key];
+      for (let key in $current) {
+        const currentValue = $current[key];
         const preValue = previous[key];
         const currentType = getType(currentValue);
         const preType = getType(preValue);
@@ -71,17 +57,26 @@ function _diff(current, previous, path, result) {
             }
           }
         } else if (currentType == OBJECTTYPE) {
+          const $currentValue = { ...currentValue };
+          if (preType === OBJECTTYPE) {
+            for (let key in preValue) {
+              const currentItem = $currentValue[key];
+              if (currentItem === undefined) {
+                $currentValue[key] = null;
+              }
+            }
+          }
           if (
             preType != OBJECTTYPE ||
-            Object.keys(currentValue).length < Object.keys(preValue).length
+            Object.keys($currentValue).length < Object.keys(preValue).length
           ) {
-            setResult(result, concatPathAndKey(path, key), currentValue);
+            setResult(result, concatPathAndKey(path, key), $currentValue);
           } else {
-            for (let subKey in currentValue) {
+            for (let subKey in $currentValue) {
               const realPath =
                 concatPathAndKey(path, key) +
                 (subKey.includes(".") ? `["${subKey}"]` : `.${subKey}`);
-              _diff(currentValue[subKey], preValue[subKey], realPath, result);
+              _diff($currentValue[subKey], preValue[subKey], realPath, result);
             }
           }
         }
