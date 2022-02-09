@@ -3,6 +3,7 @@ import Location from './Location';
 import { addListener } from './listeners';
 
 export default class MiniAppHistory {
+  location: Location;
   constructor(routes) {
     this.location = new Location();
     __updateRouterMap(routes);
@@ -21,7 +22,7 @@ export default class MiniAppHistory {
       let index = -1;
       for (let idx in listeners) {
         if (listeners[idx] === callback) {
-          index = idx;
+          index = Number(idx);
           break;
         }
       }
@@ -29,3 +30,4 @@ export default class MiniAppHistory {
     };
   }
 }
+

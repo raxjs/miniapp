@@ -571,6 +571,7 @@ const Video = {
     'enable-progress-gesture': 'false',
     'mobilenet-hint-type': '1',
     'floating-mode': addSingleQuote('none'),
+    enableNative: 'false'
   },
   events: {
     Play: '',
@@ -616,6 +617,15 @@ const Lottie = {
     djangoId: '',
     md5: '',
     optimize: 'false'
+  },
+  events: {
+    DataReady: '',
+    DataFailed: '',
+    AnimationStart: '',
+    AnimationEnd: '',
+    AnimationRepeat: '',
+    AnimationCancel: '',
+    DataLoadReady: ''
   }
 };
 
@@ -623,6 +633,7 @@ const Canvas = {
   props: {
     width: addSingleQuote('300px'),
     height: addSingleQuote('225px'),
+    type: '',
     'disable-scroll': 'false',
   },
   events: {
@@ -744,6 +755,28 @@ const ContactButton = {
   }
 };
 
+const Lifestyle = {
+  props: {
+    publicId: '',
+    memo: ''
+  },
+  events: {
+    Follow: ''
+  }
+};
+
+
+const LifeFollow = {
+  props: {
+    sceneId: '',
+    checkFollow: ''
+  },
+  events: {
+    CheckFollow: '',
+    Close: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -791,6 +824,8 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   ContactButton,
+  Lifestyle,
+  LifeFollow,
   HElement,
   NoTouchHElement,
   CatchHElement,
@@ -855,7 +890,9 @@ exports.voidChildrenElements = new Set([
   'LivePlayer',
   'LivePusher',
   'ContactButton',
-  'OpenAvatar'
+  'OpenAvatar',
+  'Lifestyle',
+  'LifeFollow'
 ]);
 
 

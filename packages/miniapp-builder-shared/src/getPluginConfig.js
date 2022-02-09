@@ -1,6 +1,5 @@
 const { join, resolve } = require('path');
 const { readJSONSync } = require('fs-extra');
-const getRouteName = require('./utils/getRouteName');
 
 function transformPluginConfig(pluginConfig) {
   const result = {
@@ -30,8 +29,7 @@ module.exports = (rootDir, nativeLifeCycleMap) => {
   }
 
   pluginConfig.routes.map(route => {
-    route.name = route.source;
-    route.entryName = getRouteName(route, rootDir);
+    route.entryName = route.source;
     addPage(route);
   });
 

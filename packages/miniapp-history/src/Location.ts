@@ -1,4 +1,7 @@
 export default class Location {
+  _currentPageOptions: {};
+  _pageId: any;
+  hash: string;
   constructor() {
     this._currentPageOptions = {};
     this.hash = '';

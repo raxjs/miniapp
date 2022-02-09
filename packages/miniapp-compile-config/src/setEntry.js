@@ -1,8 +1,9 @@
-const { dirname, join } = require('path');
+const { dirname, join, resolve } = require('path');
+const { readJSONSync } = require('fs-extra');
 const {
   pathHelper: { absoluteModuleResolve, getDepPath, removeExt },
-  getAppConfig,
-  filterNativePages
+  normalizeStaticConfig,
+  separateNativeRoutes,
 } = require('miniapp-builder-shared');
 
 function clearEntry(config) {
@@ -41,8 +42,14 @@ function configEntry(config, routes, options) {
 function setEntry(config, routes, options) {
   const { needCopyList, rootDir, target, outputPath } = options;
   clearEntry(config);
-  const filteredRoutes = filterNativePages(routes, needCopyList, { rootDir, target, outputPath });
-  configEntry(config, filteredRoutes, options);
+  const { normalRoutes, nativeRoutes } = separateNativeRoutes(routes, { rootDir, target, outputPath });
+  nativeRoutes.forEach(({ source }) => {
+    needCopyList.push({
+      from: dirname(join('src', source)),
+      to: dirname(join('src', source)),
+    });
+  });
+  configEntry(config, normalRoutes, options);
 }
 
 function setMultiplePackageEntry(config, routes, options) {
@@ -50,11 +57,28 @@ function setMultiplePackageEntry(config, routes, options) {
   clearEntry(config);
   routes.forEach(app => {
     const subAppRoot = dirname(app.source);
-    const subAppConfig = getAppConfig(rootDir, target, null, subAppRoot);
-    const filteredRoutes = filterNativePages(subAppConfig.routes, needCopyList, { rootDir, target, outputPath, subAppRoot });
-    configEntry(config, filteredRoutes, { entryPath: app.miniappMain ? join('src', app.source) : null, rootDir, subAppRoot });
-    subAppConfig.miniappMain = app.miniappMain;
-    subAppConfigList.push(subAppConfig);
+    // Deprecated: Read app.json as subpackages appConfig, it will get by global API
+    const subStaticConfig = readJSONSync(resolve(rootDir, 'src', subAppRoot, 'app.json'));
+    // Deprecated: filter routes which includes current build target
+    const validStaticConfig = getValidStaticConfig(subStaticConfig, {
+      target,
+    });
+    const normalizedSubStaticConfig = normalizeStaticConfig(validStaticConfig, {
+      rootDir,
+      subAppRoot,
+    });
+    const { normalRoutes, nativeRoutes } = separateNativeRoutes(normalizedSubStaticConfig.routes, { rootDir, target, outputPath, subAppRoot });
+    nativeRoutes.forEach(({ source }) => {
+      needCopyList.push({
+        from: dirname(join('src', source)),
+        to: dirname(source),
+      });
+    });
+    configEntry(config, normalRoutes, { entryPath: app.miniappMain ? join('src', app.source) : null, rootDir, subAppRoot });
+    subAppConfigList.push({
+      ...normalizedSubStaticConfig,
+      miniappMain: app.miniappMain,
+    });
   });
 }
 
@@ -86,6 +110,21 @@ function setPluginEntry(config, pluginConfig, entryPath) {
     const entryConfig = config.entry(entryName);
     entryConfig.add(source);
   }
+}
+
+// Deprecated: Get valid static config
+function getValidStaticConfig(staticConfig, { target }) {
+  if (!staticConfig.routes) {
+    throw new Error('routes in app.json must be array');
+  }
+
+  return {
+    ...staticConfig,
+    routes: staticConfig.routes.filter(({ targets }) => {
+      if (!targets) return true;
+      return targets.includes(target);
+    })
+  };
 }
 
 module.exports = {

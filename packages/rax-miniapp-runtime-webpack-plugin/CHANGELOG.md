@@ -1,5 +1,27 @@
 # Changelog
 
+## [5.0.1] - 2022-01-11
+
+### Added
+
+- Support lottie events
+- Support type props in canvas
+- Support enableNative props in video component
+
+### Changed
+
+- Remove colors dependency
+
+## [5.0.0] - 2021-12-14
+
+### Added
+
+- Support webpack5
+
+### Changed
+
+- Only wrapper `document`/`window` mock func in necessary file
+
 ## [4.11.2] - 2021-11-01
 
 ### Fixed
