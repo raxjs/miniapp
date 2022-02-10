@@ -1,11 +1,11 @@
-const ARRAYTYPE = "[object Array]";
-const OBJECTTYPE = "[object Object]";
-const FUNCTIONTYPE = "[object Function]";
+const ARRAYTYPE = '[object Array]';
+const OBJECTTYPE = '[object Object]';
+const FUNCTIONTYPE = '[object Function]';
 
 export function diffData(current, previous) {
   const result = {};
   if (!previous) return current;
-  _diff(current, previous, "", result);
+  _diff(current, previous, '', result);
   return result;
 }
 
@@ -26,7 +26,7 @@ function _diff(current, previous, path, result) {
     if (
       rootPreType != OBJECTTYPE ||
       (Object.keys($current).length < Object.keys(previous).length &&
-        path !== "")
+        path !== '')
     ) {
       setResult(result, path, $current);
     } else {
@@ -50,7 +50,7 @@ function _diff(current, previous, path, result) {
                 _diff(
                   item,
                   preValue[index],
-                  concatPathAndKey(path, key) + "[" + index + "]",
+                  concatPathAndKey(path, key) + '[' + index + ']',
                   result
                 );
               });
@@ -75,7 +75,7 @@ function _diff(current, previous, path, result) {
             for (let subKey in $currentValue) {
               const realPath =
                 concatPathAndKey(path, key) +
-                (subKey.includes(".") ? `["${subKey}"]` : `.${subKey}`);
+                (subKey.includes('.') ? `['${subKey}']` : `.${subKey}`);
               _diff($currentValue[subKey], preValue[subKey], realPath, result);
             }
           }
@@ -90,7 +90,7 @@ function _diff(current, previous, path, result) {
         setResult(result, path, current);
       } else {
         current.forEach((item, index) => {
-          _diff(item, previous[index], path + "[" + index + "]", result);
+          _diff(item, previous[index], path + '[' + index + ']', result);
         });
       }
     }
@@ -100,9 +100,9 @@ function _diff(current, previous, path, result) {
 }
 
 function concatPathAndKey(path, key) {
-  return key.includes(".")
-    ? path + `["${key}"]`
-    : (path == "" ? "" : path + ".") + key;
+  return key.includes('.')
+    ? path + `['${key}']`
+    : (path == '' ? '' : path + '.') + key;
 }
 
 function setResult(result, k, v) {
