@@ -494,8 +494,8 @@ function isAppendArray(prev, next) {
   // Only concern about list append case
   if (next.length === 0) return false;
   if (prev.length === 0) return true;
-  // When item's type is object, they have differrent reference, so should use shallowEqual
-  return next.length > prev.length && next.slice(0, prev.length).every((val, index) => shallowEqual(prev[index], val));
+  // Use diffData replace shallowEqual
+  return next.length > prev.length && next.slice(0, prev.length).every((val, index) => Object.keys(diffData(prev[index], val)).length===0);
 }
 
 function isDifferentData(prevData, nextData) {
