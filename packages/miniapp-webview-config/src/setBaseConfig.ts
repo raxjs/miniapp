@@ -44,7 +44,7 @@ export default function setBaseConfig(config, options, routes) {
       devServer: {
         client: false,
       }
-    })
+    });
   } else {
     config.devServer.inline(false);
   }

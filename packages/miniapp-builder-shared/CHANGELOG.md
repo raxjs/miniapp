@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1] - 2022-02-28
+
+### Changed
+
+- add `remoteRoutes` in `separateNativeRoutes`
+
 ## [0.3.0] - 2021-12-14
 
 ### Changed
