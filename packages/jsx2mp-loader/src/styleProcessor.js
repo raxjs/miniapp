@@ -60,7 +60,7 @@ async function processCSS(cssFiles, sourcePath) {
     } else if (cssFile.type === 'cssFile') {
       // just replace 'rem' in css value of specific pattern, to prevent break css name or css key
       // pattern eg. ": 1rem;", ": .5rem;", ":1rem ;", ":1rem \n"
-      style += convertCSSUnit(cssFile.content, '(:\s*(?:\d|\.)+)rem(\s*(?:;|\n))', '$1rpx$2');
+      style += convertCSSUnit(cssFile.content, '(:\\s*[.0-9]+)rem(\\s*(?:;|\\n))', '$1rpx$2');
     }
   }
   return { style, assets };

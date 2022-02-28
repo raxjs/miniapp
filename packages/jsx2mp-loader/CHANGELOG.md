@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.36] - 2022-02-22
+
+### Fixed
+
+- just replace 'rem' in css value of specific pattern, to prevent break css name or css key
+
 ## [0.4.35] - 2022-02-10
 
 ### Fixed
