@@ -19,6 +19,7 @@ import { run } from './fn/shell';
     await fs.copyFile(from, to);
   }
   await run('npx tsc --build ./tsconfig.json');
+  await run('npx tsc --build ./tsconfig.es6.json');
 })().catch((e) => {
   console.trace(e);
   process.exit(128);

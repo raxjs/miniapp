@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isWeChatMiniProgram, isMiniApp } from 'universal-env';
 // Components
 import coverImage from './cover-image';
 import coverView from './cover-view';
@@ -27,6 +29,7 @@ import navigator from './navigator';
 import camera from './camera';
 import image from './image';
 import video from './video';
+import lottie from './lottie';
 import map from './map';
 import canvas from './canvas';
 import webView from './web-view';
@@ -35,12 +38,19 @@ import livePusher from './live-pusher';
 import officialAccount from './official-account';
 import contactButton from './contact-button';
 
+// WeChat only
+import adCustom from './ad-custom';
+
+// Alibaba MiniApp only
+import lifestyle from './lifestyle';
+import lifeFollow from './life-follow';
+
 // Sub components
 import movableView from './movable-view';
 import swiperItem from './swiper-item';
 import pickerViewColumn from './picker-view-column';
 
-const components = [
+let components = [
   coverImage,
   coverView,
   movableArea,
@@ -80,6 +90,12 @@ const components = [
   officialAccount,
   contactButton
 ];
+
+if (isWeChatMiniProgram) {
+  components = components.concat([ adCustom ]);
+} else if (isMiniApp) {
+  components = components.concat([ lifestyle, lifeFollow, lottie ]);
+}
 
 const handlesMap = {
   simpleEvents: [],

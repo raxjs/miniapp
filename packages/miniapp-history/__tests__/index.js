@@ -65,7 +65,7 @@ describe('history', () => {
   });
 
   it('push: /page1', async() => {
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       history.push('/page1');
     });
@@ -73,7 +73,7 @@ describe('history', () => {
   });
 
   it('replace: /page1', async() => {
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       history.replace('/page1');
     });
@@ -81,7 +81,7 @@ describe('history', () => {
   });
 
   it('back: /page1', async() => {
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       history.back();
     });
@@ -90,7 +90,7 @@ describe('history', () => {
 
   it('listen push: /page1', async() => {
     let result = {};
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       history.listen(({ location, action }) => {
         result.location = location;
@@ -105,7 +105,7 @@ describe('history', () => {
 
   it('listen replace: /page2', async() => {
     let result = {};
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       history.listen(({ location, action }) => {
         result.location = location;
@@ -120,7 +120,7 @@ describe('history', () => {
 
   it('listen goBack', async() => {
     let result = {};
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       history.push('/page2');
       history.listen(({ location, action }) => {
@@ -138,7 +138,7 @@ describe('history', () => {
 
   it('unlisten push: /page1', async() => {
     let result = {};
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       const history = createMiniAppHistory(routes);
       const unlisten = history.listen(({ location, action }) => {
         result.pathname = location.pathname;
@@ -175,7 +175,7 @@ describe('location', () => {
 
   it('pathname', async() => {
     let history;
-    await import('..').then(({ createMiniAppHistory }) => {
+    await import('../es').then(({ createMiniAppHistory }) => {
       history = createMiniAppHistory(routes);
     });
     expect(history.location.pathname).toEqual('/pages/Home/index');

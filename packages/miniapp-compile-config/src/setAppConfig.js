@@ -41,7 +41,7 @@ module.exports = (
   // Set constantDir
   // `public` directory is the default static resource directory
   const isPublicFileExist = existsSync(resolve(rootDir, 'src/public'));
-
+  const originalConstantDir = isPublicFileExist ? ['src/public'].concat(constantDir) : constantDir;
   const loaderParams = {
     mode,
     entryPath,
@@ -50,9 +50,7 @@ module.exports = (
     turnOffSourceMap,
     platform: platformInfo,
     // To make old `constantDir` param compatible
-    constantDir: isPublicFileExist
-      ? ['src/public'].concat(constantDir)
-      : constantDir,
+    constantDir: Array.from(originalConstantDir),
     rootDir,
   };
 
@@ -70,6 +68,10 @@ module.exports = (
     loaderParams.constantDir.push(dirPatterns.from)
   );
 
+  config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
+    return [copyList.concat(needCopyList)];
+  });
+
   // Set base jsx2mp config
   setBaseConfig(config, userConfig, {
     entryPath,
@@ -77,6 +79,7 @@ module.exports = (
     loaderParams,
     target,
     outputPath,
+    originalConstantDir: Array.from(originalConstantDir)
   });
 
   // Add app and page jsx2mp loader
