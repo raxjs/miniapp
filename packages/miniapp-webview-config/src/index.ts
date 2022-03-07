@@ -21,7 +21,6 @@ export function setWebviewConfig(config, options) {
     applyMethod,
     hasMethod,
     cancelTask,
-    log
   } = api;
 
   const isWebpack4 = /^4\./.test(webpack.version);
@@ -33,7 +32,7 @@ export function setWebviewConfig(config, options) {
     return;
   }
 
-  const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir });
+  const appConfig = normalizeStaticConfig(getValue('staticConfig'), { rootDir, target });
   const outputPath = options.outputPath || resolve(rootDir, 'build', target);
 
   setEntry(config, {

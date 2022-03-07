@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1] - 2022-03-07
+
+- Fix: filter routes by target
+
 ## [0.4.0] - 2021-12-14
 ### Added
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.2] - 2022-03-07
+
+- Fix: filter routes by target
+
 ## [0.3.1] - 2021-12-22
 
 - Fix: `readJSONSync` error

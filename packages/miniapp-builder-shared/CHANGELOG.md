@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Filter routes by targets in `normalizeStaticConfig`
+- Filter routes by target in `normalizeStaticConfig`
 
 ## [0.3.0] - 2021-12-14
 

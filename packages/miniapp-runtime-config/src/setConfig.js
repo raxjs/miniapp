@@ -47,6 +47,7 @@ module.exports = (config, options) => {
       const normalizedSubStaticConfig = normalizeStaticConfig(validStaticConfig, {
         rootDir,
         subAppRoot,
+        target
       });
       if (app.miniappMain) mainPackageRoot = subAppRoot;
       subAppConfigList.push({

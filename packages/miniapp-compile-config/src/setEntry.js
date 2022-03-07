@@ -66,6 +66,7 @@ function setMultiplePackageEntry(config, routes, options) {
     const normalizedSubStaticConfig = normalizeStaticConfig(validStaticConfig, {
       rootDir,
       subAppRoot,
+      target
     });
     const { normalRoutes, nativeRoutes } = separateNativeRoutes(normalizedSubStaticConfig.routes, { rootDir, target, outputPath, subAppRoot });
     nativeRoutes.forEach(({ source }) => {
