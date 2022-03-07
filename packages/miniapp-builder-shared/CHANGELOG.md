@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.1] - 2022-03-07
+
+### Fixed
+
+- Filter routes by targets in `normalizeStaticConfig`
+
 ## [0.3.0] - 2021-12-14
 
 ### Changed

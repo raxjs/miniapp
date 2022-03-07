@@ -6,7 +6,7 @@ const {
   getRelativePath
 } = require('./pathHelper');
 
-module.exports = (staticConfig, { rootDir, subAppRoot = '' }) => {
+module.exports = (staticConfig, { rootDir, subAppRoot = '', target }) => {
   const entryPath = join(rootDir, 'src');
 
   const pages = [];
@@ -17,9 +17,12 @@ module.exports = (staticConfig, { rootDir, subAppRoot = '' }) => {
       route.subAppRoot = subAppRoot;
     }
     route.entryName = route.source;
-    pages.push(normalizeOutputFilePath(
-      relativeModuleResolve(entryPath, getRelativePath(route.source), !route.url)
-    ));
+
+    if (!target || !Array.isArray(route.targets) || route.targets.includes(target)) {
+      pages.push(normalizeOutputFilePath(
+        relativeModuleResolve(entryPath, getRelativePath(route.source), !route.url)
+      ));
+    }
   });
 
   const normalized = {
