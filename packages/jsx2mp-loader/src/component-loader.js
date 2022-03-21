@@ -50,10 +50,9 @@ module.exports = async function componentLoader(content) {
     virtualHost
   });
 
-  const rawContentAfterDCE = eliminateDeadCode(content);
-
   let transformed;
   try {
+    const rawContentAfterDCE = eliminateDeadCode(content);
     transformed = compiler(rawContentAfterDCE, compilerOptions);
   } catch (e) {
     console.log(chalk.red(`\n[${platform.name}] Error occured when handling Component ${this.resourcePath}`));
@@ -96,7 +95,7 @@ module.exports = async function componentLoader(content) {
   // Only works when developing miniapp plugin, to declare the use of __app_css component
   if (injectAppCssComponent) {
     const appCssComponentPath = resolve(outputPath, '__app_css', 'index');
-    const relativeAppCssComponentPath = relative(distFileDir, appCssComponentPath);
+    const relativeAppCssComponentPath = addRelativePathPrefix(relative(distFileDir, appCssComponentPath));
     config.usingComponents = {
       '__app_css': relativeAppCssComponentPath,
       ...config.usingComponents

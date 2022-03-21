@@ -1,9 +1,11 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isWeChatMiniProgram, isBaiduSmartProgram } from 'universal-env';
 import { isUndef } from '../utils/tool';
 
-export default {
+const textarea = {
   name: 'textarea',
   singleEvents: [{
-    name: 'keyboardheightchange',
+    name: 'onTextareaKeyboardHeightChange',
     eventName: 'keyboardheightchange'
   }],
   simpleEvents: [{
@@ -15,7 +17,7 @@ export default {
     eventName: 'input',
     middleware(evt, domNode, nodeId) {
       domNode.__textareaOldValue = domNode.value || '';
-      domNode._setAttributeWithOutUpdate('focus-state', true);
+      domNode._setAttributeWithDelayUpdate('focus-state', true);
       this.callSimpleEvent('focus', evt, domNode);
     }
   },
@@ -23,7 +25,7 @@ export default {
     name: 'onTextareaBlur',
     eventName: 'blur',
     middleware(evt, domNode, nodeId) {
-      domNode._setAttributeWithOutUpdate('focus-state', false);
+      domNode._setAttributeWithDelayUpdate('focus-state', false);
       if (!isUndef(domNode.__textareaOldValue) && domNode.value !== domNode.__textareaOldValue) {
         domNode.__textareaOldValue = undefined;
         this.callEvent('change', evt, null, nodeId);
@@ -36,9 +38,18 @@ export default {
     eventName: 'input',
     middleware(evt, domNode, nodeId) {
       const value = '' + evt.detail.value;
-      domNode._setAttributeWithOutUpdate('value', value);
+      domNode._setAttributeWithDelayUpdate('value', value);
 
       this.callEvent('input', evt, null, nodeId);
     }
   }]
 };
+
+if (isWeChatMiniProgram || isBaiduSmartProgram) {
+  textarea.simpleEvents = textarea.simpleEvents.concat([{
+    name: 'onTextareaLineChange',
+    eventName: 'linechange'
+  }]);
+}
+
+export default textarea;

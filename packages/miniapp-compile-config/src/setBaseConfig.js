@@ -16,7 +16,7 @@ const AutoInstallNpmPlugin = require('./plugins/AutoInstallNpm');
 module.exports = (
   chainConfig,
   userConfig,
-  { context, entryPath, outputPath, loaderParams, target }
+  { context, entryPath, outputPath, loaderParams, target, originalConstantDir = [] }
 ) => {
   const platformInfo = platformMap[target];
   const { rootDir, command } = context;
@@ -27,9 +27,6 @@ module.exports = (
   } = userConfig;
 
   const mode = command;
-
-  // Write to Disk
-  chainConfig.devServer.writeToDisk(true);
 
   // Remove useless alias
   ['babel-runtime-jsx-plus', '@babel/runtime', 'rax-app', 'rax-app$', 'rax'].forEach(packageName => {
@@ -47,6 +44,29 @@ module.exports = (
     chainConfig.module.rule(name).uses.clear();
   });
 
+  ['css', 'less', 'scss'].forEach(name => {
+    chainConfig.module.rule(name).uses.clear();
+    chainConfig.module.rule(`${name}-module`).uses.clear();
+    chainConfig.module.rule(`${name}-global`).uses.clear();
+  });
+
+  // In compile mode, resolve.mainFields must be main
+  chainConfig.resolve.mainFields.add('main').add('module');
+
+  if (/^4\./.test(webpack.version)) {
+    // Clear conditionNames
+    chainConfig.plugins.delete('ExportsFieldWebpackPlugin');
+  } else {
+    // Clear conditionNames
+    chainConfig.resolve.delete('conditionNames');
+    // If there is no conditionNames field, it will use `exports` field default value
+    // Redirect export field, https://webpack.js.org/configuration/resolve/#resolveexportsfields
+    chainConfig.resolve.merge({
+      exportsFields: ['miniapp_compile-exports'],
+    });
+  }
+
+
   // Compile ts file
   chainConfig.module
     .rule('tsx')
@@ -62,7 +82,6 @@ module.exports = (
 
   chainConfig
     .cache(true)
-    .mode('production')
     .target('node');
 
   chainConfig.module
@@ -80,7 +99,7 @@ module.exports = (
     })
     .end()
     .use('platform')
-    .loader(require.resolve('rax-compile-config/src/platformLoader'))
+    .loader(require.resolve('rax-platform-loader'))
     .options({ platform: target })
     .end()
     .use('script')
@@ -126,38 +145,38 @@ module.exports = (
       getPlatformExtensions(platform, ['.js', '.jsx', '.ts', '.tsx', '.json'])
     );
 
-  chainConfig.resolve.mainFields.add('main').add('module');
-
   chainConfig.externals(
     [
-      function(ctx, request, callback) {
-        if (/\.(css|sass|scss|styl|less)$/.test(request)) {
-          return callback(null, `commonjs2 ${request}`);
+      function(...args) {
+        let request;
+        let callback;
+
+        if (args[0].request) {
+          // webpack5
+          request = args[0].request;
+          callback = args[1];
+        } else {
+          // webpack4
+          [, request, callback] = args;
+        }
+        if (/^rax-app/.test(request)) {
+          return callback(null, `commonjs ${request}`);
+        }
+        if (/\.(c|le|sc)ss$/.test(request)) {
+          return callback(null, `commonjs ${request}`);
         }
         callback();
       },
     ].concat(chainConfig.get('externals') || [])
   );
 
-  chainConfig.plugin('define').use(webpack.DefinePlugin, [
-    {
-      'process.env': {
-        NODE_ENV: mode === 'build' ? '"production"' : '"development"',
-      },
-    },
-  ]);
-
-  chainConfig
-    .plugin('watchIgnore')
-    .use(webpack.WatchIgnorePlugin, [[/node_modules/]]);
-
-  if (loaderParams.constantDir.length > 0) {
+  if (originalConstantDir.length > 0) {
     chainConfig.plugin('copyPublicFile').use(CopyPublicFilePlugin, [
       {
         mode,
         outputPath,
         rootDir,
-        constantDir: loaderParams.constantDir,
+        constantDir: originalConstantDir,
         target,
       },
     ]);

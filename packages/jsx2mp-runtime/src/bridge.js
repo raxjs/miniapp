@@ -313,18 +313,21 @@ export function runApp(...args) {
   if (staticConfig) {
     throw new Error('runApp can only be called once.');
   }
+  let appProps = {};
   if (args.length === 1) {
     // runApp(staticConfig)
     staticConfig = args[0];
+    setModernMode(false);
   } else if (Array.isArray(args[0].routes)) {
     // runApp(staticConfig, pageProps)
     staticConfig = args[0];
     _pageProps = args[1];
+    setModernMode(false);
   } else {
     // rax-app3.x - runApp(dynamicConfig, staticConfig)
-    setModernMode(true);
     staticConfig = args[1];
     if (args[0].app) {
+      appProps = args[0].app;
       [ON_LAUNCH, ON_ERROR, ON_HIDE, ON_SHOW, ON_SHARE_APP_MESSAGE].forEach(cycle => {
         if (typeof args[0].app[cycle] === 'function') {
           useAppEffect(cycle, args[0].app[cycle]);
@@ -335,6 +338,7 @@ export function runApp(...args) {
   __updateRouterMap(staticConfig);
 
   const appOptions = {
+    ...appProps,
     // Bridge app launch.
     onLaunch(launchOptions) {
       executeCallback(this, ON_LAUNCH, launchOptions);
@@ -347,15 +351,18 @@ export function runApp(...args) {
     },
     onError(error) {
       executeCallback(this, ON_ERROR, error);
-    },
-    onShareAppMessage(shareOptions) {
+    }
+  };
+
+  if (appCycles[ON_SHARE_APP_MESSAGE]) {
+    appOptions.onShareAppMessage = function(shareOptions) {
       // There will be one callback fn for shareAppMessage at most
       const callbackQueue = appCycles[ON_SHARE_APP_MESSAGE];
       if (Array.isArray(callbackQueue) && callbackQueue[0]) {
         return callbackQueue[0].call(this, shareOptions);
       }
-    }
-  };
+    };
+  }
 
   if (isQuickApp) {
     // Quickapp's app returns config as JSON

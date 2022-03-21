@@ -7,19 +7,19 @@ const {
 
 const addFileToCompilation = require('../utils/addFileToCompilation');
 
-module.exports = function(compilation, { target, command, rootDir }) {
+module.exports = function(compilation, { target, rootDir }) {
   const miniappRenderPackageJsonFile = getHighestPriorityPackageJSON('miniapp-render', rootDir);
   const sourceMiniappRenderFile = resolve(
     miniappRenderPackageJsonFile,
     '..',
     'dist',
     platformMap[target].type,
-    command === 'build' ? 'index.min.js' : 'index.js'
+    compilation.options.optimization.minimize ? 'index.min.js' : 'index.js'
   );
   addFileToCompilation(compilation, {
     filename: 'render.js',
     content: readFileSync(sourceMiniappRenderFile, 'utf-8'),
-    command,
     target,
+    needMinify: false,
   });
 };

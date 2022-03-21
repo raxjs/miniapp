@@ -28,7 +28,7 @@ class Style {
     this.__settedStyle.forEach(key => {
       const val = this[key];
       if (isUndef(val)) return;
-      cssText += `${styleMap.get(key)}: ${val};`;
+      cssText += `${styleMap.get(key) || key}: ${val};`;
     });
     return cssText;
   }
@@ -70,7 +70,6 @@ class Style {
       }
     });
   }
-
   setProperty(name, value) {
     if (name[0] === '-') {
       this.setCssVariables(name);

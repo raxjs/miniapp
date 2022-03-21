@@ -70,7 +70,7 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
 
   return `
 <template name="RAX_TMPL_${level}_${componentName}">
-  <${componentName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} focus="{{tool.a(r['focus-state'],false)}}" />
+  <${componentName} id="{{r.id}}" data-private-node-id="{{r.nodeId}}" ${buildAttribute(attrs, adapter)} focus="{{r['focus-state'] === undefined ? false : r['focus-state']}}" />
 </template>
 `;
 }
@@ -86,15 +86,16 @@ function buildFocusComponentTemplate(compInfo, level, adapter) {
  */
 function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isRecursiveTemplate }) {
   const { nodeName, nodeAttributes, nodeActualName } = compInfo;
+  const { formatBindedData } = adapter;
   const { voidChildrenElements, voidElements, shouldNotGenerateTemplateComponents, needModifyChildrenComponents } = compSet;
   const componentName = toDash(nodeName); // Virtual components like h-element
   const componentActualName = toDash(nodeActualName); // Actual components like view
   const data = isRecursiveTemplate ? 'r: r.children' : `r: r.children, c: tool.d(c, '${componentName}')`;
-  const templateName = isRecursiveTemplate ? 'RAX_TMPL_CHILDREN_0' : '{{tool.b(cid + 1)}}';
+  const templateNameExpression = isRecursiveTemplate ? 'RAX_TMPL_CHILDREN_0' : '{{tool.b(cid + 1)}}';
   let children = voidChildrenElements.has(nodeName)
     ? ''
     : `
-    <template is="${templateName}" data="{{${data}}}" />
+    <template is="${templateNameExpression}" data="{{${formatBindedData(data)}}}" />
 `;
 
   if (needModifyChildrenComponents[nodeName]) {
@@ -123,6 +124,7 @@ function buildStandardComponentTemplate(compInfo, level, adapter, compSet, { isR
  * @param {Object} adapter - directive adapter for different miniapp platforms
  */
 function createMiniComponents(components, derivedComponents, adapter) {
+  const { supportSjs } = adapter;
   const result = Object.create(null);
   for (let compName in components) {
     let component = components[compName];
@@ -136,7 +138,7 @@ function createMiniComponents(components, derivedComponents, adapter) {
         propValue = `r[${addSingleQuote(prop)}]`;
       } else if (isBooleanStringLiteral(propValue) || isNumber(+propValue)) {
         // Use sjs to process default value
-        propValue = `tool.a(r[${addSingleQuote(prop)}],${propValue})`;
+        propValue = supportSjs ? `tool.a(r[${addSingleQuote(prop)}],${propValue})` : `r[${addSingleQuote(prop)}] === undefinded ? ${propValue} : r[${addSingleQuote(prop)}]`;
       } else {
         propValue = `r[${addSingleQuote(prop)}]||${propValue || addSingleQuote('')}`;
       }
@@ -173,13 +175,17 @@ function createMiniComponents(components, derivedComponents, adapter) {
 /**
  * Apply the custom component config
  * @param {Object} internalComponents
- * @param {Object} customComponentsConfig - Configed by developer using build script plugin
+ * @param {Object} customComponentsConfig - Configured by developer using build script plugin
  */
 function modifyInternalComponents(internalComponents, customComponentsConfig) {
+  const { 'delete': deletedComponents = [] } = customComponentsConfig;
   const result = Object.assign({}, internalComponents);
+  deletedComponents.forEach(deletedComponent => delete result[toCamel(deletedComponent)]);
   Object.keys(customComponentsConfig).forEach(comp => {
     const componentConfig = customComponentsConfig[comp];
-    const { 'delete': { props = [], events = [] } } = componentConfig; // Only support deleting temporarily
+    const { add: added = {}, 'delete': deleted = {}} = componentConfig;
+    const { props = [], events = [] } = deleted;
+    const { props: addedProps = [] } = added;
     const camelCasedCompName = toCamel(comp);
     if (result[camelCasedCompName]) {
       props.forEach(prop => delete result[camelCasedCompName].props[prop]);
@@ -188,6 +194,13 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
           delete result[camelCasedCompName].basicEvents[event];
         } else if (result[camelCasedCompName].events && result[camelCasedCompName].events[event] !== undefined) {
           delete result[camelCasedCompName].events[event];
+        }
+      });
+      addedProps.forEach(prop => {
+        // Make sure the prop to be added doesn't exist at start
+        if (!result[camelCasedCompName].props[prop]) {
+          const defaultValue = prop.default === undefined ? '' : typeof prop.default === 'string' ? addSingleQuote(prop.default) : JSON.stringify(prop.default);
+          result[camelCasedCompName].props[prop.name] = defaultValue;
         }
       });
     }
@@ -201,14 +214,17 @@ function modifyInternalComponents(internalComponents, customComponentsConfig) {
  * @param {Object} sjs - sjs config
  * @param {Object} options
  * @param {boolean} options.isRecursiveTemplate
+ * @param {Object} options.adapter
  */
-function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
+function buildBaseTemplate(sjs, { isRecursiveTemplate = true, adapter }) {
+  const { formatBindedData, supportSjs } = adapter;
   const data = isRecursiveTemplate ? 'r: r' : "r: r, c: '', cid: -1";
-  const templateName = isRecursiveTemplate ? 'tool.c(r.nodeType)' : "tool.c(r.nodeType, '')";
-  return `${buildSjsTemplate(sjs)}
+  const recursiveTemplateNameExpression = supportSjs ? 'tool.c(r.nodeType)' : "'RAX_TMPL_0_' + r.nodeType";
+  const templateNameExpression = isRecursiveTemplate ? recursiveTemplateNameExpression : "tool.c(r.nodeType, '')";
+  return `${supportSjs ? buildSjsTemplate(sjs) : ''}
 
 <template name="RAX_TMPL_ROOT_CONTAINER">
-  <template is="{{${templateName}}}" data="{{${data}}}" />
+  <template is="{{${templateNameExpression}}}" data="{{${formatBindedData(data)}}}" />
 </template>
 `;
 }
@@ -222,9 +238,11 @@ function buildBaseTemplate(sjs, { isRecursiveTemplate = true }) {
  * @param {boolean} options.restart - Use custom component to restart the recursive template
  */
 function buildChildrenTemplate(level, adapter, { isRecursiveTemplate = true, restart = false }) {
+  const { formatBindedData, supportSjs } = adapter;
   const data = isRecursiveTemplate ? 'r: item' : `r: item, c: c, cid: ${level}`;
-  const templateName = isRecursiveTemplate ? 'tool.c(item.nodeType)' : 'tool.c(item.nodeType, c)';
-  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateName}}}" data="{{${data}}}" />`;
+  const recursiveTemplateNameExpression = supportSjs ? 'tool.c(item.nodeType)' : "'RAX_TMPL_0_' + item.nodeType";
+  const templateNameExpression = isRecursiveTemplate ? recursiveTemplateNameExpression : 'tool.c(item.nodeType, c)';
+  const template = restart ? '<element r="{{item}}" c="{{c}}" />' : `<template is="{{${templateNameExpression}}}" data="{{${formatBindedData(data)}}}" />`;
   return `
 <template name="RAX_TMPL_CHILDREN_${level}">
   <block ${adapter.for}="{{r}}" ${adapter.key}="nodeId">

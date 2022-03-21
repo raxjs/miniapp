@@ -1,7 +1,5 @@
 # rax-miniapp-babel-plugins
 
-<a href="https://travis-ci.com/raxjs/rax-scripts"><img src="https://travis-ci.com/raxjs/rax-scripts.svg?branch=master"></a>
-
 [英文](./README.md)
 
 🚀 我们可以在通过这些 babel 插件更大程度上优化生成的小程序代码。

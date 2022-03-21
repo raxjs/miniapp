@@ -1,14 +1,15 @@
 /* global CONTAINER */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isMiniApp } from 'universal-env';
+import { isMiniApp, isWeChatMiniProgram } from 'universal-env';
 import Node from './node';
 import ClassList from './class-list';
 import Style from './style';
 import Attribute from './attribute';
 import cache from '../utils/cache';
-import { toDash } from '../utils/tool';
+import { toDash, omitFalsyFields, joinClassNames } from '../utils/tool';
 import { simplifyDomTree, traverse } from '../utils/tree';
-import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, NO_APPEAR_COMPONENTS, NO_TOUCH_COMPONENTS } from '../constants';
+import { BUILTIN_COMPONENT_LIST, STATIC_COMPONENTS, PURE_COMPONENTS, CATCH_COMPONENTS, APPEAR_COMPONENT, ANCHOR_COMPONENT } from '../constants';
+import Comment from './comment';
 
 class Element extends Node {
   constructor(options) {
@@ -48,15 +49,15 @@ class Element extends Node {
   // Init attribute
   _initAttributes(attrs = {}) {
     Object.keys(attrs).forEach(name => {
-      this._setAttributeWithOutUpdate(name, attrs[name]);
+      this._setAttributeWithDelayUpdate(name, attrs[name]);
     });
   }
 
   _triggerUpdate(payload, immediate = true) {
     if (immediate) {
-      this.enqueueRender(payload);
+      this._enqueueRender(payload);
     } else {
-      this._root.renderStacks.push(payload);
+      this._root.__renderStacks.push(payload);
     }
   }
 
@@ -85,8 +86,8 @@ class Element extends Node {
       Static:  element in STATIC_OR_PURE_COMPONENTS && without any event binded
       Pure: element in STATIC_OR_PURE_COMPONENTS && without any event or prop binded
       NoTouch: element in NO_TOUCH_COMPONENTS && without any touch event binded
-      NoAppearTouch: element in NO_TOUCH_COMPONENTS and  NO_APPEAR_COMPONENTS && without any touch or appear event binded
-      NoAppear: element in NO_APPEAR_COMPONENTS && without any appear event binded
+      NoAppearTouch: element in TOUCH_COMPONENTS and  APPEAR_COMPONENTS && without any touch or appear event binded
+      NoAppear: element in APPEAR_COMPONENTS && without any appear event binded
       Catch: element in CATCH_COMPONENTS && with catchTouchMove
     */
 
@@ -94,19 +95,32 @@ class Element extends Node {
     const hasAppearEventBinded = this.__hasAppearEventBinded;
     const hasTouchEventBinded = this.__hasTouchEventBinded;
     const hasCatchTouchMoveFlag = this.__attrs.get('catchTouchMove');
+    const hasAnchorScrollFlag = this.__attrs.get('anchorScroll');
     const hasExtraAttribute = this.__hasExtraAttribute;
-
+    const isPureComponent = PURE_COMPONENTS.has(this.__tmplName);
     if (!hasEventBinded) {
       STATIC_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'static-');
-      PURE_COMPONENTS.has(this.__tmplName) && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
-    } else if (!hasTouchEventBinded || isMiniApp && !hasAppearEventBinded ) {
-      const matchNoAppearFlag = isMiniApp && !hasAppearEventBinded && NO_APPEAR_COMPONENTS.has(this.__tmplName);
-      const matchNoTouchFlag = !hasTouchEventBinded && NO_TOUCH_COMPONENTS.has(this.__tmplName);
-      nodeTypePrefix = `no-${matchNoAppearFlag ? 'appear-' : ''}${matchNoTouchFlag ? 'touch-' : ''}`;
+      isPureComponent && !hasExtraAttribute && (nodeTypePrefix = 'pure-');
+    } else if (isPureComponent) {
+      // PURE_COMPONENTS are equal to TOUCH_COMPONENTS
+      const matchNoAppearTmplFlag = isMiniApp && !hasAppearEventBinded && this.__tmplName === APPEAR_COMPONENT;
+      if (matchNoAppearTmplFlag || !hasTouchEventBinded) {
+        /* Example:
+        1. no-appear-touch-view
+        2. no-appear-view
+        3. no-touch-view
+        */
+        nodeTypePrefix = `no-${matchNoAppearTmplFlag ? 'appear-' : ''}${!hasTouchEventBinded ? 'touch-' : ''}`;
+      }
     }
 
     if (hasCatchTouchMoveFlag) {
       CATCH_COMPONENTS.has(this.__tmplName) && (nodeTypePrefix = 'catch-');
+    }
+
+    // Fix scroll-view shake problem caused by scroll-left or scroll-top
+    if (isWeChatMiniProgram && hasAnchorScrollFlag) {
+      ANCHOR_COMPONENT === this.__tmplName && (nodeTypePrefix = 'anchor-');
     }
     return `${nodeTypePrefix}${this.__tmplName}`;
   }
@@ -114,14 +128,13 @@ class Element extends Node {
   get _renderInfo() {
     const nodeType = this._processNodeType();
 
-    return {
+    return omitFalsyFields({
       nodeType,
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: this.__isBuiltinComponent ? this.className : `h5-${this.__tagName} ${this.className}`,
-    };
+      class: joinClassNames(this.__isBuiltinComponent ? '' : `h5-${this.__tagName}`, this.className),
+    }, ['class', 'style']);
   }
 
   get _internal() {
@@ -145,7 +158,12 @@ class Element extends Node {
   }
 
   // Sets properties, but does not trigger updates
-  _setAttributeWithOutUpdate(name, value) {
+  _setAttributeWithoutUpdate(name, value) {
+    this.__attrs.setWithoutUpdate(name, value);
+  }
+
+  // Sets properties, and trigger later
+  _setAttributeWithDelayUpdate(name, value) {
     this.__attrs.set(name, value, false);
   }
 
@@ -211,12 +229,21 @@ class Element extends Node {
 
     // An empty string does not add a textNode node
     if (!text) {
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        start: 0,
-        deleteCount: this.childNodes.length
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          start: 0,
+          deleteCount: this.childNodes.length
+        };
+      } else {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          value: () => []
+        };
+      }
       this.childNodes.length = 0;
       this._triggerUpdate(payload);
     } else {
@@ -283,13 +310,21 @@ class Element extends Node {
     if (this._isRendered()) {
       node.__rendered = true;
       // Trigger update
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        start: this.childNodes.length - 1,
-        deleteCount: 0,
-        item: simplifyDomTree(node)
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          start: this.childNodes.length - 1,
+          deleteCount: 0,
+          item: simplifyDomTree(node)
+        };
+      } else {
+        payload = {
+          path: node._path,
+          value: () => simplifyDomTree(node)
+        };
+      }
       this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
@@ -311,12 +346,21 @@ class Element extends Node {
       if (this._isRendered()) {
         node.__rendered = false;
         // Trigger update
-        const payload = {
-          type: 'children',
-          path: `${this._path}.children`,
-          start: index,
-          deleteCount: 1
-        };
+        let payload;
+        if (isMiniApp) {
+          payload = {
+            type: 'children',
+            path: `${this._path}.children`,
+            start: index,
+            deleteCount: 1
+          };
+        } else {
+          payload = {
+            type: 'children',
+            path: `${this._path}.children`,
+            value: () => this.childNodes.map(simplifyDomTree)
+          };
+        }
         this._triggerUpdate(payload);
       }
     }
@@ -344,13 +388,29 @@ class Element extends Node {
     }
     if (this._isRendered()) {
       node.__rendered = true;
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        deleteCount: 0,
-        item: simplifyDomTree(node),
-        start: insertIndex === -1 ? this.childNodes.length - 1 : insertIndex
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          deleteCount: 0,
+          item: simplifyDomTree(node),
+          start: insertIndex === -1 ? this.childNodes.length - 1 : insertIndex
+        };
+      } else {
+        if (insertIndex === -1) {
+          payload = {
+            path: node._path,
+            value: () => simplifyDomTree(node)
+          };
+        } else {
+          payload = {
+            type: 'children',
+            path: `${this._path}.children`,
+            value: () => this.childNodes.map(simplifyDomTree)
+          };
+        }
+      }
 
       // Trigger update
       this._triggerUpdate(payload);
@@ -380,14 +440,26 @@ class Element extends Node {
     node.parentNode = this;
     if (this._isRendered()) {
       node.__rendered = true;
+
+      // avoid the update if both are Comment node
+      if (node instanceof Comment && old instanceof Comment) return old;
+
       // Trigger update
-      const payload = {
-        type: 'children',
-        path: `${this._path}.children`,
-        start: replaceIndex === -1 ? this.childNodes.length - 1 : replaceIndex,
-        deleteCount: replaceIndex === -1 ? 0 : 1,
-        item: simplifyDomTree(node)
-      };
+      let payload;
+      if (isMiniApp) {
+        payload = {
+          type: 'children',
+          path: `${this._path}.children`,
+          start: replaceIndex === -1 ? this.childNodes.length - 1 : replaceIndex,
+          deleteCount: replaceIndex === -1 ? 0 : 1,
+          item: simplifyDomTree(node)
+        };
+      } else {
+        payload = {
+          path: node._path,
+          value: () => simplifyDomTree(node)
+        };
+      }
       this._triggerUpdate(payload);
       this._adjustDocument(node);
     }
@@ -490,8 +562,8 @@ class Element extends Node {
     return false;
   }
 
-  enqueueRender(payload) {
-    this._root.enqueueRender(payload);
+  _enqueueRender(payload) {
+    this._root._enqueueRender(payload);
   }
 
   getBoundingClientRect() {

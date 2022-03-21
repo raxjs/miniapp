@@ -1,5 +1,5 @@
 import Element from '../element';
-import { isUndef } from '../../utils/tool';
+import { isUndef, omitFalsyFields, joinClassNames } from '../../utils/tool';
 
 class HTMLTextAreaElement extends Element {
   constructor(options) {
@@ -35,7 +35,7 @@ class HTMLTextAreaElement extends Element {
   }
 
   // Sets properties, but does not trigger updates
-  _setAttributeWithOutUpdate(name, value) {
+  _setAttributeWithDelayUpdate(name, value) {
     if (name === 'focus' || name === 'autofocus' || name === 'autoFocus') {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
@@ -43,7 +43,7 @@ class HTMLTextAreaElement extends Element {
     if (name === 'value') {
       this.__changed = true;
     }
-    super._setAttributeWithOutUpdate(name, value);
+    super._setAttributeWithDelayUpdate(name, value);
   }
 
   getAttribute(name) {
@@ -55,14 +55,13 @@ class HTMLTextAreaElement extends Element {
   }
 
   get _renderInfo() {
-    return {
+    return omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'textarea',
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: 'h5-textarea ' + this.className,
-    };
+      class: joinClassNames('h5-textarea', this.className),
+    }, ['style']);
   }
 
   // Attribute

@@ -13,6 +13,7 @@ const getCompiledComponents = require('../getCompiledComponents');
 const replaceComponentTagName = require('../utils/replaceComponentTagName');
 const { getNpmName, normalizeFileName, addRelativePathPrefix, normalizeOutputFilePath, SCRIPT_FILE_EXTENSIONS } = require('../utils/pathHelper');
 const { RELATIVE_COMPONENTS_REG, MINIAPP_PLUGIN_COMPONENTS_REG, PKG_NAME_REG, GROUP_PKG_NAME_REG} = require('../constants');
+const { parseExpression } = require('../parser');
 
 let tagCount = 0;
 
@@ -48,11 +49,11 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
       const parentsJSXList = findParentsJSXListEl(path);
       if (parentsJSXList.length > 0) {
         parentPath.node.__tagIdExpression = [];
-        for (let i = parentsJSXList.length - 1; i >= 0; i--) {
-          const { args } = parentsJSXList[i].node.__jsxlist;
-          const indexValue = args.length > 1 ? genExpression(args[1]) : 'index';
-          parentPath.node.__tagIdExpression.push(new Expression(indexValue));
-          tagId += `-{{${indexValue}}}`;
+        for (let l = parentsJSXList.length, i = l - 1; i >= 0; i--) {
+          const { args, listKey } = parentsJSXList[i].node.__jsxlist;
+          const keyValue = args.length > 0 ? `${genExpression(args[0])}._key` : 'index';
+          parentPath.node.__tagIdExpression.push(new Expression(genExpression(listKey)));
+          tagId += `-{{${keyValue}}}`;
         }
         parentPath.node.__tagIdExpression.unshift(tagCount);
       }
@@ -96,6 +97,15 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
       if (packageName === alias.from) {
         const pkg = getComponentConfig(alias.default ? alias.from : alias.name, options.resourcePath);
         if (pkg && pkg.miniappConfig) {
+          const tagNameMap = pkg.miniappConfig.subPackages && pkg.miniappConfig.subPackages[alias.local] && pkg.miniappConfig.subPackages[alias.local].tagNameMap;
+          if (tagNameMap) {
+            replaceComponentTagName(
+              path,
+              t.jsxIdentifier(tagNameMap)
+            );
+            return;
+          }
+
           if (Array.isArray(pkg.miniappConfig.renderSlotProps)) {
             path.traverse({
               JSXAttribute(attrPath) {
@@ -143,14 +153,14 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
             });
           }
 
-          if (pkg.miniappConfig.subPackages) {
-            parsed.imported[alias.from].forEach(importedComponent => {
-              importedComponent.isFromComponentLibrary = true;
-            });
+          const importedComponent = parsed.imported[alias.from].find(importItem => importItem.local === alias.local);
+          if (importedComponent) {
+            importedComponent.isFromComponentLibrary = true;
           }
         }
       }
     }
+
     return componentTag;
   }
 }

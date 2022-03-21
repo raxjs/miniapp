@@ -155,5 +155,7 @@ export default {
   gridTemplate: 'grid-template',
   gridTemplateAreas: 'grid-template-areas',
   gridTemplateColumns: 'grid-template-columns',
-  gridTemplateRows: 'grid-template-rows'
+  gridTemplateRows: 'grid-template-rows',
+
+  WebkitLineClamp: '-webkit-line-clamp'
 };

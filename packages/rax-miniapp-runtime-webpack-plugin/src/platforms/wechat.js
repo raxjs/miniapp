@@ -1,7 +1,8 @@
 const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
-  Tap: ''
+  Tap: '',
+  LongPress: ''
 };
 
 
@@ -9,8 +10,7 @@ const touchEvents = {
   TouchStart: '',
   TouchMove: '',
   TouchCancel: '',
-  TouchEnd: '',
-  LongTap: ''
+  TouchEnd: ''
 };
 
 const animationEvents = {
@@ -163,9 +163,48 @@ const ScrollView = {
   basicEvents: {}
 };
 
+const AnchorScrollView = {
+  props: {
+    'scroll-x': 'false',
+    'scroll-y': 'false',
+    'upper-threshold': '50',
+    'lower-threshold': '50',
+    'scroll-into-view': '',
+    'scroll-with-animation': 'false',
+    'enable-back-to-top': 'false',
+    'enable-flex': 'false',
+    'scroll-anchoring': 'false',
+    'refresher-enabled': 'false',
+    'refresher-threshold': '45',
+    'refresher-default-style': addSingleQuote('black'),
+    'refresher-background': addSingleQuote('#FFF'),
+    'refresher-triggered': 'false',
+    enhanced: 'false',
+    bounces: 'true',
+    'show-scrollbar': 'true',
+    'paging-enabled': 'false',
+    'fast-deceleration': 'false',
+  },
+  events: {
+    DragStart: '',
+    Dragging: '',
+    DragEnd: '',
+    ScrollToUpper: '',
+    ScrollToLower: '',
+    Scroll: '',
+    RefresherPulling: '',
+    RefresherRefresh: '',
+    RefresherRestore: '',
+    RefresherAbort: ''
+  },
+  basicEvents: {}
+};
+
 const CoverView = {
   props: {
-    'scroll-top': ''
+    'scroll-top': '',
+    'marker-id': '',
+    slot: ''
   },
   basicEvents: {
     ...tapEvents
@@ -228,8 +267,7 @@ const Text = {
     'number-of-lines': ''
   },
   basicEvents: {
-    ...tapEvents,
-    ...touchEvents
+    ...tapEvents
   }
 };
 
@@ -623,7 +661,7 @@ const Video = {
     Pause: '',
     Ended: '',
     TimeUpdate: '',
-    ScreenChange: '',
+    FullScreenChange: '',
     Waiting: '',
     Error: '',
     Progress: '',
@@ -820,6 +858,31 @@ const OfficialAccount = {
   }
 };
 
+const Ad = {
+  props: {
+    'unit-id': '',
+    'ad-intervals': '',
+    'ad-type': addSingleQuote('banner'),
+    'ad-theme': addSingleQuote('white'),
+  },
+  events: {
+    Load: '',
+    Error: '',
+    Close: ''
+  }
+};
+
+const AdCustom = {
+  props: {
+    'unit-id': '',
+    'ad-intervals': '',
+  },
+  events: {
+    Load: '',
+    Error: '',
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -829,6 +892,7 @@ exports.internalComponents = {
   Swiper,
   SwiperItem,
   ScrollView,
+  AnchorScrollView,
   CoverView,
   CoverImage,
   MovableView,
@@ -865,6 +929,8 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   OfficialAccount,
+  Ad,
+  AdCustom,
   HElement,
   CatchHElement,
   PureHElement,
@@ -877,6 +943,7 @@ exports.derivedComponents = new Map([
   ['StaticView', 'View'],
   ['PureView', 'View'],
   ['NoTouchView', 'View'],
+  ['AnchorScrollView', 'ScrollView'],
   ['CatchHElement', 'View'],
   ['PureHElement', 'View'],
   ['NoTouchHElement', 'View'],
@@ -926,7 +993,9 @@ exports.voidChildrenElements = new Set([
   'WebView',
   'LivePlayer',
   'LivePusher',
-  'OfficialAccount'
+  'OfficialAccount',
+  'Ad',
+  'AdCustom'
 ]);
 
 exports.nestElements = new Map([
@@ -952,7 +1021,7 @@ exports.needModifyChildrenComponents = {
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'swiper')}}" />
     </swiper-item>`,
   MovableArea: children => `
-    <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongtap="onLongTap" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
+    <movable-view wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],true)}}" bindchange="onMovableViewChange" bindscale="onMovableViewScale" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel" bindlongpress="onLongPress" bindtap="onTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="{{tool.b(cid + 1)}}" data="{{r: item.children, c: tool.d(c, 'movable-area')}}" />
     </movable-view>`,
   ScrollView: children => `
@@ -964,6 +1033,16 @@ exports.needModifyChildrenComponents = {
         <block>{{item.content}}</block>
       </block>
     </block>
+  `,
+  AnchorScrollView: children => `
+  <block wx:for="{{r.children}}" wx:key="nodeId">
+    <block wx:if="{{item.nodeId}}">
+      <template is="{{tool.c(item.nodeType, tool.d(c, 'anchor-scroll-view'))}}" data="{{r: item, c: tool.d(c, 'anchor-scroll-view'), cid: cid}}" />
+    </block>
+    <block wx:else>
+      <block>{{item.content}}</block>
+    </block>
+  </block>
   `,
   PickerView: children => `
     <picker-view-column wx:for="{{r.children}}" wx:key="nodeId" wx:if="{{item.nodeType !== 'h-comment'}}">
@@ -993,7 +1072,9 @@ exports.adapter = {
   xs: 'wxs',
   event: 'bind',
   catchEvent: 'catch',
-  eventToLowerCase: true
+  eventToLowerCase: true,
+  supportSjs: true,
+  formatBindedData: (value) => `${value}`
 };
 
 

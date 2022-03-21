@@ -1,3 +1,5 @@
+const LEAF_NODE = ['h-text', 'h-comment', 'image']; // The most common used node type
+
 function simplify(node) {
   return node._renderInfo;
 }
@@ -14,7 +16,9 @@ export function traverse(node, action) {
     const result = action(curNode);
     if (!copiedNode) {
       copiedNode = result;
-      copiedNode.children = [];
+      if (!LEAF_NODE.includes(result.nodeType)) {
+        copiedNode.children = [];
+      }
     } else {
       curNode.__parent.children = curNode.__parent.children || [];
       curNode.__parent.children.push(result);
@@ -23,7 +27,7 @@ export function traverse(node, action) {
       curNode.childNodes.forEach(n => n.__parent = result);
       queue = queue.concat(curNode.childNodes);
     }
-    if (!result.children) {
+    if (!result.children && !LEAF_NODE.includes(result.nodeType)) {
       result.children = [];
     }
   }

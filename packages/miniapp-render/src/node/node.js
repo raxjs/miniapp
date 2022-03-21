@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { isBaiduSmartProgram } from 'universal-env';
 import EventTarget from '../event/event-target';
 import { getId } from '../utils/tool';
 import cache from '../utils/cache';
@@ -11,6 +13,7 @@ class Node extends EventTarget {
     this.__nodeId = `n_${getId()}`;
     this.__type = options.type;
     this.parentNode = null;
+    this.__rendered = false;
     this.__ownerDocument = options.document;
   }
 
@@ -36,7 +39,8 @@ class Node extends EventTarget {
 
   get _path() {
     if (this.parentNode !== null) {
-      const index = '[' + this.parentNode.childNodes.indexOf(this) + ']';
+      const childIndex = this.parentNode.childNodes.indexOf(this);
+      const index = isBaiduSmartProgram ? childIndex : `[${childIndex}]`;
 
       return `${this.parentNode._path}.children.${index}`;
     }

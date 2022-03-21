@@ -17,7 +17,7 @@ function transformAttribute(ast, code, adapter) {
       switch (attrName) {
         case 'key':
           node.name.name = adapter.key;
-          if (adapter.needTransformKey && node.value.__originalExpression) {
+          if (node.value.__originalExpression) {
             // In wechat miniprogram, key should be a string
             const originalExpression = node.value.__originalExpression;
             if (t.isIdentifier(originalExpression)) {

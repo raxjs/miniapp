@@ -18,7 +18,7 @@ test('event', () => {
   const d = document.querySelector('footer');
   const e = document.querySelector('#bb4');
 
-  const miniprogramEvent = {timeStamp: Date.now};
+  const miniprogramEvent = { timeStamp: Date.now, target: { dataset: {}}};
   const seqList = [];
 
   // addEventListener/removeEventListener

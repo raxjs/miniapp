@@ -1,12 +1,16 @@
 ## Shared lib for miniapp builder
 
-### filterNativePages
+### separateNativeRoutes
 
-It will filter native miniapp pages and return a need copy native page files list.
+Separate native miniapp pages, it will return native page list and rax page list.
 
-### getAppConfig
+### normalizeStaticConfig
 
-It will return a vaild app config for miniapp.
+Normalize static config to parse subpackages mode.
+
+### getPluginConfig
+
+It will return a valid plugin config for miniapp.
 
 ### pathHelper
 

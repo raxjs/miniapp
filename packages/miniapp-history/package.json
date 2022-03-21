@@ -1,9 +1,13 @@
 {
   "name": "miniapp-history",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "description": "Miniapp implementation of history.",
   "main": "lib/index.js",
   "module": "es/index.js",
+  "files": [
+    "lib",
+    "es"
+  ],
   "author": "Rax Team",
   "scripts": {
     "lint": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx ./",
@@ -50,8 +54,6 @@
     "jest": "^24.9.0",
     "minimatch": "^3.0.4",
     "minimist": "^1.2.0",
-    "semver": "^7.1.1",
-    "semver-regex": "^2.0.0",
     "shelljs": "0.8.3"
   },
   "config": {

@@ -15,7 +15,7 @@ const input = {
     eventName: 'input',
     middleware(evt, domNode, nodeId) {
       const value = '' + evt.detail.value;
-      domNode._setAttributeWithOutUpdate('value', value);
+      domNode._setAttributeWithDelayUpdate('value', value);
 
       this.callEvent('input', evt, null, nodeId);
     }
@@ -25,7 +25,7 @@ const input = {
     eventName: 'focus',
     middleware(evt, domNode, nodeId) {
       domNode.__inputOldValue = domNode.value || '';
-      domNode._setAttributeWithOutUpdate('focus-state', true);
+      domNode._setAttributeWithDelayUpdate('focus-state', true);
 
       this.callSimpleEvent('focus', evt, domNode);
     }
@@ -34,7 +34,7 @@ const input = {
     name: 'onInputBlur',
     eventName: 'blur',
     middleware(evt, domNode, nodeId) {
-      domNode._setAttributeWithOutUpdate('focus-state', false);
+      domNode._setAttributeWithDelayUpdate('focus-state', false);
 
       if (!isUndef(domNode.__inputOldValue) && domNode.value !== domNode.__inputOldValue) {
         domNode.__inputOldValue = undefined;

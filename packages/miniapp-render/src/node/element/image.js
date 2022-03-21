@@ -1,6 +1,8 @@
 /* global CONTAINER */
 import Element from '../element';
 import Event from '../../event/event';
+import { omitFalsyFields, joinClassNames } from '../../utils/tool';
+
 
 class Image extends Element {
   constructor(options) {
@@ -44,14 +46,13 @@ class Image extends Element {
   }
 
   get _renderInfo() {
-    return {
+    return omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'image',
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: 'h5-img ' + this.className,
-    };
+      class: joinClassNames('h5-img', this.className),
+    }, ['style']);
   }
 
   get src() {

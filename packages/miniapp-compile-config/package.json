@@ -1,6 +1,6 @@
 {
   "name": "miniapp-compile-config",
-  "version": "0.2.2",
+  "version": "0.3.2",
   "description": "miniapp compile project config",
   "author": "Rax Team",
   "homepage": "https://github.com/raxjs/miniapp#readme",
@@ -25,17 +25,17 @@
   },
   "dependencies": {
     "chokidar": "^3.4.2",
-    "copy-webpack-plugin": "^6.0.3",
+    "copy-webpack-plugin": "^5.0.4",
     "fs-extra": "^8.0.1",
     "json-loader": "^0.5.7",
-    "jsx2mp-loader": "^0.4.21",
+    "jsx2mp-loader": "^0.4.33",
     "memory-fs": "^0.5.0",
-    "miniapp-builder-shared": "^0.2.0",
-    "rax-compile-config": "^0.2.15",
-    "rax-miniapp-config-webpack-plugin": "^2.0.0",
+    "miniapp-builder-shared": "^0.3.0",
+    "rax-platform-loader": "^1.0.2",
+    "rax-miniapp-config-webpack-plugin": "^3.0.0",
     "terser": "^4.8.0",
-    "ts-loader": "^8.0.3",
-    "webpack": "^4.44.1",
-    "jsx2mp-runtime": "^0.4.18"
+    "jsx2mp-runtime": "^0.4.18",
+    "@builder/pack": "^0.4.5",
+    "ts-loader": "^8.0.0"
   }
 }

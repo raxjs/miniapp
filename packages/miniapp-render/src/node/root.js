@@ -1,22 +1,21 @@
 import Element from './element';
 import cache from '../utils/cache';
 import perf from '../utils/perf';
-import getProperty from '../utils/getProperty';
-import { BODY_NODE_ID } from '../constants';
+import { isFunction } from '../utils/tool';
 
 class RootElement extends Element {
   constructor(options) {
     super(options);
     this.__nodeId = options.nodeId;
-    this.allowRender = true;
-    this.renderStacks = [];
+    this.__allowRender = true;
+    this.__renderStacks = [];
     this.__renderCallbacks = [];
   }
 
   _destroy() {
     super._destroy();
-    this.allowRender = null;
-    this.renderStacks = null;
+    this.__allowRender = null;
+    this.__renderStacks = null;
   }
 
   get _path() {
@@ -26,16 +25,16 @@ class RootElement extends Element {
     return this;
   }
 
-  enqueueRender(payload) {
+  _enqueueRender(payload) {
     clearTimeout(this.__timer);
     this.__timer = setTimeout(() => {
-      this.executeRender();
+      this._executeRender();
     }, 0);
-    this.renderStacks.push(payload);
+    this.__renderStacks.push(payload);
   }
 
-  executeRender() {
-    if (!this.allowRender) {
+  _executeRender() {
+    if (!this.__allowRender) {
       return;
     }
     if (process.env.NODE_ENV === 'development') {
@@ -45,13 +44,17 @@ class RootElement extends Element {
     // type 2: { path, value }
 
     const internal = cache.getDocument(this.__pageId)._internal;
+    const { mainPackageName } = cache.getConfig();
+    const window = cache.getWindow(mainPackageName);
 
     if (internal.$batchedUpdates) {
       let callback;
+      // there is no need to aggregate arrays if $batchedUpdate and $spliceData exist
       internal.$batchedUpdates(() => {
-        this.renderStacks.forEach((task, index) => {
-          if (index === this.renderStacks.length - 1) {
+        this.__renderStacks.forEach((task, index) => {
+          if (index === this.__renderStacks.length - 1) {
             callback = () => {
+              window._trigger('setDataFinished');
               if (process.env.NODE_ENV === 'development') {
                 perf.stop('setData');
               }
@@ -75,33 +78,30 @@ class RootElement extends Element {
         });
       });
     } else {
-      const renderObject = {};
-      const pathCache = [];
-      this.renderStacks.forEach(task => {
+      const renderObject = Object.create(null);
+      const childrenValuePaths = [];
+      this.__renderStacks.forEach(task => {
         const path = task.path;
-        // there is no need to aggregate arrays if $batchedUpdate and $spliceData exist
         if (task.type === 'children') {
-          const taskInfo = getProperty(internal.data, path, pathCache);
-          // path cache should save lastest taskInfo value
-          pathCache.push({
-            path: task.path,
-            value: taskInfo.value
-          });
-
-          if (!renderObject[path]) {
-            renderObject[path] = taskInfo.value ? [...taskInfo.value] : [];
-          }
-          if (task.item) {
-            renderObject[path].splice(task.start, task.deleteCount, task.item);
-          } else {
-            renderObject[path].splice(task.start, task.deleteCount);
-          }
-        } else {
-          renderObject[path] = task.value;
+          childrenValuePaths.push(path);
         }
+        renderObject[path] = task.value;
       });
+      for (const path in renderObject) {
+        // If the whole father children path is set, then its children path can be deleted
+        childrenValuePaths.forEach(cp => {
+          if (path.includes(cp) && cp !== path) {
+            delete renderObject[path];
+          }
+        });
+        const value = renderObject[path];
+        if (isFunction(value)) {
+          renderObject[path] = value();
+        }
+      }
       internal.firstRenderCallback(renderObject);
       internal.setData(renderObject, () => {
+        window._trigger('setDataFinished');
         let fn;
         while (fn = this.__renderCallbacks.pop()) {
           fn();
@@ -112,7 +112,7 @@ class RootElement extends Element {
       });
     }
 
-    this.renderStacks = [];
+    this.__renderStacks = [];
   }
 }
 

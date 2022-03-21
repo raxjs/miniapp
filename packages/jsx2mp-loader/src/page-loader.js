@@ -101,7 +101,7 @@ module.exports = async function pageLoader(content) {
   // Only works when developing miniapp plugin, to declare the use of __app_css component
   if (injectAppCssComponent) {
     const appCssComponentPath = resolve(outputPath, '__app_css', 'index');
-    const relativeAppCssComponentPath = relative(pageDistDir, appCssComponentPath);
+    const relativeAppCssComponentPath = addRelativePathPrefix(relative(pageDistDir, appCssComponentPath));
     config.usingComponents = {
       '__app_css': relativeAppCssComponentPath,
       ...config.usingComponents

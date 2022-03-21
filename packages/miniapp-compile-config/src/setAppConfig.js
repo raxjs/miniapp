@@ -1,7 +1,6 @@
 const { dirname, resolve } = require('path');
 const {
   platformMap,
-  getAppConfig,
 } = require('miniapp-builder-shared');
 const { existsSync } = require('fs-extra');
 
@@ -16,7 +15,7 @@ const { setEntry, setMultiplePackageEntry } = require('./setEntry');
 module.exports = (
   config,
   userConfig = {},
-  { context, target, entryPath, outputPath }
+  { context, target, entryPath, outputPath, staticConfig }
 ) => {
   const platformInfo = platformMap[target];
   const {
@@ -28,23 +27,21 @@ module.exports = (
   const { rootDir, command } = context;
   const mode = command;
 
-  const appConfig = getAppConfig(rootDir, target);
-
   // Need Copy files or dir
   const needCopyList = [];
   // Record all the sub app configs
   const subAppConfigList = [];
 
   if (subPackages) {
-    setMultiplePackageEntry(config, appConfig.routes, { rootDir, target, outputPath, subAppConfigList, needCopyList });
+    setMultiplePackageEntry(config, staticConfig.routes, { rootDir, target, outputPath, subAppConfigList, needCopyList });
   } else {
-    setEntry(config, appConfig.routes, { entryPath, rootDir, target, outputPath, needCopyList });
+    setEntry(config, staticConfig.routes, { entryPath, rootDir, target, outputPath, needCopyList });
   }
 
   // Set constantDir
   // `public` directory is the default static resource directory
   const isPublicFileExist = existsSync(resolve(rootDir, 'src/public'));
-
+  const originalConstantDir = isPublicFileExist ? ['src/public'].concat(constantDir) : constantDir;
   const loaderParams = {
     mode,
     entryPath,
@@ -53,9 +50,7 @@ module.exports = (
     turnOffSourceMap,
     platform: platformInfo,
     // To make old `constantDir` param compatible
-    constantDir: isPublicFileExist
-      ? ['src/public'].concat(constantDir)
-      : constantDir,
+    constantDir: Array.from(originalConstantDir),
     rootDir,
   };
 
@@ -73,7 +68,9 @@ module.exports = (
     loaderParams.constantDir.push(dirPatterns.from)
   );
 
-  config.cache(true).mode('production').target('node');
+  config.plugin('CopyWebpackPlugin').tap(([copyList]) => {
+    return [copyList.concat(needCopyList)];
+  });
 
   // Set base jsx2mp config
   setBaseConfig(config, userConfig, {
@@ -82,6 +79,7 @@ module.exports = (
     loaderParams,
     target,
     outputPath,
+    originalConstantDir: Array.from(originalConstantDir)
   });
 
   // Add app and page jsx2mp loader
@@ -100,7 +98,7 @@ module.exports = (
     {
       type: 'complie',
       subPackages,
-      appConfig,
+      appConfig: staticConfig,
       subAppConfigList,
       outputPath,
       target,

@@ -1,14 +1,12 @@
 const {
-  getAppConfig,
-  filterNativePages,
-  platformMap,
-  pathHelper: { getPlatformExtensions },
+  separateNativeRoutes,
+  normalizeStaticConfig,
 } = require('miniapp-builder-shared');
-const getMiniAppBabelPlugins = require('rax-miniapp-babel-plugins');
-const MiniAppRuntimePlugin = require('rax-miniapp-runtime-webpack-plugin');
 const MiniAppConfigPlugin = require('rax-miniapp-config-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { resolve, dirname } = require('path');
+const { readFileSync } = require('fs');
+const { dirname, resolve, join } = require('path');
+
+const setBaseConfig = require('./setBaseConfig');
 
 /**
  * Set miniapp runtime project webpack config
@@ -16,130 +14,95 @@ const { resolve, dirname } = require('path');
  * @param {object} options
  * @param {object} options.api - build scripts api
  * @param {string} options.target - miniapp platform
- * @param {string} options.babelRuleName - babel loader name in webpack chain
+ * @param {string} options.normalRoutes - the routes which need be bundled by webpack
+ * @param {string} options.nativeRoutes - this miniapp native routes which need copy to build dir
+ * @param {string} options.outputPath - outputPath
  */
-module.exports = (
-  config,
-  { api, target, babelRuleName = 'babel-loader', outputPath }
-) => {
+module.exports = (config, options) => {
+  const { api, target, staticConfig, outputPath } = options;
+  let { nativeRoutes } = options;
   const { context } = api;
-  const { rootDir, command, userConfig: rootUserConfig } = context;
+  const { rootDir, userConfig: rootUserConfig } = context;
   const userConfig = rootUserConfig[target] || {};
 
-  if (!outputPath) {
-    outputPath = resolve(rootDir, 'build', target);
-  }
-  // Using components
-  const usingComponents = {};
   // Native lifecycle map
   const nativeLifeCycleMap = {};
-
-  // Using plugins
-  const usingPlugins = {};
-
-  // Need Copy files or dir
-  const needCopyList = [];
 
   // Sub packages config
   const subAppConfigList = [];
 
   let mainPackageRoot = '';
 
-  const appConfig = getAppConfig(rootDir, target, nativeLifeCycleMap);
-
   let completeRoutes = [];
 
   if (userConfig.subPackages) {
-    appConfig.routes.forEach(app => {
+    staticConfig.routes.forEach(app => {
       const subAppRoot = dirname(app.source);
-      const subAppConfig = getAppConfig(rootDir, target, nativeLifeCycleMap, subAppRoot);
+      // Deprecated: Read app.json as subpackages appConfig, it will get by global API
+      const subStaticConfig = JSON.parse(readFileSync(resolve(rootDir, 'src', subAppRoot, 'app.json')));
+      // Deprecated: filter routes which includes current build target
+      const validStaticConfig = getValidStaticConfig(subStaticConfig, {
+        target,
+      });
+      const normalizedSubStaticConfig = normalizeStaticConfig(validStaticConfig, {
+        rootDir,
+        subAppRoot,
+      });
       if (app.miniappMain) mainPackageRoot = subAppRoot;
-      subAppConfig.miniappMain = app.miniappMain;
-      subAppConfigList.push(subAppConfig);
-      completeRoutes = completeRoutes.concat(subAppConfig.routes);
+      subAppConfigList.push({
+        ...normalizedSubStaticConfig,
+        miniappMain: app.miniappMain,
+      });
+      const { normalRoutes, nativeRoutes: subNativeRoutes } = separateNativeRoutes(normalizedSubStaticConfig.routes, { rootDir, target });
+      completeRoutes = completeRoutes.concat(normalRoutes);
+      nativeRoutes = nativeRoutes.concat(subNativeRoutes);
     });
   } else {
-    completeRoutes = appConfig.routes;
+    completeRoutes = staticConfig.routes;
   }
 
-  completeRoutes = filterNativePages(completeRoutes, needCopyList, {
-    rootDir,
-    target,
-    outputPath,
+  completeRoutes.forEach(({ source }) => {
+    // initial native lifecycle
+    nativeLifeCycleMap[resolve(rootDir, 'src', source)] = {};
   });
 
-  config.output.filename('[name].js');
-  // publicPath should not work in miniapp, just keep default value
-  config.output.publicPath('/');
-
-  // Distinguish end construction
-  config.resolve.extensions
-    .clear()
-    .merge(
-      getPlatformExtensions(platformMap[target].type, ['.js', '.jsx', '.ts', '.tsx', '.json'])
-    );
-
-  ['jsx', 'tsx'].forEach((ruleName) => {
-    config.module
-      .rule(ruleName)
-      .use(babelRuleName)
-      .tap((options) => {
-        options.cacheDirectory = false; // rax-miniapp-babel-plugins needs to be executed every time
-        options.presets = [
-          ...options.presets,
-          {
-            plugins: getMiniAppBabelPlugins({
-              usingComponents,
-              nativeLifeCycleMap,
-              target,
-              rootDir,
-              usingPlugins,
-              runtimeDependencies: userConfig.runtimeDependencies,
-            }),
-          },
-        ];
-        return options;
-      });
+  setBaseConfig(config, {
+    appConfig: staticConfig,
+    completeRoutes,
+    subAppConfigList,
+    nativeLifeCycleMap,
+    needCopyList: nativeRoutes.map(({ source }) => ({
+      from: dirname(join('src', source)),
+      to: dirname(source),
+    })),
+    mainPackageRoot,
+    ...options
   });
 
   config.plugin('MiniAppConfigPlugin').use(MiniAppConfigPlugin, [
     {
       type: 'runtime',
       subPackages: userConfig.subPackages,
-      appConfig,
+      appConfig: staticConfig,
       subAppConfigList,
       outputPath,
       target,
       nativeConfig: userConfig.nativeConfig,
     },
   ]);
-  config.plugin('MiniAppRuntimePlugin').use(MiniAppRuntimePlugin, [
-    {
-      api,
-      routes: completeRoutes,
-      mainPackageRoot,
-      appConfig,
-      subAppConfigList,
-      target,
-      usingComponents,
-      nativeLifeCycleMap,
-      usingPlugins,
-      needCopyList,
-    },
-  ]);
-
-  if (needCopyList.length > 0) {
-    config.plugin('copyWebpackPluginForRuntimeMiniapp').use(CopyWebpackPlugin, [
-      {
-        patterns: needCopyList,
-      },
-    ]);
-  }
-
-  config.devServer.writeToDisk(true).noInfo(true).inline(false);
-  if (!config.get('devtool')) {
-    config.devtool(false);
-  } else if (command === 'start') {
-    config.devtool('inline-source-map');
-  }
 };
+
+// Deprecated: Get valid static config
+function getValidStaticConfig(staticConfig, { target }) {
+  if (!staticConfig.routes) {
+    throw new Error('routes in app.json must be array');
+  }
+
+  return {
+    ...staticConfig,
+    routes: staticConfig.routes.filter(({ targets }) => {
+      if (!targets) return true;
+      return targets.includes(target);
+    }),
+  };
+}

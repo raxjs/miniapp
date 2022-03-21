@@ -1,4 +1,6 @@
 import Element from '../element';
+import { omitFalsyFields, joinClassNames } from '../../utils/tool';
+
 
 class HTMLInputElement extends Element {
   constructor(options) {
@@ -34,7 +36,7 @@ class HTMLInputElement extends Element {
   }
 
   // Sets properties, but does not trigger updates
-  _setAttributeWithOutUpdate(name, value) {
+  _setAttributeWithDelayUpdate(name, value) {
     if (name === 'focus' || name === 'autofocus' || name === 'autoFocus') {
       // autoFocus is passed by rax-textinput
       name = 'focus-state';
@@ -42,7 +44,7 @@ class HTMLInputElement extends Element {
     if (name === 'value') {
       this.__changed = true;
     }
-    super._setAttributeWithOutUpdate(name, value);
+    super._setAttributeWithDelayUpdate(name, value);
   }
 
   getAttribute(name) {
@@ -54,14 +56,13 @@ class HTMLInputElement extends Element {
   }
 
   get _renderInfo() {
-    return {
+    return omitFalsyFields({
       nodeId: this.__nodeId,
-      pageId: this.__pageId,
       nodeType: 'input',
       ...this.__attrs.__value,
       style: this.style.cssText,
-      class: 'h5-input ' + this.className,
-    };
+      class: joinClassNames('h5-input', this.className),
+    }, ['style']);
   }
 
   // Attribute

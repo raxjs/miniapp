@@ -52,6 +52,8 @@ export default class Component {
     this._hooks = {};
     this.hooks = [];
     this._hookID = 0;
+    this._keyCache = new Set();
+    this.__nativeEventMap = {};
 
     this._pendingStates = [];
     this._pendingCallbacks = [];
@@ -97,6 +99,25 @@ export default class Component {
   _registerLifeCycle(cycle, fn) {
     const currentCycles = this._cycles[cycle] = this._cycles[cycle] || [];
     currentCycles.push(fn);
+  }
+
+  _clearKeyCache() {
+    this._keyCache = new Set();
+  }
+
+  /**
+   * generate uniq Key
+   */
+  _getUniqKey(namespace, key, index) {
+    if (typeof key === 'number' || typeof key === 'string') {
+      const tagId = `${namespace}-${key}`;
+      if (!this._keyCache.has(tagId)) {
+        this._keyCache.add(tagId);
+        return tagId;
+      }
+    }
+
+    return `${namespace}-idx_${index}`;
   }
 
   /**
@@ -256,9 +277,8 @@ export default class Component {
 
     // Step5: judge shouldComponentUpdate
     this.__shouldUpdate =
-      this.__forceUpdate || this.shouldComponentUpdate
-        ? this.shouldComponentUpdate(nextProps, nextState)
-        : true;
+      this.__forceUpdate ||
+      (this.shouldComponentUpdate ? this.shouldComponentUpdate(nextProps, nextState) : true);
 
     // Step8: trigger render
     if (this.__shouldUpdate) {
@@ -289,7 +309,7 @@ export default class Component {
       if (isFunction(hook.destory)) hook.destory();
     });
     // Clean up page cycle callbacks
-    this.__proto__.__nativeEventMap = {};
+    this.__nativeEventMap = {};
     this._internal.instance = null;
     this._internal = null;
     this.__mounted = false;

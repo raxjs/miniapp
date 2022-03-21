@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { isWeChatMiniProgram, isMiniApp } from 'universal-env';
+import { isMiniApp } from 'universal-env';
 import Event from './event';
+import cache from '../utils/cache';
 import CustomEvent from './custom-event';
 
 /**
@@ -51,7 +52,7 @@ function compareEventProperty(property, last, now) {
   return false;
 }
 
-function compareEventInAlipay(last, now) {
+function compareEventWithUncertainty(last, now) {
   // In Alipay, timestamps of the same event may have slight differences when bubbling
   // Set the D-value threshold to 10
   if (!last || now.timeStamp - last.timeStamp > 10) {
@@ -61,7 +62,7 @@ function compareEventInAlipay(last, now) {
   return compareEventProperty('detail', last, now) || compareEventProperty('touches', last, now) || compareEventProperty('changedTouches', last, now);
 }
 
-function compareEventInWechat(last, now) {
+function compareEventWithAccurateness(last, now) {
   // TimeStamps are different
   if (!last || last.timeStamp !== now.timeStamp) {
     return true;
@@ -120,9 +121,12 @@ class EventTarget {
 
     if (!event) {
       // Special handling here, not directly return the applet's event object
+      const targetNodeId = isMiniApp ? miniprogramEvent.target.targetDataset.privateNodeId : miniprogramEvent.target.dataset.privateNodeId;
+      // If different and native event target contains dataset, use native event target first
+      const realTarget = targetNodeId && targetNodeId !== target.__nodeId ? cache.getNode(targetNodeId) : target;
       event = new Event({
         name: eventName,
-        target,
+        target: realTarget,
         detail: miniprogramEvent.detail || { ...miniprogramEvent }, // Some info doesn't exist in event.detail but in event directly, like Alibaba MiniApp
         timeStamp: miniprogramEvent.timeStamp,
         touches: miniprogramEvent.touches,
@@ -239,16 +243,19 @@ class EventTarget {
     }
 
     if (handlers && handlers.length) {
+      let result;
       // Trigger addEventListener binded events
       handlers.forEach(handler => {
         if (event && event._immediateStop) return;
         try {
           const processedArgs = event ? [event, ...args] : [...args];
-          handler.call(this || null, ...processedArgs);
+          result = handler.call(this || null, ...processedArgs); // Only the last result will be returned
         } catch (err) {
           console.error(err);
         }
       });
+
+      return result;
     }
   }
 
@@ -260,9 +267,9 @@ class EventTarget {
     let flag = false;
 
     if (isMiniApp) {
-      flag = compareEventInAlipay(last, now);
-    } else if (isWeChatMiniProgram) {
-      flag = compareEventInWechat(last, now);
+      flag = compareEventWithUncertainty(last, now);
+    } else {
+      flag = compareEventWithAccurateness(last, now);
     }
 
     if (flag) this.__miniappEvent = now;

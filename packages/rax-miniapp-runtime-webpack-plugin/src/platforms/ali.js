@@ -1,7 +1,8 @@
 const addSingleQuote = require('../utils/addSingleQuote');
 
 const tapEvents = {
-  Tap: ''
+  Tap: '',
+  LongTap: ''
 };
 
 
@@ -10,7 +11,7 @@ const touchEvents = {
   TouchMove: '',
   TouchEnd: '',
   TouchCancel: '',
-  LongTap: ''
+
 };
 
 const View = {
@@ -570,6 +571,7 @@ const Video = {
     'enable-progress-gesture': 'false',
     'mobilenet-hint-type': '1',
     'floating-mode': addSingleQuote('none'),
+    enableNative: 'false'
   },
   events: {
     Play: '',
@@ -585,6 +587,24 @@ const Video = {
   }
 };
 
+const Camera = {
+  props: {
+    mode: addSingleQuote('normal'),
+    'device-position': addSingleQuote('back'),
+    flash: addSingleQuote('auto'),
+    outputDimension: addSingleQuote('720P'),
+    applyMicPermissionWhenInit: 'true',
+    'frame-size': addSingleQuote('medium'),
+    'frame-format': addSingleQuote('rgba'),
+    'max-duration': '30'
+  },
+  events: {
+    Stop: '',
+    Error: '',
+    ScanCode: ''
+  }
+};
+
 const Lottie = {
   props: {
     autoplay: 'false',
@@ -597,6 +617,15 @@ const Lottie = {
     djangoId: '',
     md5: '',
     optimize: 'false'
+  },
+  events: {
+    DataReady: '',
+    DataFailed: '',
+    AnimationStart: '',
+    AnimationEnd: '',
+    AnimationRepeat: '',
+    AnimationCancel: '',
+    DataLoadReady: ''
   }
 };
 
@@ -604,9 +633,11 @@ const Canvas = {
   props: {
     width: addSingleQuote('300px'),
     height: addSingleQuote('225px'),
+    type: '',
     'disable-scroll': 'false',
   },
   events: {
+    Ready: '',
     ...touchEvents,
   },
   basicEvents: {
@@ -724,6 +755,28 @@ const ContactButton = {
   }
 };
 
+const Lifestyle = {
+  props: {
+    publicId: '',
+    memo: ''
+  },
+  events: {
+    Follow: ''
+  }
+};
+
+
+const LifeFollow = {
+  props: {
+    sceneId: '',
+    checkFollow: ''
+  },
+  events: {
+    CheckFollow: '',
+    Close: ''
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -762,6 +815,7 @@ exports.internalComponents = {
   Image,
   StaticImage,
   Video,
+  Camera,
   Lottie,
   Canvas,
   Map: MiniappMap,
@@ -770,6 +824,8 @@ exports.internalComponents = {
   LivePlayer,
   LivePusher,
   ContactButton,
+  Lifestyle,
+  LifeFollow,
   HElement,
   NoTouchHElement,
   CatchHElement,
@@ -827,13 +883,16 @@ exports.voidChildrenElements = new Set([
   'HComment',
   'Image',
   'Video',
+  'Camera',
   'Lottie',
   'Canvas',
   'WebView',
   'LivePlayer',
   'LivePusher',
   'ContactButton',
-  'OpenAvatar'
+  'OpenAvatar',
+  'Lifestyle',
+  'LifeFollow'
 ]);
 
 
@@ -860,11 +919,11 @@ exports.needModifyChildrenComponents = {
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </swiper-item>`,
   MovableArea: children => `
-    <movable-view a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],false)}}" onChange="onMovableViewChange" onChangeEnd="onMovableViewChangeEnd" onScale="onMovableViewScale" onTouchStart="onTouchStart" onTouchMove="onTouchMove" onTouchEnd="onTouchEnd" onTouchCancel="onTouchCancel" onLongTap="onLongTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
+    <movable-view a:for="{{r.children}}" key="{{item.nodeId}}" a:if="{{item.nodeType !== 'h-comment'}}" direction="{{item['direction']||'none'}}" inertia="{{tool.a(item['inertia'],false)}}" out-of-bounds="{{tool.a(item['out-of-bounds'],false)}}" x="{{tool.a(item['x'],0)}}" y="{{tool.a(item['y'],0)}}" damping="{{tool.a(item['damping'],20)}}" friction="{{tool.a(item['friction'],2)}}" disabled="{{tool.a(item['disabled'],false)}}" scale="{{tool.a(item['scale'],false)}}" scale-min="{{tool.a(item['scale-min'],0.5)}}" scale-max="{{tool.a(item['scale-max'],10)}}" scale-value="{{tool.a(item['scale-value'],1)}}" animation="{{tool.a(item['animation'],false)}}" onChange="onMovableViewChange" onChangeEnd="onMovableViewChangeEnd" onScale="onMovableViewScale" onTouchStart="onTouchStart" onTouchMove="onTouchMove" onTouchEnd="onTouchEnd" onTouchCancel="onTouchCancel" onLongTap="onLongTap" style="{{item.style}}" class="{{item.class}}" id="{{item.id}}" data-private-node-id="{{item.nodeId}}">
       <template is="RAX_TMPL_CHILDREN_0" data="{{r: item.children}}" />
     </movable-view>`,
   PickerView: children => `
-    <picker-view-column a:for="{{r.children}}" a:key="nodeId" a:if="{{item.nodeType !== 'h-comment'}}">
+    <picker-view-column a:for="{{r.children}}" key="{{item.nodeId}}" a:if="{{item.nodeType !== 'h-comment'}}">
       <view a:for="{{item.children}}" a:for-item="pickerColumnItem">
         <block a:if="{{pickerColumnItem.nodeId}}">
           <template is="{{tool.c(pickerColumnItem.nodeType)}}" data="{{r: pickerColumnItem}}" />
@@ -891,7 +950,9 @@ exports.adapter = {
   xs: 'sjs',
   event: 'on',
   catchEvent: 'catch',
-  eventToLowerCase: false
+  eventToLowerCase: false,
+  supportSjs: true,
+  formatBindedData: (value) => `${value}`
 };
 
 exports.sjs = {

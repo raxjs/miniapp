@@ -1,11 +1,11 @@
 export default {
   name: 'picker-view',
   singleEvents: [{
-    name: 'onPickerViewPickstart',
+    name: 'onPickerViewPickStart',
     eventName: 'pickstart'
   },
   {
-    name: 'onPickerViewPickend',
+    name: 'onPickerViewPickEnd',
     eventName: 'pickend'
   }],
   functionalSingleEvents: [
@@ -13,7 +13,7 @@ export default {
       name: 'onPickerViewChange',
       eventName: 'change',
       middleware(evt, domNode) {
-        domNode._setAttributeWithOutUpdate('value', evt.detail.value);
+        domNode._setAttributeWithDelayUpdate('value', evt.detail.value);
       }
     }
   ]
