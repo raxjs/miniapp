@@ -24,7 +24,7 @@ const view = {
 };
 
 if (isMiniApp) {
-  view.simpleEvents = view.simpleEvents.concat[{
+  view.simpleEvents = view.simpleEvents.concat([{
     name: 'onViewAppear',
     eventName: 'appear'
   },
@@ -35,7 +35,7 @@ if (isMiniApp) {
   {
     name: 'onViewDisappear',
     eventName: 'disappear'
-  }];
+  }]);
 }
 
 export default view;
