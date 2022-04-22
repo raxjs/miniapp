@@ -69,10 +69,10 @@ function joinClassNames(...args) {
 /**
  * Cconvert an Array-like object to a real Array
  */
-function toArray (list, start = 0) {
+function toArray(list, start = 0) {
   let i = list.length - start;
   const ret = new Array(i);
-  while(i--) {
+  while (i--) {
     ret[i] = list[i + start];
   }
   return ret;
