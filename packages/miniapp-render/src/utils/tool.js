@@ -66,6 +66,18 @@ function joinClassNames(...args) {
   return args.filter(v => !!v).join(' ');
 }
 
+/**
+ * Cconvert an Array-like object to a real Array
+ */
+function toArray (list, start = 0) {
+  let i = list.length - start;
+  const ret = new Array(i);
+  while(i--) {
+    ret[i] = list[i + start];
+  }
+  return ret;
+}
+
 export {
   toDash,
   toCamel,
@@ -73,5 +85,6 @@ export {
   isUndef,
   isFunction,
   omitFalsyFields,
-  joinClassNames
+  joinClassNames,
+  toArray
 };
