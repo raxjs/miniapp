@@ -1,7 +1,7 @@
-const { resolve, join, dirname } = require('path');
+const { resolve, join, dirname, extname } = require('path');
 const { readJsonSync, existsSync } = require('fs-extra');
 const isEqual = require('lodash.isequal');
-const { constants: { MINIAPP } } = require('miniapp-builder-shared');
+const { platformMap, constants: { MINIAPP } } = require('miniapp-builder-shared');
 const { processAssets: webpackProcessAssets } = require('@builder/compat-webpack4');
 const { UNRECURSIVE_TEMPLATE_TYPE } = require('./constants');
 const isCSSFile = require('./utils/isCSSFile');
@@ -56,6 +56,7 @@ class MiniAppRuntimePlugin {
     } = api;
     const userConfig = rootUserConfig[target] || {};
     const { subPackages, template: modifyTemplate = {}, nativePackage = {} } = userConfig;
+    const isCssExtension = platformMap[target].extension.css === '.css';
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
@@ -118,6 +119,16 @@ class MiniAppRuntimePlugin {
             withNativeAppConfig
           });
         }
+      }
+
+      // xxx.css will be transformed into xxx.css.acss (in alibaba miniapp)
+      // and xxx.css should be deleted
+      if (!isCssExtension) {
+        Object.keys(compilation.assets).forEach(asset => {
+          if (extname(asset) === '.css') {
+            delete compilation.assets[asset];
+          }
+        });
       }
 
       if (

@@ -7,10 +7,14 @@ import createEventProxy from '../bridge/createEventProxy';
 import createDocument from '../document';
 import { BODY_NODE_ID, INDEX_PAGE } from '../constants';
 import createWindow from '../window';
+import { isFunction } from '../utils/tool';
 
 export function getBaseLifeCycles(route, init, packageName = '') {
   return {
     onLoad(query) {
+      // old: init is a function that contains all the logic code
+      // now: init is a object that contains page code and bundle code (app.js)
+      const isBundled = isFunction(init);
       this.pageId = route + '-' + cache.getRouteId(route);
       // getApp may not exist in situations like plugin project
       // eslint-disable-next-line no-undef
@@ -40,7 +44,11 @@ export function getBaseLifeCycles(route, init, packageName = '') {
       } else {
         this.window = createWindow();
         cache.setWindow(packageName, this.window);
-        init(this.window, this.document);
+        isBundled ? init(this.window, this.document) : init.bundle(this.window, this.document);
+      }
+
+      if (!isBundled) {
+        init.page(this.window, this.document);
       }
 
       // Bind page internal to page document
@@ -61,9 +69,13 @@ export function getBaseLifeCycles(route, init, packageName = '') {
       if (!this.renderInfo && process.env.NODE_ENV === 'development') {
         throw new Error("Could't find target render method.");
       }
-      this.renderInfo.setDocument(this.document);
-      this.renderInfo.render();
 
+      this.renderInfo.setDocument(this.document);
+      if (isBundled) {
+        this.renderInfo.render();
+      } else {
+        this.window.__render(this.renderInfo.component);
+      }
       this.document._trigger('DOMContentLoaded');
     },
     onShow() {

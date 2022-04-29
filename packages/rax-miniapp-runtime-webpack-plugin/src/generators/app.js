@@ -52,10 +52,16 @@ function generateAppCSS(compilation, { target, pluginDir, subPackages, assets })
   let content = `@import "./${defaultCSSFileName}";`;
 
   Object.keys(assets).forEach(asset => {
+    /* past:
+      non-subPackage: app.css would import bundle.css and native page css (which is a bug)
+      subpackage: app.css would only import vendor.css
+    */
+    /* now:
+      app.acss only import vendor.css. page css will be loaded in each page
+    */
     if (/\.css/.test(asset) && asset !== defaultCSSFileName) {
-      if (!subPackages || asset === 'vendors.css') {
+      if (asset === 'vendors.css') {
         const newCssFileName = asset.replace(/\.css/, cssExt);
-        // In sub packages mode, only vendors.css should be imported in app.css
         content += `@import "./${newCssFileName}";`;
       }
     }
