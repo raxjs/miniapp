@@ -6,6 +6,7 @@
 ### Fixed
 
 - can't use animation events in view in non-ali miniapps
+- should copy handlers in trigger function to avoid remove in handlers
 
 ## [2.8.8] - 2022-01-06
 

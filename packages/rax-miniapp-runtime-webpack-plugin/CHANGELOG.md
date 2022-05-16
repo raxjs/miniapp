@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.0.1] - 2022-05-17
+
+### Fixed
+
+- Add default value for setting in map component
+
 ## [5.0.1] - 2022-01-11
 
 ### Added
