@@ -738,7 +738,7 @@ const MiniappMap = {
     'enable-traffic': 'false',
     'enable-poi': '',
     'enable-building': '',
-    setting: '',
+    setting: ' {skew:0} ',
   },
   events: {
     MarkerTap: '',
