@@ -55,7 +55,7 @@ class MiniAppRuntimePlugin {
       getValue
     } = api;
     const userConfig = rootUserConfig[target] || {};
-    const { subPackages, template: modifyTemplate = {}, nativePackage = {} } = userConfig;
+    const { subPackages, template: modifyTemplate = {}, nativePackage = {}, polyfillFunction = false } = userConfig;
     let isFirstRender = true;
     let lastUsingComponents = {};
     let lastUsingPlugins = {};
@@ -325,7 +325,7 @@ class MiniAppRuntimePlugin {
       });
 
       // handle js and css file
-      processAssets(compilation, assets, { target, needWrappedJSChunks });
+      processAssets(compilation, assets, { target, needWrappedJSChunks, polyfillFunction });
 
       isFirstRender = false;
       callback();

@@ -2,6 +2,7 @@
 import { isMiniApp } from 'universal-env';
 import Event from './event';
 import cache from '../utils/cache';
+import { toArray } from '../utils/tool';
 import CustomEvent from './custom-event';
 
 /**
@@ -222,7 +223,7 @@ class EventTarget {
   // Trigger node event
   _trigger(eventName, { event, args = [], isCapture, isTarget } = {}) {
     eventName = eventName.toLowerCase();
-    const handlers = this.__getHandles(eventName, isCapture) || [];
+    let handlers = this.__getHandles(eventName, isCapture) || [];
 
     if (eventName === 'onshareappmessage') {
       if (process.env.NODE_ENV === 'development' && handlers.length > 1) {
@@ -244,6 +245,9 @@ class EventTarget {
 
     if (handlers && handlers.length) {
       let result;
+      if (handlers.length > 1) {
+        handlers = toArray(handlers);
+      }
       // Trigger addEventListener binded events
       handlers.forEach(handler => {
         if (event && event._immediateStop) return;

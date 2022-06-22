@@ -1,5 +1,17 @@
 # Changelog
 
+## [5.0.3] - 2022-03-02
+
+### Added
+
+- Add `polyfillFunction` config to polyfill Function
+
+## [5.0.2] - 2022-05-17
+
+### Fixed
+
+- Add default value for setting in map component
+
 ## [5.0.1] - 2022-01-11
 
 ### Added
