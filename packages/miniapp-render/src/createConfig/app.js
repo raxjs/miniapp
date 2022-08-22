@@ -11,7 +11,7 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
     ...config,
     mainPackageName: packageName,
   });
-  const { onLaunch, onShow, onHide, onError, onPageNotFound, ...rest } = nativeAppConfig;
+  const { onLaunch, onShow, onHide, onError, onPageNotFound, onUnhandledRejection, ...rest } = nativeAppConfig;
   const appConfig = {
     onLaunch(options) {
       onLaunch && onLaunch.call(this, options);
@@ -82,6 +82,18 @@ export default function(init, config, packageName = '', nativeAppConfig = {}) {
 
       if (this.window) {
         this.window._trigger('pagenotfound', {
+          event: {
+            options,
+            context: this
+          }
+        });
+      }
+    },
+    onUnhandledRejection(options) {
+      onUnhandledRejection && onUnhandledRejection.call(this, options);
+
+      if (this.window) {
+        this.window._trigger('unhandledrejection', {
           event: {
             options,
             context: this
