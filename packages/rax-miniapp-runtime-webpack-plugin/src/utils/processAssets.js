@@ -43,7 +43,7 @@ if (typeof getApp === 'function') {
         content,
         footerContent
       ));
-    } else if (/\.css/.test(fileName)) {
+    } else if (/\.css$/.test(fileName)) {
       const content = compilation.assets[fileName].source();
       // Delete original asset
       delete compilation.assets[fileName];
