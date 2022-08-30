@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.0.4] - 2022-08-30
+
+### Fixed
+
+- *.css.map will be handled as css files if sourceMap is set to 'source-map'
+
 ## [5.0.3] - 2022-03-02
 
 ### Added
