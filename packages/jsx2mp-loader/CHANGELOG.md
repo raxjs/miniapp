@@ -1,5 +1,14 @@
 # Changelog
 
+
+## [0.4.36] - 2022-06-22
+
+### Fixed
+
+- just replace 'rem' in css value of specific pattern, to prevent break css name or css key
+- - Fix RegExp of function removeExt. Just replace file that like 'index.ali.js', excludes 'ali.js', that's bug in v0.4.35
+
+
 ## [0.4.35] - 2022-02-10
 
 ### Fixed

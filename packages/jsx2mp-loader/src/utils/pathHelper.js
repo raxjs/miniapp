@@ -2,7 +2,7 @@ const { extname, sep, join } = require('path');
 
 function removeExt(path, platform) {
   const ext = extname(path);
-  const extReg = new RegExp(`${platform ? `(.${platform})?` : ''}${ext}$`.replace(/\\./g, '\\.'));
+  const extReg = new RegExp(`${platform ? `(.${platform})?` : ''}${ext}$`.replace(/\./g, '\\.'));
   return path.replace(extReg, '');
 }
 
