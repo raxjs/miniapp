@@ -34,11 +34,11 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
 
   // Miniapp template tag name does not support special characters.
   let aliasName = alias.name.replace(/@|\//g, '_');
-  // ByteDance MicroApp's componentTag don't sopport the name start with '_'. 
+  // ByteDance MicroApp's componentTag don't support the name start with '_'.
   if (aliasName.indexOf('_') === 0 && options.adapter.compTagHeadNoUnderline) {
     aliasName = aliasName.replace('_', '');
   }
-  
+
   const componentTag = alias.default ? aliasName : `${aliasName}-${alias.local.toLowerCase()}`;
   replaceComponentTagName(path, t.jsxIdentifier(componentTag));
   node.isCustomEl = alias.isCustomEl;
