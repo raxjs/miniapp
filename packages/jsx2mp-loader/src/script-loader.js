@@ -236,7 +236,8 @@ module.exports = function scriptLoader(content) {
         content
       ].join('\n');
     } else {
-      outputFile(rawContent);
+      // outputFile(rawContent);
+      outputFile(content);
     }
   } else if (isFromConstantDir(this.resourcePath) && isThirdMiniappComponent) {
     const dependencies = [];
