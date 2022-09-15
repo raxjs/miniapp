@@ -1,5 +1,10 @@
 # Changelog
+## [0.4.37] - 2022-09-15
 
+### Fixed
+
+- fix(bytedance-microapp): componentTag don't support the name start with '_'. Remove the `_` in bytedance.
+- fix: native routes in `pages/` build error: `needCopyList[i].to error in setEntry()`
 
 ## [0.4.36] - 2022-06-22
 
