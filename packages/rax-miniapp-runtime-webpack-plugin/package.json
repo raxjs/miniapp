@@ -1,6 +1,6 @@
 {
   "name": "rax-miniapp-runtime-webpack-plugin",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "A webpack plugin for miniapp runtime build",
   "main": "src/index.js",
   "files": [
