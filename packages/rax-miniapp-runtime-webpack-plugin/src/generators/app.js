@@ -52,7 +52,7 @@ function generateAppCSS(compilation, { target, pluginDir, subPackages, assets })
   let content = `@import "./${defaultCSSFileName}";`;
 
   Object.keys(assets).forEach(asset => {
-    if (/\.css/.test(asset) && asset !== defaultCSSFileName) {
+    if (/\.css$/.test(asset) && asset !== defaultCSSFileName) {
       if (!subPackages || asset === 'vendors.css') {
         const newCssFileName = asset.replace(/\.css/, cssExt);
         // In sub packages mode, only vendors.css should be imported in app.css
