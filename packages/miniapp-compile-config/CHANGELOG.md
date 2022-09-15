@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.3] - 2022-09-15
+
+- Fix: native routes in `pages/` build error: `needCopyList[i].to error in setEntry()`
+
 ## [0.3.2] - 2022-01-06
 
 - Fix: generate duplicate package.json in dev mode

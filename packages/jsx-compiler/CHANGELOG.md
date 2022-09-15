@@ -1,4 +1,8 @@
 # Changelog
+## [0.4.37]
+
+- Fix(bytedance-microapp): componentTag don't support the name start with '_'. Remove the `_` in bytedance.
+
 
 ## [0.4.36]
 
