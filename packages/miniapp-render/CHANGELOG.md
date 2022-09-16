@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.0] - 2022-08-22
+
+### Feat
+
+- support onUnhandledRejection event
 
 ## [2.8.9] - 2022-03-23
 
