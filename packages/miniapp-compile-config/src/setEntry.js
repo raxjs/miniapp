@@ -46,7 +46,7 @@ function setEntry(config, routes, options) {
   nativeRoutes.forEach(({ source }) => {
     needCopyList.push({
       from: dirname(join('src', source)),
-      to: dirname(join('src', source)),
+      to: dirname(source),
     });
   });
   configEntry(config, normalRoutes, options);

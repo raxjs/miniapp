@@ -112,6 +112,8 @@ const parserAdapters = {
     // Handle rax-slider and rax-swiper
     insertSwiperSlot: true,
     needRegisterProps: true,
+    // ComponentTag don't support that start with '_'.
+    compTagHeadNoUnderline: true
   },
   componentCommonProps
 };
