@@ -113,7 +113,13 @@ const parserAdapters = {
     },
     'scroll-view': {
       ...componentCommonProps.bytedance,
-      className: ''
+      className: '',
+      onEndReached: 'bindscrolltolower',
+      onScroll: 'bindscroll',
+      onTouchStart: 'binddragstart',
+      onTouchMove: 'binddragging',
+      onTouchEnd: 'binddragend',
+      // onTouchCancel: ''
     },
     styleKeyword: true,
     slotScope: false,
