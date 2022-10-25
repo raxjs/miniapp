@@ -124,7 +124,9 @@ module.exports = function scriptLoader(content) {
         for (let key in componentConfig.usingComponents) {
           if (componentConfig.usingComponents.hasOwnProperty(key)) {
             const componentPath = componentConfig.usingComponents[key];
-            if (isNpmModule(componentPath)) {
+            if (componentPath.indexOf('plugin://') === 0) {
+              // exclude plugin. eg usingComponents { "c-xxxx": "plugin://ocr/ocr-id" }
+            } else if (isNpmModule(componentPath)) {
               // component from node module
               const realComponentPath = resolveModule.sync(componentPath, { basedir: this.resourcePath, paths: [this.resourcePath], preserveSymlinks: false });
               const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
