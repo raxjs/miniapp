@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.8.10] - 2022-10-25
+
+### Fixed
+
+- can't get className props in native custom component
 
 ## [2.8.9] - 2022-03-23
 
