@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.8.10] - 2022-11-30
+
+### Added
+
+- Support `page-container` native component in wechat-miniprogram
 
 ## [2.8.9] - 2022-03-23
 
