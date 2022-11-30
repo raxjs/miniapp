@@ -40,6 +40,7 @@ import contactButton from './contact-button';
 
 // WeChat only
 import adCustom from './ad-custom';
+import pageContainer from './page-container';
 
 // Alibaba MiniApp only
 import lifestyle from './lifestyle';
@@ -88,7 +89,8 @@ let components = [
   swiperItem,
   pickerViewColumn,
   officialAccount,
-  contactButton
+  contactButton,
+  pageContainer
 ];
 
 if (isWeChatMiniProgram) {
