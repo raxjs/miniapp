@@ -30,7 +30,7 @@ const BUILTIN_COMPONENT_LIST = new Set([
 if (isMiniApp) {
   BUILTIN_COMPONENT_LIST.add('lifestyle').add('life-follow');
 } else if (isWeChatMiniProgram) {
-  BUILTIN_COMPONENT_LIST.add('ad-custom');
+  BUILTIN_COMPONENT_LIST.add('ad-custom').add('page-container');
 }
 
 export { BUILTIN_COMPONENT_LIST };
