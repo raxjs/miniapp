@@ -2,9 +2,10 @@
 
 ## [2.8.10] - 2023-08-23
 
-- Support onChooseAvatar event in buton in wechat
+### Added
 
-### Fixed
+- Support onChooseAvatar event in buton in wechat
+- Support `page-container` native component in wechat-miniprogram
 
 ## [2.8.9] - 2022-03-23
 

@@ -884,6 +884,29 @@ const AdCustom = {
   }
 };
 
+const PageContainer = {
+  props: {
+    'show': 'false',
+    'duration': '300',
+    'z-index': '100',
+    'overlay': 'true',
+    'position': addSingleQuote('bottom'),
+    'round': 'false',
+    'close-on-slide-down': 'false',
+    'overlay-style': '',
+    'custom-style': '',
+  },
+  events: {
+    BeforeEnter: '',
+    Enter: '',
+    AfterEnter: '',
+    BeforeLeave: '',
+    Leave: '',
+    AfterLeave: '',
+    ClickOverlay: '',
+  }
+};
+
 exports.internalComponents = {
   View,
   CatchView,
@@ -936,7 +959,8 @@ exports.internalComponents = {
   CatchHElement,
   PureHElement,
   NoTouchHElement,
-  HComment
+  HComment,
+  PageContainer
 };
 
 exports.derivedComponents = new Map([
@@ -1007,7 +1031,8 @@ exports.nestElements = new Map([
   ['Form', 4],
   ['ScrollView', 4],
   ['Swiper', 4],
-  ['SwiperItem', 4]
+  ['SwiperItem', 4],
+  ['PageContainer', 4],
 ]);
 
 exports.shouldNotGenerateTemplateComponents = new Set([
