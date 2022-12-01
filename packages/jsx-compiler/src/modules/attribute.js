@@ -74,6 +74,9 @@ function transformAttribute(ast, code, adapter) {
           }
           break;
         default:
+          if (node.value === null && adapter.needPropsDefaultToTrue) {
+            node.value = t.jsxExpressionContainer(t.booleanLiteral(true));
+          }
           path.skip();
       }
     }
