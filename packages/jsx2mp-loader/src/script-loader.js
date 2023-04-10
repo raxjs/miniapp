@@ -3,7 +3,7 @@ const { join, dirname, relative, resolve, sep, extname } = require('path');
 const { copySync, existsSync, mkdirpSync, ensureFileSync, writeJSONSync, readFileSync, readJSONSync } = require('fs-extra');
 const { getOptions } = require('loader-utils');
 const resolveModule = require('resolve');
-const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
+const { constants: { QUICKAPP, MINIAPP }, platformMap } = require('miniapp-builder-shared');
 const cached = require('./cached');
 const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPrefix, isFromTargetDirs } = require('./utils/pathHelper');
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
@@ -70,6 +70,9 @@ module.exports = function scriptLoader(content) {
     let outputContent = {};
     let outputOption = {};
 
+    // 支付宝小程序 copyNpm 模式下对 @babel/runtime/regenerator/index.js 中的 `Function("r", "regeneratorRuntime=r")(runtime);` 进行处理
+    const needHackRegeneratorRuntimeFunction = platform.type === platformMap[MINIAPP].type && !disableCopyNpm && this.resourcePath.indexOf('@babel/runtime/regenerator/index.js') > -1;
+
     outputContent = { code: rawContent };
     outputOption = {
       outputPath: {
@@ -87,8 +90,9 @@ module.exports = function scriptLoader(content) {
             platform,
             aliasEntries
           }
-        ]
-      ],
+        ],
+        needHackRegeneratorRuntimeFunction ? require('./babel-plugin-handle-regeneratorRuntime') : null
+      ].filter(t => t),
       platform,
       isTypescriptFile: isTypescriptFile(this.resourcePath),
       rootDir,
