@@ -413,7 +413,11 @@ function getComponentPath(alias, options) {
 
       const miniappConfigRelativePath = relative(pkg.main, miniappComponentPath);
       const realMiniappAbsPath = resolve(realNpmFile, miniappConfigRelativePath);
-      const realMiniappRelativePath = realMiniappAbsPath.slice(realMiniappAbsPath.indexOf(realPkgName) + realPkgName.length);
+
+      // there might be multiple realPkgName in realMiniappAbsPath，so we choose the last one as the relative path for npm folder
+      const realMiniAppAbsPathArray = realMiniappAbsPath.split(realPkgName) || [];
+      const realMiniappRelativePath = realMiniAppAbsPathArray[realMiniAppAbsPathArray.length - 1] || '';
+
       return normalizeFileName(addRelativePathPrefix(normalizeOutputFilePath(join(npmRelativePath, realPkgName, realMiniappRelativePath))));
     }
   }

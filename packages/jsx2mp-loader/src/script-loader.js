@@ -37,7 +37,7 @@ module.exports = function scriptLoader(content) {
   const rawContent = isCommonJSON ? content : readFileSync(this.resourcePath, 'utf-8');
   const nodeModulesPathList = getNearestNodeModulesPath(rootContext, this.resourcePath);
   const currentNodeModulePath = nodeModulesPathList[nodeModulesPathList.length - 1];
-  const rootNodeModulePath = join(rootContext, 'node_modules');
+  const rootNodeModulePath = getRootNodeModulePath(rootContext, this.resourcePath);
 
   const isFromNodeModule = cached(function isFromNodeModule(path) {
     return path.indexOf(rootNodeModulePath) === 0;
@@ -124,9 +124,14 @@ module.exports = function scriptLoader(content) {
           if (componentConfig.usingComponents.hasOwnProperty(key)) {
             const componentPath = componentConfig.usingComponents[key];
             if (isNpmModule(componentPath)) {
+              // Build usingComponents relative path for modules in npm folder
+              const npmFolderPath = distComponentConfigPath.slice(0, distComponentConfigPath.indexOf('npm') + 'npm'.length);
+              const predictComponentPathInNpmFolder = join(npmFolderPath, '/', componentPath);
+              const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(distComponentConfigPath), predictComponentPathInNpmFolder)));
+
               // component from node module
               const realComponentPath = resolveModule.sync(componentPath, { basedir: this.resourcePath, paths: [this.resourcePath], preserveSymlinks: false });
-              const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
+
               componentConfig.usingComponents[key] = normalizeOutputFilePath(removeExt(relativeComponentPath));
               // Native miniapp component js file will loaded by script-loader
               dependencies.push({
@@ -292,6 +297,24 @@ function getNearestNodeModulesPath(root, current) {
     index = join(index, relativePathArray.shift());
   }
   return result;
+}
+
+function getRootNodeModulePath(root, current) {
+  const relativePathArray = relative(root, current).split(sep) || [];
+
+  if (relativePathArray.find((item) => item === '..')) {
+    /**
+     * 存在 `..` 说明是引用了上层目录的 `node_modules`，存在依赖抬升行为，可能为monorepo场景，
+     * 故抛去最后一个node_modules之后的目录，将rootNodeModule路径置为资源所在目录的上层目录的node_modules
+     */
+    const resourcePathArray = current.split('node_modules') || [];
+    return join(resourcePathArray.slice(0, resourcePathArray.length - 1).join('node_modules'), 'node_modules');
+  } else {
+    /**
+     * 非依赖抬升场景
+     */
+    return join(root, 'node_modules');
+  }
 }
 
 function generateDependencies(dependencies) {
