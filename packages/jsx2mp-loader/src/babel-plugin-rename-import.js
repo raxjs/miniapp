@@ -6,6 +6,7 @@ const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { isNpmModule, isWeexModule, isQuickAppModule, isRaxModule, isRaxAppModule, isJsx2mpRuntimeModule, isNodeNativeModule } = require('./utils/judgeModule');
 const { addRelativePathPrefix, normalizeOutputFilePath, removeExt } = require('./utils/pathHelper');
 const getAliasCorrespondingValue = require('./utils/getAliasCorrespondingValue');
+const getRootNodeModulePath = require('./utils/getRootNodeModulePath');
 
 const RUNTIME = 'jsx2mp-runtime';
 
@@ -34,7 +35,7 @@ module.exports = function visitor({ types: t }, options) {
 
     const target = enhancedResolve.sync(resourcePath, value);
 
-    const rootNodeModulePath = join(rootContext, 'node_modules');
+    const rootNodeModulePath = getRootNodeModulePath(rootContext, target);
     const filePath = relative(dirname(distSourcePath), join(outputPath, 'npm', relative(rootNodeModulePath, target)));
     let modifiedValue = normalizeNpmFileName(addRelativePathPrefix(normalizeOutputFilePath(filePath)));
     // json file will be transformed to js file

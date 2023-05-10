@@ -1,5 +1,5 @@
 const t = require('@babel/types');
-const { join, relative, dirname, resolve, extname } = require('path');
+const { join, relative, dirname, resolve, extname, sep } = require('path');
 const resolveModule = require('resolve');
 const { parseExpression } = require('../parser');
 const isClassComponent = require('../utils/isClassComponent');
@@ -67,7 +67,7 @@ function getConstructor(type) {
  */
 module.exports = {
   parse(parsed, code, options) {
-    const { ast, programPath, defaultExportedPath, exportComponentPath, renderFunctionPath,
+    const {ast, programPath, defaultExportedPath, exportComponentPath, renderFunctionPath,
       useCreateStyle, useClassnames, dynamicValue, dynamicRef, dynamicStyle, dynamicEvents, imported,
       contextList, refs, componentDependentProps, listKeyProps, renderItemFunctions, renderPropsFunctions, renderPropsEmitter, renderPropsListener, eventHandler, eventHandlers = [] } = parsed;
     const { platform, type, cwd, outputPath, sourcePath, resourcePath, disableCopyNpm, virtualHost } = options;
@@ -332,11 +332,14 @@ function renameNpmModules(ast, targetFileDir, outputPath, cwd, resourcePath) {
       throw new Error(`You may not have npm installed: "${npmName}"`);
     }
 
+    const rootNodeModulePath = getRootNodeModulePath(rootContext, target);
+
     const moduleBasePath = join(packageJSONPath, '..');
-    const realNpmName = relative(nodeModulePath, moduleBasePath);
+    const realNpmName = relative(rootNodeModulePath, moduleBasePath);
     const modulePathSuffix = relative(moduleBasePath, target);
 
     let ret;
+    // For disableCopyNpm=false scenario，all paths here are predicted paths，while the actual package copy behaivor is executed in jsx2mp-loader/src.script-loader.
     if (npmName === value) {
       ret = relative(targetFileDir, join(outputPath, 'npm', realNpmName, modulePathSuffix));
     } else {
@@ -660,4 +663,21 @@ function addClearKeyCache(renderFunctionPath) {
       )
     )
   );
+}
+
+function getRootNodeModulePath(root, current) {
+  const relativePathArray = relative(root, current).split(sep) || [];
+
+  if (relativePathArray.find((item) => item === '..')) {
+    /**
+     * Package hoist case exist while `..` is presented in relative path array, hence we dig into the deepest node_modules folder, and use it as root node module path
+     */
+    const resourcePathArray = current.split('node_modules') || [];
+    return join(resourcePathArray.slice(0, resourcePathArray.length - 1).join('node_modules'), 'node_modules');
+  } else {
+    /**
+     * 非依赖抬升场景
+     */
+    return join(root, 'node_modules');
+  }
 }

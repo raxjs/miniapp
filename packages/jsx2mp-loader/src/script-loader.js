@@ -10,6 +10,7 @@ const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModu
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
 const { output, transformCode } = require('./output');
+const getRootNodeModulePath = require('./utils/getRootNodeModulePath');
 
 const ScriptLoader = __filename;
 
@@ -297,24 +298,6 @@ function getNearestNodeModulesPath(root, current) {
     index = join(index, relativePathArray.shift());
   }
   return result;
-}
-
-function getRootNodeModulePath(root, current) {
-  const relativePathArray = relative(root, current).split(sep) || [];
-
-  if (relativePathArray.find((item) => item === '..')) {
-    /**
-     * 存在 `..` 说明是引用了上层目录的 `node_modules`，存在依赖抬升行为，可能为monorepo场景，
-     * 故抛去最后一个node_modules之后的目录，将rootNodeModule路径置为资源所在目录的上层目录的node_modules
-     */
-    const resourcePathArray = current.split('node_modules') || [];
-    return join(resourcePathArray.slice(0, resourcePathArray.length - 1).join('node_modules'), 'node_modules');
-  } else {
-    /**
-     * 非依赖抬升场景
-     */
-    return join(root, 'node_modules');
-  }
 }
 
 function generateDependencies(dependencies) {
