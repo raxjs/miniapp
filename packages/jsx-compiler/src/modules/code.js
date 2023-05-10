@@ -675,9 +675,6 @@ function getRootNodeModulePath(root, current) {
     const resourcePathArray = current.split('node_modules') || [];
     return join(resourcePathArray.slice(0, resourcePathArray.length - 1).join('node_modules'), 'node_modules');
   } else {
-    /**
-     * 非依赖抬升场景
-     */
     return join(root, 'node_modules');
   }
 }
