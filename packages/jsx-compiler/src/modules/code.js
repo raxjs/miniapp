@@ -326,16 +326,22 @@ function renameNpmModules(ast, targetFileDir, outputPath, cwd, resourcePath) {
     // In tnpm, target will be like following (symbol linked path):
     // ***/_universal-toast_1.0.0_universal-toast/lib/index.js
     let packageJSONPath;
+    let packagePath;
     try {
       packageJSONPath = require.resolve(join(npmName, 'package.json'), { paths: searchPaths });
+      packagePath = packageJSONPath.replace('package.json', '');
     } catch (err) {
       throw new Error(`You may not have npm installed: "${npmName}"`);
     }
 
     const rootNodeModulePath = getRootNodeModulePath(rootContext, target);
 
+    // Hard link case if the package is not installed in current package node_modules
+    const isHardLink = rootNodeModulePath.indexOf(packagePath) === -1;
+
     const moduleBasePath = join(packageJSONPath, '..');
-    const realNpmName = relative(rootNodeModulePath, moduleBasePath);
+    // Hard link pkg use fake npmName to enable npm folder copy behavior.
+    const realNpmName = isHardLink ? npmName : relative(rootNodeModulePath, moduleBasePath);
     const modulePathSuffix = relative(moduleBasePath, target);
 
     let ret;
@@ -346,6 +352,7 @@ function renameNpmModules(ast, targetFileDir, outputPath, cwd, resourcePath) {
       ret = relative(targetFileDir, join(outputPath, 'npm', value.replace(npmName, realNpmName)));
     }
     ret = addRelativePathPrefix(normalizeOutputFilePath(ret));
+
     // ret => '../npm/_ali/universal-toast/lib/index.js
 
     return t.stringLiteral(normalizeFileName(ret));
@@ -670,10 +677,26 @@ function getRootNodeModulePath(root, current) {
 
   if (relativePathArray.find((item) => item === '..')) {
     /**
-     * Package hoist case exist while `..` is presented in relative path array, hence we dig into the deepest node_modules folder, and use it as root node module path
+     * Package hoist case exist while `..` is presented in relative path array
      */
     const resourcePathArray = current.split('node_modules') || [];
-    return join(resourcePathArray.slice(0, resourcePathArray.length - 1).join('node_modules'), 'node_modules');
+
+    if (resourcePathArray.length === 1) {
+      /**
+       * current file is not in node_modules folder, whiche means that the current file is in a mono package, so we need to use the root node_modules folder
+       */
+      return join(root, 'node_modules');
+    } else {
+      /**
+       * If relative path array length is greater than 1, it means that the current file is in a nested node_modules folder, so we need to dig into the deepest node_modules folder
+       */
+      return join(
+        resourcePathArray
+          .slice(0, resourcePathArray.length - 1)
+          .join('node_modules'),
+        'node_modules'
+      );
+    }
   } else {
     return join(root, 'node_modules');
   }

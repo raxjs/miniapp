@@ -39,9 +39,13 @@ module.exports = function scriptLoader(content) {
   const nodeModulesPathList = getNearestNodeModulesPath(rootContext, this.resourcePath);
   const currentNodeModulePath = nodeModulesPathList[nodeModulesPathList.length - 1];
   const rootNodeModulePath = getRootNodeModulePath(rootContext, this.resourcePath);
+  const currentPackagePath = currentNodeModulePath.replace('node_modules', '');
+
+  // Hard link case if the current package is not in root package folder
+  const isHardLink = rootNodeModulePath.indexOf(currentPackagePath) === -1;
 
   const isFromNodeModule = cached(function isFromNodeModule(path) {
-    return path.indexOf(rootNodeModulePath) === 0;
+    return path.indexOf(rootNodeModulePath) === 0 || isHardLink;
   });
 
   const isFromConstantDir = cached(isFromTargetDirs(constantDir));
@@ -54,11 +58,24 @@ module.exports = function scriptLoader(content) {
   const outputFile = (rawContent, isFromNpm = true) => {
     let distSourcePath;
     if (isFromNpm) {
-      const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
+
+      const pkgPath = isHardLink ? currentPackagePath : currentNodeModulePath;
+
+      const pkgJsonPath = join(pkgPath, 'package.json');
+
+      let pkgJSON = '';
+      if (existsSync(pkgJsonPath)) {
+        pkgJSON = readJSONSync(pkgJsonPath);
+      }
+
+      const relativeNpmPath = relative(pkgPath, this.resourcePath);
       const splitedNpmPath = relativeNpmPath.split(sep);
       if (/^_?@/.test(relativeNpmPath)) splitedNpmPath.shift(); // Extra shift for scoped npm.
       splitedNpmPath.shift(); // Skip npm module package, for cnpm/tnpm will rewrite this.
-      distSourcePath = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, this.resourcePath)));
+
+      const relativePathInNpmFolder = isHardLink && pkgJSON.name ? join(pkgJSON.name, relative(pkgPath, this.resourcePath)) : relative(rootNodeModulePath, this.resourcePath);
+
+      distSourcePath = normalizeNpmFileName(join(outputPath, 'npm', relativePathInNpmFolder));
     } else {
       const relativeFilePath = relative(
         join(rootContext, dirname(entryPath)),
