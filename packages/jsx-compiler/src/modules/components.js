@@ -377,8 +377,20 @@ function getComponentPath(alias, options) {
   } else {
     const { disableCopyNpm } = options;
     const realNpmFile = resolveModule.sync(alias.from, { basedir: dirname(options.resourcePath), preserveSymlinks: false });
+
     const pkgName = getNpmName(alias.from);
-    const realPkgName = getRealNpmPkgName(realNpmFile, pkgName);
+
+    // Package name won't be present in hard link case of realNpmFile
+    const isHardLink = realNpmFile.indexOf(pkgName) === -1;
+    // Use fake pkgName as real pkgName for hard link case to generate correct relative path in npm folder
+    const realPkgName = isHardLink ? pkgName : getRealNpmPkgName(realNpmFile, pkgName);
+
+    let hardLinkPkgPath = '';
+    if (isHardLink) {
+      const hardLinkPkgJSONPath = resolveModule.sync(`${alias.from}/package.json`, { basedir: dirname(options.resourcePath), preserveSymlinks: false });
+      hardLinkPkgPath = hardLinkPkgJSONPath.replace(/package\.json$/, '');
+    }
+
     const targetFileDir = dirname(join(options.outputPath, relative(options.sourcePath, options.resourcePath)));
     const npmRelativePath = relative(targetFileDir, join(options.outputPath, 'npm'));
 
@@ -416,7 +428,7 @@ function getComponentPath(alias, options) {
 
       // there might be multiple realPkgName in realMiniappAbsPath，so we choose the last one as the relative path for npm folder
       const realMiniAppAbsPathArray = realMiniappAbsPath.split(realPkgName) || [];
-      const realMiniappRelativePath = realMiniAppAbsPathArray[realMiniAppAbsPathArray.length - 1] || '';
+      const realMiniappRelativePath = isHardLink ? relative(hardLinkPkgPath, realMiniappAbsPath) :  (realMiniAppAbsPathArray[realMiniAppAbsPathArray.length - 1] || '');
 
       return normalizeFileName(addRelativePathPrefix(normalizeOutputFilePath(join(npmRelativePath, realPkgName, realMiniappRelativePath))));
     }
