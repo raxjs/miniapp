@@ -181,7 +181,10 @@ module.exports = function scriptLoader(content) {
     } catch (e) {
       //  can't resolve npmMainPath
     }
-    const isUsingMainMiniappComponent = pkg.hasOwnProperty(MINIAPP_CONFIG_FIELD) && this.resourcePath === npmMainPath;
+    // 兼容组件入口分端的场景
+    // this.resourcePath 是 lib/index.wechat.js, npmMainPath 是 lib/index.js
+    const isSamePath = removeExt(this.resourcePath, platform.type) === removeExt(npmMainPath, platform.type);
+    const isUsingMainMiniappComponent = pkg.hasOwnProperty(MINIAPP_CONFIG_FIELD) && isSamePath;
     // Is miniapp compatible component.
     if (isUsingMainMiniappComponent || isRelativeMiniappComponent || isThirdMiniappComponent) {
       const mainName = platform.type === 'ali' ? 'main' : `main:${platform.type}`;
