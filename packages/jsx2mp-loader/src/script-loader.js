@@ -3,7 +3,7 @@ const { join, dirname, relative, resolve, sep, extname } = require('path');
 const { copySync, existsSync, mkdirpSync, ensureFileSync, writeJSONSync, readFileSync, readJSONSync } = require('fs-extra');
 const { getOptions } = require('loader-utils');
 const resolveModule = require('resolve');
-const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
+const { constants: { QUICKAPP, MINIAPP }, platformMap } = require('miniapp-builder-shared');
 const cached = require('./cached');
 const { removeExt, doubleBackslash, normalizeOutputFilePath, addRelativePathPrefix, isFromTargetDirs } = require('./utils/pathHelper');
 const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModule');
@@ -53,10 +53,11 @@ module.exports = function scriptLoader(content) {
   const outputFile = (rawContent, isFromNpm = true) => {
     let distSourcePath;
     if (isFromNpm) {
-      const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
-      const splitedNpmPath = relativeNpmPath.split(sep);
-      if (/^_?@/.test(relativeNpmPath)) splitedNpmPath.shift(); // Extra shift for scoped npm.
-      splitedNpmPath.shift(); // Skip npm module package, for cnpm/tnpm will rewrite this.
+      // 以下四行开销测下来用不到，故注释
+      // const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
+      // const splitedNpmPath = relativeNpmPath.split(sep);
+      // if (/^_?@/.test(relativeNpmPath)) splitedNpmPath.shift(); // Extra shift for scoped npm.
+      // splitedNpmPath.shift(); // Skip npm module package, for cnpm/tnpm will rewrite this.
       distSourcePath = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, this.resourcePath)));
     } else {
       const relativeFilePath = relative(
@@ -68,6 +69,9 @@ module.exports = function scriptLoader(content) {
 
     let outputContent = {};
     let outputOption = {};
+
+    // 支付宝小程序 copyNpm 模式下对 @babel/runtime/regenerator/index.js 中的 `Function("r", "regeneratorRuntime=r")(runtime);` 进行处理
+    const needHackRegeneratorRuntimeFunction = platform.type === platformMap[MINIAPP].type && !disableCopyNpm && this.resourcePath.indexOf('@babel/runtime/regenerator/index.js') > -1;
 
     outputContent = { code: rawContent };
     outputOption = {
@@ -86,8 +90,9 @@ module.exports = function scriptLoader(content) {
             platform,
             aliasEntries
           }
-        ]
-      ],
+        ],
+        needHackRegeneratorRuntimeFunction ? require('./babel-plugin-handle-regeneratorRuntime') : null
+      ].filter(t => t),
       platform,
       isTypescriptFile: isTypescriptFile(this.resourcePath),
       rootDir,
@@ -123,7 +128,9 @@ module.exports = function scriptLoader(content) {
         for (let key in componentConfig.usingComponents) {
           if (componentConfig.usingComponents.hasOwnProperty(key)) {
             const componentPath = componentConfig.usingComponents[key];
-            if (isNpmModule(componentPath)) {
+            if (componentPath.indexOf('plugin://') === 0) {
+              // exclude plugin. eg usingComponents { "c-xxxx": "plugin://ocr/ocr-id" }
+            } else if (isNpmModule(componentPath)) {
               // component from node module
               const realComponentPath = resolveModule.sync(componentPath, { basedir: this.resourcePath, paths: [this.resourcePath], preserveSymlinks: false });
               const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
@@ -167,9 +174,17 @@ module.exports = function scriptLoader(content) {
 
     const pkg = readJSONSync(sourcePackageJSONPath);
     const npmName = pkg.name; // Update to real npm name, for that tnpm will create like `_rax-view@1.0.2@rax-view` folders.
-    const npmMainPath = join(sourcePackagePath, pkg.main || '');
-
-    const isUsingMainMiniappComponent = pkg.hasOwnProperty(MINIAPP_CONFIG_FIELD) && this.resourcePath === npmMainPath;
+    let npmMainPath = join(sourcePackagePath, pkg.main || '');
+    try {
+      // compat pkg.main without suffix like `lib/index`
+      npmMainPath = require.resolve(npmMainPath);
+    } catch (e) {
+      //  can't resolve npmMainPath
+    }
+    // 兼容组件入口分端的场景
+    // this.resourcePath 是 lib/index.wechat.js, npmMainPath 是 lib/index.js
+    const isSamePath = removeExt(this.resourcePath, platform.type) === removeExt(npmMainPath, platform.type);
+    const isUsingMainMiniappComponent = pkg.hasOwnProperty(MINIAPP_CONFIG_FIELD) && isSamePath;
     // Is miniapp compatible component.
     if (isUsingMainMiniappComponent || isRelativeMiniappComponent || isThirdMiniappComponent) {
       const mainName = platform.type === 'ali' ? 'main' : `main:${platform.type}`;
@@ -235,7 +250,8 @@ module.exports = function scriptLoader(content) {
         content
       ].join('\n');
     } else {
-      outputFile(rawContent);
+      // outputFile(rawContent);
+      outputFile(content);
     }
   } else if (isFromConstantDir(this.resourcePath) && isThirdMiniappComponent) {
     const dependencies = [];
@@ -258,7 +274,10 @@ module.exports = function scriptLoader(content) {
       content
     ].join('\n');
   } else if (!isAppJSon) {
-    outputFile(rawContent, false);
+    // outputFile(rawContent, false);
+    // content 是过了 rax-platform-loader 的（会包含 env 变量转换为布尔常量化），而 rawContent 是没有这个转换的;
+    // 后续的 babel-plugin-minify-dead-code-elimination-while-loop-fixed 依赖布尔常量来 tree-shaking.
+    outputFile(content, false);
   }
 
   return isJSON ? '{}' : transformCode(
