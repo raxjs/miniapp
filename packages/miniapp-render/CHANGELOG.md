@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.8.10] - 2023-08-23
+
+- Support onChooseAvatar event in buton in wechat
+
+### Fixed
 
 ## [2.8.9] - 2022-03-23
 
