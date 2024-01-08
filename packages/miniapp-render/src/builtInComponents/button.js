@@ -27,5 +27,9 @@ export default {
   {
     name: 'onButtonGetAuthorize',
     eventName: 'getauthorize'
+  },
+  {
+    name: 'onButtonChooseAvatar',
+    eventName: 'chooseavatar'
   }]
 };
