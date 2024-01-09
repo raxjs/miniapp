@@ -13,6 +13,7 @@ const isSlotScopeNode = require('../utils/isSlotScopeNode');
 const { isDirectiveAttr, isEventHandlerAttr, isRenderPropsAttr, BINDING_REG } = require('../utils/checkAttr');
 const handleValidIdentifier = require('../utils/handleValidIdentifier');
 const isNativeComponent = require('../utils/isNativeComponent');
+const isBaseComponent = require('../utils/isBaseComponent');
 const isDerivedFromProps = require('../utils/isDerivedFromProps');
 const { componentCommonProps } = require('../adapter');
 
@@ -541,7 +542,7 @@ function transformTemplate(
                 attr.name.name = attr.name.name.replace('on', 'bind').toLowerCase();
               }
             });
-          } else if (adapter.needTransformEvent && baseComponents.indexOf(name) > -1) {
+          } else if (adapter.needTransformEvent && isBaseComponent(componentTagNode)) {
             // Rax base component should add bind before onXXX
             // While events in custom component should not be changed
             node.attributes.forEach(attr => {
