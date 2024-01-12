@@ -347,7 +347,8 @@ const Button = {
     GetPhoneNumber: '',
     Error: '',
     OpenSetting: '',
-    LaunchApp: ''
+    LaunchApp: '',
+    ChooseAvatar: ''
   },
   basicEvents: {
     ...tapEvents,

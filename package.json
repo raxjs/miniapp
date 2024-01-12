@@ -6,6 +6,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.2.0",
+    "babel-plugin-dynamic-import-node": "^2.3.3",
     "@babel/plugin-proposal-class-properties": "^7.2.0",
     "@babel/plugin-proposal-decorators": "^7.2.0",
     "@babel/plugin-proposal-export-default-from": "^7.10.4",
@@ -48,7 +49,7 @@
     "setup": "rm -rf node_modules && yarn install && npm run clean && npm run build",
     "lint": "eslint --ext .js --ext .jsx ./",
     "lint:fix": "npm run lint -- --fix",
-    "test": "jest --logHeapUsage --detectOpenHandles",
+    "test": "jest --logHeapUsage --detectOpenHandles --testPathIgnorePatterns=/jsx-compiler/",
     "build": "ts-node ./scripts/build.ts",
     "clean": "rimraf packages/*/lib",
     "check-and-publish": "node ./scripts/check-and-publish",
