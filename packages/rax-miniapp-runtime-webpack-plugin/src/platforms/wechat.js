@@ -380,6 +380,7 @@ const Label = {
 const Input = {
   props: {
     value: '',
+    name: '',
     type: addSingleQuote('text'),
     password: 'false',
     placeholder: '',
@@ -458,6 +459,7 @@ const RadioGroup = {
 
 const Checkbox = {
   props: {
+    name: '',
     value: '',
     checked: 'false',
     disabled: 'false',
@@ -477,6 +479,7 @@ const CheckboxGroup = {
 
 const Switch = {
   props: {
+    name: '',
     checked: 'false',
     disabled: 'false',
     type: addSingleQuote('switch'),
@@ -507,6 +510,7 @@ const Editor = {
 
 const Slider = {
   props: {
+    name: '',
     min: '0',
     max: '100',
     step: '1',
@@ -546,6 +550,7 @@ const PickerViewColumn = {};
 
 const Picker = {
   props: {
+    name: '',
     'header-text': '',
     disabled: 'false',
     mode: addSingleQuote('selector'),
