@@ -53,10 +53,11 @@ module.exports = function scriptLoader(content) {
   const outputFile = (rawContent, isFromNpm = true) => {
     let distSourcePath;
     if (isFromNpm) {
-      const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
-      const splitedNpmPath = relativeNpmPath.split(sep);
-      if (/^_?@/.test(relativeNpmPath)) splitedNpmPath.shift(); // Extra shift for scoped npm.
-      splitedNpmPath.shift(); // Skip npm module package, for cnpm/tnpm will rewrite this.
+      // 以下四行开销测下来用不到，故注释
+      // const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
+      // const splitedNpmPath = relativeNpmPath.split(sep);
+      // if (/^_?@/.test(relativeNpmPath)) splitedNpmPath.shift(); // Extra shift for scoped npm.
+      // splitedNpmPath.shift(); // Skip npm module package, for cnpm/tnpm will rewrite this.
       distSourcePath = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, this.resourcePath)));
     } else {
       const relativeFilePath = relative(
@@ -235,7 +236,8 @@ module.exports = function scriptLoader(content) {
         content
       ].join('\n');
     } else {
-      outputFile(rawContent);
+      // outputFile(rawContent);
+      outputFile(content);
     }
   } else if (isFromConstantDir(this.resourcePath) && isThirdMiniappComponent) {
     const dependencies = [];
@@ -258,7 +260,10 @@ module.exports = function scriptLoader(content) {
       content
     ].join('\n');
   } else if (!isAppJSon) {
-    outputFile(rawContent, false);
+    // outputFile(rawContent, false);
+    // content 是过了 rax-platform-loader 的（会包含 env 变量转换为布尔常量化），而 rawContent 是没有这个转换的;
+    // 后续的 babel-plugin-minify-dead-code-elimination-while-loop-fixed 依赖布尔常量来 tree-shaking.
+    outputFile(content, false);
   }
 
   return isJSON ? '{}' : transformCode(
