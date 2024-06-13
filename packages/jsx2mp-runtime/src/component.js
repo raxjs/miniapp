@@ -35,6 +35,7 @@ import {
 import apiCore from './adapter/getNativeAPI';
 import attachRef from './adapter/attachRef';
 import Event from './events';
+import { diffData } from './diff';
 
 const event = new Event();
 
@@ -401,7 +402,14 @@ export default class Component {
           );
         } else if (isDifferentData(currentData[key], data[key])) {
           if (isPlainObject(data[key])) {
-            normalData[key] = Object.assign({}, currentData[key], data[key]);
+            // normalData[key] = Object.assign({}, currentData[key], data[key]);
+            // find the different path from data and currentData
+            try {
+              const patch = diffData({ [key]: data[key] }, { [key]: currentData[key] });
+              Object.assign(normalData, patch);
+            } catch (err) { 
+              normalData[key] = Object.assign({}, currentData[key], data[key]);
+            }
           } else {
             normalData[key] = data[key] === undefined ? null : data[key]; // Make undefined value compatible with Alibaba MiniApp incase that data is not sync in render and worker thread
           }
@@ -486,8 +494,8 @@ function isAppendArray(prev, next) {
   // Only concern about list append case
   if (next.length === 0) return false;
   if (prev.length === 0) return true;
-  // When item's type is object, they have differrent reference, so should use shallowEqual
-  return next.length > prev.length && next.slice(0, prev.length).every((val, index) => shallowEqual(prev[index], val));
+  // Use diffData replace shallowEqual
+  return next.length > prev.length && next.slice(0, prev.length).every((val, index) => Object.keys(diffData(prev[index], val)).length===0);
 }
 
 function isDifferentData(prevData, nextData) {
