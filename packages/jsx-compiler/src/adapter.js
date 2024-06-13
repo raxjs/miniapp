@@ -103,6 +103,18 @@ const parserAdapters = {
       ...componentCommonProps.bytedance,
       className: '__rax-text'
     },
+    icon: {
+      ...componentCommonProps.bytedance,
+      className: ''
+    },
+    image: {
+      ...componentCommonProps.bytedance,
+      className: ''
+    },
+    'scroll-view': {
+      ...componentCommonProps.bytedance,
+      className: ''
+    },
     styleKeyword: true,
     slotScope: false,
     // Need transform onClick -> bindonclick

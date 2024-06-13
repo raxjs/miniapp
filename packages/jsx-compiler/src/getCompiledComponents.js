@@ -12,7 +12,10 @@ module.exports = function(platform) {
     case 'bytedance':
       return {
         'rax-view': 'view',
-        'rax-text': 'text'
+        'rax-text': 'text',
+        'rax-image': 'image',
+        'rax-icon': 'icon',
+        'rax-scrollview': 'scroll-view'
       };
   }
 };
