@@ -83,6 +83,8 @@ const parserAdapters = {
     // Handle rax-slider and rax-swiper
     insertSwiperSlot: true,
     needRegisterProps: true,
+    // https://reactjs.org/docs/jsx-in-depth.html#props-default-to-true compat for WeChatMiniProgram
+    needPropsDefaultToTrue: true,
   },
   'bytedance': {
     platform: 'bytedance',
