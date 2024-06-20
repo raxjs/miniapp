@@ -51,6 +51,13 @@ export function updateChildProps(trigger, instanceId, nextUpdateProps) {
         targetComponent.props,
         nextUpdateProps
       );
+      const defaultProps = targetComponent.defaultProps || {};
+      // Resolve default props
+      for (let propName in defaultProps) {
+        if (nextProps[propName] === undefined) {
+          nextProps[propName] = defaultProps[propName];
+        }
+      }
       // Inject history
       if (targetComponent.__injectHistory) {
         const history = getMiniAppHistory();
