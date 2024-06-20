@@ -10,6 +10,7 @@ const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModu
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
 const { output, transformCode } = require('./output');
+const getRootNodeModulePath = require('./utils/getRootNodeModulePath');
 
 const ScriptLoader = __filename;
 
@@ -35,12 +36,19 @@ module.exports = function scriptLoader(content) {
   const isCommonJSON = isJSON && !isAppJSon;
 
   const rawContent = isCommonJSON ? content : readFileSync(this.resourcePath, 'utf-8');
+
   const nodeModulesPathList = getNearestNodeModulesPath(rootContext, this.resourcePath);
   const currentNodeModulePath = nodeModulesPathList[nodeModulesPathList.length - 1];
-  const rootNodeModulePath = join(rootContext, 'node_modules');
+  const rootNodeModulePath = getRootNodeModulePath(rootContext, this.resourcePath);
+
+  // Only remove last node_modules to get current package path
+  const currentPackagePath = currentNodeModulePath.split('node_modules').filter((item) => !!item).join('node_modules');
+
+  // Hard link case if the current package is not in root package folder
+  const isHardLink = rootNodeModulePath.indexOf(currentPackagePath) === -1;
 
   const isFromNodeModule = cached(function isFromNodeModule(path) {
-    return path.indexOf(rootNodeModulePath) === 0;
+    return path.indexOf(rootNodeModulePath) === 0 || isHardLink;
   });
 
   const isFromConstantDir = cached(isFromTargetDirs(constantDir));
@@ -53,11 +61,24 @@ module.exports = function scriptLoader(content) {
   const outputFile = (rawContent, isFromNpm = true) => {
     let distSourcePath;
     if (isFromNpm) {
-      const relativeNpmPath = relative(currentNodeModulePath, this.resourcePath);
+
+      const pkgPath = isHardLink ? currentPackagePath : currentNodeModulePath;
+
+      const pkgJsonPath = join(pkgPath, 'package.json');
+
+      let pkgJSON = '';
+      if (existsSync(pkgJsonPath)) {
+        pkgJSON = readJSONSync(pkgJsonPath);
+      }
+
+      const relativeNpmPath = relative(pkgPath, this.resourcePath);
       const splitedNpmPath = relativeNpmPath.split(sep);
       if (/^_?@/.test(relativeNpmPath)) splitedNpmPath.shift(); // Extra shift for scoped npm.
       splitedNpmPath.shift(); // Skip npm module package, for cnpm/tnpm will rewrite this.
-      distSourcePath = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, this.resourcePath)));
+
+      const relativePathInNpmFolder = isHardLink && pkgJSON.name ? join(pkgJSON.name, relative(pkgPath, this.resourcePath)) : relative(rootNodeModulePath, this.resourcePath);
+
+      distSourcePath = normalizeNpmFileName(join(outputPath, 'npm', relativePathInNpmFolder));
     } else {
       const relativeFilePath = relative(
         join(rootContext, dirname(entryPath)),
@@ -103,7 +124,7 @@ module.exports = function scriptLoader(content) {
         overwrite: false,
         filter: filename => {
           const isJSONFile = extname(filename) === '.json';
-          const isNpmDirFile = filename.indexOf('npm') > -1;
+          const isNpmDirFile = filename.indexOf('/npm/') > -1;
           // if isThirdMiniappComponent, only exclude the json file of the component itself
           const filterJSONFile = isThirdMiniappComponent ? isNpmDirFile || !isJSONFile : !isJSONFile;
           return !/__(mocks|tests?)__/.test(filename) && filterJSONFile; // JSON file will be written later because usingComponents may be modified
@@ -117,6 +138,7 @@ module.exports = function scriptLoader(content) {
     if (platform.type === QUICKAPP) {
       return;
     }
+
     if (existsSync(originalComponentConfigPath)) {
       const componentConfig = readJSONSync(originalComponentConfigPath);
       if (componentConfig.usingComponents) {
@@ -124,9 +146,15 @@ module.exports = function scriptLoader(content) {
           if (componentConfig.usingComponents.hasOwnProperty(key)) {
             const componentPath = componentConfig.usingComponents[key];
             if (isNpmModule(componentPath)) {
+              // Build usingComponents relative path for modules in npm folder
+              const npmFolderPath = distComponentConfigPath.slice(0, distComponentConfigPath.indexOf('npm') + 'npm'.length);
+
+              const predictComponentPathInNpmFolder = join(npmFolderPath, '/', componentPath);
+              const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(distComponentConfigPath), predictComponentPathInNpmFolder)));
+
               // component from node module
               const realComponentPath = resolveModule.sync(componentPath, { basedir: this.resourcePath, paths: [this.resourcePath], preserveSymlinks: false });
-              const relativeComponentPath = normalizeNpmFileName(addRelativePathPrefix(relative(dirname(sourceNativeMiniappScriptFile), realComponentPath)));
+
               componentConfig.usingComponents[key] = normalizeOutputFilePath(removeExt(relativeComponentPath));
               // Native miniapp component js file will loaded by script-loader
               dependencies.push({
@@ -144,6 +172,7 @@ module.exports = function scriptLoader(content) {
           }
         }
       }
+
       if (!existsSync(distComponentConfigPath)) {
         ensureFileSync(distComponentConfigPath);
         writeJSONSync(distComponentConfigPath, componentConfig);
@@ -207,7 +236,7 @@ module.exports = function scriptLoader(content) {
         }
         const miniappComponentDir = miniappComponentPath.slice(0, miniappComponentPath.lastIndexOf('/'));
         const source = join(sourcePackagePath, miniappComponentDir);
-        const target = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, sourcePackagePath), miniappComponentDir));
+        const target = normalizeNpmFileName(join(outputPath, 'npm', isHardLink ? npmName :  relative(rootNodeModulePath, sourcePackagePath), miniappComponentDir));
         outputDir(source, target, {
           isThirdMiniappComponent,
           resourcePath: this.resourcePath
@@ -215,17 +244,21 @@ module.exports = function scriptLoader(content) {
 
         // Modify referenced component location according to the platform
         const originalComponentConfigPath = join(sourcePackagePath, miniappComponentPath + '.json');
-        const distComponentConfigPath = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, sourcePackagePath), miniappComponentPath + '.json'));
+        const distComponentConfigPath = normalizeNpmFileName(join(outputPath, 'npm', isHardLink ? npmName : relative(rootNodeModulePath, sourcePackagePath), miniappComponentPath + '.json'));
+
         checkUsingComponents(dependencies, originalComponentConfigPath, distComponentConfigPath, sourceNativeMiniappScriptFile, npmName);
       }
       if (isThirdMiniappComponent) {
         const source = dirname(this.resourcePath);
-        const target = dirname(normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, this.resourcePath))));
+
+        // For hard link case, there won't be pkgname present in resource path, so we need to add it manually
+        const target = dirname(normalizeNpmFileName(join(outputPath, 'npm', isHardLink ? join(npmName, relative(currentPackagePath, this.resourcePath)) : relative(rootNodeModulePath, this.resourcePath))));
         outputDir(source, target);
         outputFile(rawContent);
 
         const originalComponentConfigPath = removeExt(this.resourcePath) + '.json';
-        const distComponentConfigPath = normalizeNpmFileName(join(outputPath, 'npm', relative(rootNodeModulePath, removeExt(this.resourcePath) + '.json')));
+        const distComponentConfigPath = normalizeNpmFileName(join(outputPath, 'npm', isHardLink ? join(npmName, relative(currentPackagePath, removeExt(this.resourcePath) + '.json')) : relative(rootNodeModulePath, removeExt(this.resourcePath) + '.json') ));
+
         checkUsingComponents(dependencies, originalComponentConfigPath, distComponentConfigPath, this.resourcePath, npmName);
       }
 

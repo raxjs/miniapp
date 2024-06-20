@@ -6,6 +6,8 @@ const { constants: { QUICKAPP }} = require('miniapp-builder-shared');
 const { isNpmModule, isWeexModule, isQuickAppModule, isRaxModule, isRaxAppModule, isJsx2mpRuntimeModule, isNodeNativeModule } = require('./utils/judgeModule');
 const { addRelativePathPrefix, normalizeOutputFilePath, removeExt } = require('./utils/pathHelper');
 const getAliasCorrespondingValue = require('./utils/getAliasCorrespondingValue');
+const getRootNodeModulePath = require('./utils/getRootNodeModulePath');
+const resolveModule = require('resolve');
 
 const RUNTIME = 'jsx2mp-runtime';
 
@@ -34,8 +36,23 @@ module.exports = function visitor({ types: t }, options) {
 
     const target = enhancedResolve.sync(resourcePath, value);
 
-    const rootNodeModulePath = join(rootContext, 'node_modules');
-    const filePath = relative(dirname(distSourcePath), join(outputPath, 'npm', relative(rootNodeModulePath, target)));
+    const rootNodeModulePath = getRootNodeModulePath(rootContext, target);
+
+    // Hard link case if the package is not installed in current package node_modules
+    const isHardLink = target.indexOf(rootNodeModulePath) === -1;
+
+    let hardLinkPkgPath;
+    if (isHardLink) {
+      try {
+        const hardLinkPkgJSONPath = resolveModule.sync(`${value}/package.json`, { basedir: dirname(resourcePath), paths: rootNodeModulePath, preserveSymlinks: false });
+        hardLinkPkgPath = hardLinkPkgJSONPath.replace(/package\.json$/, '');
+      } catch (e) {
+        console.error(e);
+        console.warn(chalk.yellow(`Can not find package.json of ${value} in ${resourcePath}`));
+      }
+    }
+
+    const filePath = relative(dirname(distSourcePath), join(outputPath, 'npm', isHardLink ? join(value, relative(hardLinkPkgPath, target)) : relative(rootNodeModulePath, target)));
     let modifiedValue = normalizeNpmFileName(addRelativePathPrefix(normalizeOutputFilePath(filePath)));
     // json file will be transformed to js file
     if (extname(value) === '.json') {
