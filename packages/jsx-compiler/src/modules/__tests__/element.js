@@ -334,6 +334,7 @@ describe('Transform JSXElement', () => {
         />
       `);
       ast.openingElement.name.isCustom = true;
+      ast.openingElement.name.isNative = true;
       _transform({
         templateAST: ast
       }, wxAdapter);
@@ -525,5 +526,35 @@ describe('Transform JSXElement', () => {
         });
       }).toThrowError();
     });
+  });
+  
+  it('should transform events in native components (defined in package.json -> miniappConfig) in wechat miniprogram', () => {
+    const ast = parseExpression(`
+      <custom-element
+        onClick={onClick}
+        onChange={onChange}
+      />
+    `);
+    ast.openingElement.name.isCustom = true;
+    ast.openingElement.name.isNative = true;
+    _transform({
+      templateAST: ast
+    }, wxAdapter);
+    expect(genInlineCode(ast).code).toEqual('<custom-element bindonClick="_e0" bindonChange="_e1" />');
+  });
+
+  it('shouldn\'t transform events in non-native components (defined in package.json -> miniappConfig) in wechat miniprogram', () => {
+    const ast = parseExpression(`
+      <custom-element
+        onClick={onClick}
+        onChange={onChange}
+      />
+    `);
+    ast.openingElement.name.isCustom = true;
+    ast.openingElement.name.isNative = false;
+    _transform({
+      templateAST: ast
+    }, wxAdapter);
+    expect(genInlineCode(ast).code).toEqual('<custom-element onClick="_e0" onChange="_e1" />');
   });
 });

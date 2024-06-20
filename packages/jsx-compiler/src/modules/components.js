@@ -41,10 +41,16 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
 
   const componentTag = alias.default ? aliasName : `${aliasName}-${alias.local.toLowerCase()}`;
   replaceComponentTagName(path, t.jsxIdentifier(componentTag));
+  /**
+   * Judge whether the component is Custom Components.
+   * If it's Custom Component, the component should be defined in usingComponents property in .json,
+   * the tag's name of component should transform, and isCustomEl, isCustom should also be true.
+   */
   node.isCustomEl = alias.isCustomEl;
   node.name.isCustom = true;
 
-  if (!getCompiledComponents(options.adapter.platform)[componentTag]) {
+  const platform = options.adapter.platform;
+  if (!getCompiledComponents(platform)[componentTag]) {
     // <tag __tagId="tagId" />
 
     let tagId;
@@ -163,6 +169,12 @@ function transformIdentifierComponentName(path, alias, dynamicValue, parsed, opt
           if (importedComponent) {
             importedComponent.isFromComponentLibrary = true;
           }
+
+          /**
+           * Judge whether the component has native compiled component
+           * If it has, the property isNative should true, otherwise it would be false.
+           */
+          node.name.isNative = !!getCustomComponentPath(pkg, platform);
         }
       }
     }
@@ -482,4 +494,13 @@ function findParentsJSXListEl(path, parentList = []) {
   } else {
     return parentList;
   }
+}
+
+function getCustomComponentPath(pkg, platform) {
+  /**
+   * Get the identifier in package.json -> miniappConfig
+   * In ali-miniApp, it will be 'main', otherwise it's `main:${platform}`
+   */
+  const platformIdentifier = platform === 'ali' ? 'main' : `main:${platform}`
+  return pkg && pkg.miniappConfig && pkg.miniappConfig[platformIdentifier] || null
 }
