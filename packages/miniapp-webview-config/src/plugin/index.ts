@@ -1,4 +1,3 @@
-import { dirname, parse } from 'path';
 import { DEV_URL_PREFIX } from './utils/constants';
 
 import {
@@ -6,18 +5,18 @@ import {
   generatePageXML
 } from './generators/page';
 import { generateAppJS } from './generators/app';
-import { AppConfigType } from 'src/types';
+import { RouteType } from 'src/types';
 
 const PluginName = 'WebViewPlugin';
 class WebViewPlugin {
   options: any;
   target: string;
-  appConfig: AppConfigType;
+  routes: RouteType[];
 
   constructor(options) {
     this.options = options;
     this.target = options.target;
-    this.appConfig = options.appConfig;
+    this.routes = options.routes;
   }
 
   apply(compiler) {
@@ -37,32 +36,17 @@ class WebViewPlugin {
 
     const getWebviewUrl = this.generateWebviewUrl({ command, userConfig, getValue, target, log });
 
-    const routes = this.appConfig.routes.map(route => {
-      const { source, name, } = route;
-
-      if (name) {
-        return {
-          ...route,
-          webEntryName: name
-        };
-      }
-      if (source) {
-        const dir = dirname(source);
-        return {
-          ...route,
-          webEntryName: parse(dir).name.toLocaleLowerCase()
-        };
-      }
-    }).filter(r => !!r);
     // todo subPackages
     let isFirstRender = true;
     compiler.hooks.emit.tapAsync(PluginName, (compilation, callback) => {
       if (isFirstRender) {
-        generateAppJS(compilation, {
-          target,
-          command
-        });
-        routes.forEach(({ entryName, webEntryName, url: originalUrl }) => {
+        if (target === 'webview') {
+          generateAppJS(compilation, {
+            target,
+            command
+          });
+        }
+        this.routes.forEach(({ entryName, webEntryName, url: originalUrl }) => {
           const url = originalUrl ? originalUrl : getWebviewUrl(webEntryName);
           generatePageXML(compilation, entryName, {
             target,
