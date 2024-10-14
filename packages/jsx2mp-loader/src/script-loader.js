@@ -10,6 +10,7 @@ const { isNpmModule, isJSONFile, isTypescriptFile } = require('./utils/judgeModu
 const isMiniappComponent = require('./utils/isMiniappComponent');
 const parse = require('./utils/parseRequest');
 const { output, transformCode } = require('./output');
+const eliminateDeadCode = require('./utils/dce');
 
 const ScriptLoader = __filename;
 
@@ -250,6 +251,7 @@ module.exports = function scriptLoader(content) {
         content
       ].join('\n');
     } else {
+      content = eliminateDeadCode(content);
       // outputFile(rawContent);
       outputFile(content);
     }

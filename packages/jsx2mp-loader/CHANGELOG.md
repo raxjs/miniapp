@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.37] UnRelease
+
+- Feat: support remove unused import and require of App、Page、Component、Npm package
+- Feat: miniappConfig compat the case where the entry of component use multiple platform like index.wechat.js, index.ali.js. And don't change the filed main that can't be resolved
+- Feat: hackRegeneratorRuntimeFunction in ali miniapp of copyNpm
+- Fix: support platform-loader
+- Fix: script-loader exclude 'plugin://xx/comp' in usingComponents
 
 ## [0.4.36] - 2022-06-22
 
