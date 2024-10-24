@@ -98,12 +98,26 @@ function addRelativePathPrefix(filepath) {
  * @param {string} rootDir
  */
 function getHighestPriorityPackage(packageName, rootDir) {
-  const resolvePaths = require.resolve.paths(packageName);
-  resolvePaths.unshift(join(rootDir, 'node_modules'));
-  const packagePath = require.resolve(packageName, {
-    paths: resolvePaths
-  });
-  return require.resolve(packagePath);
+  // 无脑将 rootDir 的 node_modules 加入 resolve paths 的实现方式，存在因为项目间接依赖抬升 packageName 导致也会被命中，存在不稳定性
+  // 修正为项目必须直接引入了对应包时，才会尝试查找项目依赖 & 优先启用
+  try {
+    const pkgJSON = require(join(rootDir, 'package.json'));
+    const isDirectDeps = (pkgJSON.dependencies && pkgJSON.dependencies[packageName]) || (pkgJSON.devDependencies && pkgJSON.devDependencies[packageName]);
+    if (isDirectDeps) {
+      const rootDirResolved = require.resolve(packageName, {
+        paths: [join(rootDir, 'node_modules')]
+      });
+      if (rootDirResolved) {
+        return rootDirResolved;
+      }
+    }
+  } catch(error) {
+    if (process.env.DEBUG === 'true') {
+      const chalk = require('chalk');
+      console.log(chalk.magenta(`getHighestPriorityPackage(${packageName}, ${rootDir}) exception catched: ${error && error.message}`));
+    }
+  }
+  return require.resolve(packageName);
 }
 
 module.exports = {
