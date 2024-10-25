@@ -1,10 +1,15 @@
 # Changelog
 
-## 【0.4.38-x] Unreleased
+## [0.4.38] Beta
+
+### Fixed
+
+- Fix: Solve the problem that the bytedance microapp can't pass through the className property by replace the native miniapp component tag in the compiler. image, icon, scroll-view.
+
+### Added
 
 - Feat: compat props-default-to-true in WeChat
 - Feat: add scroll-view event map of bytedance, like onScroll -> bindscroll
-- Fix: Solve the problem that the bytedance microapp can't pass through the className property by replace the native miniapp component tag in the compiler. image, icon, scroll-view.
 
 ## [0.4.37]
 

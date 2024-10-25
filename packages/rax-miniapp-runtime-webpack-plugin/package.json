@@ -1,6 +1,6 @@
 {
   "name": "rax-miniapp-runtime-webpack-plugin",
-  "version": "5.0.5",
+  "version": "5.0.6-0",
   "description": "A webpack plugin for miniapp runtime build",
   "main": "src/index.js",
   "files": [
@@ -30,5 +30,12 @@
   },
   "devDependencies": {
     "webpack": ">=4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:raxjs/miniapp.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

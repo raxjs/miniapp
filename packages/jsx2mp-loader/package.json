@@ -26,7 +26,7 @@
     "csso": "^3.5.1",
     "enhanced-resolve": "^4.1.1",
     "fs-extra": "^8.1.0",
-    "jsx-compiler": "^0.4.38-2",
+    "jsx-compiler": "0.4.38-3",
     "less": "^4.0.0",
     "loader-utils": "^1.2.3",
     "miniapp-builder-shared": "^0.3.0",
@@ -37,5 +37,11 @@
     "stylus": "^0.54.7",
     "terser": "^4.3.8"
   },
-  "repository": "git@github.com:raxjs/miniapp.git"
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:raxjs/miniapp.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
 }

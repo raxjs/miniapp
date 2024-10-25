@@ -1,8 +1,5 @@
 /**
  * @Author 阿劭 tianjie.stj@alibaba-inc.com
- * @Date 2023-04-10 18:21:49
- * @LastEditors 阿劭 tianjie.stj@alibaba-inc.com
- * @LastEditTime 2023-04-10 21:33:21
  * @Description 小程序严格模式下报错 `Function(...) is not function` 兼容
  * https://aliyuque.antfin.com/tianjie.stj/nivfgf/wi0gk43l6otk3lam?singleDoc#tnMFv
  */

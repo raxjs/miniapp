@@ -36,5 +36,8 @@
     "terser": "^4.8.0",
     "jsx2mp-runtime": "^0.4.18",
     "ts-loader": "^8.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

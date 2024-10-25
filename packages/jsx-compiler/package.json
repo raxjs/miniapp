@@ -32,5 +32,12 @@
   "devDependencies": {
     "handlebars": "^4.5.0",
     "jest": "^24.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:raxjs/miniapp.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

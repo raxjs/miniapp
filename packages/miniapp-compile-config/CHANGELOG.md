@@ -1,6 +1,8 @@
 # Changelog
 
-## [0.3.4] Unreleased
+## [0.3.4] Beta
+
+### Added
 
 - Feat: support USE_FLI_RAX and RAX_RUNTIME_ALIAS, for `clam` internally change rax to FMini, especially for the @ali/fli-jsx2mp-runtime
 
