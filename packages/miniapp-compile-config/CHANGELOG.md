@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.4] Unreleased
+
+- Feat: support USE_FLI_RAX and RAX_RUNTIME_ALIAS, for `clam` internally change rax to FMini, especially for the @ali/fli-jsx2mp-runtime
+
 ## [0.3.3] - 2022-09-15
 
 - Fix: native routes in `pages/` build error: `needCopyList[i].to error in setEntry()`
