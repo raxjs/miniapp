@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.37] Beta
+
+### Fixed
+
+- Fix: getHighestPriorityPackage() 逻辑修正，增加项目直接依赖该包的校验，通过时才会去尝试查找项目依赖、优先启用
+- Fix: support platform-loader
+- Fix: script-loader exclude 'plugin://xx/comp' in usingComponents
+
+### Added
+
+- Feat: support remove unused import and require of App、Page、Component、Npm package
+- Feat: miniappConfig compat the case where the entry of component use multiple platform like index.wechat.js, index.ali.js. And don't change the filed main that can't be resolved
+- Feat: hackRegeneratorRuntimeFunction in ali miniapp of copyNpm
 
 ## [0.4.36] - 2022-06-22
 

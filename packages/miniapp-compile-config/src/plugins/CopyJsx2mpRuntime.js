@@ -37,12 +37,17 @@ module.exports = class JSX2MPRuntimePlugin {
     compiler.hooks.emit.tapAsync(
       'JSX2MPRuntimePlugin',
       (compilation, callback) => {
+        let runtimeName = runtime;
         if (!runtimePackageJSONPath) {
-          runtimePackageJSONPath = getHighestPriorityPackageJSON(runtime, this.rootDir);
+          const rootDirPackageJSON = readJSONSync(join(this.rootDir, 'package.json'));
+          if (rootDirPackageJSON.clam && rootDirPackageJSON.clam.raxJsLibAlias && rootDirPackageJSON.clam.raxJsLibAlias[runtime]) {
+            runtimeName = rootDirPackageJSON.clam.raxJsLibAlias[runtime];
+          }
+          runtimePackageJSONPath = getHighestPriorityPackageJSON(runtimeName, this.rootDir);
           runtimePackageJSON = readJSONSync(runtimePackageJSONPath);
           runtimePackagePath = join(runtimePackageJSONPath, '..');
         }
-        const runtimeTargetPath = `dist/jsx2mp-runtime.${this.platform}.esm.js`;
+        const runtimeTargetPath = `dist/${runtimeName}.${this.platform}.esm.js`;
         const sourceFile = require.resolve(join(runtimePackagePath, runtimeTargetPath));
         const targetFile = join(this.outputPath, 'npm', runtime + '.js');
 

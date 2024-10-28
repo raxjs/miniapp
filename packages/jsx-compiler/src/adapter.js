@@ -83,6 +83,8 @@ const parserAdapters = {
     // Handle rax-slider and rax-swiper
     insertSwiperSlot: true,
     needRegisterProps: true,
+    // https://reactjs.org/docs/jsx-in-depth.html#props-default-to-true compat for WeChatMiniProgram
+    needPropsDefaultToTrue: true,
   },
   'bytedance': {
     platform: 'bytedance',
@@ -102,6 +104,24 @@ const parserAdapters = {
     text: {
       ...componentCommonProps.bytedance,
       className: '__rax-text'
+    },
+    icon: {
+      ...componentCommonProps.bytedance,
+      className: ''
+    },
+    image: {
+      ...componentCommonProps.bytedance,
+      className: ''
+    },
+    'scroll-view': {
+      ...componentCommonProps.bytedance,
+      className: '',
+      onEndReached: 'bindscrolltolower',
+      onScroll: 'bindscroll',
+      onTouchStart: 'binddragstart',
+      onTouchMove: 'binddragging',
+      onTouchEnd: 'binddragend',
+      // onTouchCancel: ''
     },
     styleKeyword: true,
     slotScope: false,
